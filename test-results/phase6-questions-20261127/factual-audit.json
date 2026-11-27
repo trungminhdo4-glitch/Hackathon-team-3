@@ -1,0 +1,115 @@
+{
+  "model": "gpt-6.1-terra",
+  "started_at": "2026-11-27T17:44:55Z",
+  "completed_at": "2026-11-27T17:45:23Z",
+  "results": [
+    {
+      "packet_id": "P1",
+      "facts_supported": true,
+      "question_status": "partial",
+      "problem": "extraction_loss",
+      "missing_decisive_fact": "2024 complaint allegations, $193,000 relief, 2021–2023 notices and evidence-backed advertising restriction",
+      "source_has_missing_fact": true,
+      "reason": "Context supports the final order but omits its precise terms and allegation/final distinction; current compliance or ability is not established."
+    },
+    {
+      "packet_id": "P2",
+      "facts_supported": false,
+      "question_status": "partial",
+      "problem": "scope_ambiguity",
+      "missing_decisive_fact": "Commercial cloud scope and exclusions; no exact edition identified by company homepage",
+      "source_has_missing_fact": true,
+      "reason": "The 54,000-device assertion has no captured source text; active status is not established by an undated document. The captured paper specifies services and excludes FedRAMP, on-premises and third parties, but does not identify an exact purchased edition."
+    },
+    {
+      "packet_id": "P3",
+      "facts_supported": true,
+      "question_status": "answered",
+      "problem": "none",
+      "missing_decisive_fact": null,
+      "source_has_missing_fact": null,
+      "reason": "FAQ identifies eligible-plan web-grounded chat and Outlook/app access, metered custom agents, Azure requirement and additional licensed capabilities; app availability varies."
+    },
+    {
+      "packet_id": "P4",
+      "facts_supported": false,
+      "question_status": "partial",
+      "problem": "unsupported_inference",
+      "missing_decisive_fact": "Recent dated stable and legacy release details and limits on future support",
+      "source_has_missing_fact": true,
+      "reason": "Dated releases appear in context, including November 22, 2026; the generic cross-technology excerpt does not itself establish the asserted Postfix survey usage. Future support is not established."
+    },
+    {
+      "packet_id": "P5",
+      "facts_supported": true,
+      "question_status": "partial",
+      "problem": "extraction_loss",
+      "missing_decisive_fact": "Included eligible-plan chat and Outlook/app features versus added Copilot license capabilities, and Azure requirement",
+      "source_has_missing_fact": true,
+      "reason": "Metered agents and IT control are supported; the captured FAQ states the omitted distinctions and conditions."
+    },
+    {
+      "packet_id": "P6",
+      "facts_supported": true,
+      "question_status": "partial",
+      "problem": "scope_ambiguity",
+      "missing_decisive_fact": "Whether announcement covers every listed product and when support ends",
+      "source_has_missing_fact": false,
+      "reason": "The vendor places its after-2026 development cessation announcement alongside several products, including HS Nettoeinkommen Pro 2026; precise product-by-product and support termination scope is not stated."
+    },
+    {
+      "packet_id": "P7",
+      "facts_supported": true,
+      "question_status": "partial",
+      "problem": "scope_ambiguity",
+      "missing_decisive_fact": "Exact product edition identified by company homepage",
+      "source_has_missing_fact": false,
+      "reason": "The documented commercial cloud services and exclusions are supported; the homepage URL and captured paper do not establish a specific purchased edition. CVE context does not resolve edition identity."
+    },
+    {
+      "packet_id": "P8",
+      "facts_supported": true,
+      "question_status": "partial",
+      "problem": "extraction_loss",
+      "missing_decisive_fact": "FTC staff identifies free antivirus products as affected between 2014 and 2020",
+      "source_has_missing_fact": true,
+      "reason": "The 2024 FTC account supports historical conduct and $16.5 million redress; the captured staff comment supplies the unverified lead. Current conduct is not established."
+    },
+    {
+      "packet_id": "P9",
+      "facts_supported": true,
+      "question_status": "unanswered",
+      "problem": "extraction_loss",
+      "missing_decisive_fact": "Vendor announces software development ends after 2026, with 2026 the last year",
+      "source_has_missing_fact": true,
+      "reason": "The captured vendor page lists HS Nettoeinkommen Pro 2026 and the announcement; precise product-by-product and support scope remains unclear. The packet marks its 2026 edition lead unverified."
+    },
+    {
+      "packet_id": "P10",
+      "facts_supported": true,
+      "question_status": "answered",
+      "problem": "none",
+      "missing_decisive_fact": null,
+      "source_has_missing_fact": null,
+      "reason": "The FTC passage distinguishes September 2024 complaint allegations from the final order, its $193,000 relief, notices and advertising restriction. It does not establish current compliance or service quality."
+    },
+    {
+      "packet_id": "P11",
+      "facts_supported": true,
+      "question_status": "answered",
+      "problem": "none",
+      "missing_decisive_fact": null,
+      "source_has_missing_fact": null,
+      "reason": "November 22, 2026 stable and legacy releases support recent maintenance; the announcement does not establish future support or maintenance of a particular installation."
+    },
+    {
+      "packet_id": "P12",
+      "facts_supported": true,
+      "question_status": "partial",
+      "problem": "extraction_loss",
+      "missing_decisive_fact": "2024 settlement date, $16.5 million redress, restriction detail and free-product 2014–2020 scope",
+      "source_has_missing_fact": true,
+      "reason": "Captured FTC text supports the historical conduct and remedy, and its staff comment gives free-product dates. The packet excerpt omits remedy details; present conduct remains unknown."
+    }
+  ]
+}

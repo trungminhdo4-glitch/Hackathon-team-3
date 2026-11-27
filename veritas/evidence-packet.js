@@ -16,7 +16,9 @@ export function evidencePacket(input, entry) {
     findings: (entry.flags ?? []).flatMap(f => (f.evidence ?? []).map(e => {
       const d = docs.get(e.sourceId), text = normalize(d?.text ?? ''), quote = normalize(e.quote ?? '');
       const at = quote.length >= 12 ? text.indexOf(quote) : -1;
-      const exact = at >= 0 && !/\.\.\.|…/.test(quote);
+      // A literal ellipsis already present in one contiguous source span is not
+      // a worker stitching separate passages. Non-contiguous quotes still fail.
+      const exact = at >= 0;
       return { question: f.topic ?? 'product evidence', proposition: f.text,
         source_url: d?.requestedUrl ?? d?.url ?? null, resolved_url: d?.url ?? null,
         passage: exact ? text.slice(at, at + quote.length) : null,

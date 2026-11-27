@@ -40,3 +40,12 @@ test('evidence boundary strips labels, preserves actual context, and isolates ge
   assert.equal(p.findings[1].quote_match, 'unverified_discovery_lead');
   assert.equal(/overall|reference|severity|kind|imported/.test(JSON.stringify(p)), false);
 });
+
+test('native packet accepts literal source ellipses but rejects stitched quotations', () => {
+  const entry = { productName:'Example', documents:[{id:'S1',url:'https://example.test/',text:'A source interface says in reply to a question... Yes, this affected the free product.'}],
+    flags:[{text:'Literal source punctuation',evidence:[{sourceId:'S1',quote:'in reply to a question... Yes, this affected the free product.'}]},
+      {text:'Stitched quotation',evidence:[{sourceId:'S1',quote:'A source interface... affected the free product.'}]}] };
+  const p=evidencePacket({id:1,url:'https://example.test/'},entry);
+  assert.ok(p.findings[0].passage);
+  assert.equal(p.findings[1].passage,null);
+});

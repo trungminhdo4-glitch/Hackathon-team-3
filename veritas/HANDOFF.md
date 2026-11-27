@@ -2,6 +2,8 @@
 
 ## Phase 6 freeze — November 27
 
+The subsequent [six-question controlled test](bench/2026-11-27-phase6-questions.md) improved factual support from 4/6 to 6/6 and complete answers from 0/6 to 3/6; vendor accuracy stayed 4/6 for Terra and fell 4/6 to 3/6 for Luna. No candidate replacement is justified. A source-exact literal-ellipsis rejection was fixed after freezing that experiment; historical packets were not changed. Current tests: 124/124 including the application suite.
+
 Read [the Phase 6 results](bench/2026-11-27-phase6.md) before selecting a configuration. The new clean research prompt did not demonstrate a robust gain; no new judge or stricter Guard is recommended as a replacement. Keep the existing stronger team researcher. Shuhan's historical 27/40 is not a clean rerun, and the original judge's case-derived examples must not enter an evidence-only comparison. The locally reproduced external-worker candidate remains the Phase-5 Luna→Terra workflow at 21/40; its end-to-end autonomous execution is unverified. Unchanged keyless `collect` is the working conservative fallback.
 
 The [official brief](https://aiagentsberlin.xyz/ah3-brief-stackgini-agents-with-taste.pdf) confirms blind release 19:00 CET and submission 19:45 CET. It requires reasons and checkable links, but specifies no CSV column schema. The nine-column local CSV is tested, not an official schema guarantee. Freeze before blind release; do not manually research live products.

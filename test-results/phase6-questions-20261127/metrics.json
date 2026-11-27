@@ -1,0 +1,589 @@
+{
+  "mode": "Six deliberately selected reused development cases; no fresh holdout",
+  "variants": {
+    "original/luna": {
+      "correct": 4,
+      "evaluated": 6,
+      "expected": 6,
+      "coverage": 1,
+      "accuracy_on_evaluated": 0.667,
+      "accuracy_full_coverage": 0.667,
+      "macro_f1": 0.656,
+      "per_class": {
+        "Green": {
+          "precision": 1,
+          "recall": 0.5,
+          "f1": 0.667,
+          "support": 2
+        },
+        "Yellow": {
+          "precision": 0.333,
+          "recall": 1,
+          "f1": 0.5,
+          "support": 1
+        },
+        "Red": {
+          "precision": 1,
+          "recall": 0.667,
+          "f1": 0.8,
+          "support": 3
+        }
+      },
+      "false_green_on_non_green": 0,
+      "critical_false_green_on_red": 0,
+      "false_red_on_non_red": 0,
+      "non_ok_rows": 0,
+      "confusion_ref_by_pred": {
+        "Green": {
+          "Green": 1,
+          "Yellow": 1,
+          "Red": 0
+        },
+        "Yellow": {
+          "Green": 0,
+          "Yellow": 1,
+          "Red": 0
+        },
+        "Red": {
+          "Green": 0,
+          "Yellow": 1,
+          "Red": 2
+        }
+      },
+      "problems": [],
+      "note": "Agreement with Stackgini development labels.",
+      "rows": [
+        {
+          "id": "32",
+          "url": "https://donotpay.com/",
+          "overall": "Red",
+          "question_status": "partial",
+          "reason": "The passage and context tie the FTC action to DoNotPay's exact subscription service and deceptive AI-lawyer claims, but do not establish all claimed final-order remedies or present-day implications."
+        },
+        {
+          "id": "1",
+          "url": "https://www.omnissa.com/",
+          "overall": "Yellow",
+          "question_status": "partial",
+          "reason": "The UEM vulnerability and remediation are supported, but the broad submitted URL's exact product and edition are unresolved and the active-offering and adoption claims are discovery leads."
+        },
+        {
+          "id": "6",
+          "url": "https://www.postfix.org/",
+          "overall": "Green",
+          "question_status": "partial",
+          "reason": "The captured announcements context establishes repeated, recent releases for the exact project, while the selected quotation is stale relative to that context; branch support periods and adoption remain unknown."
+        },
+        {
+          "id": "2",
+          "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+          "overall": "Yellow",
+          "question_status": "partial",
+          "reason": "The excerpt supports the metered-agent caveat and gives some surrounding pricing context, but the selected passage alone does not establish the claimed full pricing and management picture."
+        },
+        {
+          "id": "7",
+          "url": "https://www.nettoeinkommen.de/index.htm",
+          "overall": "Yellow",
+          "question_status": "unanswered",
+          "reason": "No decisive lifecycle evidence is captured; absence of evidence does not show that development or support continues."
+        },
+        {
+          "id": "40",
+          "url": "https://www.avast.com/de-de/index#pc",
+          "overall": "Red",
+          "question_status": "partial",
+          "reason": "The supplied context supports the historical privacy allegation and settlement framing, but the selected passage does not itself entail the full proposition about monetary relief and restrictions."
+        }
+      ],
+      "worker_elapsed_ms": 25000
+    },
+    "focused/luna": {
+      "correct": 3,
+      "evaluated": 6,
+      "expected": 6,
+      "coverage": 1,
+      "accuracy_on_evaluated": 0.5,
+      "accuracy_full_coverage": 0.5,
+      "macro_f1": 0.433,
+      "per_class": {
+        "Green": {
+          "precision": 0.5,
+          "recall": 0.5,
+          "f1": 0.5,
+          "support": 2
+        },
+        "Yellow": {
+          "precision": 0,
+          "recall": 0,
+          "f1": 0,
+          "support": 1
+        },
+        "Red": {
+          "precision": 1,
+          "recall": 0.667,
+          "f1": 0.8,
+          "support": 3
+        }
+      },
+      "false_green_on_non_green": 1,
+      "critical_false_green_on_red": 0,
+      "false_red_on_non_red": 0,
+      "non_ok_rows": 0,
+      "confusion_ref_by_pred": {
+        "Green": {
+          "Green": 1,
+          "Yellow": 1,
+          "Red": 0
+        },
+        "Yellow": {
+          "Green": 1,
+          "Yellow": 0,
+          "Red": 0
+        },
+        "Red": {
+          "Green": 0,
+          "Yellow": 1,
+          "Red": 2
+        }
+      },
+      "problems": [],
+      "note": "Agreement with Stackgini development labels.",
+      "rows": [
+        {
+          "id": "2",
+          "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+          "overall": "Green",
+          "question_status": "answered",
+          "reason": "Captured product and pricing passages directly describe included chat, metered agents, added licensed features, and availability qualifications; this is an ordinary disclosed licensing caveat."
+        },
+        {
+          "id": "7",
+          "url": "https://www.nettoeinkommen.de/index.htm",
+          "overall": "Yellow",
+          "question_status": "partial",
+          "reason": "The vendor passage directly identifies the product and announced development cutoff, a material lifecycle caveat; it does not establish retirement or support termination."
+        },
+        {
+          "id": "1",
+          "url": "https://www.omnissa.com/",
+          "overall": "Yellow",
+          "question_status": "answered",
+          "reason": "The passages directly define the cloud-services scope and exclusions and identify the UEM vulnerability scope; the submitted broad company URL still leaves the selected edition unresolved."
+        },
+        {
+          "id": "40",
+          "url": "https://www.avast.com/de-de/index#pc",
+          "overall": "Red",
+          "question_status": "partial",
+          "reason": "The FTC passage and context establish historical, product-relevant privacy conduct and settlement remedies; current conduct remains unknown."
+        },
+        {
+          "id": "32",
+          "url": "https://donotpay.com/",
+          "overall": "Red",
+          "question_status": "answered",
+          "reason": "The FTC passages clearly distinguish complaint allegations from the final order and its remedies for the exact service; current implications remain unverified."
+        },
+        {
+          "id": "6",
+          "url": "https://www.postfix.org/",
+          "overall": "Green",
+          "question_status": "answered",
+          "reason": "The dated passage directly establishes recent stable and legacy releases for Postfix; support windows and adoption are not shown."
+        }
+      ],
+      "worker_elapsed_ms": 25000
+    },
+    "original/terra": {
+      "correct": 4,
+      "evaluated": 6,
+      "expected": 6,
+      "coverage": 1,
+      "accuracy_on_evaluated": 0.667,
+      "accuracy_full_coverage": 0.667,
+      "macro_f1": 0.656,
+      "per_class": {
+        "Green": {
+          "precision": 1,
+          "recall": 0.5,
+          "f1": 0.667,
+          "support": 2
+        },
+        "Yellow": {
+          "precision": 0.333,
+          "recall": 1,
+          "f1": 0.5,
+          "support": 1
+        },
+        "Red": {
+          "precision": 1,
+          "recall": 0.667,
+          "f1": 0.8,
+          "support": 3
+        }
+      },
+      "false_green_on_non_green": 0,
+      "critical_false_green_on_red": 0,
+      "false_red_on_non_red": 0,
+      "non_ok_rows": 0,
+      "confusion_ref_by_pred": {
+        "Green": {
+          "Green": 1,
+          "Yellow": 1,
+          "Red": 0
+        },
+        "Yellow": {
+          "Green": 0,
+          "Yellow": 1,
+          "Red": 0
+        },
+        "Red": {
+          "Green": 0,
+          "Yellow": 1,
+          "Red": 2
+        }
+      },
+      "problems": [],
+      "note": "Agreement with Stackgini development labels.",
+      "rows": [
+        {
+          "id": "32",
+          "url": "https://donotpay.com/",
+          "overall": "Red",
+          "question_status": "partial",
+          "reason": "A final FTC order addresses deceptive claims for this exact service, a serious credibility concern; complaint allegations remain allegations."
+        },
+        {
+          "id": "1",
+          "url": "https://www.omnissa.com/",
+          "overall": "Yellow",
+          "question_status": "partial",
+          "reason": "Identity and edition remain unresolved; the captured vulnerability report does not establish the candidate product selected by the company URL."
+        },
+        {
+          "id": "6",
+          "url": "https://www.postfix.org/",
+          "overall": "Green",
+          "question_status": "answered",
+          "reason": "Recent stable and legacy releases establish credible maintenance; the survey excerpt does not establish the proposed adoption claim."
+        },
+        {
+          "id": "2",
+          "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+          "overall": "Yellow",
+          "question_status": "partial",
+          "reason": "The documented offering has material licensing and metered agent cost conditions; details of the add-on remain incomplete."
+        },
+        {
+          "id": "7",
+          "url": "https://www.nettoeinkommen.de/index.htm",
+          "overall": "Yellow",
+          "question_status": "unanswered",
+          "reason": "There is no captured evidence to resolve the product lifecycle; missing evidence is not evidence of retirement."
+        },
+        {
+          "id": "40",
+          "url": "https://www.avast.com/de-de/index#pc",
+          "overall": "Red",
+          "question_status": "partial",
+          "reason": "The FTC describes serious product-relevant historical privacy conduct; the truncated context does not substantiate the proposed remedy details or current behavior."
+        }
+      ],
+      "worker_elapsed_ms": 11000
+    },
+    "focused/terra": {
+      "correct": 4,
+      "evaluated": 6,
+      "expected": 6,
+      "coverage": 1,
+      "accuracy_on_evaluated": 0.667,
+      "accuracy_full_coverage": 0.667,
+      "macro_f1": 0.656,
+      "per_class": {
+        "Green": {
+          "precision": 1,
+          "recall": 0.5,
+          "f1": 0.667,
+          "support": 2
+        },
+        "Yellow": {
+          "precision": 0.333,
+          "recall": 1,
+          "f1": 0.5,
+          "support": 1
+        },
+        "Red": {
+          "precision": 1,
+          "recall": 0.667,
+          "f1": 0.8,
+          "support": 3
+        }
+      },
+      "false_green_on_non_green": 0,
+      "critical_false_green_on_red": 0,
+      "false_red_on_non_red": 0,
+      "non_ok_rows": 0,
+      "confusion_ref_by_pred": {
+        "Green": {
+          "Green": 1,
+          "Yellow": 1,
+          "Red": 0
+        },
+        "Yellow": {
+          "Green": 0,
+          "Yellow": 1,
+          "Red": 0
+        },
+        "Red": {
+          "Green": 0,
+          "Yellow": 1,
+          "Red": 2
+        }
+      },
+      "problems": [],
+      "note": "Agreement with Stackgini development labels.",
+      "rows": [
+        {
+          "id": "2",
+          "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+          "overall": "Yellow",
+          "question_status": "answered",
+          "reason": "The offering is documented, but licensing, metered agent costs and app availability are material procurement conditions."
+        },
+        {
+          "id": "7",
+          "url": "https://www.nettoeinkommen.de/index.htm",
+          "overall": "Yellow",
+          "question_status": "partial",
+          "reason": "The announced end of development is a material lifecycle concern, though exact program scope and support timing are not fully explicit."
+        },
+        {
+          "id": "1",
+          "url": "https://www.omnissa.com/",
+          "overall": "Yellow",
+          "question_status": "answered",
+          "reason": "The documentation has a defined cloud scope but the submitted URL does not select a product or edition; the historical vulnerability has listed remediation."
+        },
+        {
+          "id": "40",
+          "url": "https://www.avast.com/de-de/index#pc",
+          "overall": "Red",
+          "question_status": "answered",
+          "reason": "The FTC describes serious historical privacy harm connected to antivirus software and a settlement remedy; current behavior is unestablished."
+        },
+        {
+          "id": "32",
+          "url": "https://donotpay.com/",
+          "overall": "Red",
+          "question_status": "answered",
+          "reason": "The final order addressing deceptive service claims establishes a serious product credibility concern; the testing claims are complaint allegations."
+        },
+        {
+          "id": "6",
+          "url": "https://www.postfix.org/",
+          "overall": "Green",
+          "question_status": "answered",
+          "reason": "Recent stable and legacy releases establish credible maintenance with no established material concern in this packet."
+        }
+      ],
+      "worker_elapsed_ms": 11000
+    }
+  },
+  "paired": {
+    "luna": {
+      "wrong_to_right": 0,
+      "right_to_wrong": 1,
+      "net": -1
+    },
+    "terra": {
+      "wrong_to_right": 0,
+      "right_to_wrong": 0,
+      "net": 0
+    }
+  },
+  "factual_audit": {
+    "original": {
+      "cases": [
+        {
+          "packet_id": "P1",
+          "id": "32",
+          "url": "https://donotpay.com/",
+          "condition": "original",
+          "facts_supported": true,
+          "question_status": "partial",
+          "problem": "extraction_loss",
+          "missing_decisive_fact": "2024 complaint allegations, $193,000 relief, 2021–2023 notices and evidence-backed advertising restriction",
+          "source_has_missing_fact": true,
+          "reason": "Context supports the final order but omits its precise terms and allegation/final distinction; current compliance or ability is not established."
+        },
+        {
+          "packet_id": "P2",
+          "id": "1",
+          "url": "https://www.omnissa.com/",
+          "condition": "original",
+          "facts_supported": false,
+          "question_status": "partial",
+          "problem": "scope_ambiguity",
+          "missing_decisive_fact": "Commercial cloud scope and exclusions; no exact edition identified by company homepage",
+          "source_has_missing_fact": true,
+          "reason": "The 54,000-device assertion has no captured source text; active status is not established by an undated document. The captured paper specifies services and excludes FedRAMP, on-premises and third parties, but does not identify an exact purchased edition."
+        },
+        {
+          "packet_id": "P4",
+          "id": "6",
+          "url": "https://www.postfix.org/",
+          "condition": "original",
+          "facts_supported": false,
+          "question_status": "partial",
+          "problem": "unsupported_inference",
+          "missing_decisive_fact": "Recent dated stable and legacy release details and limits on future support",
+          "source_has_missing_fact": true,
+          "reason": "Dated releases appear in context, including November 22, 2026; the generic cross-technology excerpt does not itself establish the asserted Postfix survey usage. Future support is not established."
+        },
+        {
+          "packet_id": "P5",
+          "id": "2",
+          "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+          "condition": "original",
+          "facts_supported": true,
+          "question_status": "partial",
+          "problem": "extraction_loss",
+          "missing_decisive_fact": "Included eligible-plan chat and Outlook/app features versus added Copilot license capabilities, and Azure requirement",
+          "source_has_missing_fact": true,
+          "reason": "Metered agents and IT control are supported; the captured FAQ states the omitted distinctions and conditions."
+        },
+        {
+          "packet_id": "P9",
+          "id": "7",
+          "url": "https://www.nettoeinkommen.de/index.htm",
+          "condition": "original",
+          "facts_supported": true,
+          "question_status": "unanswered",
+          "problem": "extraction_loss",
+          "missing_decisive_fact": "Vendor announces software development ends after 2026, with 2026 the last year",
+          "source_has_missing_fact": true,
+          "reason": "The captured vendor page lists HS Nettoeinkommen Pro 2026 and the announcement; precise product-by-product and support scope remains unclear. The packet marks its 2026 edition lead unverified."
+        },
+        {
+          "packet_id": "P12",
+          "id": "40",
+          "url": "https://www.avast.com/de-de/index#pc",
+          "condition": "original",
+          "facts_supported": true,
+          "question_status": "partial",
+          "problem": "extraction_loss",
+          "missing_decisive_fact": "2024 settlement date, $16.5 million redress, restriction detail and free-product 2014–2020 scope",
+          "source_has_missing_fact": true,
+          "reason": "Captured FTC text supports the historical conduct and remedy, and its staff comment gives free-product dates. The packet excerpt omits remedy details; present conduct remains unknown."
+        }
+      ],
+      "facts_supported": 4,
+      "question_answered": 0,
+      "question_partial": 5,
+      "question_unanswered": 1,
+      "findings": 9,
+      "exact_passages": 6,
+      "problems": {
+        "extraction_loss": 4,
+        "scope_ambiguity": 1,
+        "unsupported_inference": 1
+      }
+    },
+    "focused": {
+      "cases": [
+        {
+          "packet_id": "P3",
+          "id": "2",
+          "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+          "condition": "focused",
+          "facts_supported": true,
+          "question_status": "answered",
+          "problem": "none",
+          "missing_decisive_fact": null,
+          "source_has_missing_fact": null,
+          "reason": "FAQ identifies eligible-plan web-grounded chat and Outlook/app access, metered custom agents, Azure requirement and additional licensed capabilities; app availability varies."
+        },
+        {
+          "packet_id": "P6",
+          "id": "7",
+          "url": "https://www.nettoeinkommen.de/index.htm",
+          "condition": "focused",
+          "facts_supported": true,
+          "question_status": "partial",
+          "problem": "scope_ambiguity",
+          "missing_decisive_fact": "Whether announcement covers every listed product and when support ends",
+          "source_has_missing_fact": false,
+          "reason": "The vendor places its after-2026 development cessation announcement alongside several products, including HS Nettoeinkommen Pro 2026; precise product-by-product and support termination scope is not stated."
+        },
+        {
+          "packet_id": "P7",
+          "id": "1",
+          "url": "https://www.omnissa.com/",
+          "condition": "focused",
+          "facts_supported": true,
+          "question_status": "partial",
+          "problem": "scope_ambiguity",
+          "missing_decisive_fact": "Exact product edition identified by company homepage",
+          "source_has_missing_fact": false,
+          "reason": "The documented commercial cloud services and exclusions are supported; the homepage URL and captured paper do not establish a specific purchased edition. CVE context does not resolve edition identity."
+        },
+        {
+          "packet_id": "P8",
+          "id": "40",
+          "url": "https://www.avast.com/de-de/index#pc",
+          "condition": "focused",
+          "facts_supported": true,
+          "question_status": "partial",
+          "problem": "extraction_loss",
+          "missing_decisive_fact": "FTC staff identifies free antivirus products as affected between 2014 and 2020",
+          "source_has_missing_fact": true,
+          "reason": "The 2024 FTC account supports historical conduct and $16.5 million redress; the captured staff comment supplies the unverified lead. Current conduct is not established."
+        },
+        {
+          "packet_id": "P10",
+          "id": "32",
+          "url": "https://donotpay.com/",
+          "condition": "focused",
+          "facts_supported": true,
+          "question_status": "answered",
+          "problem": "none",
+          "missing_decisive_fact": null,
+          "source_has_missing_fact": null,
+          "reason": "The FTC passage distinguishes September 2024 complaint allegations from the final order, its $193,000 relief, notices and advertising restriction. It does not establish current compliance or service quality."
+        },
+        {
+          "packet_id": "P11",
+          "id": "6",
+          "url": "https://www.postfix.org/",
+          "condition": "focused",
+          "facts_supported": true,
+          "question_status": "answered",
+          "problem": "none",
+          "missing_decisive_fact": null,
+          "source_has_missing_fact": null,
+          "reason": "November 22, 2026 stable and legacy releases support recent maintenance; the announcement does not establish future support or maintenance of a particular installation."
+        }
+      ],
+      "facts_supported": 6,
+      "question_answered": 3,
+      "question_partial": 3,
+      "question_unanswered": 0,
+      "findings": 12,
+      "exact_passages": 11,
+      "problems": {
+        "none": 3,
+        "scope_ambiguity": 2,
+        "extraction_loss": 1
+      }
+    }
+  },
+  "calls": {
+    "new_web_research": 0,
+    "extraction_workers": 2,
+    "judges": 2,
+    "independent_factual_auditor": 1,
+    "monetary_cost": null
+  },
+  "limits": "Question answerability/factual support are independently model-audited. Final materiality/color is not independently certified by that factual audit. Six selected development cases are not a population accuracy estimate."
+}

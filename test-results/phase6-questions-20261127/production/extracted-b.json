@@ -1,0 +1,39 @@
+{
+  "model": "gpt-6.1-terra",
+  "started_at": "2026-11-27T17:43:17Z",
+  "completed_at": "2026-11-27T17:43:33Z",
+  "entries": [
+    {
+      "id": "7",
+      "url": "https://www.nettoeinkommen.de/index.htm",
+      "question_status": "partial",
+      "answer": "The vendor's submitted page announces that software development will end after 2026, with 2026 the final year. It lists HS Nettoeinkommen Pro 2026 alongside two other programs, but does not explicitly specify a support end date or clearly delineate which individual programs the announcement covers.",
+      "missing_fact": "An explicit product-by-product scope and support end date are not established by the captured page.",
+      "findings": [
+        {"proposition": "The submitted vendor page lists the product and announces an end to software development after 2026.", "source_id": "S1", "passage": "Software Service HS Nettoeinkommen Pro 2026 Lohnsteuerberechnung HS BAV Verdienstanalyse 2026 Beispielberechnungen zur BAV HS SachLohn 2026 Warum? Die Softwareentwicklung wird nach 2026 eingestellt! - 2026 ist das letzte Jahr - Das sind die Gr�nde und Alternativen ACHTUNG: Abonnenten wurden informiert!", "scope": "Vendor page; the announcement appears alongside three named programs.", "uncertainty": "The passage does not explicitly delimit the individual products affected or specify when support ends."}
+      ]
+    },
+    {
+      "id": "32",
+      "url": "https://donotpay.com/",
+      "question_status": "partial",
+      "answer": "On February 11, 2025, the FTC reported a final order concerning DoNotPay's online subscription service. Its September 2024 complaint alleged the robot-lawyer service failed to match claims of being an adequate substitute for a human lawyer. The final order requires $193,000 in monetary relief and notice to 2021–2023 subscribers, and prohibits claims that the service performs like a real lawyer without sufficient evidence. The captured release does not establish present-day compliance, service capabilities, or consumer impact.",
+      "missing_fact": "Current compliance, service capabilities and consumer impact are not established.",
+      "findings": [
+        {"proposition": "The FTC described its 2024 complaint allegations about the service's claims and testing.", "source_id": "S1", "passage": "In a complaint announced in September 2024, the FTC charged that DoNotPay’s so-called robot lawyer failed to live up to claims that it was an adequate substitute for the expertise of a human lawyer. According to the complaint, the company did not test whether its “AI lawyer” operated to the level of a human lawyer when generating legal documents and giving advice, and the company did not hire or retain attorneys to test the quality and accuracy of its service’s law-related features.", "scope": "FTC complaint allegations about DoNotPay's law-related features.", "uncertainty": "Allegations are not presented as independent findings of current conduct."},
+        {"proposition": "The FTC reported the final order's relief, notice and advertising requirements.", "source_id": "S1", "passage": "The final order requires DoNotPay to pay $193,000 in monetary relief and notify consumers who subscribed to the service between 2021 and 2023 about the FTC settlement. The order also prohibits DoNotPay from advertising that its service performs like a real lawyer unless it has sufficient evidence to back it up. After receiving five comments, the Commission voted 5-0 on January 16, 2025, to approve the final order and send responses to the commenters.", "scope": "Final order reported February 11, 2025; notice covers 2021–2023 subscribers.", "uncertainty": "The captured release does not establish current compliance or service performance."}
+      ]
+    },
+    {
+      "id": "40",
+      "url": "https://www.avast.com/de-de/index#pc",
+      "question_status": "partial",
+      "answer": "In a February 22, 2024 consumer alert, the FTC described Avast collecting user information through antivirus software and browser extensions from at least 2014 without consent and, the FTC said, selling it through Jumpshot without notice and consent. The settlement prohibits misrepresenting data use and requires $16.5 million in consumer redress. FTC staff later said free antivirus products were affected between 2014 and 2020. The capture does not establish current conduct or whether this particular German PC offering is affected.",
+      "missing_fact": "Current conduct and the applicability to the exact current German PC offering are not established.",
+      "findings": [
+        {"proposition": "The FTC described historical collection and sale and the settlement's remedies.", "source_id": "S1", "passage": "Since at least 2014, Avast collected a treasure trove of user information through its antivirus software and browser extensions without people’s consent. This included information about their religious beliefs health concerns political leanings locations financial status But that’s not all, the FTC says Avast sold the information through its subsidiary Jumpshot — without notifying people and getting their consent (again). The FTC’s settlement order prohibits Avast from misrepresenting how it uses the data it collects. Additionally, Avast will pay $16.5 million dollars in redress to compensate people.", "scope": "FTC consumer alert dated February 22, 2024; antivirus software and browser extensions.", "uncertainty": "The capture describes historical conduct and does not establish current practices."},
+        {"proposition": "FTC staff identified a historical period for affected free antivirus products.", "source_id": "S1", "passage": "Ronj February 26, 2024 I use the Avast free version. Does the privacy effect this segment? FTC Staff March 04, 2024 In reply to I use the Avast free version… by Ronj Yes, this affected Avast’s free antivirus products between 2014-2020.", "scope": "FTC staff response concerning free antivirus products.", "uncertainty": "This does not identify the current German PC offering or establish its current behavior."}
+      ]
+    }
+  ]
+}

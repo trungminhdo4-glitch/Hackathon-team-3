@@ -1,0 +1,86 @@
+{
+  "model": "gpt-6.1-terra",
+  "started_at": "2026-11-27T17:43:09Z",
+  "completed_at": "2026-11-27T17:43:50Z",
+  "entries": [
+    {
+      "id": "1",
+      "url": "https://www.omnissa.com/",
+      "question_status": "partial",
+      "answer": "The company URL does not uniquely identify a specific product or edition. The captured security document covers Workspace ONE commercial cloud services, including the named services, and excludes FedRAMP, on-premises and third-party offerings.",
+      "missing_fact": "The exact product, edition and deployment associated with the submitted company URL are not established.",
+      "findings": [
+        {
+          "proposition": "The document covers specified Workspace ONE commercial cloud services.",
+          "source_id": "S1",
+          "passage": "This document provides a general overview of the security controls implemented in Omnissa Workspace ONE® commercial cloud offerings and includes information on the following services: Workspace ONE® Unified Endpoint Management (UEM)™ Omnissa® Access™ and Workspace ONE® Hub Services Omnissa® Intelligence™ Workspace ONE® Assist™ Omnissa® Connect Within this whitepaper, these services are collectively referred to as “Workspace ONE” or “Workspace ONE cloud services” unless otherwise specified.",
+          "scope": "Commercial cloud services described by the whitepaper.",
+          "uncertainty": "Does not identify the product or edition selected by the company URL."
+        },
+        {
+          "proposition": "FedRAMP, on-premises and third-party offerings are outside the document scope.",
+          "source_id": "S1",
+          "passage": "This document is intended for Workspace ONE commercial cloud administrators. It assumes at least intermediate knowledge of Workspace ONE cloud services and focuses on the policies, processes, and controls supporting the cloud-delivered services. Federal Risk and Authorization Management Program (FedRAMP) , on-premises, and third-party offerings are not in scope for this document.",
+          "scope": "Whitepaper scope.",
+          "uncertainty": "Does not establish the submitted deployment."
+        },
+        {
+          "proposition": "Assetnote reports CVE-2025-25231 affecting Workspace ONE UEM and names remediation versions.",
+          "source_id": "S3",
+          "passage": "This blog post details CVE-2025-25231 , which was initially reported to Omnissa on May 13, 2025. The official advisory can be found here . Upgrade to versions 24.10.0.11, 24.6.0.35, 24.2.0.30, or 23.10.0.50 to remediate this issue.",
+          "scope": "Workspace ONE UEM; reported issue and named remediation versions.",
+          "uncertainty": "The selected product and deployed version, and whether the issue is currently remediated, are unknown."
+        }
+      ],
+      "coverage_limitations": "Other captured source content is omitted; findings are limited to selected passages relevant to the question and material directly documented qualifications."
+    },
+    {
+      "id": "2",
+      "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+      "question_status": "answered",
+      "answer": "Copilot Chat is available at no additional cost with eligible Microsoft 365 plans and includes web-grounded AI chat, Copilot in Outlook and the Microsoft Copilot app. Organization-built custom agents are metered, and agent use requires an Azure subscription. A Microsoft 365 Copilot license adds Work IQ, Copilot in Teams and Microsoft 365 apps, and pre-built agents such as Researcher, Analyst and Facilitator; licensed users can use assistive custom agents at no additional cost. Availability in some apps varies by market and licensing.",
+      "missing_fact": "Specific customer eligibility and app availability are not established.",
+      "findings": [
+        {
+          "proposition": "The captured FAQ distinguishes included chat, metered custom agents and added licensed features.",
+          "source_id": "s2",
+          "passage": "Copilot Chat is a web-grounded AI assistant available, at no additional cost, with eligible Microsoft 365 plans. It also includes Copilot in Outlook and the Microsoft Copilot app.1 Copilot Chat customers may also use custom agents built by their organization on a metered basis. When you add a Microsoft 365 Copilot license, Copilot becomes even more powerful with Work IQ , Copilot in Teams and Microsoft 365 apps, and access to Microsoft pre-built agents like Researcher, Analyst, and Facilitator. Licensed users can use assistive custom agents at no additional cost.",
+          "scope": "Eligible Microsoft 365 plans and the Microsoft 365 Copilot license.",
+          "uncertainty": "Individual customer eligibility and app availability vary."
+        },
+        {
+          "proposition": "An Azure subscription is required for agents.",
+          "source_id": "a3",
+          "passage": "An Azure subscription is required to use agents. Prepaid Microsoft Copilot Studio capacity packs are also available.",
+          "scope": "Agent use as described on the enterprise plans page.",
+          "uncertainty": "The capture does not establish a customer’s agent usage charges."
+        },
+        {
+          "proposition": "Availability in particular apps may depend on market and licensing.",
+          "source_id": "a3",
+          "passage": "Availability in Word, Excel, PowerPoint, and OneNote may vary by market and customer licensing.",
+          "scope": "Specified Microsoft 365 apps.",
+          "uncertainty": "No customer market or license is identified."
+        }
+      ],
+      "coverage_limitations": "Other captured source content is omitted; findings are limited to selected passages relevant to the question and material directly documented qualifications."
+    },
+    {
+      "id": "6",
+      "url": "https://www.postfix.org/",
+      "question_status": "answered",
+      "answer": "The captured Postfix announcements list stable release 3.11.8 and multiple legacy releases dated November 22, 2026, indicating recent upstream maintenance at that date. The installed version and its support status are not identified.",
+      "missing_fact": "The version in use, its support status and any maintenance after the dated announcement are unknown.",
+      "findings": [
+        {
+          "proposition": "Postfix announced a stable release and legacy releases on November 22, 2026.",
+          "source_id": "S1",
+          "passage": "November 22, 2026: Postfix stable release 3.11.8 and legacy releases 3.10.15, 3.9.16, 3.8.22, 3.7.24, 3.6.22, 3.5.29 .",
+          "scope": "Upstream Postfix releases as announced on that date.",
+          "uncertainty": "A release announcement does not establish the installed version or its future support."
+        }
+      ],
+      "coverage_limitations": "Other captured source content is omitted; findings are limited to selected passages relevant to the question and material directly documented qualifications."
+    }
+  ]
+}

@@ -1,0 +1,438 @@
+[
+  {
+    "packet_id": "P1",
+    "url": "https://donotpay.com/",
+    "candidate_product": "DoNotPay online subscription and AI legal-services product",
+    "question": "What regulatory action concerning this exact service is documented, what is allegation versus final action, and what current implications remain unknown?",
+    "findings": [
+      {
+        "question": "deception",
+        "proposition": "FTC finalized an order over deceptive AI-lawyer claims and required monetary relief and subscriber notices.",
+        "source_url": "https://www.ftc.gov/news-events/news/press-releases/2025/02/ftc-finalizes-order-donotpay-prohibits-deceptive-ai-lawyer-claims-imposes-monetary-relief-requires",
+        "resolved_url": "https://www.ftc.gov/news-events/news/press-releases/2025/02/ftc-finalizes-order-donotpay-prohibits-deceptive-ai-lawyer-claims-imposes-monetary-relief-requires",
+        "passage": "stop making deceptive claims about the abilities of its AI chatbot",
+        "context": " Bureau of Consumer Protection deceptive/misleading conduct Technology Advertising and Marketing Online Advertising and Marketing Advertising and Marketing Basics Super Intelligence The Federal Trade Commission has finalized an order requiring DoNotPay, a company that promoted its online subscription service as \"the world's first robot lawyer,\" to stop making deceptive claims about the abilities of its AI chatbot. In a complaint announced in September 2024, the FTC charged that DoNotPay's so-called robot lawyer failed to live up to claims that it was an adequate substitute for the expertise of a human lawyer. According to the complaint, the company did not test whether its \"AI lawyer\" operated to the level of a human lawyer when generating legal documents ",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "DoNotPay online subscription and AI legal-services product",
+        "provenance": "refetched",
+        "source_relation": "authority",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  },
+  {
+    "packet_id": "P2",
+    "url": "https://www.omnissa.com/",
+    "candidate_product": "Omnissa Workspace ONE / digital workspace platform",
+    "question": "Which exact product and edition does the submitted company URL identify, and what does the captured documentation establish about that scope?",
+    "findings": [
+      {
+        "question": "active product",
+        "proposition": "Omnissa maintains an active Workspace ONE endpoint-management and security offering.",
+        "source_url": "https://techzone.omnissa.com/resource/workspace-one-cloud-services-security",
+        "resolved_url": "https://techzone.omnissa.com/resource/workspace-one-cloud-services-security",
+        "passage": null,
+        "context": null,
+        "proposed_quote": "Workspace ONE UEM can help provide complete transparency",
+        "quote_match": "unverified_discovery_lead",
+        "semantic_support": "not_assessed",
+        "product_scope": "Omnissa Workspace ONE / digital workspace platform",
+        "provenance": "refetched",
+        "source_relation": "vendor",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Not established by available captured text; do not use as fact."
+      },
+      {
+        "question": "adoption",
+        "proposition": "A large independent customer deployment is documented for 54,000 retail devices.",
+        "source_url": "https://www.youtube.com/watch?v=0gcNBWDL5ws",
+        "resolved_url": "https://www.youtube.com/watch?v=0gcNBWDL5ws",
+        "passage": null,
+        "context": null,
+        "proposed_quote": "ASDA migrated 54,000 handheld devices",
+        "quote_match": "unverified_discovery_lead",
+        "semantic_support": "not_assessed",
+        "product_scope": "Omnissa Workspace ONE / digital workspace platform",
+        "provenance": "imported",
+        "source_relation": "customer",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Not established by available captured text; do not use as fact."
+      },
+      {
+        "question": "security",
+        "proposition": "Independent security researchers reported a 2025 Workspace ONE UEM path-traversal vulnerability.",
+        "source_url": "https://www.slcyber.io/research/secondary-context-path-traversal-in-omnissa-workspace-one-uem",
+        "resolved_url": "https://www.slcyber.io/research/secondary-context-path-traversal-in-omnissa-workspace-one-uem",
+        "passage": "This blog post details CVE-2025-25231",
+        "context": "e past, by both ourselves and many other talented security researchers, provided a real driving force, purpose, and mission to find another critical vulnerability. A joy of being a security researcher is being able to benchmark your progress and learning journey by looking at software you've audited in the past and revisiting it a few years later. This blog post details CVE-2025-25231 , which was initially reported to Omnissa on May 13, 2025. The official advisory can be found here . Upgrade to versions 24.10.0.11, 24.6.0.35, 24.2.0.30, or 23.10.0.50 to remediate this issue. Understanding Workspace One UEM Workspace One UEM's web-facing properties are composed of several .NET applications, typically deployed as different sites ",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Omnissa Workspace ONE / digital workspace platform",
+        "provenance": "refetched",
+        "source_relation": "other",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  },
+  {
+    "packet_id": "P3",
+    "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+    "candidate_product": "Microsoft 365 Copilot Chat",
+    "question": "Which capabilities of the submitted Copilot Chat offering are included, and which require additional licensing or metered payment?",
+    "findings": [
+      {
+        "question": "commercial",
+        "proposition": "The captured FAQ distinguishes included chat, metered custom agents and added licensed features.",
+        "source_url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+        "resolved_url": "https://www.microsoft.com/en-us/copilot/features/chat",
+        "passage": "Copilot Chat is a web-grounded AI assistant available, at no additional cost, with eligible Microsoft 365 plans. It also includes Copilot in Outlook and the Microsoft Copilot app.1 Copilot Chat customers may also use custom agents built by their organization on a metered basis. When you add a Microsoft 365 Copilot license, Copilot becomes even more powerful with Work IQ , Copilot in Teams and Microsoft 365 apps, and access to Microsoft pre-built agents like Researcher, Analyst, and Facilitator. Licensed users can use assistive custom agents at no additional cost.",
+        "context": "how your organization can securely use AI to get more done-just sign in with your work account. Open Copilot Chat Use agents in Copilot Chat Learn more Create custom agents Learn more See plans and pricing Learn more Frequently asked questions Expand all Collapse all 01/ How is Copilot Chat different when used with a Microsoft 365 Copilot license? Copilot Chat is a web-grounded AI assistant available, at no additional cost, with eligible Microsoft 365 plans. It also includes Copilot in Outlook and the Microsoft Copilot app.1 Copilot Chat customers may also use custom agents built by their organization on a metered basis. When you add a Microsoft 365 Copilot license, Copilot becomes even more powerful with Work IQ , Copilot in Teams and Microsoft 365 apps, and access to Microsoft pre-built agents like Researcher, Analyst, and Facilitator. Licensed users can use assistive custom agents at no additional cost. Licensed organizations can also use advanced analytics to measure usage, adoption, and business impact. 02/ Is Copilot Chat free? Copilot Chat is available at no additional cost for Microsoft Entra account users that have an eligible Microsoft 365 subscription. Learn more . 03/ How does Copilot Chat keep my data safe? Keeping your proprietary data",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Microsoft 365 Copilot Chat",
+        "provenance": "refetched",
+        "source_relation": "unknown",
+        "publication_date": null,
+        "retrieved_at": "2026-11-27T17:27:24.739Z",
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      },
+      {
+        "question": "commercial",
+        "proposition": "An Azure subscription is required for agents.",
+        "source_url": "https://www.microsoft.com/en-us/copilot/pricing/enterprise",
+        "resolved_url": "https://www.microsoft.com/en-us/copilot/pricing/enterprise",
+        "passage": "An Azure subscription is required to use agents. Prepaid Microsoft Copilot Studio capacity packs are also available.",
+        "context": " plans for enterprise Select a plan to help seamlessly increase productivity and value across your organization. Existing customers New customers Copilot Chat Get secure, enterprise-ready AI chat, available at no additional cost for all Microsoft Entra account users with an eligible Microsoft 365 subscription. Included Open Copilot Chat Learn more An Azure subscription is required to use agents. Prepaid Microsoft Copilot Studio capacity packs are also available. Learn more . Plan highlights: Use secure, web-grounded AI chat powered by the latest large language models Get Copilot in select Microsoft 365 apps1 Access and use agents, priced on a metered basis Maintain IT control, including enterprise data protection and agent management Microsoft 365 Copilot (add-on) Supercharge employee productivity, stream",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Microsoft 365 Copilot Chat",
+        "provenance": "refetched",
+        "source_relation": "unknown",
+        "publication_date": null,
+        "retrieved_at": "2026-11-27T17:27:46.184Z",
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      },
+      {
+        "question": "commercial",
+        "proposition": "Availability in particular apps may depend on market and licensing.",
+        "source_url": "https://www.microsoft.com/en-us/copilot/pricing/enterprise",
+        "resolved_url": "https://www.microsoft.com/en-us/copilot/pricing/enterprise",
+        "passage": "Availability in Word, Excel, PowerPoint, and OneNote may vary by market and customer licensing.",
+        "context": "e language models and the latest web information, enhances productivity, automates tasks, and transforms your uploaded files (limits apply) into a database of information and insights. Open Copilot Chat . 05/ Which languages does Microsoft Copilot support? Review the list of supported languages . [1] Includes Outlook and the Microsoft Copilot app. Availability in Word, Excel, PowerPoint, and OneNote may vary by market and customer licensing. [2] Once your paid subscription begins, cancellation policies vary based on your status as a new customer and your Microsoft product and domain selections. Learn more . Cancel your Microsoft 365 subscription at any time by going to the Microsoft 365 admin center. When a subscription is canceled, all associated data will be deleted. Learn more abou",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Microsoft 365 Copilot Chat",
+        "provenance": "refetched",
+        "source_relation": "unknown",
+        "publication_date": null,
+        "retrieved_at": "2026-11-27T17:27:46.184Z",
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  },
+  {
+    "packet_id": "P4",
+    "url": "https://www.postfix.org/",
+    "candidate_product": "Postfix mail transfer agent",
+    "question": "What dated release or support information establishes whether this exact software is maintained, and what remains unknown?",
+    "findings": [
+      {
+        "question": "active product",
+        "proposition": "The project continues to publish stable and legacy releases.",
+        "source_url": "https://www.postfix.org/announcements.html",
+        "resolved_url": "https://www.postfix.org/announcements.html",
+        "passage": "Postfix stable release 3.11.7",
+        "context": " LINKS Home Announcements Feature overview Web sites (text) Download (source) Mailing lists Press and Interviews Documentation Add-on Software Packages and Ports Becoming a mirror site Postfix Announcements 2026 November 22, 2026: Postfix stable release 3.11.8 and legacy releases 3.10.15, 3.9.16, 3.8.22, 3.7.24, 3.6.22, 3.5.29 . September 7, 2026: Postfix stable release 3.11.7 and legacy releases 3.10.14, 3.9.15, 3.8.21, 3.7.23, 3.6.21, 3.5.28 . August 10, 2026: Postfix stable release 3.11.6 and legacy releases 3.10.13, 3.9.14, 3.8.20, 3.7.22, 3.6.20, 3.5.27 . July 6, 2026: Postfix stable release 3.11.5 and legacy releases 3.10.12, 3.9.13, 3.8.19, 3.7.21, 3.6.19, 3.5.26 . June 17, 2026: Postfix stable release 3.11.4 and",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Postfix mail transfer agent",
+        "provenance": "refetched",
+        "source_relation": "vendor",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      },
+      {
+        "question": "adoption",
+        "proposition": "Independent technology survey reports Postfix in current mail-server usage data.",
+        "source_url": "https://w3techs.com/technologies/cross/web_server/email_server",
+        "resolved_url": "https://w3techs.com/technologies/cross/web_server/email_server",
+        "passage": "Cross-technology reports",
+        "context": "Locations Content Languages Related Reports Transposition Technologies > Web Servers > by Email Servers Usage of web servers broken down by email server providers Detailed statistics in our extensive web servers market report. Learn more This diagram shows the percentages of websites using various web servers broken down by email server providers. Cross-technology reports only include technologies with more than 1% usage to ensure statistical significance of the results. See technologies overview for explanations on the methodologies used in the surveys. How to read the diagram: Cloudflare Server is used by 35.1% of all the websites whose web server we know. Cloudflare Server is used by 51.9% of all the websites wh",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Postfix mail transfer agent",
+        "provenance": "refetched",
+        "source_relation": "other",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  },
+  {
+    "packet_id": "P5",
+    "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+    "candidate_product": "Microsoft 365 Copilot Chat",
+    "question": "Which capabilities of the submitted Copilot Chat offering are included, and which require additional licensing or metered payment?",
+    "findings": [
+      {
+        "question": "cost",
+        "proposition": "Available enterprise chat with published pricing and management; metered agents can add cost.",
+        "source_url": "https://www.microsoft.com/en-us/copilot/pricing/enterprise",
+        "resolved_url": "https://www.microsoft.com/en-us/copilot/pricing/enterprise",
+        "passage": "Access and use agents, priced on a metered basis",
+        "context": " with an eligible Microsoft 365 subscription. Included Open Copilot Chat Learn more An Azure subscription is required to use agents. Prepaid Microsoft Copilot Studio capacity packs are also available. Learn more . Plan highlights: Use secure, web-grounded AI chat powered by the latest large language models Get Copilot in select Microsoft 365 apps1 Access and use agents, priced on a metered basis Maintain IT control, including enterprise data protection and agent management Microsoft 365 Copilot (add-on) Supercharge employee productivity, streamline processes, and add measurable value across your organization with an AI assistant. $30.00 user/month, paid yearly (Annual subscription-auto renews)2 Pay yearly Pay monthly A separate license fo",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Microsoft 365 Copilot Chat",
+        "provenance": "refetched",
+        "source_relation": "provider or supplier statement",
+        "publication_date": null,
+        "retrieved_at": "2026-11-27T17:27:46.184Z",
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  },
+  {
+    "packet_id": "P6",
+    "url": "https://www.nettoeinkommen.de/index.htm",
+    "candidate_product": "HS Nettoeinkommen salary/tax calculator and software",
+    "question": "Does the vendor announce an end to development or support for the exact submitted software, and with what timing and scope?",
+    "findings": [
+      {
+        "question": "lifecycle",
+        "proposition": "The submitted vendor page lists the product and announces an end to software development after 2026.",
+        "source_url": "https://www.nettoeinkommen.de/index.htm",
+        "resolved_url": "https://www.nettoeinkommen.de/index.htm",
+        "passage": "Software Service HS Nettoeinkommen Pro 2026 Lohnsteuerberechnung HS BAV Verdienstanalyse 2026 Beispielberechnungen zur BAV HS SachLohn 2026 Warum? Die Softwareentwicklung wird nach 2026 eingestellt! - 2026 ist das letzte Jahr - Das sind die Gr�nde und Alternativen ACHTUNG: Abonnenten wurden informiert!",
+        "context": "Nettolohnberechnung 2026 Lohnsteuertabellen Gehaltsrechner Lohnprogramm Entgeltoptimierung Programm zur monatlichen Lohnsteuer und Nettolohnberechnung 1992 bis 2026 mit Lohnsteuertabellen und Berechnung der betrieblichen Altersvorsorge, Altersversorgung wie Pensionskasse Direktversicherung Sie wissen, wo Ihr Geld bleibt?... Nein??? Software Service HS Nettoeinkommen Pro 2026 Lohnsteuerberechnung HS BAV Verdienstanalyse 2026 Beispielberechnungen zur BAV HS SachLohn 2026 Warum? Die Softwareentwicklung wird nach 2026 eingestellt! - 2026 ist das letzte Jahr - Das sind die Gr�nde und Alternativen ACHTUNG: Abonnenten wurden informiert! Vergleich dieser 3 Programme Passwortgesch�tze Vollversion 2026 Meldungen von Windows Defender Kostenlose Software HS Euro-Kalkulator (free ) NettoPro unter Linux Mint - PDF Support HS Mehrwertsteuer (free) Software unter macOS nutzen? Support-Forum (extern) HS ESt (Einkommensteuertabelle) (free) FAQ HS Pf�ndung (Pf�ndungstabellen) (free) Besonder",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "HS Nettoeinkommen salary/tax calculator and software",
+        "provenance": "refetched",
+        "source_relation": "unknown",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  },
+  {
+    "packet_id": "P7",
+    "url": "https://www.omnissa.com/",
+    "candidate_product": "Omnissa Workspace ONE / digital workspace platform",
+    "question": "Which exact product and edition does the submitted company URL identify, and what does the captured documentation establish about that scope?",
+    "findings": [
+      {
+        "question": "identity",
+        "proposition": "The document covers specified Workspace ONE commercial cloud services.",
+        "source_url": "https://techzone.omnissa.com/resource/workspace-one-cloud-services-security",
+        "resolved_url": "https://techzone.omnissa.com/resource/workspace-one-cloud-services-security",
+        "passage": "This document provides a general overview of the security controls implemented in Omnissa Workspace ONE® commercial cloud offerings and includes information on the following services: Workspace ONE® Unified Endpoint Management (UEM)TM Omnissa® AccessTM and Workspace ONE® Hub Services Omnissa® IntelligenceTM Workspace ONE® AssistTM Omnissa® Connect Within this whitepaper, these services are collectively referred to as \"Workspace ONE\" or \"Workspace ONE cloud services\" unless otherwise specified.",
+        "context": "icial Intelligence (AI) Overview of the Omnissa AI program AI governance at Omnissa Release management and maintenance Release schedules Scheduled maintenance Routine maintenance Emergency maintenance Summary and additional resources Additional resources Changelog About the author and contributors Workspace ONE Cloud Services security Introduction This document provides a general overview of the security controls implemented in Omnissa Workspace ONE® commercial cloud offerings and includes information on the following services: Workspace ONE® Unified Endpoint Management (UEM)TM Omnissa® AccessTM and Workspace ONE® Hub Services Omnissa® IntelligenceTM Workspace ONE® AssistTM Omnissa® Connect Within this whitepaper, these services are collectively referred to as \"Workspace ONE\" or \"Workspace ONE cloud services\" unless otherwise specified. Purpose The intent of this document is to provide readers with an understanding of how Workspace ONE cloud services approach security, the key mechanisms, and processes that Omnissa uses to manage information security, as well as describing the shared responsibilities for providing security in a modern cloud computing environment. Audience This do",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Omnissa Workspace ONE / digital workspace platform",
+        "provenance": "refetched",
+        "source_relation": "unknown",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      },
+      {
+        "question": "identity",
+        "proposition": "FedRAMP, on-premises and third-party offerings are outside the document scope.",
+        "source_url": "https://techzone.omnissa.com/resource/workspace-one-cloud-services-security",
+        "resolved_url": "https://techzone.omnissa.com/resource/workspace-one-cloud-services-security",
+        "passage": "This document is intended for Workspace ONE commercial cloud administrators. It assumes at least intermediate knowledge of Workspace ONE cloud services and focuses on the policies, processes, and controls supporting the cloud-delivered services. Federal Risk and Authorization Management Program (FedRAMP) , on-premises, and third-party offerings are not in scope for this document.",
+        "context": "cified. Purpose The intent of this document is to provide readers with an understanding of how Workspace ONE cloud services approach security, the key mechanisms, and processes that Omnissa uses to manage information security, as well as describing the shared responsibilities for providing security in a modern cloud computing environment. Audience This document is intended for Workspace ONE commercial cloud administrators. It assumes at least intermediate knowledge of Workspace ONE cloud services and focuses on the policies, processes, and controls supporting the cloud-delivered services. Federal Risk and Authorization Management Program (FedRAMP) , on-premises, and third-party offerings are not in scope for this document. Note: You can find the definitions for acronyms used in this document in Acronyms used in the Workspace ONE and Horizon Cloud Security Series . Shared responsibilities The end-to-end security of the Workspace ONE cloud-delivered service offerings is shared between Omnissa and our customers. Omnissa provides security for the aspects of the Workspac",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Omnissa Workspace ONE / digital workspace platform",
+        "provenance": "refetched",
+        "source_relation": "unknown",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      },
+      {
+        "question": "identity",
+        "proposition": "Assetnote reports CVE-2025-25231 affecting Workspace ONE UEM and names remediation versions.",
+        "source_url": "https://www.slcyber.io/research/secondary-context-path-traversal-in-omnissa-workspace-one-uem",
+        "resolved_url": "https://www.slcyber.io/research/secondary-context-path-traversal-in-omnissa-workspace-one-uem",
+        "passage": "This blog post details CVE-2025-25231 , which was initially reported to Omnissa on May 13, 2025. The official advisory can be found here . Upgrade to versions 24.10.0.11, 24.6.0.35, 24.2.0.30, or 23.10.0.50 to remediate this issue.",
+        "context": "e past, by both ourselves and many other talented security researchers, provided a real driving force, purpose, and mission to find another critical vulnerability. A joy of being a security researcher is being able to benchmark your progress and learning journey by looking at software you've audited in the past and revisiting it a few years later. This blog post details CVE-2025-25231 , which was initially reported to Omnissa on May 13, 2025. The official advisory can be found here . Upgrade to versions 24.10.0.11, 24.6.0.35, 24.2.0.30, or 23.10.0.50 to remediate this issue. Understanding Workspace One UEM Workspace One UEM's web-facing properties are composed of several .NET applications, typically deployed as different sites inside IIS. A portion of these sites are simply classic ASP.NET applications, some are .NET MVC applications, and others are .NET Core-based APIs. The components of Workspace One UEM have been d",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Omnissa Workspace ONE / digital workspace platform",
+        "provenance": "refetched",
+        "source_relation": "unknown",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  },
+  {
+    "packet_id": "P8",
+    "url": "https://www.avast.com/de-de/index#pc",
+    "candidate_product": "Avast consumer antivirus software",
+    "question": "What product-relevant privacy conduct and remedy are documented, with what date and scope, and is current conduct established?",
+    "findings": [
+      {
+        "question": "privacy",
+        "proposition": "The FTC described historical collection and sale and the settlement's remedies.",
+        "source_url": "https://consumer.ftc.gov/consumer-alerts/2024/02/software-provider-avast-will-pay-165-million-compromising-consumers-privacy",
+        "resolved_url": "https://consumer.ftc.gov/consumer-alerts/2024/02/software-provider-avast-will-pay-165-million-compromising-consumers-privacy",
+        "passage": "Since at least 2014, Avast collected a treasure trove of user information through its antivirus software and browser extensions without people's consent. This included information about their religious beliefs health concerns political leanings locations financial status But that's not all, the FTC says Avast sold the information through its subsidiary Jumpshot - without notifying people and getting their consent (again). The FTC's settlement order prohibits Avast from misrepresenting how it uses the data it collects. Additionally, Avast will pay $16.5 million dollars in redress to compensate people.",
+        "context": "6.5 million for compromising consumers' privacy By Alvaro Puig Consumer Education Specialist, FTC February 22, 2024 Software provider Avast sold products to people that were supposed to protect their privacy online. But in a recently settled lawsuit, the FTC says Avast's business practices actually compromised consumers' privacy and broke the law. Since at least 2014, Avast collected a treasure trove of user information through its antivirus software and browser extensions without people's consent. This included information about their religious beliefs health concerns political leanings locations financial status But that's not all, the FTC says Avast sold the information through its subsidiary Jumpshot - without notifying people and getting their consent (again). The FTC's settlement order prohibits Avast from misrepresenting how it uses the data it collects. Additionally, Avast will pay $16.5 million dollars in redress to compensate people. Keep an eye on the FTC's Refund Programs page in the coming months for more details. And to learn more about the FTC's settlement with Avast, read the FTC's business blog post . Image Search Terms consumer privacy Topics Identity Theft and Online Security Online Privacy and Security Comments closed. Theresa Tredwell February 26, 2024 Thank you. Th",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Avast consumer antivirus software",
+        "provenance": "refetched",
+        "source_relation": "unknown",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      },
+      {
+        "question": "privacy",
+        "proposition": "FTC staff identified a historical period for affected free antivirus products.",
+        "source_url": "https://consumer.ftc.gov/consumer-alerts/2024/02/software-provider-avast-will-pay-165-million-compromising-consumers-privacy",
+        "resolved_url": "https://consumer.ftc.gov/consumer-alerts/2024/02/software-provider-avast-will-pay-165-million-compromising-consumers-privacy",
+        "passage": null,
+        "context": null,
+        "proposed_quote": "Ronj February 26, 2024 I use the Avast free version. Does the privacy effect this segment? FTC Staff March 04, 2024 In reply to I use the Avast free version... by Ronj Yes, this affected Avast's free antivirus products between 2014-2020.",
+        "quote_match": "unverified_discovery_lead",
+        "semantic_support": "not_assessed",
+        "product_scope": "Avast consumer antivirus software",
+        "provenance": "refetched",
+        "source_relation": "unknown",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Not established by available captured text; do not use as fact."
+      }
+    ]
+  },
+  {
+    "packet_id": "P9",
+    "url": "https://www.nettoeinkommen.de/index.htm",
+    "candidate_product": "HS Nettoeinkommen salary/tax calculator and software",
+    "question": "Does the vendor announce an end to development or support for the exact submitted software, and with what timing and scope?",
+    "findings": [
+      {
+        "question": "product evidence",
+        "proposition": "Provider offers a 2026 edition; independent use and correctness are unverified.",
+        "source_url": "https://www.nettoeinkommen.de/index.htm",
+        "resolved_url": "https://www.nettoeinkommen.de/index.htm",
+        "passage": null,
+        "context": null,
+        "proposed_quote": null,
+        "quote_match": "unverified_discovery_lead",
+        "semantic_support": "not_assessed",
+        "product_scope": "HS Nettoeinkommen salary/tax calculator and software",
+        "provenance": "refetched",
+        "source_relation": "vendor",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Not established by available captured text; do not use as fact."
+      }
+    ]
+  },
+  {
+    "packet_id": "P10",
+    "url": "https://donotpay.com/",
+    "candidate_product": "DoNotPay online subscription and AI legal-services product",
+    "question": "What regulatory action concerning this exact service is documented, what is allegation versus final action, and what current implications remain unknown?",
+    "findings": [
+      {
+        "question": "legal",
+        "proposition": "The FTC described its 2024 complaint allegations about the service's claims and testing.",
+        "source_url": "https://www.ftc.gov/news-events/news/press-releases/2025/02/ftc-finalizes-order-donotpay-prohibits-deceptive-ai-lawyer-claims-imposes-monetary-relief-requires",
+        "resolved_url": "https://www.ftc.gov/news-events/news/press-releases/2025/02/ftc-finalizes-order-donotpay-prohibits-deceptive-ai-lawyer-claims-imposes-monetary-relief-requires",
+        "passage": "In a complaint announced in September 2024, the FTC charged that DoNotPay's so-called robot lawyer failed to live up to claims that it was an adequate substitute for the expertise of a human lawyer. According to the complaint, the company did not test whether its \"AI lawyer\" operated to the level of a human lawyer when generating legal documents and giving advice, and the company did not hire or retain attorneys to test the quality and accuracy of its service's law-related features.",
+        "context": "gy Advertising and Marketing Online Advertising and Marketing Advertising and Marketing Basics Super Intelligence The Federal Trade Commission has finalized an order requiring DoNotPay, a company that promoted its online subscription service as \"the world's first robot lawyer,\" to stop making deceptive claims about the abilities of its AI chatbot. In a complaint announced in September 2024, the FTC charged that DoNotPay's so-called robot lawyer failed to live up to claims that it was an adequate substitute for the expertise of a human lawyer. According to the complaint, the company did not test whether its \"AI lawyer\" operated to the level of a human lawyer when generating legal documents and giving advice, and the company did not hire or retain attorneys to test the quality and accuracy of its service's law-related features. The final order requires DoNotPay to pay $193,000 in monetary relief and notify consumers who subscribed to the service between 2021 and 2023 about the FTC settlement. The order also prohibits DoNotPay from advertising that its service performs like a real lawyer unless it has sufficient evidence to back it up. After receiving five comments, the C",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "DoNotPay online subscription and AI legal-services product",
+        "provenance": "refetched",
+        "source_relation": "unknown",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      },
+      {
+        "question": "legal",
+        "proposition": "The FTC reported the final order's relief, notice and advertising requirements.",
+        "source_url": "https://www.ftc.gov/news-events/news/press-releases/2025/02/ftc-finalizes-order-donotpay-prohibits-deceptive-ai-lawyer-claims-imposes-monetary-relief-requires",
+        "resolved_url": "https://www.ftc.gov/news-events/news/press-releases/2025/02/ftc-finalizes-order-donotpay-prohibits-deceptive-ai-lawyer-claims-imposes-monetary-relief-requires",
+        "passage": "The final order requires DoNotPay to pay $193,000 in monetary relief and notify consumers who subscribed to the service between 2021 and 2023 about the FTC settlement. The order also prohibits DoNotPay from advertising that its service performs like a real lawyer unless it has sufficient evidence to back it up. After receiving five comments, the Commission voted 5-0 on January 16, 2025, to approve the final order and send responses to the commenters.",
+        "context": " an adequate substitute for the expertise of a human lawyer. According to the complaint, the company did not test whether its \"AI lawyer\" operated to the level of a human lawyer when generating legal documents and giving advice, and the company did not hire or retain attorneys to test the quality and accuracy of its service's law-related features. The final order requires DoNotPay to pay $193,000 in monetary relief and notify consumers who subscribed to the service between 2021 and 2023 about the FTC settlement. The order also prohibits DoNotPay from advertising that its service performs like a real lawyer unless it has sufficient evidence to back it up. After receiving five comments, the Commission voted 5-0 on January 16, 2025, to approve the final order and send responses to the commenters. The Federal Trade Commission works to promote competition and protect and educate consumers . The FTC will never demand money, make threats, tell you to transfer money, or promise you a prize. Learn more about consumer topics at consumer.ftc.gov , or report fraud, scams, and bad business practices at ReportFraud.ftc.gov . Follow the FTC on social ",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "DoNotPay online subscription and AI legal-services product",
+        "provenance": "refetched",
+        "source_relation": "unknown",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  },
+  {
+    "packet_id": "P11",
+    "url": "https://www.postfix.org/",
+    "candidate_product": "Postfix mail transfer agent",
+    "question": "What dated release or support information establishes whether this exact software is maintained, and what remains unknown?",
+    "findings": [
+      {
+        "question": "maintenance",
+        "proposition": "Postfix announced a stable release and legacy releases on November 22, 2026.",
+        "source_url": "https://www.postfix.org/announcements.html",
+        "resolved_url": "https://www.postfix.org/announcements.html",
+        "passage": "November 22, 2026: Postfix stable release 3.11.8 and legacy releases 3.10.15, 3.9.16, 3.8.22, 3.7.24, 3.6.22, 3.5.29 .",
+        "context": "Postfix Announcements QUICK LINKS Home Announcements Feature overview Web sites (text) Download (source) Mailing lists Press and Interviews Documentation Add-on Software Packages and Ports Becoming a mirror site Postfix Announcements 2026 November 22, 2026: Postfix stable release 3.11.8 and legacy releases 3.10.15, 3.9.16, 3.8.22, 3.7.24, 3.6.22, 3.5.29 . September 7, 2026: Postfix stable release 3.11.7 and legacy releases 3.10.14, 3.9.15, 3.8.21, 3.7.23, 3.6.21, 3.5.28 . August 10, 2026: Postfix stable release 3.11.6 and legacy releases 3.10.13, 3.9.14, 3.8.20, 3.7.22, 3.6.20, 3.5.27 . July 6, 2026: Postfix stable release 3.11.5 and legacy releases 3.10.12, 3.9.13, 3.8.19, 3.7.21, 3.6.19, 3.5.26 .",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Postfix mail transfer agent",
+        "provenance": "refetched",
+        "source_relation": "unknown",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  },
+  {
+    "packet_id": "P12",
+    "url": "https://www.avast.com/de-de/index#pc",
+    "candidate_product": "Avast consumer antivirus software",
+    "question": "What product-relevant privacy conduct and remedy are documented, with what date and scope, and is current conduct established?",
+    "findings": [
+      {
+        "question": "privacy",
+        "proposition": "FTC alleged collection and sale of sensitive browsing data from antivirus users without consent; settlement imposed monetary relief and restrictions.",
+        "source_url": "https://consumer.ftc.gov/consumer-alerts/2024/02/software-provider-avast-will-pay-165-million-compromising-consumers-privacy",
+        "resolved_url": "https://consumer.ftc.gov/consumer-alerts/2024/02/software-provider-avast-will-pay-165-million-compromising-consumers-privacy",
+        "passage": "Avast collected a treasure trove of user information",
+        "context": "omising consumers' privacy By Alvaro Puig Consumer Education Specialist, FTC February 22, 2024 Software provider Avast sold products to people that were supposed to protect their privacy online. But in a recently settled lawsuit, the FTC says Avast's business practices actually compromised consumers' privacy and broke the law. Since at least 2014, Avast collected a treasure trove of user information through its antivirus software and browser extensions without people's consent. This included information about their religious beliefs health concerns political leanings locations financial status But that's not all, the FTC says Avast sold the information through its subsidiary Jumpshot - without notifying people and getting their consent (again",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Avast consumer antivirus software",
+        "provenance": "refetched",
+        "source_relation": "authority",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  }
+]

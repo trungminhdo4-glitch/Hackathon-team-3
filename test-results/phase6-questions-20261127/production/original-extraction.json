@@ -1,0 +1,197 @@
+[
+  {
+    "id": "1",
+    "url": "https://www.omnissa.com/",
+    "product": "Omnissa Workspace ONE / digital workspace platform",
+    "findings": [
+      {
+        "question": "active product",
+        "proposition": "Omnissa maintains an active Workspace ONE endpoint-management and security offering.",
+        "source_url": "https://techzone.omnissa.com/resource/workspace-one-cloud-services-security",
+        "resolved_url": "https://techzone.omnissa.com/resource/workspace-one-cloud-services-security",
+        "passage": null,
+        "context": null,
+        "proposed_quote": "Workspace ONE UEM can help provide complete transparency",
+        "quote_match": "unverified_discovery_lead",
+        "semantic_support": "not_assessed",
+        "product_scope": "Omnissa Workspace ONE / digital workspace platform",
+        "provenance": "refetched",
+        "source_relation": "vendor",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Not established by available captured text; do not use as fact."
+      },
+      {
+        "question": "adoption",
+        "proposition": "A large independent customer deployment is documented for 54,000 retail devices.",
+        "source_url": "https://www.youtube.com/watch?v=0gcNBWDL5ws",
+        "resolved_url": "https://www.youtube.com/watch?v=0gcNBWDL5ws",
+        "passage": null,
+        "context": null,
+        "proposed_quote": "ASDA migrated 54,000 handheld devices",
+        "quote_match": "unverified_discovery_lead",
+        "semantic_support": "not_assessed",
+        "product_scope": "Omnissa Workspace ONE / digital workspace platform",
+        "provenance": "imported",
+        "source_relation": "customer",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Not established by available captured text; do not use as fact."
+      },
+      {
+        "question": "security",
+        "proposition": "Independent security researchers reported a 2025 Workspace ONE UEM path-traversal vulnerability.",
+        "source_url": "https://www.slcyber.io/research/secondary-context-path-traversal-in-omnissa-workspace-one-uem",
+        "resolved_url": "https://www.slcyber.io/research/secondary-context-path-traversal-in-omnissa-workspace-one-uem",
+        "passage": "This blog post details CVE-2025-25231",
+        "context": "e past, by both ourselves and many other talented security researchers, provided a real driving force, purpose, and mission to find another critical vulnerability. A joy of being a security researcher is being able to benchmark your progress and learning journey by looking at software you've audited in the past and revisiting it a few years later. This blog post details CVE-2025-25231 , which was initially reported to Omnissa on May 13, 2025. The official advisory can be found here . Upgrade to versions 24.10.0.11, 24.6.0.35, 24.2.0.30, or 23.10.0.50 to remediate this issue. Understanding Workspace One UEM Workspace One UEM's web-facing properties are composed of several .NET applications, typically deployed as different sites ",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Omnissa Workspace ONE / digital workspace platform",
+        "provenance": "refetched",
+        "source_relation": "other",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ],
+    "question": "Which exact product and edition does the submitted company URL identify, and what does the captured documentation establish about that scope?"
+  },
+  {
+    "id": "2",
+    "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+    "product": "Microsoft 365 Copilot Chat",
+    "findings": [
+      {
+        "question": "cost",
+        "proposition": "Available enterprise chat with published pricing and management; metered agents can add cost.",
+        "source_url": "https://www.microsoft.com/en-us/copilot/pricing/enterprise",
+        "resolved_url": "https://www.microsoft.com/en-us/copilot/pricing/enterprise",
+        "passage": "Access and use agents, priced on a metered basis",
+        "context": " with an eligible Microsoft 365 subscription. Included Open Copilot Chat Learn more An Azure subscription is required to use agents. Prepaid Microsoft Copilot Studio capacity packs are also available. Learn more . Plan highlights: Use secure, web-grounded AI chat powered by the latest large language models Get Copilot in select Microsoft 365 apps1 Access and use agents, priced on a metered basis Maintain IT control, including enterprise data protection and agent management Microsoft 365 Copilot (add-on) Supercharge employee productivity, streamline processes, and add measurable value across your organization with an AI assistant. $30.00 user/month, paid yearly (Annual subscription-auto renews)2 Pay yearly Pay monthly A separate license fo",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Microsoft 365 Copilot Chat",
+        "provenance": "refetched",
+        "source_relation": "provider or supplier statement",
+        "publication_date": null,
+        "retrieved_at": "2026-11-27T17:27:46.184Z",
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ],
+    "question": "Which capabilities of the submitted Copilot Chat offering are included, and which require additional licensing or metered payment?"
+  },
+  {
+    "id": "6",
+    "url": "https://www.postfix.org/",
+    "product": "Postfix mail transfer agent",
+    "findings": [
+      {
+        "question": "active product",
+        "proposition": "The project continues to publish stable and legacy releases.",
+        "source_url": "https://www.postfix.org/announcements.html",
+        "resolved_url": "https://www.postfix.org/announcements.html",
+        "passage": "Postfix stable release 3.11.7",
+        "context": " LINKS Home Announcements Feature overview Web sites (text) Download (source) Mailing lists Press and Interviews Documentation Add-on Software Packages and Ports Becoming a mirror site Postfix Announcements 2026 November 22, 2026: Postfix stable release 3.11.8 and legacy releases 3.10.15, 3.9.16, 3.8.22, 3.7.24, 3.6.22, 3.5.29 . September 7, 2026: Postfix stable release 3.11.7 and legacy releases 3.10.14, 3.9.15, 3.8.21, 3.7.23, 3.6.21, 3.5.28 . August 10, 2026: Postfix stable release 3.11.6 and legacy releases 3.10.13, 3.9.14, 3.8.20, 3.7.22, 3.6.20, 3.5.27 . July 6, 2026: Postfix stable release 3.11.5 and legacy releases 3.10.12, 3.9.13, 3.8.19, 3.7.21, 3.6.19, 3.5.26 . June 17, 2026: Postfix stable release 3.11.4 and",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Postfix mail transfer agent",
+        "provenance": "refetched",
+        "source_relation": "vendor",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      },
+      {
+        "question": "adoption",
+        "proposition": "Independent technology survey reports Postfix in current mail-server usage data.",
+        "source_url": "https://w3techs.com/technologies/cross/web_server/email_server",
+        "resolved_url": "https://w3techs.com/technologies/cross/web_server/email_server",
+        "passage": "Cross-technology reports",
+        "context": "Locations Content Languages Related Reports Transposition Technologies > Web Servers > by Email Servers Usage of web servers broken down by email server providers Detailed statistics in our extensive web servers market report. Learn more This diagram shows the percentages of websites using various web servers broken down by email server providers. Cross-technology reports only include technologies with more than 1% usage to ensure statistical significance of the results. See technologies overview for explanations on the methodologies used in the surveys. How to read the diagram: Cloudflare Server is used by 35.1% of all the websites whose web server we know. Cloudflare Server is used by 51.9% of all the websites wh",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Postfix mail transfer agent",
+        "provenance": "refetched",
+        "source_relation": "other",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ],
+    "question": "What dated release or support information establishes whether this exact software is maintained, and what remains unknown?"
+  },
+  {
+    "id": "7",
+    "url": "https://www.nettoeinkommen.de/index.htm",
+    "product": "HS Nettoeinkommen salary/tax calculator and software",
+    "findings": [
+      {
+        "question": "product evidence",
+        "proposition": "Provider offers a 2026 edition; independent use and correctness are unverified.",
+        "source_url": "https://www.nettoeinkommen.de/index.htm",
+        "resolved_url": "https://www.nettoeinkommen.de/index.htm",
+        "passage": null,
+        "context": null,
+        "proposed_quote": null,
+        "quote_match": "unverified_discovery_lead",
+        "semantic_support": "not_assessed",
+        "product_scope": "HS Nettoeinkommen salary/tax calculator and software",
+        "provenance": "refetched",
+        "source_relation": "vendor",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Not established by available captured text; do not use as fact."
+      }
+    ],
+    "question": "Does the vendor announce an end to development or support for the exact submitted software, and with what timing and scope?"
+  },
+  {
+    "id": "32",
+    "url": "https://donotpay.com/",
+    "product": "DoNotPay online subscription and AI legal-services product",
+    "findings": [
+      {
+        "question": "deception",
+        "proposition": "FTC finalized an order over deceptive AI-lawyer claims and required monetary relief and subscriber notices.",
+        "source_url": "https://www.ftc.gov/news-events/news/press-releases/2025/02/ftc-finalizes-order-donotpay-prohibits-deceptive-ai-lawyer-claims-imposes-monetary-relief-requires",
+        "resolved_url": "https://www.ftc.gov/news-events/news/press-releases/2025/02/ftc-finalizes-order-donotpay-prohibits-deceptive-ai-lawyer-claims-imposes-monetary-relief-requires",
+        "passage": "stop making deceptive claims about the abilities of its AI chatbot",
+        "context": " Bureau of Consumer Protection deceptive/misleading conduct Technology Advertising and Marketing Online Advertising and Marketing Advertising and Marketing Basics Super Intelligence The Federal Trade Commission has finalized an order requiring DoNotPay, a company that promoted its online subscription service as \"the world's first robot lawyer,\" to stop making deceptive claims about the abilities of its AI chatbot. In a complaint announced in September 2024, the FTC charged that DoNotPay's so-called robot lawyer failed to live up to claims that it was an adequate substitute for the expertise of a human lawyer. According to the complaint, the company did not test whether its \"AI lawyer\" operated to the level of a human lawyer when generating legal documents ",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "DoNotPay online subscription and AI legal-services product",
+        "provenance": "refetched",
+        "source_relation": "authority",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ],
+    "question": "What regulatory action concerning this exact service is documented, what is allegation versus final action, and what current implications remain unknown?"
+  },
+  {
+    "id": "40",
+    "url": "https://www.avast.com/de-de/index#pc",
+    "product": "Avast consumer antivirus software",
+    "findings": [
+      {
+        "question": "privacy",
+        "proposition": "FTC alleged collection and sale of sensitive browsing data from antivirus users without consent; settlement imposed monetary relief and restrictions.",
+        "source_url": "https://consumer.ftc.gov/consumer-alerts/2024/02/software-provider-avast-will-pay-165-million-compromising-consumers-privacy",
+        "resolved_url": "https://consumer.ftc.gov/consumer-alerts/2024/02/software-provider-avast-will-pay-165-million-compromising-consumers-privacy",
+        "passage": "Avast collected a treasure trove of user information",
+        "context": "omising consumers' privacy By Alvaro Puig Consumer Education Specialist, FTC February 22, 2024 Software provider Avast sold products to people that were supposed to protect their privacy online. But in a recently settled lawsuit, the FTC says Avast's business practices actually compromised consumers' privacy and broke the law. Since at least 2014, Avast collected a treasure trove of user information through its antivirus software and browser extensions without people's consent. This included information about their religious beliefs health concerns political leanings locations financial status But that's not all, the FTC says Avast sold the information through its subsidiary Jumpshot - without notifying people and getting their consent (again",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Avast consumer antivirus software",
+        "provenance": "refetched",
+        "source_relation": "authority",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ],
+    "question": "What product-relevant privacy conduct and remedy are documented, with what date and scope, and is current conduct established?"
+  }
+]

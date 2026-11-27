@@ -1,0 +1,74 @@
+[
+  {
+    "packet_id": "P1",
+    "id": "32",
+    "url": "https://donotpay.com/",
+    "condition": "original"
+  },
+  {
+    "packet_id": "P2",
+    "id": "1",
+    "url": "https://www.omnissa.com/",
+    "condition": "original"
+  },
+  {
+    "packet_id": "P3",
+    "id": "2",
+    "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+    "condition": "focused"
+  },
+  {
+    "packet_id": "P4",
+    "id": "6",
+    "url": "https://www.postfix.org/",
+    "condition": "original"
+  },
+  {
+    "packet_id": "P5",
+    "id": "2",
+    "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+    "condition": "original"
+  },
+  {
+    "packet_id": "P6",
+    "id": "7",
+    "url": "https://www.nettoeinkommen.de/index.htm",
+    "condition": "focused"
+  },
+  {
+    "packet_id": "P7",
+    "id": "1",
+    "url": "https://www.omnissa.com/",
+    "condition": "focused"
+  },
+  {
+    "packet_id": "P8",
+    "id": "40",
+    "url": "https://www.avast.com/de-de/index#pc",
+    "condition": "focused"
+  },
+  {
+    "packet_id": "P9",
+    "id": "7",
+    "url": "https://www.nettoeinkommen.de/index.htm",
+    "condition": "original"
+  },
+  {
+    "packet_id": "P10",
+    "id": "32",
+    "url": "https://donotpay.com/",
+    "condition": "focused"
+  },
+  {
+    "packet_id": "P11",
+    "id": "6",
+    "url": "https://www.postfix.org/",
+    "condition": "focused"
+  },
+  {
+    "packet_id": "P12",
+    "id": "40",
+    "url": "https://www.avast.com/de-de/index#pc",
+    "condition": "original"
+  }
+]
