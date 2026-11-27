@@ -1,9 +1,34 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { searchTavily } from '../server/tavily.js';
+import { mapTavily, searchTavily } from '../server/tavily.js';
 
 const apiKey = 'test-credential';
 const query = 'Acme Recorder software customer deployment';
+
+test('Tavily Map sends only a validated origin, limits traversal and returns same-host URL leads', async () => {
+  const site = 'https://1.1.1.1/';
+  const links = Array.from({length:12}, (_,i) => site + 'docs/' + i);
+  const fetchImpl = async (address, options) => {
+    assert.equal(address,'https://api.tavily.com/map');
+    assert.equal(options.redirect,'error');
+    const request = JSON.parse(options.body);
+    assert.equal(request.url,site);
+    assert.equal(request.max_depth,1);
+    assert.equal(request.max_breadth,8);
+    assert.equal(request.limit,8);
+    assert.equal(request.timeout,10);
+    assert.equal(request.allow_external,false);
+    assert.ok(!options.body.includes('private'));
+    return Response.json({results:[site,'https://user:pass@1.1.1.1/terms','https://1.1.1.10/terms',
+      {url:site+'ignored'}, links[0]+'#section',...links]});
+  };
+  assert.deepEqual(await mapTavily(site+'private/account?token=private',{apiKey,fetchImpl}),links.slice(0,8));
+  let calls = 0;
+  for (const unsafe of ['http://localhost','http://10.1.1.1','https://user:pass@1.1.1.1/']) {
+    await assert.rejects(mapTavily(unsafe,{apiKey,fetchImpl:async () => {calls++}}),{code:'TAVILY_TARGET'});
+  }
+  assert.equal(calls,0);
+});
 
 test('Tavily discovery sends one bounded search and keeps only distinct public result URLs', async () => {
   const valid = ['one','two','three','four','five','six'].map(n => 'https://sources.example/' + n);

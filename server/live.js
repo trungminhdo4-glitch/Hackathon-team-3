@@ -6,7 +6,7 @@ import { explainReadFailure, retrievalFailure } from '../shared/retrieval.js';
 import { assess, namesEntity } from './assessment.js';
 import { getResearchModel, isDemoModel, META_MODEL } from './models.js';
 import { assessWithLlama } from './groq.js';
-import { searchTavily, TavilyError } from './tavily.js';
+import { mapTavily, searchTavily, TavilyError } from './tavily.js';
 import { needsDisposition, prioritizeRecords, procurementSignals } from './procurementSources.js';
 export { getResearchModel } from './models.js';
 
@@ -268,8 +268,8 @@ function unreadableCode(doc) {
 
 function readablePage(doc) { return !unreadableCode(doc); }
 
-async function readPublicPage(url, signal) {
-  const page = await fetchPublicText(url, {signal});
+async function readPublicPage(url, signal, sameHost = false) {
+  const page = await fetchPublicText(url, {signal,sameHost});
   const code = unreadableCode(page);
   if (code) throw Object.assign(new Error('No readable text.'), {code});
   return page;
@@ -414,7 +414,9 @@ export function createResearchSession(model = getResearchModel()) {
       providerData: { include: ['web_search_call.action.sources'], max_tool_calls: 4 } },
   });
   const runner = new Runner({ tracingDisabled: true });
-  return { agent, runner, model, searchModel, tavilySearch:process.env.TAVILY_API_KEY?.trim() ? searchTavily : null };
+  const tavilyConfigured = Boolean(process.env.TAVILY_API_KEY?.trim());
+  return { agent, runner, model, searchModel, tavilySearch:tavilyConfigured ? searchTavily : null,
+    tavilyMap:tavilyConfigured ? mapTavily : null };
 }
 
 function reasoningSettings(model) {
@@ -570,6 +572,31 @@ async function supplementarySearch(search, query, lane, deadline, onActivity, li
     const detail = error instanceof TavilyError ? error.message : 'Tavily search could not complete.';
     progress({status:'incomplete',detail});
     limitations.push(detail);
+    return null;
+  }
+}
+
+function hasPublisherDocumentation(pages, inputUrl) {
+  return pages.some(page => {
+    if (publisher(page.url) !== publisher(inputUrl)) return false;
+    const url = new URL(page.url);
+    return /\b(?:docs|documentation|learn|manual|guide|pricing|licensing|plans|terms|release|changelog|support|lifecycle)\b/i.test(
+      [url.hostname, url.pathname, page.title].join(' '));
+  });
+}
+
+async function mapOfficialSite(map, inputUrl, deadline, onActivity, limitations) {
+  const origin = new URL(inputUrl).origin;
+  const progress = event => onActivity?.({stage:'search',lane:'official',role:'server',provider:'tavily',tool:'map',url:origin,...event});
+  progress({status:'attempted',detail:'Finding documentation, licensing and support pages with Tavily Map'});
+  try {
+    const urls = await map(origin,{signal:deadline});
+    progress({status:'completed',detail:'Tavily Map returned ' + urls.length + ' same-host page URLs'});
+    return urls;
+  } catch (error) {
+    const detail = 'Tavily Map could not complete.' + (error instanceof TavilyError ? ' ' + error.message : '');
+    progress({status:'incomplete',detail});
+    limitations.push(detail);
     return [];
   }
 }
@@ -603,31 +630,33 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
       limitations.push('The ' + lane + ' OpenAI search ' + (search.searched ? 'returned no citable URLs.' : 'did not complete.'));
     }
     const hosted = selectSources(search.urls, inputUrl, lane, excluded);
-    const extras = lane === supplementLane ? selectSources(supplement,inputUrl,lane,[...excluded,...hosted.map(addressKey)]).slice(0,2) : [];
+    const extras = lane === supplementLane && supplement ? selectSources(supplement,inputUrl,lane,[...excluded,...hosted.map(addressKey)]).slice(0,2) : [];
     const candidates = [...hosted.slice(0,2), ...extras, ...hosted.slice(2)].slice(0,6);
     if (extras.length) {
       coverage[lane].searched = true;
       coverage[lane].discovered = new Set([...search.urls,...supplement].map(addressKey)).size;
     }
-    queues.push({lane,candidates,tavily:new Set(extras),attempts:[]});
+    queues.push({lane,candidates,discovered:new Set(search.urls.map(addressKey)),tavily:new Set(extras),attempts:[]});
   }
   const errors = runs.filter(run => run.status === 'rejected').map(run => stageFailure(run.reason,'Hosted search',deadline));
   const fatal = errors.find(error => !(error instanceof IncompleteStage));
   if (fatal) throw fatal;
-  if (!topic.researchLead && !Object.values(coverage).some(item => item.searched)) {
+  const initialSearchCompleted = Object.values(coverage).some(item => item.searched);
+  const mapAvailable = Boolean(session.tavilyMap && supplement !== null);
+  if (!topic.researchLead && !initialSearchCompleted && !mapAvailable) {
     throw errors[0] ?? new IncompleteStage('Hosted search', 'returned no completed search call.');
   }
 
   const reads = new Map();
-  async function fetchBatch(queue, urls, model = session.searchModel, role = 'researcher') {
+  async function fetchBatch(queue, urls, model = session.searchModel, role = 'researcher', tool) {
     return Promise.all(urls.map(async url => {
-      const provider = queue.tavily.has(url) ? 'tavily' : 'openai';
-      const attribution = provider === 'tavily' ? {provider,role:'server'} : {provider,model,role};
+      const provider = tool === 'map' || queue.tavily.has(url) ? 'tavily' : 'openai';
+      const attribution = provider === 'tavily' ? {provider,role:'server',...(tool && {tool})} : {provider,model,role};
       // Keep one network read per URL, including when both searches found a page.
       const key = addressKey(url);
       if (!reads.has(key)) {
         onActivity?.({stage:'retrieve', ...attribution, lane:queue.lane, detail:'Reading a search result', url});
-        reads.set(key, readPublicPage(url, deadline).then(page => ({page}), error => ({failure:retrievalFailure(error)})).then(result => {
+        reads.set(key, readPublicPage(url, deadline, tool === 'map').then(page => ({page}), error => ({failure:retrievalFailure(error)})).then(result => {
           const {page,failure} = result;
           onActivity?.({stage:'retrieve', ...attribution, lane:queue.lane, status:page ? 'read' : 'unavailable',
             detail:page ? 'Retrieved readable source text' : explainReadFailure(failure)[0], failure, url:page?.url ?? url});
@@ -636,7 +665,7 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
       }
       const {page,failure} = await reads.get(key);
       const excludedPublisher = page && queue.lane === 'independent' && publisher(page.url) === publisher(inputUrl);
-      queue.attempts.push({provider, requestedUrl:url, url:page?.url || url, ...(failure && {failure}),
+      queue.attempts.push({provider, ...(tool && {tool}), requestedUrl:url, url:page?.url || url, ...(failure && {failure}),
         outcome:failure ? 'unavailable' : excludedPublisher ? 'excluded_publisher' : 'read'});
       if (!page || excludedPublisher) return null;
       return page;
@@ -644,12 +673,22 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
   }
   const retrieved = await Promise.all(queues.map(async queue => {
     const pages = (await fetchBatch(queue, queue.candidates.slice(0, 4))).filter(Boolean);
+    if (queue.lane === 'official' && mapAvailable && !deadline.aborted && !hasPublisherDocumentation(documents.concat(pages),inputUrl)) {
+      const site = submitted && publisher(submitted.url) === publisher(inputUrl) ? submitted.url : inputUrl;
+      const mapped = await mapOfficialSite(session.tavilyMap,site,deadline,onActivity,limitations);
+      const known = [...excluded,...queue.candidates.map(addressKey),...reads.keys()];
+      const extra = selectSources(mapped,inputUrl,'official',known).slice(0,2);
+      coverage.official.discovered = new Set([...queue.discovered,...mapped.map(addressKey)]).size;
+      coverage.official.searched ||= mapped.length > 0;
+      pages.push(...(await fetchBatch(queue,extra,undefined,undefined,'map')).filter(Boolean));
+    }
     if (pages.length < 3 && !deadline.aborted) {
-      pages.push(...(await fetchBatch(queue, queue.candidates.slice(4, 6))).filter(Boolean));
+      const remaining = 6 - queue.attempts.length;
+      pages.push(...(await fetchBatch(queue, queue.candidates.slice(4, 4 + remaining))).filter(Boolean));
     }
     const useEvidence = /\b(?:deploy\w*|implement\w*|integrat\w*|tested|benchmark\w*|reviewed|customers? (?:report|use)|step [1-9]|we (?:use|found|ran|were able)|I (?:use|tried|could)|in production|final order|support ended)\b/i;
     const checkDisposition = queue.lane === 'independent' && needsDisposition(pages);
-    if (queue.lane === 'independent' && (checkDisposition || !pages.some(page => useEvidence.test(page.text))) && !deadline.aborted) {
+    if (queue.lane === 'independent' && initialSearchCompleted && (checkDisposition || !pages.some(page => useEvidence.test(page.text))) && !deadline.aborted) {
       // Only one recovery search and three new pages, all under the original deadline.
       const attempt = coverage.independent;
       attempt.followUp = 'attempted';
@@ -692,6 +731,9 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
     }
     return pages;
   }));
+  if (!topic.researchLead && !initialSearchCompleted && !coverage.official?.searched) {
+    throw errors[0] ?? new IncompleteStage('Hosted search', 'returned no completed search call.');
+  }
   for (const [i, group] of retrieved.entries()) {
     const { lane, attempts } = queues[i];
     coverage[lane].retrieved = new Set(group.map(doc => addressKey(doc.url))).size;

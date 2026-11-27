@@ -19,13 +19,15 @@ test('each page attempt and export retains the search provider independently of 
   const report = {rubricVersion:2,productName:'Example',inputUrl:'https://product.example/',verdict:'yellow',
     checks:[],sources:[],limitations:[],testimony:[],model:'gpt-6.2-sol'};
   const attempts = ['openai','tavily',undefined].map(provider => ({url,requestedUrl:url,provider,outcome:'unavailable'}));
+  attempts.push({url,requestedUrl:url,provider:'tavily',tool:'map',outcome:'unavailable'});
   report.dossier = buildDossier(report, [], {coverage:{independent:{attempts}}});
-  assert.deepEqual(report.dossier.coverage[0].attempts.map(a => a.provider), ['openai','tavily',undefined]);
-  assert.deepEqual(pageAttempts(report.dossier.coverage[0]).map(a => a.provider), ['OpenAI web search','Tavily','']);
+  assert.deepEqual(report.dossier.coverage[0].attempts.map(a => a.provider), ['openai','tavily',undefined,'tavily']);
+  assert.deepEqual(pageAttempts(report.dossier.coverage[0]).map(a => a.provider), ['OpenAI web search','Tavily','','Tavily Map']);
   const row = datasetRow(report);
   for (const text of [row.reasoning, markdownReport(row, report)]) {
     assert.match(text,/Search provider · OpenAI web search/);
     assert.match(text,/Search provider · Tavily/);
+    assert.match(text,/Search provider · Tavily Map/);
   }
 });
 

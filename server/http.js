@@ -22,12 +22,13 @@ export async function readBody(req, maxBytes = 16384) {
   return input;
 }
 
-export function recordActivity(activity, { stage, detail, url, model, role, status, lane, provider }) {
+export function recordActivity(activity, { stage, detail, url, model, role, status, lane, provider, tool }) {
   const event = { stage, detail, at: new Date().toISOString() };
   if (model) event.model = model;
   if (role) event.role = role;
   if (status) event.status = status;
   if (searchProviderLabel(provider)) event.provider = provider;
+  if (provider === 'tavily' && tool === 'map') event.tool = tool;
   if (['official','independent','guided'].includes(lane)) event.lane = lane;
   if (url) {
     try { event.url = validatePublicUrl(url).href; } catch { /* Keep unsafe references as text-only events. */ }

@@ -131,6 +131,7 @@ export function buildDossier(report, documents, raw) {
       }
       (page.attempts ??= []).push({lane, requestedUrl:attempt.requestedUrl, outcome:attempt.outcome,
         ...(searchProviderLabel(attempt.provider) && {provider:attempt.provider}),
+        ...(attempt.provider === 'tavily' && attempt.tool === 'map' && {tool:'map'}),
         ...(attempt.failure && {failure:attempt.failure})});
     }
   }

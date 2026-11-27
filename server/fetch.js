@@ -84,15 +84,20 @@ async function readPage(url, signal) {
 
 const compact = text => text.replace(/\s+/g, ' ').trim();
 
-export async function fetchPublicText(value, { signal } = {}) {
+export async function fetchPublicText(value, { signal, sameHost = false } = {}) {
   const deadline = AbortSignal.timeout(8000);
   const bounded = signal ? AbortSignal.any([signal, deadline]) : deadline;
   let url = validatePublicUrl(String(value));
+  const initialHost = url.hostname;
   for (let redirects = 0; redirects <= 3; redirects++) {
     let page;
     try { page = await readPage(url, bounded); }
     catch (error) { throw bounded.aborted ? bounded.reason : error; }
-    if (page.redirect) { url = page.redirect; continue; }
+    if (page.redirect) {
+      if (sameHost && page.redirect.hostname !== initialHost) throw Object.assign(new Error('Map redirect changed hostname.'), {code:'MAP_HOST_CHANGED'});
+      url = page.redirect;
+      continue;
+    }
     const defaultEncoding = isUtf8(page.body) ? 'utf-8' : 'windows-1252';
     if (page.mime === 'text/plain') {
       let decoder;

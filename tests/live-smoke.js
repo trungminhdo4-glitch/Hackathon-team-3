@@ -13,13 +13,16 @@ try {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input),
     });
     const result = await response.json();
-    const tavilySearch = result.activity?.filter(event => event.provider === 'tavily' && event.stage === 'search');
+    const tavilySearch = result.activity?.filter(event => event.provider === 'tavily' && !event.tool && event.stage === 'search');
+    const tavilyMap = result.activity?.filter(event => event.tool === 'map' && event.stage === 'search');
     const tavilyPages = result.dossier?.coverage.filter(page => page.attempts?.some(attempt => attempt.provider === 'tavily'));
     console.log(JSON.stringify({ input, resolvedUrl: result.inputUrl, product: result.productName, answer: result.answer?.text,
       status: response.status, rubricVersion: result.rubricVersion, model: result.model, verdict: result.verdict, interpretation: result.interpretation,
       openAIQueries: result.activity?.filter(event => event.provider === 'openai' && event.detail.startsWith('Searched for')).length,
       tavilySearch: tavilySearch?.map(({status,detail}) => ({status,detail})),
-      tavilyPages: tavilyPages?.map(({url,status}) => ({url,status})),
+      tavilyMap: tavilyMap?.map(({status,detail}) => ({status,detail})),
+      tavilyPages: tavilyPages?.map(({url,status,attempts}) => ({url,status,
+        tools:[...new Set(attempts.filter(a => a.provider === 'tavily').map(a => a.tool || 'search'))]})),
       checks: result.checks?.map(({ id, status, claim, evidenceIds, explanation, consequence }) =>
         ({ id, status, claim, evidenceIds, explanation, consequence })),
       testimony: result.testimony?.map(({ text, explanation, evidence }) => ({ text, explanation, evidence })),

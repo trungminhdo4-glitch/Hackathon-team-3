@@ -21,7 +21,7 @@ test('activity arrives before the verdict and is retained in the final report', 
   const gate = new Promise(resolve => { finish = resolve; });
   t.after(finish);
   const response = await request(t, async (_value, {onActivity}) => {
-    onActivity({stage: 'read', role:'server', provider:'tavily', lane: 'independent', detail: 'Read the guide', url: 'https://atlas.example/guide'});
+    onActivity({stage: 'read', role:'server', provider:'tavily', tool:'map', lane: 'official', detail: 'Read the guide', url: 'https://atlas.example/guide'});
     await gate;
     return {verdict: 'green'};
   });
@@ -29,8 +29,9 @@ test('activity arrives before the verdict and is retained in the final report', 
   const first = JSON.parse((await reader.read()).value);
   assert.equal(first.type, 'activity');
   assert.equal(first.event.url, 'https://atlas.example/guide');
-  assert.equal(first.event.lane, 'independent');
+  assert.equal(first.event.lane, 'official');
   assert.equal(first.event.provider, 'tavily');
+  assert.equal(first.event.tool, 'map');
   assert.equal(first.event.model, undefined);
   assert.ok(Date.parse(first.event.at));
   finish();

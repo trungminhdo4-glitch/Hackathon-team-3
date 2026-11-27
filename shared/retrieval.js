@@ -6,7 +6,7 @@ export function retrievalFailure(error) {
   if (error?.name === 'TimeoutError' || error?.code === 'ETIMEDOUT') return {code:'timeout'};
   if (error?.name === 'AbortError') return {code:'interrupted'};
   const code = {ENOTFOUND:'dns', EAI_AGAIN:'dns', SIZE_LIMIT:'size', REDIRECT_LIMIT:'redirect',
-    UNSAFE_URL:'unsafe', UNSUPPORTED_FORMAT:'format', ECONNRESET:'connection', ECONNREFUSED:'connection',
+    UNSAFE_URL:'unsafe', MAP_HOST_CHANGED:'map_scope', UNSUPPORTED_FORMAT:'format', ECONNRESET:'connection', ECONNREFUSED:'connection',
     PAGE_CHALLENGE:'challenge', PAGE_EMPTY:'empty'}[error?.code];
   return {code:code || 'unavailable'};
 }
@@ -18,6 +18,7 @@ const readErrors = {
   connection:['The connection could not be completed.', 'Check whether the publisher provides another public documentation URL.'],
   size:['The response exceeded the 1 MiB limit.', 'Use the individual article or release note.'],
   redirect:['The page exceeded the redirect limit.', 'Provide the final public document URL.'],
+  map_scope:['The mapped page redirected outside the official hostname.', 'Look for a directly accessible document on the publisher’s site.'],
   unsafe:['The URL or its redirect failed the public-network checks.', 'Use a publicly accessible source.'],
   format:['The response was a download or an unsupported format or encoding.', 'Find an HTML or plain-text version.'],
   challenge:['The page returned an access challenge.', 'Find another public account or an accessible document from the publisher.'],
@@ -38,7 +39,8 @@ export function explainReadFailure(failure) {
 export const laneNames = {official:'Official search', independent:'Independent search', guided:'Guided search',
   submitted:'Submitted page', suggested:'Suggested page', web_search:'Search result · lane unrecorded'};
 
-export function searchProviderLabel(provider) {
+export function searchProviderLabel(provider, tool) {
+  if (provider === 'tavily' && tool === 'map') return 'Tavily Map'
   if (provider === 'tavily') return 'Tavily'
   if (provider === 'openai') return 'OpenAI web search'
   return ''
@@ -68,7 +70,7 @@ export function pageAttempts(page) {
       reason = page.reason;
       next = 'Try a document naming the product edition and describing the task or purchasing condition.';
     }
-    return {lane:laneNames[attempt.lane] || 'Search lane unrecorded', provider:searchProviderLabel(attempt.provider), requestedUrl:attempt.requestedUrl,
+    return {lane:laneNames[attempt.lane] || 'Search lane unrecorded', provider:searchProviderLabel(attempt.provider,attempt.tool), requestedUrl:attempt.requestedUrl,
       redirected:attempt.requestedUrl !== page.url, reason, next};
   });
 }

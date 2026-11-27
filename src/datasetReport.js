@@ -145,7 +145,7 @@ export function datasetRow(report, notes = '', simulated = false) {
   const labels = { green: 'Green', yellow: 'Yellow', red: 'Red', insufficient: 'Insufficient evidence' }
   const provenance = [simulated && 'Simulated report.', earlier && 'Previous points-based rubric.',
     report.verdictBasis === 'evidence_gap' && 'Yellow reflects an unresolved evidence gap.'].filter(Boolean)
-  const providers = [...new Set((report.activity || []).map(event => searchProviderLabel(event.provider)).filter(Boolean))]
+  const providers = [...new Set((report.activity || []).map(event => searchProviderLabel(event.provider,event.tool)).filter(Boolean))]
   return {
     product: report.productName || report.inputUrl,
     vendor: report.vendor || (operatorGap(report) ? ['Operator unverified.', operatorGap(report), sourceAddress(report.inputUrl)?.href].filter(Boolean).join('\n') : 'Unverified'),

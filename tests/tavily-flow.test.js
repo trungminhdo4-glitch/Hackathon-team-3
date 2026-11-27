@@ -17,15 +17,19 @@ function searchResult(urls) {
   return {rawResponses:[{providerData:{output:[{type:'web_search_call',status:'completed',action}]}}]};
 }
 
-function setup(t, {hostedError, tavilyStatus = 200, tavilyUrls = [customer]} = {}) {
+function setup(t, {hostedError, tavilyStatus = 200, tavilyUrls = [customer], mapUrls = [], mapStatus = 200, officialUrls = []} = {}) {
   const originalKey = process.env.TAVILY_API_KEY;
   process.env.TAVILY_API_KEY = 'test-only-tavily-key';
   t.after(() => {
     if (originalKey === undefined) delete process.env.TAVILY_API_KEY;
     else process.env.TAVILY_API_KEY = originalKey;
   });
-  const queries = [], reads = [];
+  const queries = [], maps = [], reads = [];
   t.mock.method(globalThis,'fetch', async (url,options) => {
+    if (url === 'https://api.tavily.com/map') {
+      maps.push(JSON.parse(options.body));
+      return Response.json({results:mapUrls},{status:mapStatus});
+    }
     assert.equal(url,'https://api.tavily.com/search');
     queries.push(JSON.parse(options.body).query);
     return Response.json({results:tavilyUrls.map(url => ({url,content:'INVENTED_SNIPPET'}))},{status:tavilyStatus});
@@ -34,7 +38,8 @@ function setup(t, {hostedError, tavilyStatus = 200, tavilyUrls = [customer]} = {
     reads.push(url.href);
     const body = url.href === customer ? deployment : 'Customers deployed Atlas Enterprise to share reports.';
     const page = Object.assign(Readable.from([Buffer.from('<title>Team reporting | Atlas Enterprise</title><p>' + body + '</p>')]),{
-      statusCode:url.href === blocked ? 403 : 200, headers:{'content-type':'text/html'},
+      statusCode:url.pathname === '/offsite' ? 302 : url.href === blocked ? 403 : 200,
+      headers:{'content-type':'text/html',...(url.pathname === '/offsite' && {location:'https://4.2.2.2/outside'})},
     });
     queueMicrotask(() => callback(page));
     return new EventEmitter();
@@ -44,15 +49,60 @@ function setup(t, {hostedError, tavilyStatus = 200, tavilyUrls = [customer]} = {
     const task = JSON.parse(input);
     if (task.lane) {
       if (hostedError) throw hostedError;
-      return searchResult(task.lane === 'official' ? [] : [hosted]);
+      return searchResult(task.lane === 'official' ? officialUrls : [hosted]);
     }
     const page = task.documents.find(page => page.url === customer);
     const passage = page?.passages.find(p => p.text === deployment);
     const answer = passage ? {evidence:[{passageId:passage.id,relation:'customer',vendorAuthored:false,author:'Atlas user'}]} : empty.answer;
     return {finalOutput:{...empty,answer}};
   });
-  return {session,queries,reads};
+  return {session,queries,maps,reads};
 }
+
+test('Tavily Map supplements gaps in official documentation with original, same-host passages', async t => {
+  const doc = official + 'pricing';
+  const redirect = official + 'offsite';
+  const {session,maps,reads} = setup(t,{mapUrls:[doc,redirect,'https://9.9.9.9/wrong-site',official,'https://127.0.0.1/leak']});
+  const events = [];
+  const raw = await research(official+'product?token=PRIVATE_VALUE',{session,onActivity:e => events.push(e)});
+  assert.equal(maps.length,1);
+  assert.equal(maps[0].url,official);
+  assert.doesNotMatch(JSON.stringify(maps[0]),/PRIVATE_VALUE/);
+  assert.equal(maps[0].allow_external,false);
+  const attempts = raw.coverage.official.attempts.filter(a => a.tool === 'map');
+  assert.ok(attempts.some(a => a.provider === 'tavily' && a.url === doc && a.outcome === 'read'));
+  assert.ok(attempts.some(a => a.requestedUrl === redirect && a.outcome === 'unavailable' && a.failure.code === 'map_scope'));
+  assert.ok(raw.documents.some(d => d.url === doc && d.text.includes('Customers deployed Atlas')));
+  assert.ok(!reads.includes('https://4.2.2.2/outside'));
+  assert.ok(!reads.includes('https://9.9.9.9/wrong-site'));
+  assert.ok(events.some(e => e.tool === 'map' && e.stage === 'search' && e.status === 'completed'));
+  assert.ok(events.filter(e => e.tool === 'map').every(e => e.provider === 'tavily' && e.lane === 'official' && !e.model));
+});
+
+test('official documentation suppresses the extra map call', async t => {
+  const {session,maps} = setup(t,{officialUrls:[official+'docs/licensing']});
+  const raw = await research(official,{session});
+  assert.equal(maps.length,0);
+  assert.ok(raw.documents.some(d => d.url === official+'docs/licensing'));
+});
+
+test('mapped pages share the six original page reads allowed for the official search', async t => {
+  const links = Array.from({length:6}, (_,i) => official+'product-'+i);
+  const {session,maps} = setup(t,{officialUrls:links,mapUrls:[official+'pricing',official+'terms',official+'support']});
+  const raw = await research(official,{session});
+  assert.equal(maps.length,1);
+  assert.equal(raw.coverage.official.attempts.length,6);
+  assert.equal(raw.coverage.official.attempts.filter(a => a.tool === 'map').length,2);
+  assert.equal(raw.coverage.official.discovered,9);
+});
+
+test('a failed map leaves previously discovered pages available', async t => {
+  const {session,maps} = setup(t,{mapStatus:429});
+  const raw = await research(official,{session});
+  assert.equal(maps.length,1);
+  assert.ok(raw.documents.some(d => d.url === hosted));
+  assert.ok(raw.limitations.some(reason => /Tavily Map.*rate-limited/.test(reason)));
+});
 
 test('supplementary results reach assessment only through distinct readable original pages', async t => {
   const {session,queries,reads} = setup(t,{tavilyUrls:[hosted+'?utm_source=tavily',customer,blocked,official,'https://127.0.0.1/']});
@@ -88,8 +138,9 @@ test('guided searches reuse the public product identity and only disclose the ki
 });
 
 test('Tavily failure preserves OpenAI evidence and records a sanitized explanation', async t => {
-  const {session} = setup(t,{tavilyStatus:429});
+  const {session,maps} = setup(t,{tavilyStatus:429});
   const raw = await research(official,{session});
+  assert.equal(maps.length,0);
   assert.ok(raw.documents.some(doc => doc.url === hosted));
   assert.ok(raw.limitations.some(reason => /Tavily rate-limited the search/.test(reason)));
   assert.doesNotMatch(JSON.stringify(raw),/INVENTED_SNIPPET|test-only-tavily-key/);
