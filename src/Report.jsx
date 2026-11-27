@@ -132,7 +132,9 @@ export function Report({report, simulated, retry, notes, onNotesChange}) {
         <h2 id="report-title" tabIndex="-1" ref={title}>{report.productName || 'Investigation result'}</h2>
         {report.vendor !== undefined && <p className="operator">Operator · {report.vendor || 'Unverified'}</p>}
         <span className="report-url">{report.inputUrl}</span>
-        {!simulated && <span className="model-label">Report model · {report.model || 'Not recorded'}</span>}
+        {!simulated && <p className="model-label">Assessment model · {report.model || 'Not recorded'}</p>}
+        {!simulated && report.searchModel && report.searchModel !== report.model &&
+          <p className="model-label">OpenAI web search · {report.searchModel}</p>}
         {report.vendor && report.vendorEvidence?.length > 0 && <details className="operator-source">
           <summary>Operator source</summary><Evidence items={report.vendorEvidence} sources={sources}/>
         </details>}
@@ -151,7 +153,7 @@ export function Report({report, simulated, retry, notes, onNotesChange}) {
     <DatasetReport report={report} notes={notes} onNotesChange={onNotesChange} simulated={simulated}/>
     {!historical && <Highlights checks={findings}/>}
     {historical && <div className="historical-notice"><p>This saved report used the previous points-based rubric.</p>
-      <button type="button" className="retry" onClick={retry}>Evaluate with current rubric</button></div>}
+      <button type="button" className="retry" disabled={!retry} onClick={retry}>Evaluate with current rubric</button></div>}
     {historical && (report.question || report.answer) && <section className="answer"><h3>{report.question || 'Product overview'}</h3>
       {answer}
     </section>}
@@ -174,6 +176,6 @@ export function Report({report, simulated, retry, notes, onNotesChange}) {
     {report.limitations.length > 0 && <details className="unknowns">
       <summary>Unknowns and limitations ({report.limitations.length})</summary>
       <ul>{report.limitations.map((item,i) => <li key={i}>{item}</li>)}</ul></details>}
-    {!historical && report.verdict === null && <button className="retry" onClick={retry}>Retry</button>}
+    {!historical && report.verdict === null && <button className="retry" disabled={!retry} onClick={retry}>Retry</button>}
   </section>
 }

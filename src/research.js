@@ -20,11 +20,11 @@ export function isEarlierReport(report) {
   return report.rubricVersion !== 2
 }
 
-export async function requestAssessment(subject, question) {
+export async function requestAssessment(subject, question, model) {
   const response = await fetch('/api/investigate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(question ? { subject, question } : { subject }),
+    body: JSON.stringify({ subject, question: question || undefined, model }),
     signal: AbortSignal.timeout(180_000),
   })
   if (!response.headers.get('content-type')?.includes('application/json')) {

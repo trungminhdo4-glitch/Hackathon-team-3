@@ -6,7 +6,11 @@ Open **View or download dataset report** on any saved investigation to preview i
 
 ## Run locally
 
-Use Node.js 22.12 or later. Set `OPENAI_API_KEY` in your server environment or an ignored `.env.local` file. Run `npm ci` and `npm run dev`, then open [SaaSLens](http://127.0.0.1:4173). The default model is `gpt-4.1`. Set `OPENAI_MODEL` to select a model supporting hosted web search and structured output.
+Use Node.js 22.12 or later. Set `OPENAI_API_KEY` in your server environment or ignored `.env.local` file. Run `npm ci` and `npm run dev`, then open [SaaSLens](http://127.0.0.1:4173).
+
+Choose **GPT-4.1** or **GPT-4.1 mini** for both search and assessment. To enable **Meta Llama 3.3 70B**, add `GROQ_API_KEY` to the server environment and restart. For that choice, OpenAI runs the web search and Groq receives the research question and retrieved passages for assessment by Llama. The selector checks each provider’s model inventory. New reports record both model IDs. [Groq model details](https://console.groq.com/docs/model/llama-3.3-70b-versatile)
+
+`OPENAI_MODEL` sets the default OpenAI model and the search model used with Meta. The demo supports `gpt-4.1`, `gpt-4.1-mini`, and their dated snapshots.
 
 ## How it works
 
@@ -14,7 +18,7 @@ One OpenAI Agents SDK researcher searches for product documentation, independent
 
 The [evaluation rubric](EVALUATION.md) covers capability, customer experience, licensing, maintenance, security and privacy, and the credibility of vendor claims. **Green** means the core promise is supported. **Yellow** identifies a condition or conflict material to the decision. **Red** requires evidence of a core contradiction or serious disqualifying risk. **Insufficient evidence** means the core claim could not be established. Each report explains which evidence mattered.
 
-The Node API accepts `POST /api/investigate` with `{"url":"https://product.example/"}` or a `subject` and optional `question`. The [40 sample reviews](hackathon_40_solutions_commented%20%281%29.csv) are for calibration. Live investigations use public sources.
+The Node API accepts `POST /api/investigate` with `{"url":"https://product.example/"}` or a `subject`. You can include a `question` and a `model` ID from `GET /api/model`. The [40 sample reviews](hackathon_40_solutions_commented%20%281%29.csv) are for calibration. Live investigations use public sources.
 
 ## Tests
 

@@ -15,20 +15,42 @@ function Workspace() {
   const [question, setQuestion] = useState(active?.report.question ?? '')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
-  const [model, setModel] = useState('')
+  const [catalog, setCatalog] = useState(null)
+  const [catalogError, setCatalogError] = useState(false)
+  const [catalogAttempt, setCatalogAttempt] = useState(0)
+  const [model, setModel] = useState(active?.report.model || '')
 
   useEffect(() => {
     const controller = new AbortController()
-    fetch('/api/model', { signal: controller.signal })
-      .then(response => response.ok ? response.json() : null)
-      .then(data => setModel(data?.model || 'Unavailable'))
-      .catch(() => { if (!controller.signal.aborted) setModel('Unavailable') })
+    fetch('/api/model', { signal: AbortSignal.any([controller.signal, AbortSignal.timeout(12000)]) })
+      .then(async response => {
+        if (!response.ok) throw new Error()
+        const data = await response.json()
+        if (!Array.isArray(data.models)) throw new Error()
+        if (controller.signal.aborted) return
+        const models = data.models.filter(option => ['OpenAI', 'Meta'].includes(option.provider))
+        const available = models.filter(option => option.available)
+        setCatalog(models)
+        setModel(previous => available.find(option => option.id === previous)?.id ||
+          available.find(option => option.id === data.model)?.id || available[0]?.id || '')
+      })
+      .catch(() => { if (!controller.signal.aborted) setCatalogError(true) })
     return () => controller.abort()
-  }, [])
+  }, [catalogAttempt])
+
+  const selected = catalog?.find(option => option.id === model && option.available)
+  const canInvestigate = !busy && !!subject.trim() && !!selected
+
+  function reloadModels() {
+    setCatalog(null)
+    setCatalogError(false)
+    setCatalogAttempt(attempt => attempt + 1)
+  }
 
   function openReport(entry) {
     setSubject(entry.report.subject ?? entry.report.inputUrl)
     setQuestion(entry.report.question ?? '')
+    if (catalog?.some(option => option.available && option.id === entry.report.model)) setModel(entry.report.model)
     setActive(entry)
     setError('')
   }
@@ -43,12 +65,12 @@ function Workspace() {
 
   async function investigate(event) {
     event.preventDefault()
-    if (busy || !subject.trim()) return
+    if (!canInvestigate) return
     setError('')
     setActive(null)
     setBusy(true)
     try {
-      const report = await requestAssessment(subject.trim(), question.trim())
+      const report = await requestAssessment(subject.trim(), question.trim(), model)
       const entry = { id: crypto.randomUUID(), savedAt: Date.now(), report }
       const updated = [entry, ...entries]
       saveHistory(updated)
@@ -80,17 +102,39 @@ function Workspace() {
             placeholder="Which edition includes the features I need?" value={question}
             onChange={event => { setQuestion(event.target.value); setActive(null); setError('') }}/>
         </div>
-        <div className="form-actions"><button className="submit" disabled={busy || !subject.trim()}>{busy ? 'Investigating…' : 'Investigate'}
+        <div className="field model-field">
+          <label htmlFor="model">Assessment model</label>
+          <select id="model" name="model" disabled={busy || !selected} value={selected?.id || ''} aria-describedby="model-details"
+            onChange={event => { setModel(event.target.value); setError('') }}>
+            {!selected && <option value="">{catalogError || catalog ? 'No models available' : 'Loading models…'}</option>}
+            {['OpenAI', 'Meta'].map(provider => {
+              const options = catalog?.filter(option => option.provider === provider) || []
+              return options.length > 0 && <optgroup key={provider} label={provider}>{options.map(option =>
+                <option key={option.id} value={option.id} disabled={!option.available}>
+                  {option.label}{!option.available && ' (unavailable)'}
+                </option>)}</optgroup>
+            })}
+          </select>
+          <div id="model-details">
+            {selected?.provider === 'Meta' && <p className="model-label">OpenAI web search · {selected.searchModel}. Meta assesses the retrieved passages via Groq.</p>}
+            {catalog?.filter(option => !option.available && option.reason).map(option =>
+              <p key={option.id} className="model-label">{option.label} · {option.reason}</p>)}
+          </div>
+          {(catalogError || (catalog && !selected)) && <div className="model-retry">
+            {catalogError && <p role="alert">The model list could not be loaded.</p>}
+            <button className="retry" type="button" onClick={reloadModels}>Reload models</button>
+          </div>}
+        </div>
+        <div className="form-actions"><button className="submit" disabled={!canInvestigate}>{busy ? 'Investigating…' : 'Investigate'}
           {busy ? <span className="spinner"/> : <Icon name="arrow"/>}</button>
-          <span className="model-label">Research model · {model || 'Loading…'}</span>
         </div>
       </form>
       <SessionHistory entries={entries} current={active?.id} busy={busy} onOpen={openReport}/>
       {busy && <p className="feedback" role="status">Researching the product and checking citations…</p>}
       {error && <section className="feedback error" role="alert"><div><strong>Investigation incomplete</strong><p>{error}</p></div>
-        <button className="retry" onClick={investigate}>Retry</button></section>}
+        <button className="retry" disabled={!canInvestigate} onClick={investigate}>Retry</button></section>}
       {active && <><span className="sr-only" role="status">Assessment ready</span>
-        <Report key={active.id} report={active.report} simulated={Boolean(active.scenario)} retry={investigate}
+        <Report key={active.id} report={active.report} simulated={Boolean(active.scenario)} retry={canInvestigate ? investigate : null}
           notes={active.reviewerNotes ?? active.report.reviewer_notes_original ?? ''} onNotesChange={saveNotes}/></>}
     </main>
   </div>

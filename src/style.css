@@ -20,7 +20,7 @@
 }
 * { box-sizing: border-box }
 body, h1, h2, h3, p, blockquote { margin: 0 }
-button, input, textarea { font: inherit; color: inherit }
+button, input, textarea, select { font: inherit; color: inherit }
 button, summary { cursor: pointer }
 button:disabled { cursor: default; opacity: .65 }
 :focus-visible { outline: 3px solid #218e55; outline-offset: 3px }
@@ -51,6 +51,8 @@ input::placeholder, textarea::placeholder { color: #657569 }
 .submit:hover:enabled { background: #0c3920 }
 .form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px }
 .model-label { font-size: 13px; color: var(--muted) }
+.model-field select { display: block; margin-top: 5px; width: min(100%, 20rem); background: white; border: 1px solid var(--rule); border-radius: 4px; padding: 9px 12px }
+.model-field .model-label, .model-retry { margin-top: 6px }
 .retry { background: white }
 .feedback { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: 16px; padding: 14px 18px; border: 1px solid var(--soft-rule); background: #edf3ed; border-radius: 5px }
 .feedback.error { background: #fcf1e6 }

@@ -81,12 +81,15 @@ for (const [scenario, subject, verdict] of [
 
 test('live failure offers retry and stays distinct from an insufficient-evidence report', async ({ page }) => {
   await page.goto('/');
+  await page.getByLabel('Assessment model').selectOption('gpt-4.1-mini');
   await page.getByLabel('Product, company, or URL').fill('https://failed.example/');
   await page.getByRole('button', { name: 'Investigate', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Retry' })).toBeVisible();
   const response = page.waitForResponse(r => r.url().endsWith('/api/investigate'));
   await page.getByRole('button', { name: 'Retry' }).click();
-  expect((await response).ok()).toBe(false);
+  const retry = await response;
+  expect(retry.ok()).toBe(false);
+  expect(retry.request().postDataJSON().model).toBe('gpt-4.1-mini');
   await expect(page.getByRole('alert')).toBeVisible();
   await expect(page.getByText('Insufficient evidence', { exact: true })).toHaveCount(0);
 });
@@ -96,20 +99,36 @@ test('session history restores original reports and citations without another in
   page.on('request', request => { if (request.url().endsWith('/api/investigate')) requests++; });
   await page.goto('/');
   const question = 'Does Orbit Desk require a commercial license for business use?';
-  for (const [subject, focus, verdict] of [
-    ['Orbit Desk', question, verdictLabels.green],
-    ['https://contradicted.example/', '', verdictLabels.red],
+  const select = page.getByRole('combobox', { name: 'Assessment model' });
+  const meta = 'llama-3.3-70b-versatile';
+  await expect(select.locator('optgroup')).toHaveCount(2);
+  expect(await select.locator('optgroup').evaluateAll(groups => groups.map(group => group.label))).toEqual(['OpenAI', 'Meta']);
+  for (const [subject, focus, verdict, choice] of [
+    ['Orbit Desk', question, verdictLabels.green, meta],
+    ['https://contradicted.example/', '', verdictLabels.red, 'gpt-4.1-mini'],
   ]) {
+    await select.selectOption(choice);
+    if (choice === meta) {
+      await expect(page.getByText(/Meta assesses the retrieved passages via Groq/)).toBeVisible();
+    } else {
+      await expect(page.locator('.report').getByText('Assessment model · ' + meta)).toBeVisible();
+    }
     await page.getByLabel('Product, company, or URL').fill(subject);
     await page.getByRole('textbox', { name: 'Product question', exact: true }).fill(focus);
+    const sent = page.waitForRequest(request => request.url().endsWith('/api/investigate'));
     await page.getByRole('button', { name: 'Investigate', exact: true }).click();
+    expect((await sent).postDataJSON().model).toBe(choice);
     await expect(page.locator('.report .badge')).toHaveText(verdict);
+    await expect(page.locator('.report').getByText('Assessment model · ' + choice)).toBeVisible();
   }
   await page.reload();
   await expect(page.locator('.report .badge')).toHaveText(verdictLabels.red);
+  await expect(select).toHaveValue('gpt-4.1-mini');
   await page.getByText('Session history').click();
   await page.getByRole('button', { name: /Does Orbit Desk require a commercial license/i }).click();
   await expect(page.locator('.report .badge')).toHaveText(verdictLabels.green);
+  await expect(select).toHaveValue(meta);
+  await expect(page.locator('.report').getByText('OpenAI web search · gpt-4.1')).toBeVisible();
   await expect(page.getByRole('textbox', { name: 'Product question', exact: true })).toHaveValue(question);
   await expect(page.getByLabel('Product, company, or URL')).toHaveValue('Orbit Desk');
   const answer = page.getByRole('region', { name: 'Your product question' });
@@ -122,6 +141,25 @@ test('session history restores original reports and citations without another in
   await anotherTab.goto('/');
   await anotherTab.getByText('Session history').click();
   await expect(anotherTab.getByText('Completed reports will appear here for this tab.')).toBeVisible();
+});
+
+test('recovers from a model-list failure and explains unavailable options', async ({ page, request }) => {
+  const catalog = await (await request.get('/api/model')).json();
+  const meta = catalog.models.find(option => option.provider === 'Meta');
+  Object.assign(meta, { available: false, reason: 'Set GROQ_API_KEY on the server.' });
+  let attempts = 0;
+  await page.route('**/api/model', route => ++attempts === 1
+    ? route.fulfill({ status: 503 })
+    : route.fulfill({ json: catalog }));
+  await page.goto('/');
+  await page.getByLabel('Product, company, or URL').fill('Orbit Desk');
+  await expect(page.getByRole('alert')).toHaveText('The model list could not be loaded.');
+  await expect(page.getByRole('button', { name: 'Investigate', exact: true })).toBeDisabled();
+  await page.getByRole('button', { name: 'Reload models' }).click();
+  await expect(page.getByLabel('Assessment model')).toHaveValue(catalog.model);
+  await expect(page.getByRole('option', { name: 'Llama 3.3 70B (unavailable)' })).toBeDisabled();
+  await expect(page.getByText(/Set GROQ_API_KEY on the server/)).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Investigate', exact: true })).toBeEnabled();
 });
 
 test('rechecking an earlier report saves a new assessment alongside the original', async ({ page }) => {
@@ -146,7 +184,7 @@ test('views and downloads the same eight dataset fields and keeps original notes
   await page.setViewportSize({width: 390, height: 800});
   await page.goto('/');
   const {model} = await (await request.get('/api/model')).json();
-  await expect(page.getByText('Research model · ' + model, {exact: true})).toBeVisible();
+  await expect(page.getByRole('combobox', {name: 'Assessment model'})).toHaveValue(model);
   await page.getByLabel('Product, company, or URL').fill('Orbit Desk');
   await page.getByRole('button', {name: 'Investigate', exact: true}).click();
   const openExport = page.getByText('View or download dataset report', {exact: true});
@@ -178,7 +216,7 @@ test('views and downloads the same eight dataset fields and keeps original notes
     }
   }
   await page.reload();
-  await expect(page.getByText('Report model · test-researcher', {exact: true})).toBeVisible();
+  await expect(page.getByText('Assessment model · ' + model, {exact: true})).toBeVisible();
   await openExport.click();
   await expect(page.getByLabel(/Original reviewer notes/)).toHaveValue(notes);
 });
