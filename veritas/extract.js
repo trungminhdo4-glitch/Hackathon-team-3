@@ -105,7 +105,10 @@ export function extractClaims(items, { keepSubjective = false } = {}) {
   const claims = [];
   for (const [i, item] of items.entries()) {
     const base = item.id || `${item.vendor_id}-s${i + 1}`;
-    const parts = decompose(item.statement, item);
+    // atomic=true: the statement is already a verbatim source passage (e.g. a SaaSLens flag); do not split it.
+    const parts = item.atomic
+      ? [{ text: normalize(item.statement), claim_type: classifyClaim(item.statement), qualifiers: { kind: kindOf(classifyClaim(item.statement), item.statement) } }]
+      : decompose(item.statement, item);
     let n = 0;
     for (const p of parts) {
       if (!keepSubjective && p.qualifiers.kind === 'subjective') continue;

@@ -45,7 +45,7 @@ const COLUMN = { STRONG_POSITIVE: 'green', WEAK_POSITIVE: 'yellow', MATERIAL_NEG
   NON_MATERIAL_NEGATIVE: 'yellow', AMBIGUOUS: 'yellow', UNKNOWN: null, DROPPED: null };
 
 function line(f) {
-  const cite = f.evidence.slice(0, 2).map(e => e.url).join(', ');
+  const cite = [...new Set(f.evidence.map(e => e.url))].slice(0, 2).join(', ');
   const tag = f.class === 'AMBIGUOUS' ? 'Unconfirmed: ' : '';
   const note = f.note && !['MATERIAL_NEGATIVE', 'STRONG_POSITIVE'].includes(f.class) && !f.statement.startsWith('Vendor claim') ? ` [${f.note}]` : '';
   return `${tag}${f.statement}${note}${cite ? ` (source: ${cite})` : ''}`;

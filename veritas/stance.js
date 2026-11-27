@@ -72,7 +72,9 @@ export function heuristicStance(claim, e, { now = new Date() } = {}) {
   const passage = e.quote || '';
   const lp = lower(passage);
   const notes = [];
-  const quals = qualifiersIn(passage);
+  // Qualifiers the claim itself asserts (e.g. "is discontinued") confirm rather than weaken it.
+  const claimQuals = new Set(qualifiersIn(claim.text));
+  const quals = qualifiersIn(passage).filter(q => !claimQuals.has(q));
   const nameTokens = new Set(vendorNames(claim).flatMap(n => [n, ...tokens(n)]));
   const claimTokens = tokens(claim.text).filter(t => !nameTokens.has(t) && t !== 'claims' && t !== 'customer');
   const hit = claimTokens.filter(t => lp.includes(t));
@@ -95,7 +97,7 @@ export function heuristicStance(claim, e, { now = new Date() } = {}) {
   const foundingTopic = claim.claim_type === 'historical' && FOUNDING.test(passage) && compareYears(claim.text, passage) !== 'absent';
   if (relevance < 0.25 && critHit.length === 0 && !foundingTopic) return { stance: 'neutral', relevance, specificity, notes: ['passage not about the claim'], qualifiers: quals };
 
-  const claimNegative = NEG_CLAIM.test(claim.text); // claim itself asserts a negative event
+  const claimNegative = NEG_CLAIM.test(claim.text) || REFUTE_CUES.test(claim.text); // claim itself asserts a negative event / negation
   const passageNegated = REFUTE_CUES.test(passage);
   let stance = 'supports';
 

@@ -44,3 +44,89 @@ export function fromSaasLens(inputUrl, raw, { vendorId = siteOf(inputUrl) } = {}
   }
   return { claims, evidence };
 }
+
+// ---------------------------------------------------------------------------
+// SaaSLens v2 contract (origin/main server/live.js research(), read-only
+// inspection 2026-11-27). Shape consumed here:
+//   { productName, productAliases[{name,sourceId}], vendor{name,text,evidence[]}|null,
+//     answer{text,evidence[]}, checks[{id,status,material,text,evidence[]}],
+//     flags[{kind,material,topic,text,evidence[]}], testimony[{text,evidence[]}],
+//     documents[{id,url,title,text,origin}], coverage{}, incomplete, limitations[] }
+//   evidence item = { sourceId, quote, relation, vendorAuthored, author }
+// Polarity (kind) and materiality are treated as proposals and re-verified.
+// Older v1 output (checks only) is accepted too.
+import { verifyFlags } from './index.js';
+import { discover } from './discovery.js';
+import { toStackginiRow } from './export.js';
+
+const RELATION_TYPE_V2 = { ...RELATION_TYPE, review: 'review_site' };
+const CHECK_TOPIC = { identity: 'identity', independent: 'usage', operator: 'identity', substance: 'maintenance' };
+
+function toEvidence(items, docs, rejected) {
+  const out = [];
+  for (const item of items ?? []) {
+    const doc = docs.get(item.sourceId);
+    if (!doc) { rejected.push(item.sourceId); continue; } // unknown source reference
+    out.push({ url: doc.url, title: doc.title ?? '', quote: item.quote ?? '', content: doc.text ?? '',
+      source_type: item.vendorAuthored ? 'vendor' : RELATION_TYPE_V2[item.relation] ?? 'other', origin: 'team' });
+  }
+  return out;
+}
+
+/** Map SaaSLens research output to VERITAS flags + decision context (no network). */
+export function saasLensToFlags(inputUrl, raw) {
+  const host = new URL(inputUrl).hostname.replace(/^www\./, '');
+  const product = raw.productName || raw.productAliases?.[0]?.name || host;
+  const docs = new Map((raw.documents ?? []).map(d => [d.id, d]));
+  const rejected = [];
+  const flags = [];
+  const checkStatus = {};
+  for (const check of raw.checks ?? []) {
+    checkStatus[check.id] = check.status;
+    if (!CHECK_CLAIMS[check.id] || check.status === 'unverified') continue;
+    const evidence = toEvidence(check.evidence, docs, rejected);
+    if (!evidence.length) continue;
+    flags.push({ polarity: check.status === 'contradicted' ? 'red' : 'green', material: check.status === 'contradicted' || check.material === true,
+      topic: CHECK_TOPIC[check.id], text: CHECK_CLAIMS[check.id]({ product, host }), source: `check:${check.id}`, evidence,
+      claim_type: TYPE[check.id], qualifiers: { match_terms: MATCH[check.id]({ product, host }), refute_terms: REFUTE } });
+  }
+  for (const [i, f] of (raw.flags ?? []).entries()) {
+    const evidence = toEvidence(f.evidence, docs, rejected);
+    const text = (f.text || evidence.map(e => e.quote).join(' ')).trim();
+    if (!text) continue;
+    flags.push({ polarity: f.kind, material: f.material === true, topic: f.topic, text, source: `flag:${i + 1}`, evidence, atomic: true });
+  }
+  const aliases = [...new Set([...(raw.productAliases ?? []).map(a => a.name), raw.vendor?.name].filter(Boolean))];
+  const limitations = [...(raw.limitations ?? [])];
+  if (rejected.length) limitations.push(`${rejected.length} SaaSLens evidence reference(s) pointed to unknown sources and were rejected.`);
+  return {
+    vendor: { id: siteOf(inputUrl), url: inputUrl, product, vendor: raw.vendor?.name ?? '', domain: inputUrl, name: product, aliases },
+    flags, checkStatus,
+    context: { identityEstablished: checkStatus.identity === 'contradicted' ? false : undefined, incomplete: raw.incomplete === true,
+      failed: raw.failed === true || !(raw.documents ?? []).length, limitations },
+    docsText: (raw.documents ?? []).map(d => d.text ?? '').join(' ').slice(0, 200000),
+  };
+}
+
+/**
+ * One call for the team pipeline: completed SaaSLens research → VERITAS row.
+ * options: { provider, fetcher, controller, budget, discovery=true, maxTasks=3, now }
+ */
+export async function assessVendor(inputUrl, raw, options = {}) {
+  const { vendor, flags, checkStatus, context, docsText } = saasLensToFlags(inputUrl, raw);
+  const budget = options.budget ?? { maxSearchesPerClaim: 2, maxRounds: 2 };
+  const shared = { fetcher: options.fetcher, controller: options.controller, now: options.now, judge: options.judge, context };
+  // Discovery runs first: its few targeted searches can change the decision most,
+  // so they must not be starved by re-verification of already-cited passages.
+  let found = { tasks: [], findings: [] };
+  if (options.discovery !== false && options.provider && !context.failed) {
+    const state = { name: vendor.product, aliases: vendor.aliases, domain: inputUrl, checks: checkStatus, docsText,
+      findings: flags.map(f => ({ polarity: f.polarity, material: f.material, topic: f.topic, text: f.text, status: f.evidence.length ? 'SUPPORTED' : 'INSUFFICIENT_EVIDENCE' })) };
+    found = await discover(state, { provider: options.provider, fetcher: options.fetcher, controller: options.controller, maxTasks: options.maxTasks ?? 3 });
+  }
+  const team = await verifyFlags(vendor, flags, options.provider ?? null, budget, shared);
+  const extra = found.findings.length ? await verifyFlags(vendor, found.findings, null, budget, shared) : { flags: [] };
+  const all = [...team.flags, ...extra.flags];
+  const row = toStackginiRow(vendor, all, context);
+  return { row, flags: all, tasks: found.tasks, discovered: extra.flags.length, budget: options.controller?.snapshot?.() ?? team.budget };
+}

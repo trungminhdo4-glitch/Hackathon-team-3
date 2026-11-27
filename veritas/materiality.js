@@ -39,6 +39,8 @@ export function classifyFinding(f) {
     if (established) return { ...base, class: !material ? FINDING.NON_MATERIAL_NEGATIVE
       : f.polarity === 'red' ? FINDING.MATERIAL_NEGATIVE : FINDING.MATERIAL_CAVEAT };
     if (status === 'PARTIALLY_SUPPORTED') return { ...base, class: material ? FINDING.AMBIGUOUS : FINDING.NON_MATERIAL_NEGATIVE, note: 'only partly established' };
+    // A concern with no verified evidence at all is not reported (never an unsupported reason).
+    if (status !== 'CONFLICTING' && !ev.length) return { ...base, class: FINDING.UNKNOWN, note: 'no verified evidence' };
     return { ...base, class: FINDING.AMBIGUOUS, note: status === 'CONFLICTING' ? 'sources conflict' : 'not established by retrieved evidence' };
   }
   // Positive finding (green): vendor claim or documented strength.

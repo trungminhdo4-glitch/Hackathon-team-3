@@ -43,7 +43,8 @@ export async function verifyClaims(claims, existingEvidence = [], searchProvider
   const C = parseClaims(claims);
   const E = parseEvidence(existingEvidence);
   const B = parseBudget(budget);
-  const opts = { adversarial: true, iterative: true, independence: true, now: new Date(), ...options };
+  const opts = { adversarial: true, iterative: true, independence: true, ...options };
+  opts.now = options.now instanceof Date ? options.now : new Date(); // undefined must not override the default
   // A shared controller (budget.js) makes budget, deadline and cache global
   // across calls; without one, this call gets its own from `budget`.
   const ctl = options.controller ?? createController({ maxSearches: B.maxTotalSearches, maxFetches: B.maxTotalSearches * 2, cache: options.cache });

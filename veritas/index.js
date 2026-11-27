@@ -48,13 +48,15 @@ export function combineAtoms(vs) {
 export async function verifyFlags(vendor, flags, provider, budget, options = {}) {
   const controller = options.controller ?? createController({ maxSearches: budget?.maxTotalSearches ?? 200 });
   const items = flags.map((f, i) => ({ id: `${vendor.id}-f${i + 1}`, statement: f.text, vendor_id: String(vendor.id),
-    vendor_name: vendor.name ?? vendor.vendor ?? '', vendor_domain: vendor.domain ?? vendor.url ?? '' }));
+    vendor_name: vendor.name ?? vendor.vendor ?? '', vendor_domain: vendor.domain ?? vendor.url ?? '', atomic: f.atomic === true }));
   const claims = extractClaims(items, { keepSubjective: false });
   // Teammate materiality is a proposal: it only raises the search priority, it never sets the verdict.
   for (const c of claims) {
     const f = flags[Number(c.id.match(/-f(\d+)-c\d+$/)[1]) - 1];
     if (f.material === true) c.qualifiers.materiality = 'high';
     if (f.claim_type) c.claim_type = f.claim_type;
+    if (f.qualifiers) Object.assign(c.qualifiers, f.qualifiers);
+    if (vendor.aliases?.length) c.qualifiers.aliases = [...(c.qualifiers.aliases ?? []), ...vendor.aliases];
   }
   const verdicts = [];
   for (const [i, f] of flags.entries()) {
