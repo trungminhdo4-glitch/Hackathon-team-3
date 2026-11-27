@@ -1,6 +1,6 @@
 # SaaSLens evaluation criteria
 
-**Does the available evidence show that this software delivers its main promise to its intended users, on the terms advertised?** The verdict describes what a prospective user can reasonably rely on and which limitations could change their decision.
+**Should a buyer shortlist this exact product for its documented use, investigate a material condition first, or rule it out?** Identify the buyer, current edition, operator, and realistic alternative if the advertised edition is retired. State what the evidence establishes about ordinary use, support and terms. Evaluate performance or compliance promises individually when they affect the decision. [Review of all 40 reference rationales](DATASET_AUDIT.md)
 
 SaaSLens uses this rubric for new investigations. It is based on the [40 labeled sample reviews](hackathon_40_solutions_commented%20%281%29.csv). Earlier reports retain their original verdict in session history.
 
@@ -23,7 +23,7 @@ For each material claim, record **supported**, **partly supported**, **contradic
 
 | Outcome | Decision rule |
 | --- | --- |
-| Green | Credible evidence supports the core promise for the intended use. Remaining caveats are unlikely to change that user's decision. |
+| Green | Evidence supports ordinary use, or a dated versioned publisher release and independently documented use or distribution establish a maintained product. A claim about a specific requested outcome still needs evidence for that outcome. Remaining caveats are unlikely to change the buying decision. |
 | Yellow | Name the material condition or conflict, who it affects, and what would resolve it. When sources cannot establish the core claim, invite human guidance. If the user finishes or a guided search still leaves the question unresolved, explain the evidence gap and identify the missing proof. |
 | Red | Reliable evidence contradicts a core promise or establishes a serious risk that makes the product unsuitable for the stated use. Identify the decisive evidence and its scope. |
 

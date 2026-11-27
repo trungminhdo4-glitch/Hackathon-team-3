@@ -20,9 +20,9 @@ The main OpenAI Agents SDK researcher runs official and independent searches in 
 
 The model proposes findings from numbered source passages. The server checks quotations and derives the verdict from accepted findings. Cited benefits, limitations and material risks appear in the eight-column export. When evidence is insufficient, the report explains which check remains open.
 
-**What the sources say** groups passages by page and explains what each one supports. **Pages checked** includes unreachable sources. The review prompt identifies the unresolved claim, what would justify each color, and the specific evidence the researcher needs.
+**What the sources say** groups passages by page and explains what each one supports. Under **Unknowns and limitations**, open **Pages checked** to inspect each URL, the search that found it, the passage retained or the retrieval error, and a suggested follow-up. The review prompt identifies the unresolved claim and the specific evidence the researcher needs.
 
-The [evaluation rubric](EVALUATION.md) covers capability, customer experience, licensing, maintenance, security and privacy, and vendor claims. **Green** means evidence supports the core promise. **Red** requires a verified core contradiction or serious risk. **Yellow** names a material caveat, conflicting evidence, or a specific unresolved evidence gap. A failed investigation has no verdict.
+The [evaluation rubric](EVALUATION.md) asks whether a buyer should shortlist the product for its intended use. **Green** requires supported use or corroborated maintenance and adoption. **Yellow** identifies a buying condition, conflict or evidence gap. **Red** requires a verified core contradiction or serious risk for that use. A failed investigation has no verdict. The [40-row audit](DATASET_AUDIT.md) compares each original Luna verdict with the reviewer's reasoning.
 
 If the core claim remains open, the app pauses and asks for help. Suggest a public source, an edition, or a specific task for one more search, or finish with the evidence collected. The researcher checks your lead alongside the earlier findings. The final report and CSV explain the color and cite the evidence that determined it. The browser keeps reports in the current tab. A pending review can be resumed on the same running server for up to 30 minutes.
 
@@ -40,4 +40,4 @@ With the key configured, `node --env-file-if-exists=.env.local tests/live-smoke.
 
 With the app running, `python tests/calibrate.py --model gpt-6.2-sol` tests the first ten dataset URLs. Pass row IDs and `--bulk` for a different cohort in one request. Each URL runs a billable investigation. See the [20-product live evaluation](EVALUATION_SOL.md) for results, row IDs and export commands.
 
-For the full dataset with Luna, run `python tests/calibrate.py --all-rows --bulk --model gpt-6-luna --output luna.jsonl --report-dir luna-reports`. Export the saved results with `node tests/export-calibration.js luna.jsonl luna-reports luna-export`. See the [40-product Luna evaluation](EVALUATION_LUNA.md).
+For the full dataset with Luna, run `python tests/calibrate.py --all-rows --bulk --model gpt-6-luna --output luna.jsonl --report-dir luna-reports`. Export the saved results with `node tests/export-calibration.js luna.jsonl luna-reports luna-export`. The [40-product comparison](PROCUREMENT_EVALUATION.md) shows accuracy before and after the rubric change and links to every reviewer and agent verdict.
