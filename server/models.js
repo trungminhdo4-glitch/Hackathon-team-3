@@ -1,13 +1,28 @@
 export const META_MODEL = 'llama-3.3-70b-versatile';
 const openAIModels = [
-  { id: 'gpt-4.1', label: 'GPT-4.1' },
-  { id: 'gpt-4.1-mini', label: 'GPT-4.1 mini' },
+  { id: 'gpt-6.2-astra', label: 'GPT-6.2 Astra',
+    description: 'Best starting point for difficult assessments that compare conflicting claims across several sources. Highest cost of these GPT-6 options.' },
+  { id: 'gpt-6.2-sol', label: 'GPT-6.2 Sol',
+    description: 'Balances reasoning and cost for routine investigations with several evidence sources.' },
+  { id: 'gpt-6.1-terra', label: 'GPT-6.1 Terra',
+    description: 'Efficient at summarizing documents and writing clear findings. Its visual capabilities are outside this text-only workflow.' },
+  { id: 'gpt-6-luna', label: 'GPT-6 Luna',
+    description: 'Lowest-cost GPT-6 option here. Suited to frequent, focused checks such as extracting a published licensing term.' },
+  { id: 'gpt-4.1', label: 'GPT-4.1',
+    description: 'Earlier non-reasoning model for direct document checks or comparisons with previous SaaSLens reports.' },
+  { id: 'gpt-4.1-mini', label: 'GPT-4.1 mini',
+    description: 'Smaller GPT-4.1 option for quick, inexpensive baseline checks.' },
 ];
 
+function profileFor(id) {
+  const alias = id.replace(/-\d{4}-\d{2}-\d{2}$/, '');
+  return openAIModels.find(model => model.id === alias);
+}
+
 export function getResearchModel() {
-  const model = process.env.OPENAI_MODEL?.trim() || 'gpt-4.1';
-  if (!/^gpt-4\.1(?:-mini)?(?:-\d{4}-\d{2}-\d{2})?$/.test(model)) {
-    throw new Error('OPENAI_MODEL must be a supported GPT-4.1 or GPT-4.1 mini model.');
+  const model = process.env.OPENAI_MODEL?.trim() || openAIModels[0].id;
+  if (!profileFor(model)) {
+    throw new Error('OPENAI_MODEL must be a supported SaaSLens research model.');
   }
   return model;
 }
@@ -33,7 +48,7 @@ async function inventory(url, key) {
   }).then(async response => {
     if (!response.ok) throw new Error('Provider model lookup failed.');
     const { data } = await response.json();
-    return new Set(data.map(model => model.id));
+    return new Set(data.map(model => model.id).filter(id => typeof id === 'string' && id.length > 0));
   }).catch(() => {
     entry.expires = Date.now() + 5000;
     return null;
@@ -51,12 +66,12 @@ export async function listModels() {
     inventory('https://api.groq.com/openai/v1/models', groqKey && openAIKey ? groqKey : null),
   ]);
   const options = [...openAIModels];
-  if (!options.some(({ id }) => id === preferred)) options.push({ id: preferred, label: preferred });
-  const models = options.map(({ id, label }) => {
+  if (!options.some(({ id }) => id === preferred)) options.push({ ...profileFor(preferred), id: preferred, label: preferred });
+  const models = options.map(({ id, label, description }) => {
     const reason = !openAIKey ? 'Set OPENAI_API_KEY on the server.' :
       !openAI ? 'Could not verify OpenAI model access.' :
       !openAI.has(id) ? 'Unavailable to this OpenAI project.' : null;
-    return { id, label, provider: 'OpenAI', searchModel: id, available: !reason, reason };
+    return { id, label, description, provider: 'OpenAI', searchModel: id, available: !reason, reason };
   });
   const search = models.find(option => option.id === preferred);
   const reason = !search.available ? 'Requires the configured OpenAI web search model.' :
@@ -64,6 +79,8 @@ export async function listModels() {
     !groq ? 'Could not verify Groq model access.' :
     !groq.has(META_MODEL) ? 'Unavailable to this Groq project.' : null;
   models.push({ id: META_MODEL, label: 'Llama 3.3 70B', provider: 'Meta',
+    description: 'OpenAI searches the web and Meta Llama evaluates the retrieved passages through Groq.',
     searchModel: preferred, available: !reason, reason });
-  return { model: preferred, models };
+  const defaultModel = search.available ? preferred : models.find(option => option.available)?.id ?? preferred;
+  return { model: defaultModel, models, openAIInventory: openAI ? [...openAI].sort() : null };
 }

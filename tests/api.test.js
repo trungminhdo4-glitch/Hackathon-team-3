@@ -61,24 +61,34 @@ test('only supported models listed for the configured accounts become selectable
     if (previous[i] === undefined) delete process.env[key];
     else process.env[key] = previous[i];
   }));
-  process.env.OPENAI_MODEL = 'gpt-4.1';
+  delete process.env.OPENAI_MODEL;
   process.env.OPENAI_API_KEY = 'test-openai';
   process.env.GROQ_API_KEY = 'test-groq';
   const lookup = t.mock.method(globalThis, 'fetch', async (url, init) => {
     const groq = new URL(url).hostname === 'api.groq.com';
     assert.equal(init.headers.Authorization, 'Bearer ' + (groq ? 'test-groq' : 'test-openai'));
-    const ids = groq ? [META_MODEL, 'different-family'] : ['gpt-4.1', 'image-model'];
+    const ids = groq ? [META_MODEL, 'different-family'] : ['gpt-6-luna', 'image-model', 'gpt-6.2-astra', 'gpt-4.1'];
     return Response.json({ data: ids.map(id => ({ id })) });
   });
   const result = await listModels();
-  assert.deepEqual(result.models.map(m => [m.id, m.available]), [
-    ['gpt-4.1', true], ['gpt-4.1-mini', false], [META_MODEL, true],
-  ]);
-  assert.equal(result.models[2].searchModel, 'gpt-4.1');
+  assert.equal(result.model, 'gpt-6.2-astra');
+  assert.deepEqual(result.openAIInventory, ['gpt-4.1', 'gpt-6-luna', 'gpt-6.2-astra', 'image-model']);
+  assert.deepEqual(result.models.filter(m => m.available).map(m => m.id), ['gpt-6.2-astra', 'gpt-6-luna', 'gpt-4.1', META_MODEL]);
+  assert.ok(result.models.every(m => m.description.length > 0));
+  assert.ok(!result.models.some(m => m.id === 'image-model'));
+  assert.equal(result.models.find(m => m.id === META_MODEL).searchModel, 'gpt-6.2-astra');
   assert.equal(lookup.mock.callCount(), 2);
   process.env.GROQ_API_KEY = 'test-openai';
-  assert.equal((await listModels()).models[2].available, false);
+  assert.equal((await listModels()).models.find(m => m.id === META_MODEL).available, false);
   assert.equal(lookup.mock.callCount(), 2);
+  process.env.OPENAI_MODEL = 'gpt-4.1';
+  assert.equal((await listModels()).model, 'gpt-4.1');
+  process.env.OPENAI_MODEL = 'gpt-6.1-terra';
+  assert.equal((await listModels()).model, 'gpt-6.2-astra');
+  delete process.env.OPENAI_API_KEY;
+  const unavailable = await listModels();
+  assert.equal(unavailable.openAIInventory, null);
+  assert.ok(unavailable.models.every(m => !m.available));
   process.env.OPENAI_MODEL = 'sk-test-value';
   await assert.rejects(listModels(), /OPENAI_MODEL must be/);
 });
