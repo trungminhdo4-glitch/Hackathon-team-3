@@ -1,0 +1,60 @@
+{
+  "offline_tests": 35,
+  "gates": {
+    "met": 7,
+    "unmet": 0,
+    "abandoned": 0
+  },
+  "native_web_probe": {
+    "seconds": 15.45,
+    "web_progress_events": 4,
+    "independent_quote_validation": "PASS",
+    "unexpected_connectors": false
+  },
+  "direct_http_export_smoke": {
+    "seconds": 0.39,
+    "http_requests": 3,
+    "status": "PARTIAL"
+  },
+  "real_ten_product_throughput": "NOT_MEASURED",
+  "accuracy": "NOT_MEASURED",
+  "protected_datasets_accessed": false,
+  "claude_called": false,
+  "paid_api_called": false,
+  "official_brief": "https://aiagentsberlin.xyz/ah3-brief-stackgini-agents-with-taste.pdf",
+  "version": "1.2",
+  "live_v11_single_product": {
+    "url": "https://www.r-project.org/",
+    "elapsed_seconds": 38.62,
+    "model_calls": 2,
+    "http_requests": 6,
+    "verdict": "GREEN",
+    "status": "COMPLETE",
+    "selected_verified_reasons": 3,
+    "rejected_reasons": 1
+  },
+  "revised_full_batch": "VERSION_1_2_NOT_RUN",
+  "classification_accuracy": "NOT_MEASURED",
+  "user_v10_batch": {
+    "products": 9,
+    "elapsed_seconds": 457.39,
+    "model_calls": 18,
+    "http_requests": 86,
+    "verdicts": {
+      "YELLOW": 9
+    }
+  },
+  "user_v11_batch": {
+    "products": 9,
+    "elapsed_seconds": 391.982,
+    "verdicts": {
+      "YELLOW": 8,
+      "RED": 1
+    },
+    "statuses": {
+      "PARTIAL": 9
+    },
+    "accepted_reasons": 28,
+    "rejected_reasons": 31
+  }
+}

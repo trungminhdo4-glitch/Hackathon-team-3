@@ -1,0 +1,1458 @@
+{
+  "version": "1.2",
+  "generated_at": "2026-11-27T18:10:55.454597+00:00",
+  "elapsed_seconds": 469.163,
+  "products": [
+    {
+      "id": "41",
+      "url": "https://product-experience-solutions.com/",
+      "context": "",
+      "name": "Product Experience Solutions / PXHub",
+      "verdict": "GREEN",
+      "status": "COMPLETE",
+      "phase": "A",
+      "summary": "Assessment based only on the validated reasons below.",
+      "active_phase": null,
+      "stage": "settled",
+      "reasons": [
+        {
+          "claim": "PXHub has substantive import, export, API and ETL functionality for Contentserv deployments.",
+          "url": "https://product-experience-solutions.com/",
+          "final_url": "https://product-experience-solutions.com/",
+          "quote": "The main purpose is to have an easy interface to your products by offering powerful APIs, Exports and Imports.",
+          "kind": "positive",
+          "axis": "real",
+          "material": true,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "af6487894f2fa057c6abaf83134c7f1c88497ebb9966cf51cd2643aef5b25052",
+          "fetched_at": "2026-11-27T18:03:07.284318+00:00"
+        },
+        {
+          "claim": "Centric's October 2026 documentation identifies the company as a current PXM software-development supplier.",
+          "url": "https://www.centricsoftware.com/legal/subprocessors",
+          "final_url": "https://www.centricsoftware.com/legal/subprocessors",
+          "quote": "Product Experience Solutions GmbH | Germany | Development of software products and consulting services within the product experience domain, particularly in integration with PIM/DAM systems | PXM (Contentserv)",
+          "kind": "positive",
+          "axis": "alive",
+          "material": true,
+          "source_role": "customer",
+          "origin": "external",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "dda1cc7ba349f065d2d4948e6979906725afe3a45d35dd4bbe227d3c461c9fd3",
+          "fetched_at": "2026-11-27T18:04:26.144496+00:00"
+        },
+        {
+          "claim": "Centric specifically confirms PXHub provision and German processing under a DPA.",
+          "url": "https://www.centricsoftware.com/legal/subprocessors",
+          "final_url": "https://www.centricsoftware.com/legal/subprocessors",
+          "quote": "Product Experience Solutions GmbH | Bürgermeister-Jakob-Str. 1a, 85640 Putzbrunn, Germany | Provision of the Product Experience Hub | Emails; Customer- provided data | Germany | DPA; No international transfer outside the EU",
+          "kind": "positive",
+          "axis": "trust",
+          "material": true,
+          "source_role": "customer",
+          "origin": "external",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "dda1cc7ba349f065d2d4948e6979906725afe3a45d35dd4bbe227d3c461c9fd3",
+          "fetched_at": "2026-11-27T18:04:26.144496+00:00"
+        },
+        {
+          "claim": "Independent 2024 release coverage documents continued PXHub feature development.",
+          "url": "https://www.communicode.com/en-de/insights/contentserv-pxc-24-0-release-en/",
+          "final_url": "https://www.communicode.com/en-de/insights/contentserv-pxc-24-0-release-en/",
+          "quote": "The PXHub has a new mapping component that can be used for various data mappings.",
+          "kind": "positive",
+          "axis": "alive",
+          "material": true,
+          "source_role": "independent_report",
+          "origin": "external",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "2d3c2a8816a0772f36f83da17db1516495dff4b4c660da143fdf84cfe413d78f",
+          "fetched_at": "2026-11-27T18:04:26.477033+00:00"
+        }
+      ],
+      "rejected_reasons": [
+        {
+          "claim": "The operating company is listed as active in the Munich commercial register.",
+          "url": "https://www.registercheck.de/companies/product-experience-solutions-gmbh",
+          "attempted_quote": "Product Experience Solutions GmbH Aktiv AG München · HRB 259794",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP 429: https://www.registercheck.de/companies/product-experience-solutions-gmbh"
+        },
+        {
+          "claim": "The vendor provides a matching legal identity, registry number and director.",
+          "url": "https://product-experience-solutions.com/legal",
+          "attempted_quote": "Managing Director: Frank Ipfelkofer Registered at: District Court Munich, HRB 259794",
+          "kind": "positive",
+          "material": false,
+          "error": "exact quote absent from independently fetched page"
+        }
+      ],
+      "unknowns": [],
+      "limitations": [
+        "No full security, code, or operational audit was provided.",
+        "Public release cadence, roadmap, and detailed support arrangements were not established.",
+        "Deployment-specific configuration and performance were not tested."
+      ],
+      "adjudicated": true,
+      "errors": [],
+      "sources": [
+        {
+          "url": "https://product-experience-solutions.com/",
+          "final_url": "https://product-experience-solutions.com/",
+          "sha256": "af6487894f2fa057c6abaf83134c7f1c88497ebb9966cf51cd2643aef5b25052",
+          "fetched_at": "2026-11-27T18:03:07.284318+00:00"
+        },
+        {
+          "url": "https://www.centricsoftware.com/legal/subprocessors",
+          "final_url": "https://www.centricsoftware.com/legal/subprocessors",
+          "sha256": "dda1cc7ba349f065d2d4948e6979906725afe3a45d35dd4bbe227d3c461c9fd3",
+          "fetched_at": "2026-11-27T18:04:26.144496+00:00"
+        },
+        {
+          "url": "https://www.centricsoftware.com/legal/subprocessors",
+          "final_url": "https://www.centricsoftware.com/legal/subprocessors",
+          "sha256": "dda1cc7ba349f065d2d4948e6979906725afe3a45d35dd4bbe227d3c461c9fd3",
+          "fetched_at": "2026-11-27T18:04:26.144496+00:00"
+        },
+        {
+          "url": "https://www.communicode.com/en-de/insights/contentserv-pxc-24-0-release-en/",
+          "final_url": "https://www.communicode.com/en-de/insights/contentserv-pxc-24-0-release-en/",
+          "sha256": "2d3c2a8816a0772f36f83da17db1516495dff4b4c660da143fdf84cfe413d78f",
+          "fetched_at": "2026-11-27T18:04:26.477033+00:00"
+        }
+      ],
+      "timings": {
+        "A": 110.214
+      },
+      "version": "1.2",
+      "proposed_verdict": "GREEN"
+    },
+    {
+      "id": "42",
+      "url": "https://www.easyproject.co/en/",
+      "context": "",
+      "name": "EasyProject",
+      "verdict": "YELLOW",
+      "status": "PARTIAL",
+      "phase": "B",
+      "summary": "Assessment based only on the validated reasons below.",
+      "active_phase": null,
+      "stage": "settled",
+      "reasons": [
+        {
+          "claim": "The live vendor site describes a functioning tool for managing tasks, projects and teams.",
+          "url": "https://www.easyproject.co/en/",
+          "final_url": "https://www.easyproject.co/en/",
+          "quote": "Manage your tasks, projects and your team. Stay in touch whenever you want from anywhere in the world.",
+          "kind": "positive",
+          "axis": "real",
+          "material": true,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "935d385903a62f1b1c80e6485dd26b6d1a99cb01d4eacc67bdbdcb9ced572c75",
+          "fetched_at": "2026-11-27T18:03:06.928351+00:00"
+        },
+        {
+          "claim": "An independently published historical item identifies EasyProject as an operating online project-management application.",
+          "url": "https://informacjeprasowe.pl/think-kong-wzmacnia-kompetencje/",
+          "final_url": "https://informacjeprasowe.pl/think-kong-wzmacnia-kompetencje/",
+          "quote": "Flagowym, intensywnie rozwijanym produktem firmy jest EasyProject – działająca on-line aplikacja służąca do prowadzenia i kierowania projektami.",
+          "kind": "positive",
+          "axis": "real",
+          "material": true,
+          "source_role": "independent_report",
+          "origin": "external",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "c874e969aec7f17f238d9201e8383e9882511da791c38a605340e92fac8ac8e6",
+          "fetched_at": "2026-11-27T18:03:44.207164+00:00"
+        },
+        {
+          "claim": "The vendor says EasySoftware has operated since 2009 and explains that EasyProject arose from its work with marketing agencies.",
+          "url": "https://www.easyproject.co/en/about_us.html",
+          "final_url": "https://www.easyproject.co/en/about_us.html",
+          "quote": "EasySoftware has been operating since 2009 and develops software and IT consulting. Since we have always been associated with the marketing industry, and from working with multiple agencies simultaneously EasyProject was born.",
+          "kind": "positive",
+          "axis": "trust",
+          "material": false,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "bdf4019defbdd1a3ab85db8dd788f1df2a093829ffb39f42c221af6b01fcf37c",
+          "fetched_at": "2026-11-27T18:03:44.550268+00:00"
+        },
+        {
+          "claim": "The vendor announced EasyProject's 2026 rebranding to Easy8 and linked release notes for version 15.7.0, supporting continued maintenance.",
+          "url": "https://www.easy8.com/documentation-of-easy8/article/product-news-3-2026",
+          "final_url": "https://www.easy8.com/documentation-of-easy8/article/product-news-3-2026",
+          "quote": "Easy8 is the Private WorkOps Platform for project and work management. It is the new name for Easy Redmine and Easy Project: the same software, extended with workflow automations and AI.",
+          "kind": "positive",
+          "axis": "alive",
+          "material": true,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "fde9dd1f6e81dc1988cd6828fe9601c40cec02b40451499e2e754ee84751e982",
+          "fetched_at": "2026-11-27T18:07:54.848062+00:00"
+        },
+        {
+          "claim": "Published cloud documentation states EU data residency, regular backups and encrypted backup transfer, though these are vendor claims subject to the DPA.",
+          "url": "https://www.easy8.com/about/terms-and-conditions/gdpr-compliance",
+          "final_url": "https://www.easy8.com/about/terms-and-conditions/gdpr-compliance",
+          "quote": "If you are an EU organisation, it is guaranteed that your Easy8 instance (and so data and their backups at disaster recovery sites) are stored within the EU.",
+          "kind": "positive",
+          "axis": "trust",
+          "material": true,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "4bfeb491b7f4e60f6f1e46e1cc56be1cdd8d2e0a7b3ecfad578316737d64a131",
+          "fetched_at": "2026-11-27T18:07:55.383656+00:00"
+        }
+      ],
+      "rejected_reasons": [
+        {
+          "claim": "A moderated review platform shows recent multi-year use and says the product centralizes project information and collaboration.",
+          "url": "https://www.capterra.com/p/159827/Easy-Project/reviews/",
+          "attempted_quote": "All info and control of the project in same place, with collaboration from the team. Accesible via web, and server solution.",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP 403: https://www.capterra.com/p/159827/Easy-Project/reviews/"
+        },
+        {
+          "claim": "A 2025 reviewer alleged possible customer-to-customer visibility in a new Scrum feature; the bounded review did not establish its scope or remediation.",
+          "url": "https://www.capterra.com/p/159827/Easy-Project/reviews/",
+          "attempted_quote": "Gantt behaviour, performance when switching screens, select flexibility without use of AND+OR conditions, new scrum security (a customer could see info from other customer).",
+          "kind": "adverse",
+          "material": true,
+          "error": "HTTP 403: https://www.capterra.com/p/159827/Easy-Project/reviews/"
+        }
+      ],
+      "unknowns": [
+        "Whether the alleged cross-customer visibility in the Scrum feature affected tenant isolation and, if so, whether it was remediated and independently verified.",
+        "Which Easy Software/Easy8 legal entity operates the product, contracts with the buyer, and acts as data processor."
+      ],
+      "limitations": [
+        "No hands-on testing or security audit was performed.",
+        "The applicable DPA, subprocessors, retention settings, and deployment-specific hosting region were not established.",
+        "No specific buyer requirements or deployment configuration were supplied."
+      ],
+      "adjudicated": true,
+      "errors": [],
+      "sources": [
+        {
+          "url": "https://www.easyproject.co/en/",
+          "final_url": "https://www.easyproject.co/en/",
+          "sha256": "935d385903a62f1b1c80e6485dd26b6d1a99cb01d4eacc67bdbdcb9ced572c75",
+          "fetched_at": "2026-11-27T18:03:06.928351+00:00"
+        },
+        {
+          "url": "https://informacjeprasowe.pl/think-kong-wzmacnia-kompetencje/",
+          "final_url": "https://informacjeprasowe.pl/think-kong-wzmacnia-kompetencje/",
+          "sha256": "c874e969aec7f17f238d9201e8383e9882511da791c38a605340e92fac8ac8e6",
+          "fetched_at": "2026-11-27T18:03:44.207164+00:00"
+        },
+        {
+          "url": "https://www.easyproject.co/en/about_us.html",
+          "final_url": "https://www.easyproject.co/en/about_us.html",
+          "sha256": "bdf4019defbdd1a3ab85db8dd788f1df2a093829ffb39f42c221af6b01fcf37c",
+          "fetched_at": "2026-11-27T18:03:44.550268+00:00"
+        },
+        {
+          "url": "https://www.easyproject.co/en/about_us.html",
+          "final_url": "https://www.easyproject.co/en/about_us.html",
+          "sha256": "bdf4019defbdd1a3ab85db8dd788f1df2a093829ffb39f42c221af6b01fcf37c",
+          "fetched_at": "2026-11-27T18:03:44.550268+00:00"
+        },
+        {
+          "url": "https://firmy.ai/firma/easy-software-krs-0000819496",
+          "final_url": "https://firmy.ai/firma/easy-software-krs-0000819496",
+          "sha256": "6fc88474635edcaffdbb9d8e7b1a93764b18acb65e927f94d556037be0984e81",
+          "fetched_at": "2026-11-27T18:03:45.533024+00:00"
+        },
+        {
+          "url": "https://www.easy8.com/documentation-of-easy8/article/product-news-3-2026",
+          "final_url": "https://www.easy8.com/documentation-of-easy8/article/product-news-3-2026",
+          "sha256": "fde9dd1f6e81dc1988cd6828fe9601c40cec02b40451499e2e754ee84751e982",
+          "fetched_at": "2026-11-27T18:07:54.848062+00:00"
+        },
+        {
+          "url": "https://www.easy8.com/about/terms-and-conditions/gdpr-compliance",
+          "final_url": "https://www.easy8.com/about/terms-and-conditions/gdpr-compliance",
+          "sha256": "4bfeb491b7f4e60f6f1e46e1cc56be1cdd8d2e0a7b3ecfad578316737d64a131",
+          "fetched_at": "2026-11-27T18:07:55.383656+00:00"
+        }
+      ],
+      "timings": {
+        "A": 50.455,
+        "B": 57.625
+      },
+      "version": "1.2",
+      "proposed_verdict": "YELLOW"
+    },
+    {
+      "id": "43",
+      "url": "https://it-demand-management.de/",
+      "context": "",
+      "name": "demand-fx",
+      "verdict": "YELLOW",
+      "status": "PARTIAL",
+      "phase": "B",
+      "summary": "Assessment based only on the validated reasons below.",
+      "active_phase": null,
+      "stage": "settled",
+      "reasons": [
+        {
+          "claim": "The vendor openly describes demand-fx as a pilot, so production maturity is not established.",
+          "url": "https://it-demand-management.de/",
+          "final_url": "https://it-demand-management.de/",
+          "quote": "Ein Rechenbeispiel, kein Erfahrungswert — wir sind in der Pilotphase und sagen das offen.",
+          "kind": "neutral",
+          "axis": "alive",
+          "material": true,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "8b35a03bc730dd6e2755f5305a4bb896c0713fdd127d732f78688f70b27baafa",
+          "fetched_at": "2026-11-27T18:03:06.880090+00:00"
+        },
+        {
+          "claim": "The stated workflow checks reported needs for duplication, existing inventory, market options and economics before spending.",
+          "url": "https://it-demand-management.de/",
+          "final_url": "https://it-demand-management.de/",
+          "quote": "Jeder gemeldete Bedarf durchläuft dieselbe Prüfung: Duplikate, Bestand, Markt, Wirtschaftlichkeit. Bevor Geld fließt, nicht danach.",
+          "kind": "positive",
+          "axis": "real",
+          "material": true,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "8b35a03bc730dd6e2755f5305a4bb896c0713fdd127d732f78688f70b27baafa",
+          "fetched_at": "2026-11-27T18:03:06.880090+00:00"
+        },
+        {
+          "claim": "The vendor claims EU hosting, an EU-only AI path, processing terms and a subprocessors list, but these controls were not independently verified.",
+          "url": "https://it-demand-management.de/",
+          "final_url": "https://it-demand-management.de/",
+          "quote": "Plattform und Daten werden in der EU gehostet; der EU-souveräne Datenpfad hält auch die KI-Verarbeitung vollständig in Europa. Auftragsverarbeitung AVV-Muster und Subprozessoren-Liste stellen wir vor Vertragsschluss bereit — ungefragt.",
+          "kind": "neutral",
+          "axis": "trust",
+          "material": true,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "8b35a03bc730dd6e2755f5305a4bb896c0713fdd127d732f78688f70b27baafa",
+          "fetched_at": "2026-11-27T18:03:06.880090+00:00"
+        }
+      ],
+      "rejected_reasons": [
+        {
+          "claim": "Registry-derived data corroborates an active legal operator established in 2010, with recent annual-account publications.",
+          "url": "https://openregister.de/company/DE-HRB-D3310-26812",
+          "attempted_quote": "Gründungsdatum 01.06.2010 Aktiv",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP 403: https://openregister.de/company/DE-HRB-D3310-26812"
+        },
+        {
+          "claim": "The latest available 2024 accounts show materially negative equity, raising a buyer-relevant continuity and support risk despite continued operations.",
+          "url": "https://www.validatis.de/unternehmen/inserteffect-gmbh-3122041a-60b4-4b79-bc83-b4de024a68de/",
+          "attempted_quote": "Das Eigenkapital beträgt −796 Tsd. €, die Eigenkapitalquote −73,2 %. Eine Gewinn- und Verlustrechnung ist für dieses Geschäftsjahr nicht veröffentlicht. Im Geschäftsjahr 2024 beschäftigte das Unternehmen durchschnittlich 23 Mitarbeiter.",
+          "kind": "adverse",
+          "material": true,
+          "error": "exact quote absent from independently fetched page"
+        },
+        {
+          "claim": "Registry-derived records corroborate an active legal operator established in 2010.",
+          "url": "https://openregister.de/company/DE-HRB-D3310-26812",
+          "attempted_quote": "Gründungsdatum 01.06.2010 Aktiv",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP 403: https://openregister.de/company/DE-HRB-D3310-26812"
+        },
+        {
+          "claim": "The operator’s 2024 accounts show €796,000 negative equity and a −73.2% equity ratio, creating a material continuity concern despite continued operations.",
+          "url": "https://www.validatis.de/unternehmen/inserteffect-gmbh-3122041a-60b4-4b79-bc83-b4de024a68de/",
+          "attempted_quote": "Das Eigenkapital beträgt −796 Tsd. €, die Eigenkapitalquote −73,2 %. Eine Gewinn- und Verlustrechnung ist für dieses Geschäftsjahr nicht veröffentlicht.",
+          "kind": "adverse",
+          "material": true,
+          "error": "exact quote absent from independently fetched page"
+        }
+      ],
+      "unknowns": [
+        "No independent customer evidence establishes a production deployment or validates product outcomes beyond the disclosed pilot phase.",
+        "The operator’s financial continuity is unresolved because the specific negative-equity lead could not be verified from accepted evidence.",
+        "The implementation and contractual enforceability of EU hosting, EU-only AI processing, subprocessors, access controls, and audit logging remain unverified."
+      ],
+      "limitations": [
+        "Accepted evidence is limited to vendor-authored website statements.",
+        "No full security, legal, or financial audit was performed.",
+        "Deployment configuration and operational controls were not tested."
+      ],
+      "adjudicated": true,
+      "errors": [],
+      "sources": [
+        {
+          "url": "https://it-demand-management.de/",
+          "final_url": "https://it-demand-management.de/",
+          "sha256": "8b35a03bc730dd6e2755f5305a4bb896c0713fdd127d732f78688f70b27baafa",
+          "fetched_at": "2026-11-27T18:03:06.880090+00:00"
+        },
+        {
+          "url": "https://it-demand-management.de/",
+          "final_url": "https://it-demand-management.de/",
+          "sha256": "8b35a03bc730dd6e2755f5305a4bb896c0713fdd127d732f78688f70b27baafa",
+          "fetched_at": "2026-11-27T18:03:06.880090+00:00"
+        },
+        {
+          "url": "https://inserteffect.com/impressum",
+          "final_url": "https://inserteffect.com/impressum",
+          "sha256": "ef05a8ed51ff28a94b115bf83bc00654d82ecfa16c5b91f07408b1e9022381ee",
+          "fetched_at": "2026-11-27T18:03:48.459107+00:00"
+        },
+        {
+          "url": "https://it-demand-management.de/",
+          "final_url": "https://it-demand-management.de/",
+          "sha256": "8b35a03bc730dd6e2755f5305a4bb896c0713fdd127d732f78688f70b27baafa",
+          "fetched_at": "2026-11-27T18:03:06.880090+00:00"
+        }
+      ],
+      "timings": {
+        "A": 59.843,
+        "B": 115.97
+      },
+      "version": "1.2",
+      "proposed_verdict": "YELLOW"
+    },
+    {
+      "id": "44",
+      "url": "https://www.voidtools.com/",
+      "context": "",
+      "name": "Everything by voidtools",
+      "verdict": "YELLOW",
+      "status": "PARTIAL",
+      "phase": "B",
+      "summary": "Assessment based only on the validated reasons below.",
+      "active_phase": null,
+      "stage": "settled",
+      "reasons": [
+        {
+          "claim": "Australia’s official ABN registry lists VOIDTOOLS PTY LTD as an active private company since February 2018.",
+          "url": "https://abr.business.gov.au/ABN/View?id=14624373397",
+          "final_url": "https://abr.business.gov.au/ABN/View?id=14624373397",
+          "quote": "Entity name: VOIDTOOLS PTY LTD ABN status: Active from 12 Feb 2018 Entity type: Australian Private Company",
+          "kind": "positive",
+          "axis": "real",
+          "material": true,
+          "source_role": "registry",
+          "origin": "external",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "e8d8c34639f9031559fd4011a88e8d6def8ffa18ce579356cf0b11584f85fc4a",
+          "fetched_at": "2026-11-27T18:04:52.408415+00:00"
+        }
+      ],
+      "rejected_reasons": [
+        {
+          "claim": "Independent coverage confirms that Everything performs its stated role as a fast Windows file-and-folder search utility.",
+          "url": "https://www.windowscentral.com/microsoft/windows-11/6-alternatives-to-replace-the-search-functionality-on-windows-11",
+          "attempted_quote": "Developed by Voidtools, Everything is a free search utility that indexes all files and folders on your computer and delivers results almost instantly.",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP fetch failed: curl: (56) Maximum file size exceeded\n200\n\ntext/html; charset=utf-8"
+        },
+        {
+          "claim": "The optional ETP/FTP server lacks TLS and exposes indexed names and potentially files; it should not be directly internet-exposed.",
+          "url": "https://ftp.voidtools.com/support/everything/etp/",
+          "attempted_quote": "The username and password are sent as raw text and are not encrypted. Anyone able to observe the connection can recover them. ETP does not support TLS.",
+          "kind": "neutral",
+          "material": true,
+          "error": "[Errno 8] nodename nor servname provided, or not known"
+        },
+        {
+          "claim": "Independent coverage confirms Everything performs its ordinary role as a fast Windows file-and-folder search utility.",
+          "url": "https://www.windowscentral.com/microsoft/windows-11/6-alternatives-to-replace-the-search-functionality-on-windows-11",
+          "attempted_quote": "Developed by Voidtools, Everything is a free search utility that indexes all files and folders on your computer and delivers results almost instantly.",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP fetch failed: curl: (56) Maximum file size exceeded\n200\n\ntext/html; charset=utf-8"
+        },
+        {
+          "claim": "The independent Scoop package registry carries version 1.4.1.1032 with architecture-specific download hashes.",
+          "url": "https://github.com/ScoopInstaller/Extras/blob/master/bucket/everything.json",
+          "attempted_quote": "\"version\": \"1.4.1.1032\", \"description\": \"Locate files and folders by name instantly.\"",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP 503: https://github.com/ScoopInstaller/Extras/blob/master/bucket/everything.json"
+        }
+      ],
+      "unknowns": [
+        "Current maintenance and release activity are not established by the accepted evidence; the quoted passages do not support the claimed dates, breadth of builds, or continuing maintenance timeline.",
+        "The optional ETP/FTP server's alleged lack of TLS and exposure risk remains unverified; this could matter if that feature would be enabled or internet-exposed.",
+        "Independent evidence that the product performs its ordinary file-search role was not successfully verified."
+      ],
+      "limitations": [
+        "No full security or code audit was provided.",
+        "Deployment configuration and optional network features were not tested.",
+        "No special buyer requirements were supplied."
+      ],
+      "adjudicated": true,
+      "errors": [],
+      "sources": [
+        {
+          "url": "https://abr.business.gov.au/ABN/View?id=14624373397",
+          "final_url": "https://abr.business.gov.au/ABN/View?id=14624373397",
+          "sha256": "e8d8c34639f9031559fd4011a88e8d6def8ffa18ce579356cf0b11584f85fc4a",
+          "fetched_at": "2026-11-27T18:04:52.408415+00:00"
+        },
+        {
+          "url": "https://www.voidtools.com/downloads/",
+          "final_url": "https://www.voidtools.com/downloads/",
+          "sha256": "316105e518aeddbfa45900605a22d22fdfb3e2da7cd0fc73475b60298a1231b3",
+          "fetched_at": "2026-11-27T18:04:52.646767+00:00"
+        },
+        {
+          "url": "https://vulnerability.circl.lu/search?product=everything&vendor=voidtools",
+          "final_url": "https://vulnerability.circl.lu/search?product=everything&vendor=voidtools",
+          "sha256": "f910b2f271f288f52eff8469517092218b17c6f1770bd4f232a0090fef7c6755",
+          "fetched_at": "2026-11-27T18:04:54.612853+00:00"
+        },
+        {
+          "url": "https://www.voidtools.com/forum/viewtopic.php?t=9787",
+          "final_url": "https://www.voidtools.com/forum/viewtopic.php?t=9787",
+          "sha256": "c2a422fc0a8faaccdd0652960fe8ce0e9ce4a9b467351ea27c63b171ec7fe6e7",
+          "fetched_at": "2026-11-27T18:09:59.892960+00:00"
+        },
+        {
+          "url": "https://cve.circl.lu/search?product=Everything&vendor=Voidtools",
+          "final_url": "https://cve.circl.lu/search?product=Everything&vendor=Voidtools",
+          "sha256": "3f8348ce9023cb8e2deedad0900c53ec3bc1a38db93e6333b923a4c3eeafbc4a",
+          "fetched_at": "2026-11-27T18:10:00.445531+00:00"
+        }
+      ],
+      "timings": {
+        "A": 68.588,
+        "B": 74.569
+      },
+      "version": "1.2",
+      "proposed_verdict": "YELLOW"
+    },
+    {
+      "id": "45",
+      "url": "https://www.sap.com/products/artificial-intelligence/joule-work.html",
+      "context": "",
+      "name": "SAP Joule Work",
+      "verdict": "YELLOW",
+      "status": "PARTIAL",
+      "phase": "B",
+      "summary": "Assessment based only on the validated reasons below.",
+      "active_phase": null,
+      "stage": "settled",
+      "reasons": [
+        {
+          "claim": "SAP reports active deployment at substantial internal scale and use by a limited customer cohort, supporting ongoing stewardship but indicating an early rollout stage.",
+          "url": "https://news.sap.com/2026/10/sap-connect-sap-puts-autonomous-enterprise-to-work/",
+          "final_url": "https://news.sap.com/2026/10/sap-connect-sap-puts-autonomous-enterprise-to-work/",
+          "quote": "At SAP, Joule Work is already live with 110,000 employees, with the company seeing 20% productivity gains across finance, HR and procurement. A select group of customers also is using Joule Work in their business environments.",
+          "kind": "neutral",
+          "axis": "alive",
+          "material": true,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "9f622955032340f9f1692467fb6227105b0609904c0b9590c34fd6f5595d6737",
+          "fetched_at": "2026-11-27T18:10:03.150473+00:00"
+        },
+        {
+          "claim": "SAP explicitly says customer rollout is only beginning, making broad availability and production maturity unresolved.",
+          "url": "https://news.sap.com/2026/10/sap-connect-sap-puts-autonomous-enterprise-to-work/",
+          "final_url": "https://news.sap.com/2026/10/sap-connect-sap-puts-autonomous-enterprise-to-work/",
+          "quote": "Joule Work is beginning its customer rollout as a new AI user interface that lets employees interact with SAP solutions in their own language and complete work across SAP and third-party data.",
+          "kind": "neutral",
+          "axis": "alive",
+          "material": true,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "9f622955032340f9f1692467fb6227105b0609904c0b9590c34fd6f5595d6737",
+          "fetched_at": "2026-11-27T18:10:03.150473+00:00"
+        },
+        {
+          "claim": "SAP describes governance features including established authorization, audit trails and customer-controlled autonomy for operational actions.",
+          "url": "https://news.sap.com/2026/10/sap-connect-sap-puts-autonomous-enterprise-to-work/",
+          "final_url": "https://news.sap.com/2026/10/sap-connect-sap-puts-autonomous-enterprise-to-work/",
+          "quote": "Joule Assistants execute operational work directly within business workflows, using established data, authorizations and audit trails. Customers control the level of autonomy.",
+          "kind": "positive",
+          "axis": "trust",
+          "material": true,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "9f622955032340f9f1692467fb6227105b0609904c0b9590c34fd6f5595d6737",
+          "fetched_at": "2026-11-27T18:10:03.150473+00:00"
+        }
+      ],
+      "rejected_reasons": [
+        {
+          "claim": "SAP describes a purchasable, deployable product supporting SAP project design, configuration, code interpretation, and troubleshooting.",
+          "url": "https://www.sap.com/products/artificial-intelligence/sap-consulting-capability.html",
+          "attempted_quote": "SAP Joule for Consultants supports teams across a wide range of SAP project scenarios—from solution design and configuration to code interpretation and best-practice alignment.",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP 403: https://www.sap.com/products/artificial-intelligence/sap-consulting-capability.html"
+        },
+        {
+          "claim": "SAP's current release documentation records multiple generally available Joule for Consultants enhancements during 2026.",
+          "url": "https://help.sap.com/docs/joule/capabilities-guide/navigational-use-cases",
+          "attempted_quote": "The table below shows the new capabilities and changes for each release of Joule.",
+          "kind": "positive",
+          "material": true,
+          "error": "exact quote absent from independently fetched page"
+        },
+        {
+          "claim": "SAP currently presents Joule Work as a central enterprise workspace spanning web, desktop, mobile, applications, data and AI agents.",
+          "url": "https://www.sap.com/products/artificial-intelligence/joule-work.html",
+          "attempted_quote": "Joule Work is a central workspace where teams across the enterprise can use AI to its fullest.",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP 403: https://www.sap.com/products/artificial-intelligence/joule-work.html"
+        },
+        {
+          "claim": "Independent reporting corroborates that SAP launched Joule Work as a unified interface for organizational workflows, data and agents.",
+          "url": "https://www.techradar.com/pro/almost-right-just-isnt-good-enough-sap-ceo-unveils-the-autonomous-enterprise-with-ai-at-the-core",
+          "attempted_quote": "SAP also revealed Joule Work, allowing users to interact directly with Joule in a central location, bringing together all an organization's workflows, data and agents",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP fetch failed: curl: (56) Maximum file size exceeded\n200\n\ntext/html; charset=utf-8"
+        }
+      ],
+      "unknowns": [
+        "Current production availability by customer segment, region, and required SAP subscription is unresolved.",
+        "Mature customer-operated production use and independent validation of claimed performance are not established.",
+        "Joule Work-specific data retention, handling, and model-training terms were not established."
+      ],
+      "limitations": [
+        "No full security, privacy, or contractual audit was performed.",
+        "Deployment configuration and real-world output quality were not tested.",
+        "Evidence about adoption and governance is primarily vendor-reported."
+      ],
+      "adjudicated": true,
+      "errors": [
+        "homepage: HTTP 403: https://www.sap.com/products/artificial-intelligence/joule-work.html"
+      ],
+      "sources": [
+        {
+          "url": "https://www.deloitte.com/us/en/about/press-room/deloitte-adopts-sap-joule-for-consultants-solution.html",
+          "final_url": "https://www.deloitte.com/us/en/about/press-room/deloitte-adopts-sap-joule-for-consultants-solution.html",
+          "sha256": "a785ad50ef2715f6cd81c0d5a51dc711b910ef47f3124e60a9c4399133b37c6c",
+          "fetched_at": "2026-11-27T18:05:02.043143+00:00"
+        },
+        {
+          "url": "https://www.ibm.com/think/insights/how-ibm-uses-sap-joule-for-consultants-accelerate-autonomous-enterprise",
+          "final_url": "https://www.ibm.com/think/insights/how-ibm-uses-sap-joule-for-consultants-accelerate-autonomous-enterprise",
+          "sha256": "1d3d910c868eb2e63a405d17b3dcf4e709ad3809bbca5cdcac173790bd9c9687",
+          "fetched_at": "2026-11-27T18:05:03.121464+00:00"
+        },
+        {
+          "url": "https://developers.sap.com/concepts/ai-assistant-for-consultants/",
+          "final_url": "https://developers.sap.com/concepts/ai-assistant-for-consultants/",
+          "sha256": "503f1654d7540efb955534ec9599bb5ace7006a7c065c58c1d800f5e9ed1f9f0",
+          "fetched_at": "2026-11-27T18:05:03.601925+00:00"
+        },
+        {
+          "url": "https://news.sap.com/2026/10/sap-connect-sap-puts-autonomous-enterprise-to-work/",
+          "final_url": "https://news.sap.com/2026/10/sap-connect-sap-puts-autonomous-enterprise-to-work/",
+          "sha256": "9f622955032340f9f1692467fb6227105b0609904c0b9590c34fd6f5595d6737",
+          "fetched_at": "2026-11-27T18:10:03.150473+00:00"
+        },
+        {
+          "url": "https://news.sap.com/2026/10/sap-connect-sap-puts-autonomous-enterprise-to-work/",
+          "final_url": "https://news.sap.com/2026/10/sap-connect-sap-puts-autonomous-enterprise-to-work/",
+          "sha256": "9f622955032340f9f1692467fb6227105b0609904c0b9590c34fd6f5595d6737",
+          "fetched_at": "2026-11-27T18:10:03.150473+00:00"
+        },
+        {
+          "url": "https://news.sap.com/2026/10/sap-connect-sap-puts-autonomous-enterprise-to-work/",
+          "final_url": "https://news.sap.com/2026/10/sap-connect-sap-puts-autonomous-enterprise-to-work/",
+          "sha256": "9f622955032340f9f1692467fb6227105b0609904c0b9590c34fd6f5595d6737",
+          "fetched_at": "2026-11-27T18:10:03.150473+00:00"
+        }
+      ],
+      "timings": {
+        "A": 69.225,
+        "B": 73.395
+      },
+      "version": "1.2",
+      "proposed_verdict": "YELLOW"
+    },
+    {
+      "id": "46",
+      "url": "https://www.servicenow.com/products/it-asset-management.html",
+      "context": "",
+      "name": "ServiceNow IT Asset Management",
+      "verdict": "YELLOW",
+      "status": "PARTIAL",
+      "phase": "B",
+      "summary": "Assessment based only on the validated reasons below.",
+      "active_phase": null,
+      "stage": "settled",
+      "reasons": [
+        {
+          "claim": "A June 2026 platform vulnerability reportedly permitted unauthenticated access to customer-instance data.",
+          "url": "https://techcrunch.com/2026/06/10/servicenow-tells-customers-a-bug-left-some-of-their-data-exposed-to-the-internet/",
+          "final_url": "https://techcrunch.com/2026/06/10/servicenow-tells-customers-a-bug-left-some-of-their-data-exposed-to-the-internet/",
+          "quote": "The bug allowed potentially anyone to access data stored in customer instances without requiring credentials, such as a password.",
+          "kind": "adverse",
+          "axis": "trust",
+          "material": true,
+          "source_role": "independent_report",
+          "origin": "external",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "4003f88e0409679f6ce3b7df4913806f7d60c131489778a731dd1d0632773a5b",
+          "fetched_at": "2026-11-27T18:05:37.060689+00:00"
+        },
+        {
+          "claim": "A July 2026 report documents a live third-party integration that feeds endpoint and asset information into ServiceNow.",
+          "url": "https://www.itpro.com/business/data-and-insights/ninjaone-partners-with-servicenow-to-supercharge-it-helpdesk-teams",
+          "final_url": "https://www.itpro.com/business/data-and-insights/ninjaone-partners-with-servicenow-to-supercharge-it-helpdesk-teams",
+          "quote": "The new integration enables endpoint data from NinjaOne to flow directly into ServiceNow, allowing organizations to automatically update asset information, configuration management databases (CMDBs), patch status, endpoint records, and other configuration data.",
+          "kind": "positive",
+          "axis": "alive",
+          "material": true,
+          "source_role": "independent_report",
+          "origin": "external",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "ce62ac8686e6831ed56b23797e7c8d8d4ae29d03ccc2c0e03f0aae528487ae23",
+          "fetched_at": "2026-11-27T18:08:57.643373+00:00"
+        }
+      ],
+      "rejected_reasons": [
+        {
+          "claim": "ServiceNow states that ITAM manages hardware, software, and cloud assets across their lifecycle on its cloud platform.",
+          "url": "https://www.servicenow.com/products/it-asset-management.html",
+          "attempted_quote": "The ServiceNow AI Platform is the cloud-based foundation for all ServiceNow products. It connects and automates business workflows across the enterprise using one architecture, one data model, and a collection of AI capabilities, business applications, and low-code/no code development tools.",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP fetch failed: curl: (92) HTTP/2 stream 1 was not closed cleanly: INTERNAL_ERROR (err 2)\n000\n\n"
+        },
+        {
+          "claim": "Current independent user-review activity strongly corroborates that the product is real and in active enterprise use.",
+          "url": "https://www.g2.com/products/servicenow-it-asset-management/reviews",
+          "attempted_quote": "ServiceNow IT Asset Management Reviews (562)",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP 403: https://www.g2.com/products/servicenow-it-asset-management/reviews"
+        },
+        {
+          "claim": "Recent users report centralized lifecycle tracking and operational benefits.",
+          "url": "https://www.g2.com/products/servicenow-it-asset-management/reviews",
+          "attempted_quote": "It helped teams monitor how assets are being used, manage inventory more effectively, cut down on manual work, and make more informed decisions about upgrades and replacements.",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP 403: https://www.g2.com/products/servicenow-it-asset-management/reviews"
+        },
+        {
+          "claim": "User evidence also indicates meaningful implementation, integration, and data-maintenance effort.",
+          "url": "https://www.g2.com/products/servicenow-it-asset-management/reviews",
+          "attempted_quote": "The platform can require significant effort to configure and maintain, especially when integrating with existing systems and ensuring asset data remains accurate.",
+          "kind": "neutral",
+          "material": true,
+          "error": "HTTP 403: https://www.g2.com/products/servicenow-it-asset-management/reviews"
+        },
+        {
+          "claim": "ServiceNow published multiple Enterprise Asset Management releases through October 2026, demonstrating ongoing maintenance.",
+          "url": "https://www.servicenow.com/docs/r/store-release-notes/store-rn-itam-enterprise-asset-mgmt.html?contentId=Mt0pqXaW38mppZ~hUJJR8w",
+          "attempted_quote": "Version history for the ITAM Enterprise Asset Management application on the ServiceNow Store.",
+          "kind": "positive",
+          "material": true,
+          "error": "exact quote absent from independently fetched page"
+        },
+        {
+          "claim": "An independent review describes ITAM as an enterprise solution covering hardware, software and cloud asset records.",
+          "url": "https://www.techradar.com/best/best-asset-management-software",
+          "attempted_quote": "ITAM tracks financial, contractual, and inventory data for hardware, software, and cloud assets.",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP fetch failed: curl: (56) Maximum file size exceeded\n200\n\ntext/html; charset=utf-8"
+        },
+        {
+          "claim": "An independent review warns that implementation and training can require substantial resources and expertise.",
+          "url": "https://www.techradar.com/best/best-asset-management-software",
+          "attempted_quote": "Organizations looking at ServiceNow ITAM should make sure they have enough time and resources for implementation and training.",
+          "kind": "neutral",
+          "material": true,
+          "error": "HTTP fetch failed: curl: (56) Maximum file size exceeded\n200\n\ntext/html; charset=utf-8"
+        }
+      ],
+      "unknowns": [
+        "The affected-instance count and the categories or volume of exposed data are not established.",
+        "Whether anyone beyond researchers exploited the unauthenticated-access flaw is unresolved.",
+        "Whether remediation was deployed and verified across all affected customer instances is unresolved."
+      ],
+      "limitations": [
+        "No full security or architecture audit was performed.",
+        "The accepted evidence provides limited direct coverage of IT Asset Management’s core capabilities and stewardship.",
+        "Deployment-specific configuration and controls were not tested."
+      ],
+      "adjudicated": true,
+      "errors": [
+        "homepage: HTTP fetch failed: curl: (92) HTTP/2 stream 1 was not closed cleanly: INTERNAL_ERROR (err 2)\n000\n\n"
+      ],
+      "sources": [
+        {
+          "url": "https://techcrunch.com/2026/06/10/servicenow-tells-customers-a-bug-left-some-of-their-data-exposed-to-the-internet/",
+          "final_url": "https://techcrunch.com/2026/06/10/servicenow-tells-customers-a-bug-left-some-of-their-data-exposed-to-the-internet/",
+          "sha256": "4003f88e0409679f6ce3b7df4913806f7d60c131489778a731dd1d0632773a5b",
+          "fetched_at": "2026-11-27T18:05:37.060689+00:00"
+        },
+        {
+          "url": "https://techcrunch.com/2026/06/10/servicenow-tells-customers-a-bug-left-some-of-their-data-exposed-to-the-internet/",
+          "final_url": "https://techcrunch.com/2026/06/10/servicenow-tells-customers-a-bug-left-some-of-their-data-exposed-to-the-internet/",
+          "sha256": "4003f88e0409679f6ce3b7df4913806f7d60c131489778a731dd1d0632773a5b",
+          "fetched_at": "2026-11-27T18:05:37.060689+00:00"
+        },
+        {
+          "url": "https://www.itpro.com/business/data-and-insights/ninjaone-partners-with-servicenow-to-supercharge-it-helpdesk-teams",
+          "final_url": "https://www.itpro.com/business/data-and-insights/ninjaone-partners-with-servicenow-to-supercharge-it-helpdesk-teams",
+          "sha256": "ce62ac8686e6831ed56b23797e7c8d8d4ae29d03ccc2c0e03f0aae528487ae23",
+          "fetched_at": "2026-11-27T18:08:57.643373+00:00"
+        }
+      ],
+      "timings": {
+        "A": 69.438,
+        "B": 66.328
+      },
+      "version": "1.2",
+      "proposed_verdict": "YELLOW"
+    },
+    {
+      "id": "47",
+      "url": "https://www.clearview.ai/",
+      "context": "",
+      "name": "Clearview AI",
+      "verdict": "RED",
+      "status": "PARTIAL",
+      "phase": "B",
+      "summary": "Assessment based only on the validated reasons below.",
+      "active_phase": null,
+      "stage": "settled",
+      "reasons": [
+        {
+          "claim": "A binding U.S. settlement permanently restricts Clearview from supplying its faceprint database to most private entities nationwide.",
+          "url": "https://www.aclu.org/cases/aclu-v-clearview-ai?document=joint-motion-entry-consent-order-and-dismissal",
+          "final_url": "https://www.aclu.org/cases/aclu-v-clearview-ai?document=joint-motion-entry-consent-order-and-dismissal",
+          "quote": "The central provision of the settlement restricts Clearview’s practices not just in Illinois, but across the United States, by permanently banning Clearview from making its faceprint database available to most businesses and other private entities nationwide.",
+          "kind": "adverse",
+          "axis": "trust",
+          "material": true,
+          "source_role": "independent_report",
+          "origin": "external",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "cb7082b3532eb34fda51ea054e9eb5f77876a463a29013497ea6d6a1cc3f7591",
+          "fetched_at": "2026-11-27T18:06:01.040186+00:00"
+        },
+        {
+          "claim": "The Dutch decision describes ongoing violations and compliance orders, making this more than a historical resolved incident.",
+          "url": "https://www.edpb.europa.eu/news/dutch-supervisory-authority-imposes-a-fine-on-clearview-because-of-illegal-data-collection-for_en",
+          "final_url": "https://www.edpb.europa.eu/news/dutch-supervisory-authority-imposes-a-fine-on-clearview-because-of-illegal-data-collection-for_en",
+          "quote": "The AP also decided to impose four orders subject to a penalty for non-compliance on Clearview, which orders relate to ending the still ongoing violations.",
+          "kind": "adverse",
+          "axis": "trust",
+          "material": true,
+          "source_role": "independent_report",
+          "origin": "external",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "73122b0e3e0e22d255069393537e117a31d3a195722e0d0bc2d97df85f7d78d6",
+          "fetched_at": "2026-11-27T18:06:01.172729+00:00"
+        },
+        {
+          "claim": "Nationwide U.S. biometric-privacy litigation remained open after appellate reversal in July 2026.",
+          "url": "https://www.citizen.org/litigation/in-re-clearview-ai-consumer-privacy-litigation/",
+          "final_url": "https://www.citizen.org/litigation/in-re-clearview-ai-consumer-privacy-litigation/",
+          "quote": "In July 2026, the court of appeals ruled in our favor, vacating the district court’s approval of the settlement and remanding the case to the district court for further proceedings.",
+          "kind": "adverse",
+          "axis": "trust",
+          "material": true,
+          "source_role": "independent_report",
+          "origin": "external",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "4001cf8feead17f207d95136ad1dc03733e63b5ee505c3868e11dc97fee926ae",
+          "fetched_at": "2026-11-27T18:06:01.813031+00:00"
+        }
+      ],
+      "rejected_reasons": [
+        {
+          "claim": "A 2026 NIST report card confirms recent submission and independent technical evaluation of Clearview's algorithm.",
+          "url": "https://face.nist.gov/frte/reportcards/11/clearviewai_003.html",
+          "attempted_quote": "Developer Name: Clearview AI Inc | Algorithm Name: clearviewai_003 | Algorithm Type: 1:1 Verification",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP fetch failed: curl: (56) Exceeded the maximum allowed file size (1000000) with 1000000 bytes\n200\n\ntext/html"
+        },
+        {
+          "claim": "Clearview states its product generates investigative leads from public internet images and requires independent verification.",
+          "url": "https://www.clearview.ai/faq",
+          "attempted_quote": "Once a search is performed, the search may return a set of potential leads, which the investigator is required to independently verify by both peer review and other means, before continuing with their investigation.",
+          "kind": "neutral",
+          "material": false,
+          "error": "HTTP fetch failed: curl: (56) Maximum file size exceeded\n200\n\ntext/html; charset=UTF-8"
+        },
+        {
+          "claim": "A Texas government purchase shows an active Clearview facial-recognition subscription through August 2027.",
+          "url": "https://purchase.tdcj.texas.gov/PurchasePrint/loadFormFormAction.action?mastId=67549366&selection=3",
+          "attempted_quote": "SERVICE PERIOD: 09/01/2026 - 08/31/2027",
+          "kind": "positive",
+          "material": true,
+          "error": "exact quote absent from independently fetched page"
+        },
+        {
+          "claim": "Clearview's current product documentation describes a functioning image-search service offered to government agencies.",
+          "url": "https://www.clearview.ai/principles",
+          "attempted_quote": "When a Clearview AI user uploads an image, Clearview AI’s proprietary technology processes the image and returns links to publicly available images that contain faces similar to the person pictured in the uploaded image.",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP fetch failed: curl: (56) Maximum file size exceeded\n200\n\ntext/html; charset=UTF-8"
+        }
+      ],
+      "unknowns": [
+        "Whether Clearview has complied with the Dutch regulator’s orders to end the cited ongoing violations.",
+        "The final outcome and operational consequences of the remanded U.S. biometric-privacy litigation.",
+        "Whether current accuracy and operational safeguards are independently verified in customer deployments."
+      ],
+      "limitations": [
+        "No full legal, privacy, security, or technical audit was performed.",
+        "Current product operation, maintenance, and customer deployment were not established by accepted evidence.",
+        "No deployment configuration or real-world performance was tested."
+      ],
+      "adjudicated": true,
+      "errors": [
+        "homepage: HTTP fetch failed: curl: (56) Maximum file size exceeded\n200\n\ntext/html; charset=UTF-8"
+      ],
+      "sources": [
+        {
+          "url": "https://www.aclu.org/cases/aclu-v-clearview-ai?document=joint-motion-entry-consent-order-and-dismissal",
+          "final_url": "https://www.aclu.org/cases/aclu-v-clearview-ai?document=joint-motion-entry-consent-order-and-dismissal",
+          "sha256": "cb7082b3532eb34fda51ea054e9eb5f77876a463a29013497ea6d6a1cc3f7591",
+          "fetched_at": "2026-11-27T18:06:01.040186+00:00"
+        },
+        {
+          "url": "https://www.edpb.europa.eu/news/dutch-supervisory-authority-imposes-a-fine-on-clearview-because-of-illegal-data-collection-for_en",
+          "final_url": "https://www.edpb.europa.eu/news/dutch-supervisory-authority-imposes-a-fine-on-clearview-because-of-illegal-data-collection-for_en",
+          "sha256": "73122b0e3e0e22d255069393537e117a31d3a195722e0d0bc2d97df85f7d78d6",
+          "fetched_at": "2026-11-27T18:06:01.172729+00:00"
+        },
+        {
+          "url": "https://www.edpb.europa.eu/news/dutch-supervisory-authority-imposes-a-fine-on-clearview-because-of-illegal-data-collection-for_en",
+          "final_url": "https://www.edpb.europa.eu/news/dutch-supervisory-authority-imposes-a-fine-on-clearview-because-of-illegal-data-collection-for_en",
+          "sha256": "73122b0e3e0e22d255069393537e117a31d3a195722e0d0bc2d97df85f7d78d6",
+          "fetched_at": "2026-11-27T18:06:01.172729+00:00"
+        },
+        {
+          "url": "https://www.citizen.org/litigation/in-re-clearview-ai-consumer-privacy-litigation/",
+          "final_url": "https://www.citizen.org/litigation/in-re-clearview-ai-consumer-privacy-litigation/",
+          "sha256": "4001cf8feead17f207d95136ad1dc03733e63b5ee505c3868e11dc97fee926ae",
+          "fetched_at": "2026-11-27T18:06:01.813031+00:00"
+        }
+      ],
+      "timings": {
+        "A": 69.304,
+        "B": 65.284
+      },
+      "version": "1.2",
+      "proposed_verdict": "RED"
+    },
+    {
+      "id": "48",
+      "url": "https://www.mendix.com/platform/",
+      "context": "",
+      "name": "Mendix",
+      "verdict": "YELLOW",
+      "status": "PARTIAL",
+      "phase": "B",
+      "summary": "Assessment based only on the validated reasons below.",
+      "active_phase": null,
+      "stage": "settled",
+      "reasons": [
+        {
+          "claim": "Mendix describes an enterprise platform that connects existing infrastructure, data, and tools while coordinating workflows and governance.",
+          "url": "https://www.mendix.com/platform/",
+          "final_url": "https://www.mendix.com/platform/",
+          "quote": "Mendix runs on top of the infrastructure, data, and tools you already have. It connects them, coordinates them, and enforces governance across all of it.",
+          "kind": "positive",
+          "axis": "real",
+          "material": true,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "ecda9ec03fac359a14d5c343a8d992dd610df50d5d1b21a2594e2e2023573a87",
+          "fetched_at": "2026-11-27T18:05:15.977261+00:00"
+        },
+        {
+          "claim": "Siemens confirms that it acquired Mendix and incorporated the platform into its software business, providing credible corporate stewardship.",
+          "url": "https://press.siemens.com/global/en/pressrelease/siemens-closes-mendix-acquisition-extending-industry-leading-digital-innovation",
+          "final_url": "https://press.siemens.com/global/en/pressrelease/siemens-closes-mendix-acquisition-extending-industry-leading-digital-innovation",
+          "quote": "Siemens today closed the acquisition of Mendix, eight weeks after the transaction was announced as part of the company’s Vision 2020+ strategy.",
+          "kind": "positive",
+          "axis": "trust",
+          "material": true,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "66475fe16c450a91d090c155a42f06f3143c944e5939ba571f838c8c12755692",
+          "fetched_at": "2026-11-27T18:06:27.000103+00:00"
+        },
+        {
+          "claim": "PostNL independently confirms selecting Mendix among its primary technologies for its engineering transformation.",
+          "url": "https://www.postnl.nl/en/ronald-allard/",
+          "final_url": "https://www.postnl.nl/en/ronald-allard/",
+          "quote": "In this process, we've primarily opted for Mendix, C#, Java, Javascript and Python. And all our logistics systems run in the AWS cloud.",
+          "kind": "positive",
+          "axis": "real",
+          "material": true,
+          "source_role": "customer",
+          "origin": "external",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "ae4d3f0e5c9b0f9e32123ee7b06479567e1afa637a1dab601110932797d15d43",
+          "fetched_at": "2026-11-27T18:09:06.727504+00:00"
+        },
+        {
+          "claim": "Independent researchers found recurring authorization misconfiguration capable of exposing data in Mendix applications, although they explicitly distinguish it from a platform vulnerability.",
+          "url": "https://csirt.divd.nl/cases/DIVD-2026-00003/",
+          "final_url": "https://csirt.divd.nl/cases/DIVD-2026-00003/",
+          "quote": "The issue involves authorization misconfiguration within Mendix applications that may allow anonymous users or application users to access data sources with overly broad permissions due to improper access constraints.",
+          "kind": "adverse",
+          "axis": "trust",
+          "material": true,
+          "source_role": "independent_report",
+          "origin": "external",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "bb64f21353b9becac051372a6908c3a65a16254f104be40e8fd1b463ea286022",
+          "fetched_at": "2026-11-27T18:09:07.251631+00:00"
+        },
+        {
+          "claim": "An October 2026 SAML authentication-bypass advisory identifies affected versions and confirms patched releases are available.",
+          "url": "https://cert-portal.siemens.com/productcert/html/ssa-137528.html",
+          "final_url": "https://cert-portal.siemens.com/productcert/html/ssa-137528.html",
+          "quote": "Mendix SAML module contains an authentication bypass vulnerability that could allow an unauthenticated remote attacker to gain unauthorized access by replaying a valid SAML assertion in IdP-initiated authentication flows.",
+          "kind": "neutral",
+          "axis": "trust",
+          "material": true,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "6644929a1acc3f18b2d8855b598d25e9e77820222f88422f67d193dfb4a5b23a",
+          "fetched_at": "2026-11-27T18:09:07.443017+00:00"
+        }
+      ],
+      "rejected_reasons": [
+        {
+          "claim": "Gartner's 2025 enterprise low-code market research includes Mendix among the evaluated vendors, independently corroborating its established market presence.",
+          "url": "https://www.gartner.com/en/documents/6773234",
+          "attempted_quote": "Software engineering teams struggle with delivery speed, legacy complexity and integration demands. Enterprise LCAPs address these challenges by streamlining development with AI-assisted tooling, composable architectures and built-in governance",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP 403: https://www.gartner.com/en/documents/6773234"
+        },
+        {
+          "claim": "Mendix publicly documents security issues and coordinates disclosure through Siemens ProductCERT, supporting a visible vulnerability-management process.",
+          "url": "https://docs.mendix.com/releasenotes/security-advisories/",
+          "attempted_quote": "Siemens publishes their common vulnerabilities and exposures (CVE) as soon as a fix is published or a workaround is available.",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP fetch failed: curl: (56) Maximum file size exceeded\n200\n\ntext/html"
+        },
+        {
+          "claim": "Recent advisories include serious account-hijacking and MCP-server vulnerabilities, so buyers must verify that affected components are updated.",
+          "url": "https://docs.mendix.com/releasenotes/security-advisories/",
+          "attempted_quote": "Account Hijacking Vulnerability in Mendix SAML module",
+          "kind": "adverse",
+          "material": true,
+          "error": "HTTP fetch failed: curl: (56) Maximum file size exceeded\n200\n\ntext/html"
+        },
+        {
+          "claim": "A November 2026 Studio Pro maintenance release demonstrates current development and fixes.",
+          "url": "https://docs.mendix.com/releasenotes/studio-pro/11.16/",
+          "attempted_quote": "Release date: November 3, 2026",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP fetch failed: curl: (56) Maximum file size exceeded\n200\n\ntext/html"
+        }
+      ],
+      "unknowns": [
+        "Whether prospective applications have been reviewed for overly broad authorization, anonymous access, role mappings, and access constraints.",
+        "Whether deployed Mendix SAML modules remain exposed to the quoted authentication-bypass vulnerability; the verified quote does not establish patched releases or upgrade status.",
+        "Current maintenance status was not established because the supplied maintenance-release lead was unverified."
+      ],
+      "limitations": [
+        "No full security or architecture audit was provided.",
+        "Actual deployment configuration and component versions were not tested.",
+        "No special buyer requirements or deployment context were supplied."
+      ],
+      "adjudicated": true,
+      "errors": [
+        "seed: HTTP fetch failed: curl: (56) Maximum file size exceeded\n200\n\ntext/html",
+        "seed: HTTP fetch failed: curl: (56) Maximum file size exceeded\n200\n\ntext/html"
+      ],
+      "sources": [
+        {
+          "url": "https://www.mendix.com/platform/",
+          "final_url": "https://www.mendix.com/platform/",
+          "sha256": "ecda9ec03fac359a14d5c343a8d992dd610df50d5d1b21a2594e2e2023573a87",
+          "fetched_at": "2026-11-27T18:05:15.977261+00:00"
+        },
+        {
+          "url": "https://www.mendix.com/releases/",
+          "final_url": "https://www.mendix.com/releases/",
+          "sha256": "f3f5668577406eaa2d6424b70dfceeddd3c43339f546b3e2cdfe83576b1e7ad9",
+          "fetched_at": "2026-11-27T18:05:16.491759+00:00"
+        },
+        {
+          "url": "https://press.siemens.com/global/en/pressrelease/siemens-closes-mendix-acquisition-extending-industry-leading-digital-innovation",
+          "final_url": "https://press.siemens.com/global/en/pressrelease/siemens-closes-mendix-acquisition-extending-industry-leading-digital-innovation",
+          "sha256": "66475fe16c450a91d090c155a42f06f3143c944e5939ba571f838c8c12755692",
+          "fetched_at": "2026-11-27T18:06:27.000103+00:00"
+        },
+        {
+          "url": "https://www.postnl.nl/en/ronald-allard/",
+          "final_url": "https://www.postnl.nl/en/ronald-allard/",
+          "sha256": "ae4d3f0e5c9b0f9e32123ee7b06479567e1afa637a1dab601110932797d15d43",
+          "fetched_at": "2026-11-27T18:09:06.727504+00:00"
+        },
+        {
+          "url": "https://csirt.divd.nl/cases/DIVD-2026-00003/",
+          "final_url": "https://csirt.divd.nl/cases/DIVD-2026-00003/",
+          "sha256": "bb64f21353b9becac051372a6908c3a65a16254f104be40e8fd1b463ea286022",
+          "fetched_at": "2026-11-27T18:09:07.251631+00:00"
+        },
+        {
+          "url": "https://cert-portal.siemens.com/productcert/html/ssa-137528.html",
+          "final_url": "https://cert-portal.siemens.com/productcert/html/ssa-137528.html",
+          "sha256": "6644929a1acc3f18b2d8855b598d25e9e77820222f88422f67d193dfb4a5b23a",
+          "fetched_at": "2026-11-27T18:09:07.443017+00:00"
+        }
+      ],
+      "timings": {
+        "A": 95.419,
+        "B": 65.984
+      },
+      "version": "1.2",
+      "proposed_verdict": "YELLOW"
+    },
+    {
+      "id": "49",
+      "url": "https://www.videolan.org/",
+      "context": "",
+      "name": "VLC media player",
+      "verdict": "GREEN",
+      "status": "COMPLETE",
+      "phase": "A",
+      "summary": "Assessment based only on the validated reasons below.",
+      "active_phase": null,
+      "stage": "settled",
+      "reasons": [
+        {
+          "claim": "VideoLAN describes VLC as an open-source, cross-platform player for common media and streaming protocols.",
+          "url": "https://www.videolan.org/",
+          "final_url": "https://www.videolan.org/",
+          "quote": "VLC is a free and open source cross-platform multimedia player and framework that plays most multimedia files as well as DVDs, Audio CDs, VCDs, and various streaming protocols.",
+          "kind": "positive",
+          "axis": "real",
+          "material": true,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "1b39e4b3c2ff8c9aa3c72cedcdbf480a4784810528c3c623774b5c23b03e63d9",
+          "fetched_at": "2026-11-27T18:06:06.615771+00:00"
+        },
+        {
+          "claim": "The vendor identifies VideoLAN as a nonprofit organization and project.",
+          "url": "https://www.videolan.org/",
+          "final_url": "https://www.videolan.org/",
+          "quote": "VideoLAN, a project and a non-profit organization.",
+          "kind": "positive",
+          "axis": "trust",
+          "material": false,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "1b39e4b3c2ff8c9aa3c72cedcdbf480a4784810528c3c623774b5c23b03e63d9",
+          "fetched_at": "2026-11-27T18:06:06.615771+00:00"
+        },
+        {
+          "claim": "The current VLC 3.0.24 release includes broad dependency, security, and functionality maintenance.",
+          "url": "https://www.videolan.org/vlc/releases/3.0.24.html",
+          "final_url": "https://www.videolan.org/vlc/releases/3.0.24.html",
+          "quote": "Over 130 security fixes across VLC and its bundled libraries Upgrades FFmpeg from 4.4 to 8.1.2 Updates 49 third-party libraries",
+          "kind": "positive",
+          "axis": "alive",
+          "material": true,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "c1dcf8180a8691e7ac89abcfeb33d5f0ae15731302b8adba930cf829d1864e97",
+          "fetched_at": "2026-11-27T18:06:06.808748+00:00"
+        },
+        {
+          "claim": "Debian independently packaged VLC 3.0.24 into stable security and continued migrating later revisions into testing.",
+          "url": "https://tracker.debian.org/pkg/vlc/news/",
+          "final_url": "https://tracker.debian.org/pkg/vlc/news/",
+          "quote": "[2026-09-25] Accepted vlc 3.0.24-0+deb13u1 (source) into stable-security",
+          "kind": "positive",
+          "axis": "alive",
+          "material": true,
+          "source_role": "registry",
+          "origin": "external",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "145801ff8f24c1fdfd50d5562cdfa1437ffa748aa9e4e980d5039abecf909b3d",
+          "fetched_at": "2026-11-27T18:06:43.902506+00:00"
+        },
+        {
+          "claim": "Debian reports a crafted-media memory-safety flaw in older releases, while marking 3.0.24 packages fixed across tracked branches.",
+          "url": "https://security-tracker.debian.org/tracker/CVE-2026-56711",
+          "final_url": "https://security-tracker.debian.org/tracker/CVE-2026-56711",
+          "quote": "VLC media player versions 3.0.0 through 3.0.23 contain a memory-safety vulnerability reachable when processing crafted media.",
+          "kind": "positive",
+          "axis": "trust",
+          "material": true,
+          "source_role": "registry",
+          "origin": "external",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "c267e6eb0554754cb12aae28d83b129e9a4cf5bcfac2ac4ffbcd3cd9409f9257",
+          "fetched_at": "2026-11-27T18:06:44.268559+00:00"
+        },
+        {
+          "claim": "VideoLAN maintains a public security-contact and release-bulletin history, including a bulletin for 3.0.24.",
+          "url": "https://www.videolan.org/security/",
+          "final_url": "https://www.videolan.org/security/",
+          "quote": "2026 VideoLAN-SB-VLC-324 Multiple vulnerabilities fixed in VLC media player 3.0.24",
+          "kind": "positive",
+          "axis": "trust",
+          "material": true,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "e1bef5d67b0ebba7b2f16759ffee43d0be8475f86f6bcd36f53b81799f73c439",
+          "fetched_at": "2026-11-27T18:06:07.044054+00:00"
+        }
+      ],
+      "rejected_reasons": [],
+      "unknowns": [],
+      "limitations": [
+        "No independent full security or code audit was provided.",
+        "Deployment configuration and platform-specific behavior were not tested.",
+        "Evidence is limited to the supplied excerpts and does not establish suitability for every media format or environment."
+      ],
+      "adjudicated": true,
+      "errors": [],
+      "sources": [
+        {
+          "url": "https://www.videolan.org/",
+          "final_url": "https://www.videolan.org/",
+          "sha256": "1b39e4b3c2ff8c9aa3c72cedcdbf480a4784810528c3c623774b5c23b03e63d9",
+          "fetched_at": "2026-11-27T18:06:06.615771+00:00"
+        },
+        {
+          "url": "https://www.videolan.org/",
+          "final_url": "https://www.videolan.org/",
+          "sha256": "1b39e4b3c2ff8c9aa3c72cedcdbf480a4784810528c3c623774b5c23b03e63d9",
+          "fetched_at": "2026-11-27T18:06:06.615771+00:00"
+        },
+        {
+          "url": "https://www.videolan.org/vlc/releases/3.0.24.html",
+          "final_url": "https://www.videolan.org/vlc/releases/3.0.24.html",
+          "sha256": "c1dcf8180a8691e7ac89abcfeb33d5f0ae15731302b8adba930cf829d1864e97",
+          "fetched_at": "2026-11-27T18:06:06.808748+00:00"
+        },
+        {
+          "url": "https://tracker.debian.org/pkg/vlc/news/",
+          "final_url": "https://tracker.debian.org/pkg/vlc/news/",
+          "sha256": "145801ff8f24c1fdfd50d5562cdfa1437ffa748aa9e4e980d5039abecf909b3d",
+          "fetched_at": "2026-11-27T18:06:43.902506+00:00"
+        },
+        {
+          "url": "https://security-tracker.debian.org/tracker/CVE-2026-56711",
+          "final_url": "https://security-tracker.debian.org/tracker/CVE-2026-56711",
+          "sha256": "c267e6eb0554754cb12aae28d83b129e9a4cf5bcfac2ac4ffbcd3cd9409f9257",
+          "fetched_at": "2026-11-27T18:06:44.268559+00:00"
+        },
+        {
+          "url": "https://www.videolan.org/security/",
+          "final_url": "https://www.videolan.org/security/",
+          "sha256": "e1bef5d67b0ebba7b2f16759ffee43d0be8475f86f6bcd36f53b81799f73c439",
+          "fetched_at": "2026-11-27T18:06:07.044054+00:00"
+        }
+      ],
+      "timings": {
+        "A": 51.177
+      },
+      "version": "1.2",
+      "proposed_verdict": "GREEN"
+    },
+    {
+      "id": "50",
+      "url": "https://www.tldraw.com/",
+      "context": "",
+      "name": "tldraw",
+      "verdict": "GREEN",
+      "status": "COMPLETE",
+      "phase": "B",
+      "summary": "Assessment based only on the validated reasons below.",
+      "active_phase": null,
+      "stage": "settled",
+      "reasons": [
+        {
+          "claim": "The live product identifies itself as a collaborative whiteboard.",
+          "url": "https://www.tldraw.com/",
+          "final_url": "https://www.tldraw.com/",
+          "quote": "tldraw • very good free whiteboard tldraw - free and instant collaborative whiteboarding",
+          "kind": "positive",
+          "axis": "real",
+          "material": true,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "4ca814598e72bc4dac5d345f71b1592d60d485035aadcd37379541edaa0f2c70",
+          "fetched_at": "2026-11-27T18:06:15.236808+00:00"
+        },
+        {
+          "claim": "Current release documentation shows active feature development and broad bug fixing.",
+          "url": "https://tldraw.dev/releases",
+          "final_url": "https://tldraw.dev/releases",
+          "quote": "v5.6 - ICU MessageFormat and react-intl for translations, action-driven menu gating, a ThrottledFunction type in @tldraw/utils, commenting improvements, and fixes across selection, undo/redo, local persistence, sync, and the store",
+          "kind": "positive",
+          "axis": "alive",
+          "material": true,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "d43855a9c5fb81cde9a89498b44c63ba0d9a0df42f8673e37f1f0302dc229599",
+          "fetched_at": "2026-11-27T18:10:38.138374+00:00"
+        },
+        {
+          "claim": "The vendor documents allowlist-based sanitization of SVG content received through common import paths.",
+          "url": "https://tldraw.dev/sdk-features/assets",
+          "final_url": "https://tldraw.dev/sdk-features/assets",
+          "quote": "tldraw automatically sanitizes all SVGs on paste and file drop using an allowlist-based sanitizer",
+          "kind": "positive",
+          "axis": "trust",
+          "material": true,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "5f99e0cad513df71653d1941e3a46a5d804948680e45356235bb656b9179d9c0",
+          "fetched_at": "2026-11-27T18:07:03.578848+00:00"
+        },
+        {
+          "claim": "Snyk reports no direct vulnerabilities for the package while expressly excluding dependency vulnerabilities.",
+          "url": "https://security.snyk.io/package/npm/tldraw",
+          "final_url": "https://security.snyk.io/package/npm/tldraw",
+          "quote": "No direct vulnerabilities have been found for this package in Snyk’s vulnerability database. This does not include vulnerabilities belonging to this package’s dependencies.",
+          "kind": "positive",
+          "axis": "trust",
+          "material": true,
+          "source_role": "independent_report",
+          "origin": "external",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "f51e80386bae96f989e505acd836c202e10222dee6f7dc82ed71e92fec753d39",
+          "fetched_at": "2026-11-27T18:10:49.163279+00:00"
+        },
+        {
+          "claim": "The repository publishes supported versions and a vulnerability-reporting process; no advisories are currently published there.",
+          "url": "https://github.com/tldraw/tldraw/security",
+          "final_url": "https://github.com/tldraw/tldraw/security",
+          "quote": "We currently support the following versions of tldraw project with security updates.",
+          "kind": "positive",
+          "axis": "trust",
+          "material": true,
+          "source_role": "vendor",
+          "origin": "vendor",
+          "validation": "QUOTE_PRESENT",
+          "source_sha256": "ece31c27ffa2f201c66b5b95e7d895169ea880bc56cadd68ff9c96d9d5bae0dd",
+          "fetched_at": "2026-11-27T18:07:04.255139+00:00"
+        }
+      ],
+      "rejected_reasons": [
+        {
+          "claim": "The public repository shows a recent substantive SDK release with improvements and bug fixes.",
+          "url": "https://github.com/tldraw/tldraw/releases",
+          "attempted_quote": "This release introduces ICU MessageFormat and react-intl for translations, action-driven menu gating, and a `ThrottledFunction` type in `@tldraw/utils`.",
+          "kind": "positive",
+          "material": true,
+          "error": "exact quote absent from independently fetched page"
+        },
+        {
+          "claim": "Independent company data corroborates that tldraw is an operating, venture-backed software business.",
+          "url": "https://pitchbook.com/profiles/company/515685-52",
+          "attempted_quote": "Tldraw’s primary industry is Software Development Applications.",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP 403: https://pitchbook.com/profiles/company/515685-52"
+        },
+        {
+          "claim": "PitchBook records a completed 2025 Series A and revenue-generating status.",
+          "url": "https://pitchbook.com/profiles/company/515685-52",
+          "attempted_quote": "Early Stage VC (Series A)  | 09-Apr-2025  | $11.4M  |  |  | Completed  | Generating Revenue",
+          "kind": "positive",
+          "material": true,
+          "error": "HTTP 403: https://pitchbook.com/profiles/company/515685-52"
+        },
+        {
+          "claim": "Independent package analysis characterizes maintenance as healthy and reports a recent release cadence.",
+          "url": "https://security.snyk.io/package/npm/tldraw",
+          "attempted_quote": "Further analysis of the maintenance status of tldraw based on released npm versions cadence, the repository activity, and other data points determined that its maintenance is Healthy.",
+          "kind": "positive",
+          "material": true,
+          "error": "exact quote absent from independently fetched page"
+        }
+      ],
+      "unknowns": [],
+      "limitations": [
+        "No full security or code audit was performed.",
+        "Dependency vulnerabilities and deployment-specific risks were not assessed.",
+        "Most accepted evidence is vendor-published; independent evidence is limited to Snyk's direct-vulnerability database result."
+      ],
+      "adjudicated": true,
+      "errors": [],
+      "sources": [
+        {
+          "url": "https://www.tldraw.com/",
+          "final_url": "https://www.tldraw.com/",
+          "sha256": "4ca814598e72bc4dac5d345f71b1592d60d485035aadcd37379541edaa0f2c70",
+          "fetched_at": "2026-11-27T18:06:15.236808+00:00"
+        },
+        {
+          "url": "https://tldraw.dev/sdk-features/assets",
+          "final_url": "https://tldraw.dev/sdk-features/assets",
+          "sha256": "5f99e0cad513df71653d1941e3a46a5d804948680e45356235bb656b9179d9c0",
+          "fetched_at": "2026-11-27T18:07:03.578848+00:00"
+        },
+        {
+          "url": "https://github.com/tldraw/tldraw/security",
+          "final_url": "https://github.com/tldraw/tldraw/security",
+          "sha256": "ece31c27ffa2f201c66b5b95e7d895169ea880bc56cadd68ff9c96d9d5bae0dd",
+          "fetched_at": "2026-11-27T18:07:04.255139+00:00"
+        },
+        {
+          "url": "https://tldraw.dev/releases",
+          "final_url": "https://tldraw.dev/releases",
+          "sha256": "d43855a9c5fb81cde9a89498b44c63ba0d9a0df42f8673e37f1f0302dc229599",
+          "fetched_at": "2026-11-27T18:10:38.138374+00:00"
+        },
+        {
+          "url": "https://security.snyk.io/package/npm/tldraw",
+          "final_url": "https://security.snyk.io/package/npm/tldraw",
+          "sha256": "f51e80386bae96f989e505acd836c202e10222dee6f7dc82ed71e92fec753d39",
+          "fetched_at": "2026-11-27T18:10:49.163279+00:00"
+        }
+      ],
+      "timings": {
+        "A": 55.403,
+        "B": 93.71
+      },
+      "version": "1.2",
+      "proposed_verdict": "GREEN"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+id,url,verdict,status,reasons_with_sources
+41,https://product-experience-solutions.com/,GREEN,COMPLETE,"PXHub has substantive import, export, API and ETL functionality for Contentserv deployments. https://product-experience-solutions.com/
+Centric's October 2026 documentation identifies the company as a current PXM software-development supplier. https://www.centricsoftware.com/legal/subprocessors
+Centric specifically confirms PXHub provision and German processing under a DPA. https://www.centricsoftware.com/legal/subprocessors
+Independent 2024 release coverage documents continued PXHub feature development. https://www.communicode.com/en-de/insights/contentserv-pxc-24-0-release-en/"
+42,https://www.easyproject.co/en/,YELLOW,PARTIAL,"The live vendor site describes a functioning tool for managing tasks, projects and teams. https://www.easyproject.co/en/
+An independently published historical item identifies EasyProject as an operating online project-management application. https://informacjeprasowe.pl/think-kong-wzmacnia-kompetencje/
+The vendor says EasySoftware has operated since 2009 and explains that EasyProject arose from its work with marketing agencies. https://www.easyproject.co/en/about_us.html
+The vendor announced EasyProject's 2026 rebranding to Easy8 and linked release notes for version 15.7.0, supporting continued maintenance. https://www.easy8.com/documentation-of-easy8/article/product-news-3-2026
+Published cloud documentation states EU data residency, regular backups and encrypted backup transfer, though these are vendor claims subject to the DPA. https://www.easy8.com/about/terms-and-conditions/gdpr-compliance"
+43,https://it-demand-management.de/,YELLOW,PARTIAL,"The vendor openly describes demand-fx as a pilot, so production maturity is not established. https://it-demand-management.de/
+The stated workflow checks reported needs for duplication, existing inventory, market options and economics before spending. https://it-demand-management.de/
+The vendor claims EU hosting, an EU-only AI path, processing terms and a subprocessors list, but these controls were not independently verified. https://it-demand-management.de/"
+44,https://www.voidtools.com/,YELLOW,PARTIAL,Australia’s official ABN registry lists VOIDTOOLS PTY LTD as an active private company since February 2018. https://abr.business.gov.au/ABN/View?id=14624373397
+45,https://www.sap.com/products/artificial-intelligence/joule-work.html,YELLOW,PARTIAL,"SAP reports active deployment at substantial internal scale and use by a limited customer cohort, supporting ongoing stewardship but indicating an early rollout stage. https://news.sap.com/2026/10/sap-connect-sap-puts-autonomous-enterprise-to-work/
+SAP explicitly says customer rollout is only beginning, making broad availability and production maturity unresolved. https://news.sap.com/2026/10/sap-connect-sap-puts-autonomous-enterprise-to-work/
+SAP describes governance features including established authorization, audit trails and customer-controlled autonomy for operational actions. https://news.sap.com/2026/10/sap-connect-sap-puts-autonomous-enterprise-to-work/"
+46,https://www.servicenow.com/products/it-asset-management.html,YELLOW,PARTIAL,"A June 2026 platform vulnerability reportedly permitted unauthenticated access to customer-instance data. https://techcrunch.com/2026/06/10/servicenow-tells-customers-a-bug-left-some-of-their-data-exposed-to-the-internet/
+A July 2026 report documents a live third-party integration that feeds endpoint and asset information into ServiceNow. https://www.itpro.com/business/data-and-insights/ninjaone-partners-with-servicenow-to-supercharge-it-helpdesk-teams"
+47,https://www.clearview.ai/,RED,PARTIAL,"A binding U.S. settlement permanently restricts Clearview from supplying its faceprint database to most private entities nationwide. https://www.aclu.org/cases/aclu-v-clearview-ai?document=joint-motion-entry-consent-order-and-dismissal
+The Dutch decision describes ongoing violations and compliance orders, making this more than a historical resolved incident. https://www.edpb.europa.eu/news/dutch-supervisory-authority-imposes-a-fine-on-clearview-because-of-illegal-data-collection-for_en
+Nationwide U.S. biometric-privacy litigation remained open after appellate reversal in July 2026. https://www.citizen.org/litigation/in-re-clearview-ai-consumer-privacy-litigation/"
+48,https://www.mendix.com/platform/,YELLOW,PARTIAL,"Mendix describes an enterprise platform that connects existing infrastructure, data, and tools while coordinating workflows and governance. https://www.mendix.com/platform/
+Siemens confirms that it acquired Mendix and incorporated the platform into its software business, providing credible corporate stewardship. https://press.siemens.com/global/en/pressrelease/siemens-closes-mendix-acquisition-extending-industry-leading-digital-innovation
+PostNL independently confirms selecting Mendix among its primary technologies for its engineering transformation. https://www.postnl.nl/en/ronald-allard/
+Independent researchers found recurring authorization misconfiguration capable of exposing data in Mendix applications, although they explicitly distinguish it from a platform vulnerability. https://csirt.divd.nl/cases/DIVD-2026-00003/
+An October 2026 SAML authentication-bypass advisory identifies affected versions and confirms patched releases are available. https://cert-portal.siemens.com/productcert/html/ssa-137528.html"
+49,https://www.videolan.org/,GREEN,COMPLETE,"VideoLAN describes VLC as an open-source, cross-platform player for common media and streaming protocols. https://www.videolan.org/
+The vendor identifies VideoLAN as a nonprofit organization and project. https://www.videolan.org/
+The current VLC 3.0.24 release includes broad dependency, security, and functionality maintenance. https://www.videolan.org/vlc/releases/3.0.24.html
+Debian independently packaged VLC 3.0.24 into stable security and continued migrating later revisions into testing. https://tracker.debian.org/pkg/vlc/news/
+Debian reports a crafted-media memory-safety flaw in older releases, while marking 3.0.24 packages fixed across tracked branches. https://security-tracker.debian.org/tracker/CVE-2026-56711
+VideoLAN maintains a public security-contact and release-bulletin history, including a bulletin for 3.0.24. https://www.videolan.org/security/"
+50,https://www.tldraw.com/,GREEN,COMPLETE,"The live product identifies itself as a collaborative whiteboard. https://www.tldraw.com/
+Current release documentation shows active feature development and broad bug fixing. https://tldraw.dev/releases
+The vendor documents allowlist-based sanitization of SVG content received through common import paths. https://tldraw.dev/sdk-features/assets
+Snyk reports no direct vulnerabilities for the package while expressly excluding dependency vulnerabilities. https://security.snyk.io/package/npm/tldraw
+The repository publishes supported versions and a vulnerability-reporting process; no advisories are currently published there. https://github.com/tldraw/tldraw/security"

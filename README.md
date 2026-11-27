@@ -95,3 +95,9 @@ With the key configured, `node --env-file-if-exists=.env.local tests/live-smoke.
 With the app running, `python tests/calibrate.py --model gpt-6.2-sol` tests the first ten dataset URLs. Pass row IDs and `--bulk` for a different cohort in one request. Each URL runs a billable investigation. See the [20-product live evaluation](EVALUATION_SOL.md) for results, row IDs and export commands.
 
 For the full dataset with Luna, run `python tests/calibrate.py --all-rows --bulk --model gpt-6-luna --output luna.jsonl --report-dir luna-reports`. Export the saved results with `node tests/export-calibration.js luna.jsonl luna-reports luna-export`. See the [40-product Luna evaluation](EVALUATION_LUNA.md).
+
+## Submission verdicts (19:00 batch, ids 41–50)
+
+- `stackgini-verdicts.csv` – verdicts for the 10 products. Columns: `id,url,verdict,status,reasons_with_sources`. `verdict` is GREEN/YELLOW/RED; `reasons_with_sources` has one reason per line, each followed by its source URL.
+- `stackgini-verdicts-report.md` – same verdicts with a supporting quote per reason; `stackgini-verdicts.json` – machine-readable version.
+- `codex-fallback/` – the standalone agent that produced them (see its README).
