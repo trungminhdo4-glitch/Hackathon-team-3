@@ -60,10 +60,13 @@ input::placeholder, textarea::placeholder { color: #657569 }
 @keyframes spin { to { transform: rotate(360deg) } }
 @media (prefers-reduced-motion: reduce) { .spinner { animation: none } }
 .session-history { margin-top: 10px; border-bottom: 1px solid var(--soft-rule) }
+.session-history h2, .session-history h3 { margin: 0 0 10px; font-size: 1.15rem }
+.session-history h2 span { color: var(--muted); font-weight: 400 }
+.research-modes { flex-wrap: wrap }
 summary { padding: 8px 0; font-weight: 600 }
 .session-history summary span, .session-history small { color: var(--muted) }
 .session-history p { margin-bottom: 12px; color: var(--muted) }
-.session-history ol { list-style: none; padding: 0; margin: 0 0 8px; max-height: 18rem; overflow-y: auto }
+.session-history ol { list-style: none; padding: 0; margin: 0 0 8px }
 .session-history button { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px 16px; text-align: left; width: 100%; border: 0; border-top: 1px solid var(--soft-rule); padding: 9px 12px; background: transparent; overflow-wrap: anywhere }
 .session-history button[aria-current=true], .session-history button:hover { background: #e7f0e7 }
 .session-history button:focus-visible { outline-offset: -3px }

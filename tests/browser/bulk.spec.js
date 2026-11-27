@@ -25,5 +25,30 @@ test('bulk streams mixed outcomes, opens a detailed report, downloads all rows, 
   await page.reload();
   await expect(page.getByRole('button',{name:'Bulk URLs'})).toHaveAttribute('aria-pressed','true');
   await expect(page.getByText(/4 of 4 processed/)).toBeVisible();
-  await expect(page.getByText('Batch history (1)')).toBeVisible();
+  await expect(page.getByRole('region',{name:'Batch history'})).toHaveCount(0);
+  await page.getByRole('button',{name:'Session history'}).click();
+  const history = page.getByRole('region',{name:'Batch history'});
+  await history.getByRole('button',{name:/4 URLs/}).click();
+  await expect(page.getByRole('region',{name:'Batch results'})).toBeVisible();
+});
+
+test('imports 50 CSV URLs locally and sends only URLs and the selected Luna model to the bulk API', async ({page}) => {
+  await page.goto('/');
+  await page.getByRole('button',{name:'Bulk URLs'}).click();
+  const file = page.getByLabel('Import URLs from file');
+  const urls = Array.from({length:50}, (_,i) => 'https://product-' + (i + 1) + '.example/');
+  urls[0] = 'https://contradicted.example/';
+  const csv = '"comment","url"\r\n' + urls.map(url => '"private,\nreviewer ""note""","' + url + '"').join('\r\n');
+  await file.setInputFiles({name:'products.csv',mimeType:'text/csv',buffer:Buffer.from(csv)});
+  await expect(page.getByRole('status').filter({hasText:'Imported 50 URLs'})).toBeVisible();
+  await expect(page.getByLabel('Product URLs')).toHaveValue(urls.join('\n'));
+  await file.setInputFiles({name:'large.txt',mimeType:'text/plain',buffer:Buffer.from([...urls, urls[0]].join('\n'))});
+  await expect(page.getByRole('alert')).toContainText('51 URLs');
+  await expect(page.getByLabel('Product URLs')).toHaveValue(urls.join('\n'));
+  await page.getByLabel('Assessment model').selectOption('gpt-6-luna');
+  const posted = page.waitForRequest(request => request.url().endsWith('/api/investigate/bulk'));
+  await page.getByRole('button',{name:'Investigate URLs'}).click();
+  expect((await posted).postDataJSON()).toEqual({urls,model:'gpt-6-luna'});
+  await expect(page.getByText(/50 of 50 processed/)).toBeVisible();
+  await expect(page.getByRole('button',{name:'Download batch CSV'})).toBeVisible();
 });

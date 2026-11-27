@@ -28,8 +28,8 @@ export function saveHistory(entries) {
 }
 
 export function SessionHistory({ entries, current, busy, onOpen }) {
-  return <details className="session-history">
-    <summary>Session history <span>({entries.length})</span></summary>
+  return <section className="session-history" aria-labelledby="single-history-title">
+    <h2 id="single-history-title">Individual reports <span>({entries.length})</span></h2>
     {entries.length === 0 ? <p>Completed reports will appear here for this tab.</p> :
       <ol>{entries.map(entry => <li key={entry.id}>
         <button type="button" aria-current={entry.id === current ? 'true' : undefined}
@@ -44,5 +44,5 @@ export function SessionHistory({ entries, current, busy, onOpen }) {
           </span>
         </button>
       </li>)}</ol>}
-  </details>
+  </section>
 }

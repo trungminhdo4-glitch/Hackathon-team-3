@@ -2,20 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { Report } from './Report.jsx'
 import { columns, csvReports, datasetRow } from './datasetReport.js'
 import { verdictLabel } from './research.js'
+import { MAX_BULK_URLS } from '../shared/bulkLimits.js'
+import { importUrls, listError, splitUrlLines } from './bulkImport.js'
+import { readBatches, saveBatches } from './batchStorage.js'
 import './bulk.css'
-
-const storageKey = 'saaslens.batches.v1'
-
-function readBatches() {
-  try {
-    const saved = JSON.parse(sessionStorage.getItem(storageKey))
-    if (!Array.isArray(saved)) return []
-    return saved.filter(batch => batch.id && Array.isArray(batch.items)).map(batch => ({
-      ...batch, items: batch.items.map(item => item.status === 'queued' ? {...item, status:'interrupted',
-        error:'The tab disconnected before this result arrived.'} : item),
-    }))
-  } catch { return [] }
-}
 
 function downloadBatch(batch) {
   const rows = batch.items.map(item => {
@@ -67,36 +57,69 @@ async function streamBatch(urls, model, receive) {
   }
 }
 
-export function BulkResearch({ selected, modelPicker, busy, onBusyChange }) {
-  const [batches, setBatches] = useState(readBatches)
-  const [activeId, setActiveId] = useState(batches[0]?.id)
-  const [urls, setUrls] = useState(batches[0]?.items.map(item => item.inputUrl).join('\n') || '')
+export function BulkResearch({ selected, modelPicker, busy, onBusyChange, visible = true, historyOnly, onOpenBatch }) {
+  const [batches, setBatches] = useState([])
+  const [restored, setRestored] = useState(false)
+  const [activeId, setActiveId] = useState(null)
+  const [urls, setUrls] = useState('')
   const [details, setDetails] = useState(null)
   const [progress, setProgress] = useState({})
   const [error, setError] = useState('')
-  const [saved, setSaved] = useState(true)
+  const [storageNotice, setStorageNotice] = useState('')
+  const [importing, setImporting] = useState(false)
+  const [importError, setImportError] = useState('')
+  const [importNote, setImportNote] = useState('')
   const active = batches.find(batch => batch.id === activeId)
   const open = active?.items[details]
-  const list = urls.split(/\r?\n/).map(url => url.trim()).filter(Boolean)
+  const list = splitUrlLines(urls)
+  const issue = listError(list)
+  const locked = busy || importing || !restored
+
+  useEffect(() => {
+    let current = true
+    readBatches().then(saved => {
+      if (!current) return
+      setBatches(saved)
+      setActiveId(saved[0]?.id)
+      setUrls(saved[0]?.items.map(item => item.inputUrl).join('\n') || '')
+      setRestored(true)
+    })
+    return () => { current = false }
+  }, [])
 
   useEffect(() => {
     if (!batches.length) return
-    for (let count = batches.length; count; count--) {
-      try {
-        sessionStorage.setItem(storageKey, JSON.stringify(batches.slice(0, count)))
-        setSaved(true)
-        return
-      } catch (cause) { if (cause.name !== 'QuotaExceededError') break }
-    }
-    setSaved(false)
+    let current = true
+    saveBatches(batches, () => current).then(count => {
+      if (!current) return
+      setStorageNotice(count === batches.length ? '' : count
+        ? `Only the latest ${count} of ${batches.length} batches fit in tab storage. Download older batches before reloading.`
+        : 'The latest batch could not be saved in tab storage. Download its CSV before reloading or closing the tab.')
+    })
+    return () => { current = false }
   }, [batches])
+
+  async function upload(event) {
+    const file = event.target.files[0]
+    if (!file) return
+    event.target.value = ''
+    setImporting(true)
+    setImportNote('')
+    setImportError('')
+    try {
+      const imported = await importUrls(file)
+      setUrls(imported.join('\n'))
+      setImportNote(`Imported ${imported.length} ${imported.length === 1 ? 'URL' : 'URLs'} from ${file.name}.`)
+    } catch (cause) { setImportError(cause.message || 'The file could not be read.') }
+    finally { setImporting(false) }
+  }
 
   function updateBatch(id, change) {
     setBatches(previous => previous.map(batch => batch.id === id ? {...batch, items:change(batch.items)} : batch))
   }
   async function start(event) {
     event.preventDefault()
-    if (busy || !selected || !list.length || list.length > 10) return
+    if (locked || !selected || !list.length || issue) return
     const id = crypto.randomUUID()
     const batch = {id, at:Date.now(), model:selected.id, items:list.map(inputUrl => ({inputUrl, status:'queued'}))}
     setBatches(previous => [batch, ...previous])
@@ -116,6 +139,23 @@ export function BulkResearch({ selected, modelPicker, busy, onBusyChange }) {
       updateBatch(id, items => items.map(item => item.status === 'queued' ? {...item, status:'interrupted', error:message} : item))
     } finally { onBusyChange(false) }
   }
+  if (!visible) return null
+  if (historyOnly) return <section className="session-history bulk-history" aria-label="Batch history">
+    <h2>Batches <span>({batches.length})</span></h2>
+    {storageNotice && <p role="status">{storageNotice}</p>}
+    {batches.length ? <ol>{batches.map(batch => <li key={batch.id}><button type="button" disabled={busy}
+      onClick={() => {
+        setActiveId(batch.id)
+        setDetails(null)
+        setUrls(batch.items.map(item => item.inputUrl).join('\n'))
+        setError('')
+        setImportError('')
+        setImportNote('')
+        onOpenBatch()
+      }}>
+      <span>{batch.items.length} URLs · {batch.items[0]?.inputUrl}</span><small>{new Date(batch.at).toLocaleString()}</small>
+    </button></li>)}</ol> : <p>{restored ? 'No batches in this tab yet.' : 'Loading batches…'}</p>}
+  </section>
   const received = active?.items.filter(item => item.status !== 'queued').length ?? 0
   const counts = new Map()
   for (const item of active?.items || []) {
@@ -126,24 +166,27 @@ export function BulkResearch({ selected, modelPicker, busy, onBusyChange }) {
   return <>
     <form onSubmit={start} aria-label="Bulk investigation">
       <div className="field"><label htmlFor="product-urls">Product URLs</label>
-        <span className="bulk-hint" id="bulk-hint">Enter up to 10 public URLs, one per line.</span>
-        <textarea id="product-urls" rows={4} maxLength={22000} required value={urls} disabled={busy}
+        <span className="bulk-hint" id="bulk-hint">Enter up to {MAX_BULK_URLS} public URLs, one per line.</span>
+        <textarea id="product-urls" rows={4} required value={urls} disabled={locked}
           aria-describedby="bulk-hint" placeholder={'https://sentry.io/\nhttps://example.com/'}
-          onChange={event => setUrls(event.target.value)}/></div>
+          onChange={event => { setUrls(event.target.value); setImportError(''); setImportNote('') }}/>
+        {issue && <p role="alert" className="bulk-input-error">{issue}</p>}
+      </div>
+      <div className="bulk-upload">
+        <label htmlFor="bulk-file">Import URLs from file</label>
+        <span className="bulk-hint" id="bulk-file-hint">TXT with one link per line, or CSV with a URL column. Importing replaces the list above.</span>
+        <input id="bulk-file" type="file" accept=".txt,.csv,text/plain,text/csv" disabled={locked}
+          aria-describedby="bulk-file-hint" onChange={upload}/>
+        {importError && <p role="alert" className="bulk-input-error">{importError}</p>}
+        {(importing || importNote) && <p role="status" className="bulk-hint">{importing ? 'Reading the file…' : importNote}</p>}
+      </div>
       {modelPicker}
-      <div className="form-actions"><button className="submit" disabled={busy || !selected || !list.length || list.length > 10}>
+      <div className="form-actions"><button className="submit" disabled={locked || !selected || !list.length || Boolean(issue)}>
         {busy ? 'Investigating batch…' : 'Investigate URLs'}</button>
-        {list.length > 10 && <span role="alert">Remove {list.length - 10} URLs to run this batch.</span>}
       </div>
     </form>
-    {batches.length > 0 && <details className="session-history"><summary>Batch history ({batches.length})</summary>
-      <ol>{batches.map(batch => <li key={batch.id}><button type="button" disabled={busy} aria-current={batch.id === activeId}
-        onClick={() => { setActiveId(batch.id); setDetails(null); setUrls(batch.items.map(item => item.inputUrl).join('\n')); setError('') }}>
-        <span>{batch.items.length} URLs · {batch.items[0].inputUrl}</span><small>{new Date(batch.at).toLocaleString()}</small>
-      </button></li>)}</ol>
-    </details>}
     {error && <p role="alert" className="feedback error">{error}</p>}
-    {!saved && <p role="status">This batch exceeds the available tab storage. Download the CSV before closing the tab.</p>}
+    {storageNotice && <p role="status">{storageNotice}</p>}
     {active && <section className="bulk-results" aria-labelledby="batch-result-title">
       <header><div><h2 id="batch-result-title">Batch results</h2>
         <p role="status">{received} of {active.items.length} processed · {active.model}</p></div>

@@ -10,10 +10,14 @@ import { requestAssessment, respondToReview } from './research.js'
 import { readHistory, saveHistory, SessionHistory } from './SessionHistory.jsx'
 import './style.css'
 
+const viewTitles = { single: 'Research a product.', bulk: 'Research a list of products.', history: 'Session history' }
+
 function Workspace() {
   const [mode, setMode] = useState(() => {
-    try { return sessionStorage.getItem('saaslens.view') === 'bulk' ? 'bulk' : 'single' }
-    catch { return 'single' }
+    try {
+      const saved = sessionStorage.getItem('saaslens.view')
+      return ['bulk', 'history'].includes(saved) ? saved : 'single'
+    } catch { return 'single' }
   })
   function chooseMode(value) {
     setMode(value)
@@ -24,6 +28,7 @@ function Workspace() {
   const [subject, setSubject] = useState(active?.report.subject ?? active?.report.inputUrl ?? '')
   const [question, setQuestion] = useState(active?.report.question ?? '')
   const [busy, setBusy] = useState(false)
+  const [bulkBusy, setBulkBusy] = useState(false)
   const [activity, setActivity] = useState([])
   const [error, setError] = useState('')
   const [catalog, setCatalog] = useState(null)
@@ -63,6 +68,7 @@ function Workspace() {
     setQuestion(entry.report.question ?? '')
     setActive(entry)
     setError('')
+    chooseMode('single')
   }
 
   function updateActive(changes) {
@@ -112,7 +118,7 @@ function Workspace() {
 
   const modelPicker = <div className="field model-field">
     <label htmlFor="model">Assessment model</label>
-    <select id="model" name="model" disabled={busy || !selected} value={selected?.id || ''} aria-describedby="model-details"
+    <select id="model" name="model" disabled={busy || bulkBusy || !selected} value={selected?.id || ''} aria-describedby="model-details"
       onChange={event => { setModel(event.target.value); setError('') }}>
       {!selected && <option value="">{catalogError || catalog ? 'No models available' : 'Loading models…'}</option>}
       {['OpenAI', 'Meta'].map(provider => {
@@ -150,16 +156,24 @@ function Workspace() {
     <header><Brand/></header>
     <main>
       <section className="intro">
-        <div><h1>{mode === 'bulk' ? 'Research a list of products.' : 'Research a product.'}</h1>
-          <p>Find out what the software delivers, who it works for, and which conditions matter before you choose it.</p>
+        <div><h1>{viewTitles[mode]}</h1>
+          <p>{mode === 'history' ? 'Reopen reports, pending reviews, and batches saved in this browser tab.' :
+            'Find out what the software delivers, who it works for, and which conditions matter before you choose it.'}</p>
         </div>
         <img className="engraving" src="/lens.webp" alt="" width="840" height="560"/>
       </section>
-      <nav className="research-modes" aria-label="Research mode">
-        <button type="button" aria-pressed={mode === 'single'} disabled={busy} onClick={() => chooseMode('single')}>Single product</button>
+      <nav className="research-modes" aria-label="Workspace views">
+        <button type="button" aria-pressed={mode === 'single'} disabled={bulkBusy} onClick={() => chooseMode('single')}>Single product</button>
         <button type="button" aria-pressed={mode === 'bulk'} disabled={busy} onClick={() => chooseMode('bulk')}>Bulk URLs</button>
+        <button type="button" aria-pressed={mode === 'history'} onClick={() => chooseMode('history')}>Session history</button>
       </nav>
-      {mode === 'bulk' ? <BulkResearch selected={selected} modelPicker={modelPicker} busy={busy} onBusyChange={setBusy}/> : <>
+      {mode === 'history' && <>
+        {(busy || bulkBusy) && <p role="status">Your investigation is still running in {bulkBusy ? 'Bulk URLs' : 'Single product'}.</p>}
+        <SessionHistory entries={entries} current={active?.id} busy={busy || bulkBusy} onOpen={openReport}/>
+      </>}
+      <BulkResearch visible={mode !== 'single'} historyOnly={mode === 'history'} onOpenBatch={() => chooseMode('bulk')}
+        selected={selected} modelPicker={mode === 'bulk' ? modelPicker : null} busy={busy || bulkBusy} onBusyChange={setBulkBusy}/>
+      {mode === 'single' && <>
       <form onSubmit={investigate} aria-label="Product investigation">
         <div className="field"><label htmlFor="product">Product, company, or URL</label>
           <input id="product" name="subject" type="text" placeholder="Product name, company name, or website" maxLength={2048}
@@ -177,7 +191,6 @@ function Workspace() {
           {busy ? <span className="spinner"/> : <Icon name="arrow"/>}</button>
         </div>
       </form>
-      <SessionHistory entries={entries} current={active?.id} busy={busy} onOpen={openReport}/>
       {(busy || (error && !active)) && <ResearchActivity running={busy} events={activity}/>}
       {error && <section className="feedback error" role="alert"><div><strong>Investigation incomplete</strong><p>{error}</p></div>
         {!active?.report.review && <button className="retry" disabled={!canInvestigate} onClick={investigate}>Retry</button>}</section>}

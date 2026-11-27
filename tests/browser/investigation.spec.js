@@ -21,7 +21,14 @@ for (const [scenario, subject, verdict] of [
     const response = page.waitForResponse(r => r.url().endsWith('/api/investigate'));
     await page.getByRole('button', { name: 'Investigate', exact: true }).click();
     if (release) {
-      try { await expect(page.getByRole('button', { name: 'Investigating…' })).toBeDisabled(); }
+      try {
+        await expect(page.getByRole('button', { name: 'Investigating…' })).toBeDisabled();
+        await page.getByRole('button', { name: 'Session history' }).click();
+        await expect(page.getByRole('status')).toHaveText('Your investigation is still running in Single product.');
+        await expect(page.getByRole('form', { name: 'Product investigation' })).toHaveCount(0);
+        await page.getByRole('button', { name: 'Single product' }).click();
+        await expect(page.getByLabel('Product, company, or URL')).toHaveValue(subject);
+      }
       finally { release(); }
     }
     const records = (await (await response).text()).trim().split('\n').map(line => JSON.parse(line));
@@ -138,8 +145,15 @@ test('session history restores original reports and citations without another in
   await expect(page.locator('.report .badge')).toHaveText(verdictLabels.red);
   await expect(select).toHaveValue('gpt-6.2-sol');
   await expect(page.locator('.report').getByText('Assessment model · gpt-4.1-mini')).toBeVisible();
+  await expect(page.getByRole('heading', {name:/Individual reports/})).toHaveCount(0);
+  await page.getByRole('button', {name:'Session history'}).click();
+  await expect(page.getByRole('heading', {name:'Individual reports (2)'})).toBeVisible();
+  await expect(page.getByRole('form')).toHaveCount(0);
+  await page.reload();
+  await expect(page.getByRole('button', {name:'Session history'})).toHaveAttribute('aria-pressed','true');
+  await page.getByRole('button', {name:'Single product'}).click();
   await select.selectOption('gpt-6.2-astra');
-  await page.getByText('Session history').click();
+  await page.getByRole('button', {name:'Session history'}).click();
   await page.getByRole('button', { name: /Does Orbit Desk require a commercial license/i }).click();
   await expect(page.locator('.report .badge')).toHaveText(verdictLabels.green);
   await expect(select).toHaveValue('gpt-6.2-astra');
@@ -154,7 +168,7 @@ test('session history restores original reports and citations without another in
   expect(requests).toBe(2);
   const anotherTab = await context.newPage();
   await anotherTab.goto('/');
-  await anotherTab.getByText('Session history').click();
+  await anotherTab.getByRole('button', {name:'Session history'}).click();
   await expect(anotherTab.getByText('Completed reports will appear here for this tab.')).toBeVisible();
 });
 
@@ -222,7 +236,7 @@ test('continues a saved draft with a human lead and exports the final verdict', 
   await page.getByText('View or download dataset report', {exact:true}).click();
   await expect(page.getByRole('table').getByRole('cell').nth(2)).toHaveText('Green');
   await expect(page.getByRole('button', {name:'Download CSV'})).toBeVisible();
-  await page.getByText('Session history').click();
+  await page.getByRole('button', {name:'Session history'}).click();
   await expect(page.locator('.session-history li')).toHaveCount(1);
 });
 
@@ -250,7 +264,7 @@ test('rechecking an earlier report saves a new assessment alongside the original
   await page.goto('/');
   await page.getByRole('button', { name: 'Evaluate with current rubric' }).click();
   await expect(page.locator('.report .badge')).toHaveText(verdictLabels.green);
-  await page.getByText('Session history').click();
+  await page.getByRole('button', {name:'Session history'}).click();
   await page.getByRole('button', { name: /Orbit Desk.*20\/100/ }).click();
   await expect(page.getByText('Earlier assessment.', { exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Evaluate with current rubric' })).toBeVisible();
