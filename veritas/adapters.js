@@ -115,7 +115,7 @@ export function saasLensToFlags(inputUrl, raw) {
 export async function assessVendor(inputUrl, raw, options = {}) {
   const { vendor, flags, checkStatus, context, docsText } = saasLensToFlags(inputUrl, raw);
   const budget = options.budget ?? { maxSearchesPerClaim: 2, maxRounds: 2 };
-  const shared = { fetcher: options.fetcher, controller: options.controller, now: options.now, judge: options.judge, context };
+  const shared = { fetcher: options.fetcher, controller: options.controller, now: options.now, judge: options.judge, signal: options.signal, context };
   // Discovery runs first: its few targeted searches can change the decision most,
   // so they must not be starved by re-verification of already-cited passages.
   let found = { tasks: [], findings: [] };
@@ -124,6 +124,11 @@ export async function assessVendor(inputUrl, raw, options = {}) {
       findings: flags.map(f => ({ polarity: f.polarity, material: f.material, topic: f.topic, text: f.text, status: f.evidence.length ? 'SUPPORTED' : 'INSUFFICIENT_EVIDENCE' })) };
     found = await discover(state, { provider: options.provider, fetcher: options.fetcher, controller: options.controller, maxTasks: options.maxTasks ?? 3 });
   }
+  // Material gaps: the risk check never ran (no provider, failed, or out of budget).
+  const riskTask = found.tasks.find(t => t.category === 'MATERIAL_RISK');
+  const riskResolved = flags.some(f => f.polarity === 'red' && f.evidence.length);
+  context.materialGaps = riskResolved ? [] : !options.provider || options.discovery === false ? ['material-risk search not available']
+    : riskTask && (riskTask.failed || riskTask.skipped) ? ['material-risk search failed'] : [];
   const team = await verifyFlags(vendor, flags, options.provider ?? null, budget, shared);
   const extra = found.findings.length ? await verifyFlags(vendor, found.findings, null, budget, shared) : { flags: [] };
   const all = [...team.flags, ...extra.flags];

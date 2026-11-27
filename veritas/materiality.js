@@ -39,6 +39,12 @@ export function classifyFinding(f) {
     if (established) return { ...base, class: !material ? FINDING.NON_MATERIAL_NEGATIVE
       : f.polarity === 'red' ? FINDING.MATERIAL_NEGATIVE : FINDING.MATERIAL_CAVEAT };
     if (status === 'PARTIALLY_SUPPORTED') return { ...base, class: material ? FINDING.AMBIGUOUS : FINDING.NON_MATERIAL_NEGATIVE, note: 'only partly established' };
+    // A material red concern that research cited but VERITAS could not verify must not
+    // silently vanish (observed: a regulator finding cited with a URL slug instead of a quote
+    // turned a labelled-Red vendor Green). It blocks Green as an open question, written
+    // without a citation, never as an established fact.
+    if (status !== 'CONFLICTING' && !ev.length && material && f.polarity === 'red' && (f.evidence ?? []).length)
+      return { ...base, statement: `Open question (cited source could not be verified): ${f.text}`, class: FINDING.AMBIGUOUS, note: 'citation not verified' };
     // A concern with no verified evidence at all is not reported (never an unsupported reason).
     if (status !== 'CONFLICTING' && !ev.length) return { ...base, class: FINDING.UNKNOWN, note: 'no verified evidence' };
     return { ...base, class: FINDING.AMBIGUOUS, note: status === 'CONFLICTING' ? 'sources conflict' : 'not established by retrieved evidence' };
@@ -61,7 +67,9 @@ export function classifyFinding(f) {
 }
 
 /**
- * context = { identityEstablished?: bool, incomplete?: bool, failed?: bool }
+ * context = { identityEstablished?: bool, incomplete?: bool, failed?: bool, materialGaps?: string[] }
+ * incomplete alone (a page failed to load) does not block Green when independent
+ * evidence is strong; incomplete + materialGaps (a material check could not run) does.
  * Returns { overall, decisive, findings, reasons[] }.
  */
 export function adjudicate(findings, context = {}) {
@@ -79,6 +87,11 @@ export function adjudicate(findings, context = {}) {
     overall = 'Yellow'; decisive = ambiguousMaterial[0]; why = 'A material concern is reported but not fully established.';
   } else if (by(FINDING.MATERIAL_CAVEAT).length) {
     overall = 'Yellow'; decisive = by(FINDING.MATERIAL_CAVEAT)[0]; why = 'A documented tradeoff could change the buying decision.';
+  } else if (context.incomplete && (context.materialGaps ?? []).length) {
+    // A minor retrieval failure does not cancel strong evidence, but an unresolved
+    // material question (e.g. the risk check could not run) must not become Green.
+    overall = 'Yellow'; decisive = null;
+    why = `Research was incomplete on a material question (${context.materialGaps.join(', ')}); a positive decision is not established.`;
   } else if (!strong.length || context.identityEstablished === false) {
     overall = 'Yellow'; decisive = minor[0] ?? null;
     why = context.identityEstablished === false ? 'Product identity is not established by independent evidence.'

@@ -22,7 +22,7 @@ Absence of information is neutral, never refutes. Use only the given evidence id
 export function createOpenAIJudge({ model = process.env.OPENAI_MODEL || 'gpt-4.1', apiKey = process.env.OPENAI_API_KEY } = {}) {
   if (!apiKey) throw new Error('OPENAI_API_KEY is not set');
   let runtime;
-  return async function judge(claim, evidence) {
+  return async function judge(claim, evidence, { signal } = {}) {
     runtime ??= await (async () => {
       const { Agent, Runner } = await import('@openai/agents');
       return { agent: new Agent({ name: 'VERITAS judge', instructions, model, outputType: out, modelSettings: { store: false, maxTokens: 1200, toolChoice: 'none' } }),
@@ -31,7 +31,7 @@ export function createOpenAIJudge({ model = process.env.OPENAI_MODEL || 'gpt-4.1
     const res = await runtime.runner.run(runtime.agent, JSON.stringify({
       claim: claim.text, vendor: claim.vendor_name, domain: claim.vendor_domain, claim_type: claim.claim_type,
       evidence: evidence.map(e => ({ id: e.id, source_type: e.source_type, url: e.url, quote: e.quote, context: e.context, deterministic: e.deterministic })),
-    }), { maxTurns: 1 });
+    }), { maxTurns: 1, ...(signal ? { signal } : {}) });
     const parsed = out.parse(res.finalOutput);
     return parsed.judgements.map(j => ({ ...j, stance: j.entailment === 'partial' && j.stance === 'supports' ? 'partial' : j.stance,
       rationale: j.explanation }));

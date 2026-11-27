@@ -45,7 +45,7 @@ export function planTasks(state, { maxTasks = 3, year = new Date().getUTCFullYea
 const SIGNALS = [
   { topic: 'security', kind: 'regulatory', re: /\b(fined|penalt(?:y|ies)|ordered to pay|consent order|enforcement action|settled with the (?:ftc|sec|regulator)|banned from)\b/i },
   { topic: 'security', kind: 'incident', re: /\b(data breach|security (?:incident|breach)|was hacked|attackers? (?:gained|exploited|injected)|compromised (?:customer|user) data)\b/i },
-  { topic: 'maintenance', kind: 'discontinued', re: /\b(discontinued|end[- ]of[- ]life|will be retired|no longer (?:developed|maintained|sold|supported)|is being sunset|letzte jahr)\b/i },
+  { topic: 'maintenance', kind: 'discontinued', re: /\b(discontinued|end[- ]of[- ]life|will be retired|no longer (?:developed|maintained|sold|supported)|is being sunset)\b/i },
   { topic: 'ownership', kind: 'acquisition', re: /\b(acquired by|completed (?:its|the) acquisition of|was bought by|merged with)\b/i },
   { topic: 'usage', kind: 'release', re: /\b(released|release notes?|version \d+(?:\.\d+)+|changelog)\b/i },
 ];
@@ -63,6 +63,41 @@ function propose(signal, sentence, sourceType, vendorAuthored) {
   if (signal.kind === 'acquisition') return { polarity: 'yellow', material: false };
   if (signal.kind === 'release') return { polarity: 'green', material: false };
   return null;
+}
+
+// Customer relationships (CUSTOMER_REALITY): which relation a sentence states.
+const RELATION = [
+  { relation: 'pilot', re: /\b(pilot(?:ed|ing)?|trial(?:led|ing)?|proof of concept)\b/i },
+  { relation: 'reseller', re: /\b(reseller|resells|distributor)\b/i },
+  { relation: 'partner', re: /\b(partner(?:ship|ed)? with|strategic partner|alliance)\b/i },
+  { relation: 'integration', re: /\b(integrat(?:es|ion) with|connector for|plugin for)\b/i },
+  { relation: 'deployment', re: /\b(selected|chose|deployed|rolled out|implemented|migrated to|went live with|standardi[sz]ed on|is using|relies on)\b/i },
+];
+export function relationOf(sentence) {
+  return RELATION.find(r => r.re.test(sentence))?.relation ?? 'unknown';
+}
+
+// The sentence describes what the product protects against, a hypothetical, or
+// general advice: not an event that happened to this vendor.
+const NOT_AN_EVENT = /\b(prevent\w*|protect\w*|avoid\w*|detect\w*|mitigat\w*|defend\w*|guard\w* against|reduce the risk|in (?:the )?(?:event|case) of|if (?:a|an|your|you)|could|would|might|such as|for example|how to|what is|guide to)\b/i;
+
+/** True when the sentence reports an event of the named vendor (vendor named before the signal, no hypothetical/marketing framing). */
+export function isVendorEvent(sentence, names, signal) {
+  if (signal.kind === 'release' || signal.kind === 'acquisition') return true;
+  if (NOT_AN_EVENT.test(sentence)) return false;
+  const m = sentence.match(signal.re);
+  if (!m) return false;
+  const low = sentence.toLowerCase();
+  const end = m.index + m[0].length;
+  // Subject before the signal ("Acme was fined") or, for enforcement, the object right after it ("the FTC fined Acme").
+  return names.filter(n => n && n.length >= 3).some(n => { const i = low.indexOf(n.toLowerCase());
+    if (i < 0) return false;
+    if (i < m.index) return true;
+    // object position: at most two words between the signal and the name ("fined the vendor Acme").
+    if (signal.kind !== 'regulatory') return false;
+    const words = low.slice(end).trim().split(/\s+/).slice(0, 3).join(' ');
+    return words.includes(n.toLowerCase()); })
+    && !/\b(unlike|compared (?:to|with)|competitor)\b/i.test(sentence.slice(0, m.index));
 }
 
 function namesEntity(text, names) {
@@ -96,8 +131,23 @@ export async function discover(state, { provider, fetcher, controller, maxTasks 
       const vendorAuthored = ['vendor', 'technical_documentation'].includes(sourceType);
       for (const s of sentences(clean)) {
         if (s.length < 30 || s.length > 400 || detectInjection(s).length || !namesEntity(s, names)) continue;
+        if (task.category === 'CUSTOMER_REALITY') {
+          // Only a non-vendor page stating an actual relationship counts; vendor marketing, logos and badges do not.
+          if (vendorAuthored) continue;
+          const relation = relationOf(s);
+          const key = lower(s).slice(0, 120);
+          if (relation === 'unknown' || seen.has(key)) continue;
+          seen.add(key);
+          // Partner/reseller/integration/pilot relations are not customer use: recorded on the task, never a finding.
+          if (relation !== 'deployment') { (task.relations ??= []).push({ relation, url: r.url, quote: s }); continue; }
+          out.push({ polarity: 'green', material: false, topic: 'customer', relation, text: s, atomic: true,
+            origin: 'discovered', category: task.category,
+            evidence: [{ url: r.url, quote: s, content: clean, title: r.title ?? '', publication_date: r.published_date, origin: 'fetch' }] });
+          found++;
+          break;
+        }
         const sig = SIGNALS.find(x => x.re.test(s));
-        if (!sig) continue;
+        if (!sig || !isVendorEvent(s, names, sig)) continue;
         if (sig.kind === 'release' && task.category !== 'LIVENESS') continue;
         const p = propose(sig, s, sourceType, vendorAuthored);
         const key = lower(s).slice(0, 120);

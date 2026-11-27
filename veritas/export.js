@@ -58,9 +58,21 @@ function line(f) {
 export function toStackginiRow(vendor, flagged, context = {}) {
   const result = adjudicate(flagged, context);
   const buckets = { green: [], yellow: [], red: [] };
+  // Reason-level evidence ledger (internal audit artifact, never exported to CSV):
+  // every written reason keeps the exact text, the claim and the evidence behind it.
+  const ledger = [];
   for (const f of result.findings) {
     const col = COLUMN[f.class];
-    if (col) buckets[col].push(line(f));
+    if (!col) continue;
+    const text = line(f);
+    buckets[col].push(text);
+    ledger.push({ reason_id: `r${ledger.length + 1}`, column: col, text, claim: f.text, statement: f.statement,
+      class: f.class, status: f.status, materiality: (f.material ?? f.polarity === 'red') ? 'high' : 'normal',
+      contribution: f === result.decisive ? 'decisive' : 'supporting', narrowed: f.statement !== f.text,
+      evidence: f.evidence.map((e, i) => ({ evidence_id: e.id ?? `${f.id ?? 'f'}-e${i + 1}`, url: e.url, quote: e.quote,
+        quote_verified: e.quote_verified === true, entity_match: e.entity_match !== false, source_type: e.source_type,
+        independent: e.independent === true, retrieval: e.retrieval, published: e.publication_date ?? null,
+        entailment: e.judge?.entailment ?? (e.stance ? `lexical:${e.stance}` : 'unknown') })) });
   }
   const unknown = result.findings.filter(f => f.class === 'UNKNOWN').length;
   const dropped = result.findings.filter(f => f.class === 'DROPPED').length;
@@ -74,6 +86,7 @@ export function toStackginiRow(vendor, flagged, context = {}) {
   const join = list => list.length ? list.join(' | ') : 'None identified.';
   return { id: vendor.id, url: vendor.url, product: vendor.product ?? '', vendor: vendor.vendor ?? '', overall: result.overall,
     green_flags: join(buckets.green), yellow_flags: join(buckets.yellow), red_flags: join(buckets.red), reasoning,
+    _ledger: ledger,
     _findings: result.findings.map(f => ({ class: f.class, polarity: f.polarity, status: f.status, statement: f.statement,
       evidence: f.evidence.map(e => ({ url: e.url, quote: e.quote })) })) };
 }

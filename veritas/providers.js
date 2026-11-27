@@ -7,11 +7,25 @@ import { tokens } from './text.js';
 /** Safe default fetcher (reuses the team's existing hardened implementation). */
 export const publicFetcher = {
   name: 'public-fetch',
-  async fetch(url) {
-    const doc = await fetchPublicText(url);
-    return { url: doc.url, title: doc.title, text: doc.text };
+  async fetch(url, { signal } = {}) {
+    const doc = await fetchPublicText(url, { signal });
+    return { url: doc.url, title: doc.title, text: doc.text, links: doc.links ?? [] };
   },
 };
+
+/**
+ * Bind an AbortSignal to a fetcher/provider. After the signal fires, no new
+ * request starts and in-flight requests receive the signal (real cancellation,
+ * not just an abandoned Promise.race).
+ */
+export function bindSignal(target, signal) {
+  if (!target || !signal) return target;
+  const guard = () => { if (signal.aborted) throw new Error('aborted: vendor time share exhausted'); };
+  const out = { name: target.name };
+  if (target.fetch) out.fetch = async (url, o = {}) => { guard(); return target.fetch(url, { ...o, signal: o.signal ? AbortSignal.any([o.signal, signal]) : signal }); };
+  if (target.search) out.search = async (q, o = {}) => { guard(); return target.search(q, { ...o, signal: o.signal ? AbortSignal.any([o.signal, signal]) : signal }); };
+  return out;
+}
 
 /**
  * Tavily search (hackathon partner). Needs TAVILY_API_KEY in the environment.
@@ -22,12 +36,12 @@ export function tavilyProvider({ apiKey = process.env.TAVILY_API_KEY, depth = 'b
   if (!apiKey) throw new Error('TAVILY_API_KEY is not set');
   return {
     name: 'tavily',
-    async search(query, { maxResults = 5 } = {}) {
+    async search(query, { maxResults = 5, signal } = {}) {
       const res = await fetch('https://api.tavily.com/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
         body: JSON.stringify({ query: query.slice(0, 380), max_results: maxResults, search_depth: depth, include_raw_content: rawContent }),
-        signal: AbortSignal.timeout(20000),
+        signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(20000)]) : AbortSignal.timeout(20000),
       });
       if (!res.ok) throw new Error(`Tavily HTTP ${res.status}`);
       const body = await res.json();

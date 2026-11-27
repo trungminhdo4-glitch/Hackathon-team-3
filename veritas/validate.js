@@ -31,6 +31,25 @@ export function validateSubmission(rows, inputs, audit = {}) {
     const cited = [...text.matchAll(/https?:\/\/[^\s,)|\]]+/g)].map(m => m[0]);
     const allowed = new Set([...(audit[r.id]?.citedUrls ?? [])]);
     for (const u of cited) if (audit[r.id] && !allowed.has(u)) problems.push(`row ${r.id}: cited URL not backed by verified evidence: ${u}`);
+    // Reason-level audit: a URL is only valid next to the reason its verified quote supports.
+    const ledger = audit[r.id]?.ledger;
+    if (ledger) {
+      const urlsIn = s => [...s.matchAll(/https?:\/\/[^\s,)|\]]+/g)].map(m => m[0]);
+      for (const col of ['green', 'yellow', 'red']) {
+        for (const seg of String(r[`${col}_flags`] ?? '').split(' | ')) {
+          const urls = urlsIn(seg);
+          if (!urls.length) continue;
+          const entry = ledger.find(l => l.column === col && l.text === seg);
+          if (!entry) { problems.push(`row ${r.id}: ${col} reason has no ledger entry: ${seg.slice(0, 60)}`); continue; }
+          for (const u of urls) if (!entry.evidence.some(e => e.url === u && e.quote_verified && e.entity_match))
+            problems.push(`row ${r.id}: ${entry.reason_id} cites ${u} without a verified, entity-matched quote for that reason`);
+        }
+      }
+      for (const u of urlsIn(String(r.reasoning ?? ''))) {
+        if (!ledger.some(l => String(r.reasoning).includes(l.text) && l.evidence.some(e => e.url === u && e.quote_verified)))
+          problems.push(`row ${r.id}: reasoning cites ${u} outside a ledger-backed reason`);
+      }
+    }
     if (r.overall === 'Red' && (!r.red_flags || r.red_flags === 'None identified.')) problems.push(`row ${r.id}: Red without a red flag`);
   }
   // CSV round-trip: escaping must preserve every field.

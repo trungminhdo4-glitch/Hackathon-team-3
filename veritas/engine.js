@@ -108,9 +108,21 @@ export async function verifyClaims(claims, existingEvidence = [], searchProvider
       let quote = raw.quote || '';
       if (!quote && clean) quote = bestPassage(claim.text, clean, [...criticalTerms(claim), ...tokens(claim.text)]).text;
       if (detectInjection(quote).length) quote = '';
-      const check = retrieval === 'search_snippet'
+      let check = retrieval === 'search_snippet'
         ? { verified: false, reason: 'search_snippet_only' }
         : verifyQuote(quote, clean);
+      // Quote alignment: the given excerpt is not verbatim in the cited page (observed: URL
+      // slugs and light paraphrases from teammate tools). Align it to the page passage that
+      // contains most of the excerpt's own words. A fabricated excerpt has no such passage
+      // and stays unverified; stance and entity checks still apply to the aligned passage.
+      if (!check.verified && raw.quote && clean && retrieval !== 'search_snippet') {
+        const qt = [...new Set(tokens(raw.quote))];
+        const alt = qt.length >= 4 ? bestPassage(raw.quote, clean, qt).text : '';
+        const at = new Set(tokens(alt));
+        const overlap = qt.length ? qt.filter(t => at.has(t)).length / qt.length : 0;
+        const c2 = alt && alt !== quote && overlap >= 0.6 ? verifyQuote(alt, clean) : null;
+        if (c2?.verified) { quote = alt; check = { ...c2, method: `aligned_to_cited_page:${overlap.toFixed(2)}` }; }
+      }
       let source_type = raw.source_type || classifySource(raw.url, vendorDomains);
       if (claim.claim_type === 'customer' && claim.subject && !vendorDomains.map(siteOf).includes(siteOf(raw.url))) {
         const custSite = claim.qualifiers?.customer_domain ? siteOf(claim.qualifiers.customer_domain) : '';
@@ -173,7 +185,7 @@ export async function verifyClaims(claims, existingEvidence = [], searchProvider
           for (const e of candidates) judged.add(e.id);
           try {
             const out = await withTimeout(opts.judge(claim, candidates.map(({ id, url, quote, quote_context, source_type, stance, notes }) =>
-              ({ id, url, quote, context: quote_context, source_type, deterministic: { stance, notes } }))), B.timeoutMs, 'judge');
+              ({ id, url, quote, context: quote_context, source_type, deterministic: { stance, notes } })), { signal: opts.signal }), B.timeoutMs, 'judge');
             for (const j of Array.isArray(out) ? out : []) {
               const parsed = JudgementSchema.safeParse(j);
               const target = parsed.success && candidates.find(e => e.id === parsed.data.evidence_id);
