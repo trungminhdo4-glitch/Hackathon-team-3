@@ -64,7 +64,7 @@ export function createReviewWorkflow(investigate, { openGate = openReviewGate, r
       model: options.model, helperModel: options.helperModel, activity: [...activity] };
     sessions.set(id, entry);
     expire(id, entry);
-    return withActivity({ ...report, verdict: null, review: { id, prompt: gate.prompt, mode: gate.mode, expiresAt } }, activity);
+    return withActivity({ ...report, verdict: null, review: { id, prompt: gate.prompt, ...(gate.brief && {brief:gate.brief}), mode: gate.mode, expiresAt } }, activity);
   }
   async function finish(entry, decision, onActivity, activity) {
     const { action, guidance } = await resumeGate(entry.gate, decision);

@@ -21,7 +21,7 @@ for (const action of ['research', 'finalize']) {
     const runner = questionRunner(async () => {
       calls++;
       return {usage: new Usage(), output: [{type: 'function_call', callId: 'choose', name: 'request_reviewer_input',
-        arguments: JSON.stringify({criterion: 'licensing', request: 'scope'}), status: 'completed'}]};
+        arguments: JSON.stringify({criterion: 'licensing', request: 'scope', question:'Which edition of Orbit should we verify for licensing and access?'}), status: 'completed'}]};
     });
     const gate = await openReviewGate(report, runner);
     assert.equal(gate.mode, 'sdk');
@@ -40,4 +40,17 @@ test('a failed provider leaves a locally identified, actionable review checkpoin
   assert.equal(gate.state, null);
   assert.match(gate.prompt, /licensing and access/);
   assert.deepEqual(await resumeReviewGate(gate, {action: 'finalize'}), {action: 'finalize', guidance: ''});
+});
+
+test('the review explains its decision boundary using actual retrieved material even without a model', async () => {
+  const doc = {kind:'Product page', title:'Orbit Team plan', url:'https://orbit.example/terms',
+    quote:'Shared workspaces are available with the Team plan.', criterion:'licensing'};
+  const gate = await openReviewGate({...report, searchModel:null, dossier:{observations:[doc],coverage:[]}});
+  assert.ok(gate.brief.known.includes(doc.quote));
+  assert.equal(gate.brief.knownUrl, doc.url);
+  assert.match(gate.brief.obstacle, /current terms.*Orbit/);
+  assert.match(gate.brief.green, /advertised capability/);
+  assert.match(gate.brief.yellow, /tier|quota/);
+  assert.match(gate.brief.red, /contradict/);
+  assert.match(gate.prompt, /Orbit Team plan/);
 });
