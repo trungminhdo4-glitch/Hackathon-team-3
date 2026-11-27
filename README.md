@@ -1,4 +1,58 @@
-# SaaSLens
+# Hackathon Team 3 — Stackgini "Agents with Taste"
+
+An agent that checks a software or hardware vendor the way an experienced procurement buyer would. Give it a product URL and it returns a **Green / Yellow / Red** verdict. Every reason in the verdict links to a source a human can open and check.
+
+## What's in this repo
+
+| Folder / file | What it is |
+|---|---|
+| [`agent/`](agent/) | **The submission agent** (Python). It produces the live verdict CSV. See [`agent/README.md`](agent/README.md), [`agent/BUILD.md`](agent/BUILD.md) and [`agent/RESULTS.md`](agent/RESULTS.md). |
+| `src/`, `server/`, `shared/` | **SaaSLens**, an interactive web app for reviewing one product's evidence (documented below). |
+| `shuhan_verdicts_agent.csv` | Agent output for the 10 live products (`out_of_sample_10.csv`). This is the file we submitted. |
+| `shuhan_verdicts_audit.json` | Audit trail for the live run: votes, evidence IDs, quotes and verification status. |
+| `hackathon_40_solutions_commented (1).csv` | Stackgini's 40 labelled development examples. |
+
+The VERITAS claim-level fact-checker lives on the `feat/adversarial-fact-checking` branch.
+
+## How the agent works: cheap steps first, the model last
+
+1. **Free checks:** a bounded crawl of the vendor site (who signs the contract, dates, traction and logo claims, end-of-life notices), RDAP domain age and Wayback history. Everything is disk-cached.
+2. **About 9 targeted web searches per vendor (Tavily), in the vendor's own language:** fines, regulators, lawsuits, breaches, ownership/private equity, renames, end-of-life, licensing limits and sanctions. Hardware also gets firmware, CVE, recall and lifecycle checks.
+3. **Three votes from a small open model** (`openai/gpt-oss-120b` on Nebius Token Factory). The majority wins.
+4. **Claim verification:** each reason must cite an evidence ID, and its quote is checked against the fetched source. Unsupported claims are dropped. Empty search results mean *unknown*, never *clean*. If the model fails, rules take over.
+
+## Results and cost
+
+| | Result |
+|---|---|
+| Stackgini's 40 examples | **31/40 (77.5%)**, zero Red↔Green errors |
+| 40 fresh, self-labelled sites (2 held-out sets) | zero Red↔Green errors |
+| Live run (10 products) | about 2 minutes, about 90 Tavily credits, a few cents of Nebius usage |
+
+Judge comparison on the same evidence:
+
+| Judge | Score | Cost vs gpt-oss | Notes |
+|---|---:|---:|---|
+| **gpt-oss-120b** | **31/40** | 1x | default |
+| Claude Sonnet | 27/40 | about 7x | |
+| Kimi K3.1 Pro | 26/40 | about 28x | about 10x slower |
+| DeepSeek V4.1 Flash | 24/40 | about 7x | |
+
+None of the bigger models beat the small one. Better evidence mattered more than a bigger model. The 40 examples were also used for development, so treat 31/40 as optimistic.
+
+## Run the live batch
+
+```bash
+cd agent
+pip install -r requirements.txt
+# needs TAVILY_API_KEY and LLM_API_KEY (Nebius) in the environment or agent/.env (git-ignored)
+python agent.py --blind --input live_urls.txt --out verdicts.csv \
+  --audit-out verdicts.json --workers 5 --no-screenshot
+```
+
+---
+
+## SaaSLens (evidence review app)
 
 Enter a software product, company, or public URL. Add a question if you want to evaluate a specific use or edition. SaaSLens checks whether the product delivers its main promise, shows the passages behind each finding, and keeps reports in the current tab’s session history.
 
