@@ -14,7 +14,7 @@ const api = createApi(async (subject, { question }) => {
   const scenario = examples.get(subject);
   if (!scenario) throw new Error('Simulated provider failure');
   const url = subject.startsWith('https://') ? subject : 'https://orbit.example/';
-  return { ...assess(url, fixtureResearch(url, scenario, question)), subject, question };
+  return { ...assess(url, fixtureResearch(url, scenario, question)), subject, question, model: 'test-researcher' };
 });
 
 await preview({

@@ -4,6 +4,7 @@ import { once } from 'node:events';
 import http from 'node:http';
 import { createApi } from '../server/api.js';
 import { parseSubject } from '../server/investigate.js';
+import { createResearchSession } from '../server/live.js';
 
 const server = http.createServer(createApi((value, { question }) => {
   const { subject, url } = parseSubject(value);
@@ -38,4 +39,23 @@ test('the API passes names, URLs and questions through one investigation workflo
   const legacy = await post({ url: 'https://product.example/' });
   assert.deepEqual(await legacy.json(), { subject: 'https://product.example/', inputUrl: 'https://product.example/', question: '' });
   assert.equal((await post({ url: 'https://product.example/' }, 'credible')).status, 400);
+});
+
+test('model metadata matches the server researcher and rejects misplaced credentials', async t => {
+  const before = process.env.OPENAI_MODEL;
+  t.after(() => {
+    if (before === undefined) delete process.env.OPENAI_MODEL;
+    else process.env.OPENAI_MODEL = before;
+  });
+  const url = new URL('/api/model', endpoint);
+  for (const configured of ['', 'test-model-snapshot']) {
+    process.env.OPENAI_MODEL = configured;
+    const response = await fetch(url);
+    assert.equal(response.status, 200);
+    assert.deepEqual(await response.json(), { model: createResearchSession().agent.model });
+  }
+  process.env.OPENAI_MODEL = 'sk-test-value';
+  const invalid = await fetch(url);
+  assert.equal(invalid.status, 503);
+  assert.deepEqual(await invalid.json(), { error: 'Research model unavailable.' });
 });

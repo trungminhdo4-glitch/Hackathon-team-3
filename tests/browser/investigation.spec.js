@@ -140,11 +140,13 @@ test('rechecking an earlier report saves a new assessment alongside the original
   await expect(page.getByRole('button', { name: 'Evaluate with current rubric' })).toBeVisible();
 });
 
-test('views and downloads the same eight dataset fields and keeps original notes in the tab', async ({page}) => {
+test('views and downloads the same eight dataset fields and keeps original notes in the tab', async ({page, request}) => {
   const {readFile} = await import('node:fs/promises');
   const headers = ['product', 'vendor', 'overall', 'green_flags', 'yellow_flags', 'red_flags', 'reasoning', 'reviewer_notes_original'];
   await page.setViewportSize({width: 390, height: 800});
   await page.goto('/');
+  const {model} = await (await request.get('/api/model')).json();
+  await expect(page.getByText('Research model · ' + model, {exact: true})).toBeVisible();
   await page.getByLabel('Product, company, or URL').fill('Orbit Desk');
   await page.getByRole('button', {name: 'Investigate', exact: true}).click();
   const openExport = page.getByText('View or download dataset report', {exact: true});
@@ -176,6 +178,7 @@ test('views and downloads the same eight dataset fields and keeps original notes
     }
   }
   await page.reload();
+  await expect(page.getByText('Report model · test-researcher', {exact: true})).toBeVisible();
   await openExport.click();
   await expect(page.getByLabel(/Original reviewer notes/)).toHaveValue(notes);
 });

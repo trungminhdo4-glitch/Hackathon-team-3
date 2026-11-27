@@ -32,5 +32,5 @@ export async function investigateProduct(value, { question = '' } = {}) {
     throw new InputError('Could not identify one official product page. Enter its public URL or specify the company and edition.');
   }
   const findings = await research(inputUrl, { subject, question, session, signal });
-  return { ...assess(inputUrl, findings), subject, question };
+  return { ...assess(inputUrl, findings), subject, question, model: session.agent.model };
 }

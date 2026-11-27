@@ -1,5 +1,6 @@
 import { InputError, investigateProduct } from './investigate.js';
 import { validatePublicUrl } from './fetch.js';
+import { getResearchModel } from './live.js';
 
 function json(res, status, body) {
   res.writeHead(status, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
@@ -32,6 +33,14 @@ async function readInput(req) {
 }
 
 async function handle(req, res, investigate) {
+  if (req.url === '/api/model') {
+    if (req.method !== 'GET') return json(res, 405, { error: 'Use GET to read the research model.' });
+    try {
+      return json(res, 200, { model: getResearchModel() });
+    } catch {
+      return json(res, 503, { error: 'Research model unavailable.' });
+    }
+  }
   if (req.url !== '/api/investigate') return json(res, 404, { error: 'Unknown API endpoint.' });
   if (req.method !== 'POST') return json(res, 405, { error: 'Use POST to start an investigation.' });
   if (req.headers['x-fixture-case'] !== undefined) {

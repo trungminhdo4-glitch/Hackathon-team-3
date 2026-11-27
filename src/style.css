@@ -49,6 +49,8 @@ input::placeholder, textarea::placeholder { color: #657569 }
 .submit, .retry { display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid var(--forest); font-size: 15px; font-weight: 600; padding: 9px 17px }
 .submit { justify-self: start; gap: 12px; background: var(--forest); color: white }
 .submit:hover:enabled { background: #0c3920 }
+.form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px }
+.model-label { font-size: 13px; color: var(--muted) }
 .retry { background: white }
 .feedback { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: 16px; padding: 14px 18px; border: 1px solid var(--soft-rule); background: #edf3ed; border-radius: 5px }
 .feedback.error { background: #fcf1e6 }

@@ -132,6 +132,7 @@ export function Report({report, simulated, retry, notes, onNotesChange}) {
         <h2 id="report-title" tabIndex="-1" ref={title}>{report.productName || 'Investigation result'}</h2>
         {report.vendor !== undefined && <p className="operator">Operator · {report.vendor || 'Unverified'}</p>}
         <span className="report-url">{report.inputUrl}</span>
+        {!simulated && <span className="model-label">Report model · {report.model || 'Not recorded'}</span>}
         {report.vendor && report.vendorEvidence?.length > 0 && <details className="operator-source">
           <summary>Operator source</summary><Evidence items={report.vendorEvidence} sources={sources}/>
         </details>}

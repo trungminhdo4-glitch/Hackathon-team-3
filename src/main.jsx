@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import '@fontsource/spectral/latin-600.css'
 import '@fontsource/spectral/latin-700.css'
@@ -15,6 +15,16 @@ function Workspace() {
   const [question, setQuestion] = useState(active?.report.question ?? '')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [model, setModel] = useState('')
+
+  useEffect(() => {
+    const controller = new AbortController()
+    fetch('/api/model', { signal: controller.signal })
+      .then(response => response.ok ? response.json() : null)
+      .then(data => setModel(data?.model || 'Unavailable'))
+      .catch(() => { if (!controller.signal.aborted) setModel('Unavailable') })
+    return () => controller.abort()
+  }, [])
 
   function openReport(entry) {
     setSubject(entry.report.subject ?? entry.report.inputUrl)
@@ -70,8 +80,10 @@ function Workspace() {
             placeholder="Which edition includes the features I need?" value={question}
             onChange={event => { setQuestion(event.target.value); setActive(null); setError('') }}/>
         </div>
-        <button className="submit" disabled={busy || !subject.trim()}>{busy ? 'Investigating…' : 'Investigate'}
+        <div className="form-actions"><button className="submit" disabled={busy || !subject.trim()}>{busy ? 'Investigating…' : 'Investigate'}
           {busy ? <span className="spinner"/> : <Icon name="arrow"/>}</button>
+          <span className="model-label">Research model · {model || 'Loading…'}</span>
+        </div>
       </form>
       <SessionHistory entries={entries} current={active?.id} busy={busy} onOpen={openReport}/>
       {busy && <p className="feedback" role="status">Researching the product and checking citations…</p>}

@@ -251,10 +251,18 @@ export async function research(value, { signal, subject, question, session } = {
   }
 }
 
+export function getResearchModel() {
+  const model = process.env.OPENAI_MODEL?.trim() || 'gpt-4.1';
+  if (!/^[\w.:-]+$/u.test(model) || /^sk-/i.test(model) || model === process.env.OPENAI_API_KEY) {
+    throw new Error('Invalid research model configuration.');
+  }
+  return model;
+}
+
 export function createResearchSession() {
   const agent = new Agent({
     name: 'SaaSLens researcher', instructions,
-    model: process.env.OPENAI_MODEL || 'gpt-4.1',
+    model: getResearchModel(),
     tools: [webSearchTool()],
     modelSettings: { store: false, maxTokens: 2500, toolChoice: 'required',
       providerData: { include: ['web_search_call.action.sources'], max_tool_calls: 4 } },
