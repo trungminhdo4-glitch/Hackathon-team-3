@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-27T15:50:28.722Z",
+  "generated_at": "2026-11-27T18:27:22.489Z",
   "budget": {
     "maxSearchesPerClaim": 3,
     "maxRounds": 2,
@@ -23,7 +23,7 @@
           "citation_validity": "not measured (variant does not validate)",
           "injection_quote_leaks": 0,
           "searches_per_claim": 1,
-          "runtime_ms": 19
+          "runtime_ms": 17
         },
         "failures": [
           {
@@ -182,7 +182,7 @@
           "citation_validity": 1,
           "injection_quote_leaks": 0,
           "searches_per_claim": 0.96,
-          "runtime_ms": 32
+          "runtime_ms": 28
         },
         "failures": [
           {
@@ -211,7 +211,7 @@
           "citation_validity": 1,
           "injection_quote_leaks": 0,
           "searches_per_claim": 4,
-          "runtime_ms": 13
+          "runtime_ms": 14
         },
         "failures": []
       },
@@ -395,7 +395,7 @@
           "citation_validity": 1,
           "injection_quote_leaks": 0,
           "searches_per_claim": 4.17,
-          "runtime_ms": 7
+          "runtime_ms": 5
         },
         "failures": []
       }
@@ -415,7 +415,7 @@
           "citation_validity": "not measured (variant does not validate)",
           "injection_quote_leaks": 0,
           "searches_per_claim": 1,
-          "runtime_ms": 0
+          "runtime_ms": 1
         },
         "failures": [
           {
@@ -474,7 +474,7 @@
           "citation_validity": 1,
           "injection_quote_leaks": 0,
           "searches_per_claim": 0.3,
-          "runtime_ms": 4
+          "runtime_ms": 5
         },
         "failures": [
           {
@@ -513,7 +513,7 @@
           "citation_validity": 1,
           "injection_quote_leaks": 0,
           "searches_per_claim": 3.8,
-          "runtime_ms": 6
+          "runtime_ms": 5
         },
         "failures": [
           {
@@ -542,7 +542,7 @@
           "citation_validity": 1,
           "injection_quote_leaks": 0,
           "searches_per_claim": 2.3,
-          "runtime_ms": 6
+          "runtime_ms": 5
         },
         "failures": [
           {

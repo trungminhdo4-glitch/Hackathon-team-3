@@ -27,6 +27,7 @@ test('distinguishes disqualifying limitations from caveats', () => {
   assert.equal(map('routine').material, false);
   const context = saasLensToFlags(url, { ...base, claims: [{ ...claim, significance: 'context', impact: 'disqualifying' }] }).flags[0];
   assert.equal(context.material, false);
+  assert.equal(context.polarity, 'yellow');
 });
 
 test('rejects a combined proposition if any evidence source is unknown', () => {
@@ -39,9 +40,16 @@ test('routine, limited, requested and remediated proposals do not become materia
   for (const change of [{ impact: 'routine' }, { decisionScope: 'limited_use' }, { decisionScope: 'requested_use' }, { decisionScope: 'remediated' }]) {
     assert.equal(saasLensToFlags(url, { ...base, claims: [{ ...claim, ...change }] }).flags[0].material, false);
   }
-  for (const status of ['unverified', 'contradicted']) {
+  for (const status of ['unverified']) {
     assert.equal(saasLensToFlags(url, { ...base, claims: [{ ...claim, status }] }).flags.length, 0);
   }
+});
+
+test('cited contradictory proposals are retained without trusting the model status', async () => {
+  const raw = { ...base, claims: [{ ...claim, status:'contradicted' }] };
+  assert.equal(saasLensToFlags(url, raw).flags.length,1);
+  const result = await assessVendor(url,raw,{discovery:false});
+  assert.notEqual(result.flags[0].verdict.status,'REFUTED');
 });
 
 test('upstream supported label is independently re-verified', async () => {

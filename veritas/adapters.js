@@ -97,13 +97,13 @@ export function saasLensToFlags(inputUrl, raw) {
     if (!evidence.length || evidence.length !== (claim.evidence ?? []).length) continue;
     const text = (claim.claim || claim.text || '').trim();
     if (!text) continue;
-    // These are proposals, not verified findings. Contradicted/unverified model
-    // labels cannot establish a negative proposition or reverse its meaning.
-    if (claim.status === 'contradicted' || claim.status === 'unverified') continue;
+    // Preserve cited contradictory proposals for independent verification;
+    // the upstream status never reverses or establishes the proposition.
+    if (claim.status === 'unverified') continue;
     const negative = claim.significance === 'limitation';
     const material = negative && ['caveat', 'disqualifying'].includes(claim.impact) &&
       ['ordinary_use', 'unclear'].includes(claim.decisionScope);
-    flags.push({ polarity: negative ? (claim.impact === 'disqualifying' ? 'red' : 'yellow') : 'green', material, topic: claim.criterion,
+    flags.push({ polarity: negative ? (claim.impact === 'disqualifying' ? 'red' : 'yellow') : claim.significance === 'benefit' ? 'green' : 'yellow', material, topic: claim.criterion,
       text, source: `claim:${i + 1}`, evidence, atomic: true });
   }
   for (const [i, f] of (raw.flags ?? []).entries()) {

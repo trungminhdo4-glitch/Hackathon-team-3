@@ -144,9 +144,9 @@ test('verifyFlags end-to-end on a vendor with a fixture corpus', async () => {
   assert.match(row.yellow_flags, /vendor-claimed only/);
 });
 
-test('SaaSLens adapter: fabricated sources/quotes are dropped, registry contradiction refutes', async () => {
+test('legacy SaaSLens check adapter rejects fabricated sources and verifies registry contradictions', async () => {
   const { fromSaasLens } = await import('../adapters.js');
-  const { fixtureResearch } = await import('../../server/fixtures.js');
+  const { fixtureResearch } = await import('./fixtures/saaslens-v1.js');
   const url = 'https://orbit-desk.example/';
   const run = async sc => { const { claims, evidence } = fromSaasLens(url, fixtureResearch(url, sc)); return verifyClaims(claims, evidence, null, {}); };
   const credible = await run('credible');

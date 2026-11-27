@@ -1,0 +1,18 @@
+{
+  "phase7-tavily-report.json": {
+    "correct": 23,
+    "total": 40,
+    "macro_f1": 0.572,
+    "critical_false_green": 2,
+    "false_red": 0,
+    "limits": "Predictions rescored only; original research, grounding and OpenCode runtime not reproduced."
+  },
+  "phase7-tavily2-report.json": {
+    "correct": 23,
+    "total": 40,
+    "macro_f1": 0.561,
+    "critical_false_green": 3,
+    "false_red": 0,
+    "limits": "Predictions rescored only; original research, grounding and OpenCode runtime not reproduced."
+  }
+}

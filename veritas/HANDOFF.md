@@ -1,5 +1,7 @@
 # VERITAS handoff for the team merge
 
+**Final integration review:** [FINAL_INTEGRATION.md](FINAL_INTEGRATION.md) supersedes earlier current-state counts and schema assumptions below. Latest main `a2fdfd0` emits `claims[]`, now supported as independently reverified proposals. Branch VERITAS 117/117; branch team tests 24/24; prospective main integration 222/222. Raw run caches are excluded from the final PR tree and retained locally/history. Keep the stronger researcher and opt-in audit-only review; no stricter Guard default or measured new accuracy gain is claimed.
+
 ## Phase 6 freeze — November 27
 
 Update: owner-approved CLI installation and OAuth login succeeded; CLI Search/Extract were live-verified. The [actual six-case Tavily comparison](bench/2026-11-27-tavily-live.md) showed no improvement: baseline 4/6 for each judge; Tavily-only Luna 1/6 / Terra 2/6; augmentation 3/6 / 4/6. Keep the frozen stronger researcher. Optional question `intent` now restricts vendor facts to vendor sources and requests external evidence for legal/privacy questions; this post-run fix is regression-tested, not newly benchmarked. Current tests: 135/135. CLI OAuth does not itself supply the application REST API credential; the CLI is for session research, not product runtime.

@@ -1,5 +1,7 @@
 # VERITAS — adversarial evidence verification
 
+See [final integration review](FINAL_INTEGRATION.md) for the current main-schema adapter, exact validation and deployment limits: 117 VERITAS tests, 24 current-branch team tests, and 222/222 in the prospective main integration snapshot. Raw experiment caches are excluded from the final PR tree; compact benchmark reports and optional tooling remain.
+
 Phase 6: [measured evidence-first experiments and frozen selection](bench/2026-11-27-phase6.md). The [controlled six-question follow-up](bench/2026-11-27-phase6-questions.md) improves factual extraction but demonstrates no label-accuracy gain. [Authenticated Tavily CLI research was tested live](bench/2026-11-27-tavily-live.md); replacing prior evidence reduced accuracy, and augmentation showed no gain. An opt-in source-intent restriction is implemented and unit-tested. Keep the strongest existing researcher. Current regression total: 111 VERITAS + 24 application tests.
 
 VERITAS checks the team's research before it goes into the submission. It does not do the research itself. It splits each vendor statement or research flag into atomic claims. For each claim it searches for support and for counter-evidence, checks that every quote really appears in the retrieved text, merges copied sources into one evidence family, and returns an explained verdict.
