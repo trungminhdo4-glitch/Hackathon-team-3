@@ -1,0 +1,692 @@
+[
+  {
+    "product": "Product Experience Solutions (PXHub)",
+    "vendor": "Product Experience Solutions GmbH (website product-experience-solutions.com)",
+    "overall": "Red",
+    "confidence": 0.8,
+    "reasons": [
+      {
+        "severity": "Red",
+        "claim": "No legal entity, imprint, or contact information is provided on the vendor site, making it impossible to identify who would sign a contract (legal entity gap).",
+        "source_url": "https://product-experience-solutions.com/",
+        "verification": "yes",
+        "quote": "No company name with a legal form, register entry or imprint was found on the sampled vendor pages: https://product-experience-solutions.com/. No imprint or legal/contact link was identified in the sample.",
+        "source_date": null
+      },
+      {
+        "severity": "Yellow",
+        "claim": "Source reports: “More than 60 companies and 20 Contentserv implementation partners are already using PXHub”",
+        "source_url": "https://product-experience-solutions.com/",
+        "verification": "partial",
+        "quote": "More than 60 companies and 20 Contentserv implementation partners are already using PXHub",
+        "source_date": null
+      }
+    ],
+    "reasoning": "Some claims were narrowed or removed after checking their cited excerpts. Review the remaining source-linked reasons.",
+    "judge_votes": [
+      "Red",
+      "Red",
+      "Red"
+    ],
+    "claim_verification": [
+      {
+        "severity": "Red",
+        "claim": "No legal entity, imprint, or contact information is provided on the vendor site, making it impossible to identify who would sign a contract (legal entity gap).",
+        "source_url": "https://product-experience-solutions.com/",
+        "status": "yes",
+        "retained_claim": "No legal entity, imprint, or contact information is provided on the vendor site, making it impossible to identify who would sign a contract (legal entity gap).",
+        "quote": "No company name with a legal form, register entry or imprint was found on the sampled vendor pages: https://product-experience-solutions.com/. No imprint or legal/contact link was identified in the sample.",
+        "source_date": null
+      },
+      {
+        "severity": "Yellow",
+        "claim": "The site lists traction claims (e.g., \"more than 60 companies\"), but these logos and numbers are unverified and could be misleading without independent confirmation.",
+        "source_url": "https://product-experience-solutions.com/",
+        "status": "partial",
+        "retained_claim": "Source reports: “More than 60 companies and 20 Contentserv implementation partners are already using PXHub”",
+        "quote": "More than 60 companies and 20 Contentserv implementation partners are already using PXHub",
+        "source_date": null
+      },
+      {
+        "severity": "Yellow",
+        "claim": "Product and vendor naming are ambiguous; the page mixes product name, vendor name, and a founder’s personal profile, creating uncertainty about the exact offering and licensing.",
+        "source_url": "https://product-experience-solutions.com",
+        "status": "unverified"
+      }
+    ],
+    "url": "https://product-experience-solutions.com/",
+    "product_type": "unclassifiable",
+    "judge_mode": "llm",
+    "coverage_notes": [
+      "No legal entity was identified in the sampled pages; verify the contracting entity separately. No imprint or legal/contact link was identified in the sample.",
+      "Crawled text did not identify a specific purchasable product; review the scope of this assessment."
+    ],
+    "green_flags": [],
+    "yellow_flags": [
+      {
+        "claim": "Source reports: “More than 60 companies and 20 Contentserv implementation partners are already using PXHub”",
+        "source_url": "https://product-experience-solutions.com/",
+        "verification": "partial",
+        "quote": "More than 60 companies and 20 Contentserv implementation partners are already using PXHub",
+        "source_date": null
+      }
+    ],
+    "red_flags": [
+      {
+        "claim": "No legal entity, imprint, or contact information is provided on the vendor site, making it impossible to identify who would sign a contract (legal entity gap).",
+        "source_url": "https://product-experience-solutions.com/",
+        "verification": "yes",
+        "quote": "No company name with a legal form, register entry or imprint was found on the sampled vendor pages: https://product-experience-solutions.com/. No imprint or legal/contact link was identified in the sample.",
+        "source_date": null
+      }
+    ],
+    "elapsed_seconds": 39.38
+  },
+  {
+    "product": "EasyProject - OnLine project management software",
+    "vendor": "easyproject.co",
+    "overall": "Red",
+    "confidence": 0.73,
+    "reasons": [
+      {
+        "severity": "Yellow",
+        "claim": "The website provides no identifiable legal entity, imprint, or registration information, making it impossible to know who would sign a contract.",
+        "source_url": "https://www.easyproject.co/en/",
+        "verification": "yes",
+        "quote": "No company name with a legal form, register entry or imprint was found on the sampled vendor pages: https://www.easyproject.co/en/, https://www.easyproject.co/. No imprint or legal/contact link was identified in the sample.",
+        "source_date": null
+      },
+      {
+        "severity": "Red",
+        "claim": "Customer, partner, or reference logos are only shown as unverified alt‑text and no independent customer references can be confirmed.",
+        "source_url": "https://www.easyproject.co/en/",
+        "verification": "yes",
+        "quote": "Possible customer, partner or site logos (unverified alt text): EasyProject – OnLine project management software",
+        "source_date": null
+      }
+    ],
+    "reasoning": "Some claims were narrowed or removed after checking their cited excerpts. Review the remaining source-linked reasons.",
+    "judge_votes": [
+      "Red",
+      "Red",
+      "Yellow"
+    ],
+    "claim_verification": [
+      {
+        "severity": "Yellow",
+        "claim": "The website provides no identifiable legal entity, imprint, or registration information, making it impossible to know who would sign a contract.",
+        "source_url": "https://www.easyproject.co/en/",
+        "status": "yes",
+        "retained_claim": "The website provides no identifiable legal entity, imprint, or registration information, making it impossible to know who would sign a contract.",
+        "quote": "No company name with a legal form, register entry or imprint was found on the sampled vendor pages: https://www.easyproject.co/en/, https://www.easyproject.co/. No imprint or legal/contact link was identified in the sample.",
+        "source_date": null
+      },
+      {
+        "severity": "Red",
+        "claim": "Customer, partner, or reference logos are only shown as unverified alt‑text and no independent customer references can be confirmed.",
+        "source_url": "https://www.easyproject.co/en/",
+        "status": "yes",
+        "retained_claim": "Customer, partner, or reference logos are only shown as unverified alt‑text and no independent customer references can be confirmed.",
+        "quote": "Possible customer, partner or site logos (unverified alt text): EasyProject – OnLine project management software",
+        "source_date": null
+      },
+      {
+        "severity": "Red",
+        "claim": "The product name overlaps with other Easy Project offerings (e.g., Easy Projects, Easy8) and the site does not clarify free vs. paid editions, creating risk of purchasing a different or unsupported SKU.",
+        "source_url": "https://explore.easyprojects.net/blog/version-8-0-released",
+        "status": "no"
+      }
+    ],
+    "url": "https://www.easyproject.co/en/",
+    "product_type": "software",
+    "judge_mode": "llm",
+    "coverage_notes": [
+      "No legal entity was identified in the sampled pages; verify the contracting entity separately. No imprint or legal/contact link was identified in the sample.",
+      "RDAP did not supply a registration date for easyproject.co."
+    ],
+    "green_flags": [],
+    "yellow_flags": [
+      {
+        "claim": "The website provides no identifiable legal entity, imprint, or registration information, making it impossible to know who would sign a contract.",
+        "source_url": "https://www.easyproject.co/en/",
+        "verification": "yes",
+        "quote": "No company name with a legal form, register entry or imprint was found on the sampled vendor pages: https://www.easyproject.co/en/, https://www.easyproject.co/. No imprint or legal/contact link was identified in the sample.",
+        "source_date": null
+      }
+    ],
+    "red_flags": [
+      {
+        "claim": "Customer, partner, or reference logos are only shown as unverified alt‑text and no independent customer references can be confirmed.",
+        "source_url": "https://www.easyproject.co/en/",
+        "verification": "yes",
+        "quote": "Possible customer, partner or site logos (unverified alt text): EasyProject – OnLine project management software",
+        "source_date": null
+      }
+    ],
+    "elapsed_seconds": 40.56
+  },
+  {
+    "product": "IT-Demandmanagement-Plattform",
+    "vendor": "insert effect GmbH",
+    "overall": "Yellow",
+    "confidence": 0.8,
+    "reasons": [
+      {
+        "severity": "Green",
+        "claim": "The platform is actively marketed, has been in operation since 2002, and lists over 280 customers and 50 automation projects, indicating real-world adoption.",
+        "source_url": "https://it-demand-management.de/",
+        "verification": "yes",
+        "quote": "seit 2002 digitale Produkte baut. Über 280 Kunden, mehr als 50 Automatisierungsprojekte",
+        "source_date": null
+      },
+      {
+        "severity": "Yellow",
+        "claim": "Source reports: “Jetzt Pilotkunde werden — 90 Tage, 5 Plätze.”",
+        "source_url": "https://it-demand-management.de/",
+        "verification": "partial",
+        "quote": "Jetzt Pilotkunde werden — 90 Tage, 5 Plätze.",
+        "source_date": null
+      }
+    ],
+    "reasoning": "Some claims were narrowed or removed after checking their cited excerpts. Review the remaining source-linked reasons.",
+    "judge_votes": [
+      "Green",
+      "Yellow",
+      "Yellow"
+    ],
+    "claim_verification": [
+      {
+        "severity": "Green",
+        "claim": "The platform is actively marketed, has been in operation since 2002, and lists over 280 customers and 50 automation projects, indicating real-world adoption.",
+        "source_url": "https://it-demand-management.de/",
+        "status": "yes",
+        "retained_claim": "The platform is actively marketed, has been in operation since 2002, and lists over 280 customers and 50 automation projects, indicating real-world adoption.",
+        "quote": "seit 2002 digitale Produkte baut. Über 280 Kunden, mehr als 50 Automatisierungsprojekte",
+        "source_date": null
+      },
+      {
+        "severity": "Yellow",
+        "claim": "The site offers a 90‑day pilot for 5 seats but does not clearly delineate the paid edition or licensing terms, creating potential ambiguity about what is included in the commercial product.",
+        "source_url": "https://it-demand-management.de/",
+        "status": "partial",
+        "retained_claim": "Source reports: “Jetzt Pilotkunde werden — 90 Tage, 5 Plätze.”",
+        "quote": "Jetzt Pilotkunde werden — 90 Tage, 5 Plätze.",
+        "source_date": null
+      }
+    ],
+    "url": "https://it-demand-management.de/",
+    "product_type": "unclassifiable",
+    "judge_mode": "llm",
+    "coverage_notes": [
+      "RDAP did not supply a registration date for it-demand-management.de. Manual registry lookup: https://www.denic.de/en/service/whois-service/",
+      "Crawled text did not identify a specific purchasable product; review the scope of this assessment."
+    ],
+    "green_flags": [
+      {
+        "claim": "The platform is actively marketed, has been in operation since 2002, and lists over 280 customers and 50 automation projects, indicating real-world adoption.",
+        "source_url": "https://it-demand-management.de/",
+        "verification": "yes",
+        "quote": "seit 2002 digitale Produkte baut. Über 280 Kunden, mehr als 50 Automatisierungsprojekte",
+        "source_date": null
+      }
+    ],
+    "yellow_flags": [
+      {
+        "claim": "Source reports: “Jetzt Pilotkunde werden — 90 Tage, 5 Plätze.”",
+        "source_url": "https://it-demand-management.de/",
+        "verification": "partial",
+        "quote": "Jetzt Pilotkunde werden — 90 Tage, 5 Plätze.",
+        "source_date": null
+      }
+    ],
+    "red_flags": [],
+    "elapsed_seconds": 49.35
+  },
+  {
+    "product": "Everything",
+    "vendor": "voidtools",
+    "overall": "Green",
+    "confidence": 0.8,
+    "reasons": [
+      {
+        "severity": "Green",
+        "claim": "Privacy policy states no data collection and clear security handling",
+        "source_url": "https://www.voidtools.com/privacy",
+        "verification": "yes",
+        "quote": "Security issues are taken seriously and are patched as soon as possible. ## Data collection voidtools does not collect any data.",
+        "source_date": null
+      },
+      {
+        "severity": "Green",
+        "claim": "About page identifies voidtools PTY LTD with ACN and ABN, confirming a legal entity",
+        "source_url": "https://www.voidtools.com/about",
+        "verification": "yes",
+        "quote": "voidtools PTY LTD ACN: 624373397 ABN: 14624373397",
+        "source_date": null
+      }
+    ],
+    "reasoning": "Some claims were narrowed or removed after checking their cited excerpts. Review the remaining source-linked reasons.",
+    "judge_votes": [
+      "Green",
+      "Green",
+      "Green"
+    ],
+    "claim_verification": [
+      {
+        "severity": "Green",
+        "claim": "Active releases and recent updates are listed on the \"What's New\" page",
+        "source_url": "https://www.voidtools.com/support/everything/whats_new/",
+        "status": "no"
+      },
+      {
+        "severity": "Green",
+        "claim": "Privacy policy states no data collection and clear security handling",
+        "source_url": "https://www.voidtools.com/privacy",
+        "status": "yes",
+        "retained_claim": "Privacy policy states no data collection and clear security handling",
+        "quote": "Security issues are taken seriously and are patched as soon as possible. ## Data collection voidtools does not collect any data.",
+        "source_date": null
+      },
+      {
+        "severity": "Green",
+        "claim": "About page identifies voidtools PTY LTD with ACN and ABN, confirming a legal entity",
+        "source_url": "https://www.voidtools.com/about",
+        "status": "yes",
+        "retained_claim": "About page identifies voidtools PTY LTD with ACN and ABN, confirming a legal entity",
+        "quote": "voidtools PTY LTD ACN: 624373397 ABN: 14624373397",
+        "source_date": null
+      }
+    ],
+    "url": "https://www.voidtools.com/",
+    "product_type": "unclassifiable",
+    "judge_mode": "llm",
+    "coverage_notes": [
+      "No legal entity was identified in the sampled pages; verify the contracting entity separately.",
+      "Crawled text did not identify a specific purchasable product; review the scope of this assessment."
+    ],
+    "green_flags": [
+      {
+        "claim": "Privacy policy states no data collection and clear security handling",
+        "source_url": "https://www.voidtools.com/privacy",
+        "verification": "yes",
+        "quote": "Security issues are taken seriously and are patched as soon as possible. ## Data collection voidtools does not collect any data.",
+        "source_date": null
+      },
+      {
+        "claim": "About page identifies voidtools PTY LTD with ACN and ABN, confirming a legal entity",
+        "source_url": "https://www.voidtools.com/about",
+        "verification": "yes",
+        "quote": "voidtools PTY LTD ACN: 624373397 ABN: 14624373397",
+        "source_date": null
+      }
+    ],
+    "yellow_flags": [],
+    "red_flags": [],
+    "elapsed_seconds": 45.51
+  },
+  {
+    "product": "Joule Work",
+    "vendor": "SAP SE",
+    "overall": "Green",
+    "confidence": 0.7,
+    "reasons": [
+      {
+        "severity": "Green",
+        "claim": "SAP provides a compliance brief for Joule Agents under the EU AI Act, showing formal governance and regulatory alignment for the product line.",
+        "source_url": "https://www.sap.com/documents/2026/06/526001c1-567f-0010-bca6-c68f7e60039b.html",
+        "verification": "yes",
+        "quote": "This brief summarizes how SAP governs its AI Agents — specifically Joule Agents — and how that governance framework addresses auditability, regulatory compliance, and human oversight under the EU AI Act.",
+        "source_date": null
+      }
+    ],
+    "reasoning": "Some claims were narrowed or removed after checking their cited excerpts. Review the remaining source-linked reasons.",
+    "judge_votes": [
+      "Green",
+      "Green",
+      "Green"
+    ],
+    "claim_verification": [
+      {
+        "severity": "Green",
+        "claim": "SAP maintains an active product page for Joule Work describing it as an enterprise AI workspace with recent 2026 content, indicating ongoing development and support.",
+        "source_url": "https://web.archive.org/web/20261026144606/https://www.sap.com/products/artificial-intelligence/joule-work.html",
+        "status": "unverified"
+      },
+      {
+        "severity": "Green",
+        "claim": "SAP provides a compliance brief for Joule Agents under the EU AI Act, showing formal governance and regulatory alignment for the product line.",
+        "source_url": "https://www.sap.com/documents/2026/06/526001c1-567f-0010-bca6-c68f7e60039b.html",
+        "status": "yes",
+        "retained_claim": "SAP provides a compliance brief for Joule Agents under the EU AI Act, showing formal governance and regulatory alignment for the product line.",
+        "quote": "This brief summarizes how SAP governs its AI Agents — specifically Joule Agents — and how that governance framework addresses auditability, regulatory compliance, and human oversight under the EU AI Act.",
+        "source_date": null
+      }
+    ],
+    "url": "https://www.sap.com/products/artificial-intelligence/joule-work.html",
+    "product_type": "unclassifiable",
+    "judge_mode": "llm",
+    "coverage_notes": [
+      "Robots policy limited live access: https://www.sap.com/products/artificial-intelligence/joule-work.html",
+      "Robots policy limited live access: https://www.sap.com/",
+      "Robots policy prevented browser access.",
+      "Crawled text did not identify a specific purchasable product; review the scope of this assessment."
+    ],
+    "green_flags": [
+      {
+        "claim": "SAP provides a compliance brief for Joule Agents under the EU AI Act, showing formal governance and regulatory alignment for the product line.",
+        "source_url": "https://www.sap.com/documents/2026/06/526001c1-567f-0010-bca6-c68f7e60039b.html",
+        "verification": "yes",
+        "quote": "This brief summarizes how SAP governs its AI Agents — specifically Joule Agents — and how that governance framework addresses auditability, regulatory compliance, and human oversight under the EU AI Act.",
+        "source_date": null
+      }
+    ],
+    "yellow_flags": [],
+    "red_flags": [],
+    "elapsed_seconds": 24.2
+  },
+  {
+    "product": "IT Asset Management",
+    "vendor": "ServiceNow",
+    "overall": "Green",
+    "confidence": 0.7,
+    "reasons": [
+      {
+        "severity": "Green",
+        "claim": "Source reports: “Wayback indexes an HTTP 200 capture of https://www.servicenow.com/products/it-asset-management.html on 2026-11-18; latest capture for the blocked URL, not a live status check.”",
+        "source_url": "https://web.archive.org/web/20261118080004/https://www.servicenow.com/products/it-asset-management.html",
+        "verification": "partial",
+        "quote": "Wayback indexes an HTTP 200 capture of https://www.servicenow.com/products/it-asset-management.html on 2026-11-18; latest capture for the blocked URL, not a live status check.",
+        "source_date": "2026-11-18"
+      }
+    ],
+    "reasoning": "Some claims were narrowed or removed after checking their cited excerpts. Review the remaining source-linked reasons.",
+    "judge_votes": [
+      "Green",
+      "Yellow",
+      "Green"
+    ],
+    "claim_verification": [
+      {
+        "severity": "Green",
+        "claim": "ServiceNow’s IT Asset Management product is listed on an active product page (archived capture from 2026-11-18) and is part of a widely‑adopted enterprise platform with many public customer references.",
+        "source_url": "https://web.archive.org/web/20261118080004/https://www.servicenow.com/products/it-asset-management.html",
+        "status": "partial",
+        "retained_claim": "Source reports: “Wayback indexes an HTTP 200 capture of https://www.servicenow.com/products/it-asset-management.html on 2026-11-18; latest capture for the blocked URL, not a live status check.”",
+        "quote": "Wayback indexes an HTTP 200 capture of https://www.servicenow.com/products/it-asset-management.html on 2026-11-18; latest capture for the blocked URL, not a live status check.",
+        "source_date": "2026-11-18"
+      },
+      {
+        "severity": "Yellow",
+        "claim": "ServiceNow disclosed a security incident in June 2026 that exposed customer data; the company issued a security update and is still evaluating a CVE, so buyers should verify remediation and any impact on the ITAM service.",
+        "source_url": "https://www.bleepingcomputer.com/news/security/servicenow-discloses-security-incident-exposing-customer-data",
+        "status": "unverified"
+      }
+    ],
+    "url": "https://www.servicenow.com/products/it-asset-management.html",
+    "product_type": "unclassifiable",
+    "judge_mode": "llm",
+    "coverage_notes": [
+      "Robots policy limited live access: https://www.servicenow.com/products/it-asset-management.html",
+      "Robots policy limited live access: https://www.servicenow.com/",
+      "Robots policy prevented browser access.",
+      "Crawled text did not identify a specific purchasable product; review the scope of this assessment."
+    ],
+    "green_flags": [
+      {
+        "claim": "Source reports: “Wayback indexes an HTTP 200 capture of https://www.servicenow.com/products/it-asset-management.html on 2026-11-18; latest capture for the blocked URL, not a live status check.”",
+        "source_url": "https://web.archive.org/web/20261118080004/https://www.servicenow.com/products/it-asset-management.html",
+        "verification": "partial",
+        "quote": "Wayback indexes an HTTP 200 capture of https://www.servicenow.com/products/it-asset-management.html on 2026-11-18; latest capture for the blocked URL, not a live status check.",
+        "source_date": "2026-11-18"
+      }
+    ],
+    "yellow_flags": [],
+    "red_flags": [],
+    "elapsed_seconds": 26.12
+  },
+  {
+    "product": "Clearview AI (facial recognition platform)",
+    "vendor": "Clearview AI",
+    "overall": "Red",
+    "confidence": 0.8,
+    "reasons": [
+      {
+        "severity": "Red",
+        "claim": "Source reports: “the data included “the number of user accounts those customers had set up and… the number of searches its customers have conducted.””",
+        "source_url": "https://siliconangle.com/2020/02/26/customer-data-stolen-data-breach-facial-recognition-company-clearview-ai",
+        "verification": "partial",
+        "quote": "the data included “the number of user accounts those customers had set up and… the number of searches its customers have conducted.”",
+        "source_date": null
+      }
+    ],
+    "reasoning": "Some claims were narrowed or removed after checking their cited excerpts. Review the remaining source-linked reasons.",
+    "judge_votes": [
+      "Red",
+      "Red",
+      "Red"
+    ],
+    "claim_verification": [
+      {
+        "severity": "Red",
+        "claim": "EU data protection authorities and the UK ICO have imposed substantial fines and enforcement actions against Clearview AI for illegal processing of biometric data, constituting material regulatory action.",
+        "source_url": "https://airiskaware.com/enforcement",
+        "status": "unverified"
+      },
+      {
+        "severity": "Red",
+        "claim": "A 2020 data breach exposed customer account information, indicating a privacy abuse incident.",
+        "source_url": "https://siliconangle.com/2020/02/26/customer-data-stolen-data-breach-facial-recognition-company-clearview-ai",
+        "status": "partial",
+        "retained_claim": "Source reports: “the data included “the number of user accounts those customers had set up and… the number of searches its customers have conducted.””",
+        "quote": "the data included “the number of user accounts those customers had set up and… the number of searches its customers have conducted.”",
+        "source_date": null
+      }
+    ],
+    "url": "https://www.clearview.ai/",
+    "product_type": "software",
+    "judge_mode": "llm",
+    "coverage_notes": [
+      "Sampled customer claims were not confirmed on a customer-owned page; this is inconclusive."
+    ],
+    "green_flags": [],
+    "yellow_flags": [],
+    "red_flags": [
+      {
+        "claim": "Source reports: “the data included “the number of user accounts those customers had set up and… the number of searches its customers have conducted.””",
+        "source_url": "https://siliconangle.com/2020/02/26/customer-data-stolen-data-breach-facial-recognition-company-clearview-ai",
+        "verification": "partial",
+        "quote": "the data included “the number of user accounts those customers had set up and… the number of searches its customers have conducted.”",
+        "source_date": null
+      }
+    ],
+    "elapsed_seconds": 24.18
+  },
+  {
+    "product": "Mendix Platform",
+    "vendor": "Mendix",
+    "overall": "Yellow",
+    "confidence": 0.8,
+    "reasons": [],
+    "reasoning": "Insufficient verified evidence for a purchase verdict. Review the cited material manually.",
+    "judge_votes": [
+      "Green",
+      "Yellow",
+      "Yellow"
+    ],
+    "claim_verification": [
+      {
+        "severity": "Green",
+        "claim": "Mendix publishes regular product updates and long‑term support releases, e.g., 2024 version announced on the \"What's New\" page.",
+        "source_url": "https://www.mendix.com/whats-new/",
+        "status": "no"
+      },
+      {
+        "severity": "Green",
+        "claim": "Mendix provides SOC 2 compliance information and a security & compliance FAQ, indicating an active security program.",
+        "source_url": "https://www.mendix.com/trust/",
+        "status": "unverified"
+      },
+      {
+        "severity": "Yellow",
+        "claim": "Mendix offers both free and paid licensing plans under the same product name, which can cause confusion about feature and usage limits.",
+        "source_url": "https://docs.mendix.com/developerportal/deploy/licensing-apps-outside-mxcloud",
+        "status": "unverified"
+      }
+    ],
+    "url": "https://www.mendix.com/platform/",
+    "product_type": "software",
+    "judge_mode": "llm",
+    "coverage_notes": [],
+    "green_flags": [],
+    "yellow_flags": [],
+    "red_flags": [],
+    "elapsed_seconds": 26.3
+  },
+  {
+    "product": "VLC media player",
+    "vendor": "VideoLAN",
+    "overall": "Green",
+    "confidence": 0.8,
+    "reasons": [
+      {
+        "severity": "Green",
+        "claim": "Source reports: “Over 130 security fixes across VLC and its bundled libraries”",
+        "source_url": "https://www.videolan.org/vlc/releases/3.0.24.html",
+        "verification": "partial",
+        "quote": "Over 130 security fixes across VLC and its bundled libraries",
+        "source_date": null
+      }
+    ],
+    "reasoning": "Some claims were narrowed or removed after checking their cited excerpts. Review the remaining source-linked reasons.",
+    "judge_votes": [
+      "Green",
+      "Green",
+      "Green"
+    ],
+    "claim_verification": [
+      {
+        "severity": "Green",
+        "claim": "VLC 3.0.24 is the latest released version with active maintenance and security fixes.",
+        "source_url": "https://www.videolan.org/vlc/releases/3.0.24.html",
+        "status": "partial",
+        "retained_claim": "Source reports: “Over 130 security fixes across VLC and its bundled libraries”",
+        "quote": "Over 130 security fixes across VLC and its bundled libraries",
+        "source_date": null
+      },
+      {
+        "severity": "Green",
+        "claim": "VideoLAN publishes regular security bulletins for VLC releases, demonstrating responsible disclosure.",
+        "source_url": "https://www.videolan.org/security",
+        "status": "unverified"
+      },
+      {
+        "severity": "Green",
+        "claim": "VLC is a widely adopted open‑source media player with real user base and community support (e.g., Trustpilot reviews, LinkedIn followers).",
+        "source_url": "https://www.trustpilot.com/review/www.videolan.org",
+        "status": "unverified"
+      }
+    ],
+    "url": "https://www.videolan.org/",
+    "product_type": "software",
+    "judge_mode": "llm",
+    "coverage_notes": [
+      "No legal entity was identified in the sampled pages; verify the contracting entity separately."
+    ],
+    "green_flags": [
+      {
+        "claim": "Source reports: “Over 130 security fixes across VLC and its bundled libraries”",
+        "source_url": "https://www.videolan.org/vlc/releases/3.0.24.html",
+        "verification": "partial",
+        "quote": "Over 130 security fixes across VLC and its bundled libraries",
+        "source_date": null
+      }
+    ],
+    "yellow_flags": [],
+    "red_flags": [],
+    "elapsed_seconds": 23.66
+  },
+  {
+    "product": "tldraw (free collaborative whiteboard)",
+    "vendor": "tldraw Inc.",
+    "overall": "Yellow",
+    "confidence": 0.7,
+    "reasons": [
+      {
+        "severity": "Green",
+        "claim": "Source reports: “latest release v5.5.2 (2026-10-02)”",
+        "source_url": "https://dalao.ai/p/tldraw",
+        "verification": "partial",
+        "quote": "latest release v5.5.2 (2026-10-02)",
+        "source_date": "2026-10-25"
+      },
+      {
+        "severity": "Yellow",
+        "claim": "Recent licensing changes (SDK 4.0) introduced an annual fee up to $6,000, raising verification needs for commercial use.",
+        "source_url": "https://biggo.com/news/202509190115_tldraw_SDK_4.0_Licensing_Debate",
+        "verification": "yes",
+        "quote": "tldraw SDK 4.0 Licensing Changes Spark Community Debate Over $6,000 Annual Fee",
+        "source_date": null
+      }
+    ],
+    "reasoning": "Some claims were narrowed or removed after checking their cited excerpts. Review the remaining source-linked reasons.",
+    "judge_votes": [
+      "Yellow",
+      "Yellow",
+      "Yellow"
+    ],
+    "claim_verification": [
+      {
+        "severity": "Green",
+        "claim": "The tldraw SDK and whiteboard have active releases (v5.5.2 in Oct 2026) and are used by many companies (e.g., Replit, Google, Autodesk), indicating credible adoption.",
+        "source_url": "https://dalao.ai/p/tldraw",
+        "status": "partial",
+        "retained_claim": "Source reports: “latest release v5.5.2 (2026-10-02)”",
+        "quote": "latest release v5.5.2 (2026-10-02)",
+        "source_date": "2026-10-25"
+      },
+      {
+        "severity": "Yellow",
+        "claim": "The product name \"tldraw\" is used for both a free whiteboard app and a commercial SDK with a separate licensing model, creating potential confusion about paid vs free editions.",
+        "source_url": "https://tldraw.dev/blog/license-update-for-the-tldraw-sdk",
+        "status": "no"
+      },
+      {
+        "severity": "Yellow",
+        "claim": "Recent licensing changes (SDK 4.0) introduced an annual fee up to $6,000, raising verification needs for commercial use.",
+        "source_url": "https://biggo.com/news/202509190115_tldraw_SDK_4.0_Licensing_Debate",
+        "status": "yes",
+        "retained_claim": "Recent licensing changes (SDK 4.0) introduced an annual fee up to $6,000, raising verification needs for commercial use.",
+        "quote": "tldraw SDK 4.0 Licensing Changes Spark Community Debate Over $6,000 Annual Fee",
+        "source_date": null
+      }
+    ],
+    "url": "https://www.tldraw.com/",
+    "product_type": "unclassifiable",
+    "judge_mode": "llm",
+    "coverage_notes": [
+      "Robots policy limited live access: https://www.tldraw.com/",
+      "Robots policy prevented browser access.",
+      "Crawled text did not identify a specific purchasable product; review the scope of this assessment."
+    ],
+    "green_flags": [
+      {
+        "claim": "Source reports: “latest release v5.5.2 (2026-10-02)”",
+        "source_url": "https://dalao.ai/p/tldraw",
+        "verification": "partial",
+        "quote": "latest release v5.5.2 (2026-10-02)",
+        "source_date": "2026-10-25"
+      }
+    ],
+    "yellow_flags": [
+      {
+        "claim": "Recent licensing changes (SDK 4.0) introduced an annual fee up to $6,000, raising verification needs for commercial use.",
+        "source_url": "https://biggo.com/news/202509190115_tldraw_SDK_4.0_Licensing_Debate",
+        "verification": "yes",
+        "quote": "tldraw SDK 4.0 Licensing Changes Spark Community Debate Over $6,000 Annual Fee",
+        "source_date": null
+      }
+    ],
+    "red_flags": [],
+    "elapsed_seconds": 22.19
+  }
+]
