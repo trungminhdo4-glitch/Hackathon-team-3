@@ -1,0 +1,11 @@
+data/
+reports/*
+!reports/examples/
+__pycache__/
+.pytest_cache/
+*.csv
+.env
+challenge-brief.pdf
+fallback_v1/
+competition_v2/
+!stackgini-verdicts.csv

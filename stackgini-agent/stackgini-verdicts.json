@@ -1,0 +1,1033 @@
+[
+  {
+    "id": "41",
+    "url": "https://product-experience-solutions.com/",
+    "product": "PXHub (Product Experience Hub)",
+    "vendor": "Product Experience Solutions GmbH",
+    "overall": "Yellow",
+    "green_flags": "Legal entity verified: German GmbH registered Munich District Court HRB 259794, managing director Frank Ipfelkofer identifiable since Oct 2020, VAT number DE338449822 valid. Sources: https://product-experience-solutions.com/legal ; https://rdap.org/domain/product-experience-solutions.com | Domain registration legitimate and continuous: product-experience-solutions.com registered Jan 2021, renewed Jan 2026, expires Jan 2027. Sources: https://rdap.org/domain/product-experience-solutions.com | Product functionality confirmed real: REST API, Flow Engine, import/export capabilities for Contentserv PIM/DAM documented on vendor website. Sources: https://product-experience-solutions.com/ | Contentserv (core dependency) rebranded to Centric PXM but NOT discontinued; existing installations confirmed operational with structured migration path offered. Sources: https://www.centricsoftware.com/press-releases/centric-software-acquisition-ai-powered-pxm-solution-contentserv ; https://entitys.io/magazin/contentserv-centric-pxm-uebernahme",
+    "yellow_flags": "Contentserv acquisition by Centric Software (Feb 2025) creates unresolved procurement risk: Centric acquisition announcement and independent sources provide zero information about third-party add-ons like PXHub post-acquisition roadmap; buyer cannot determine if product will continue independently, be integrated into Centric PXM, or be deprecated. Sources: https://www.centricsoftware.com/press-releases/centric-software-acquisition-ai-powered-pxm-solution-contentserv ; https://entitys.io/magazin/contentserv-centric-pxm-uebernahme",
+    "red_flags": "Contentserv (core platform PXHub integrates with) acquired by Centric Software in Feb 2025 and rebranded Centric PXM. Centric acquisition announcement does not address status of existing third-party add-ons or PXHub roadmap. Buyer cannot determine if PXHub continues as independent product, will be merged, deprecated, or migrated. Sources: https://www.centricsoftware.com/press-releases/centric-software-acquisition-ai-powered-pxm-solution-contentserv ; https://entitys.io/magazin/contentserv-centric-pxm-uebernahme",
+    "reasoning": "[Investigation PARTIAL] Verdict YELLOW (confidence MEDIUM; investigation PARTIAL). Established risks (validated sources): Contentserv (core platform PXHub integrates with) acquired by Centric Software in Feb 2025 and rebranded Centric PXM. Centric acquisition announcement does not address status of existing third-party add-ons or PXHub roadmap. Buyer cannot determine if PXHub continues as independent product, will be merged, deprecated, or migrated. Sources: https://www.centricsoftware.com/press-releases/centric-software-acquisition-ai-powered-pxm-solution-contentserv ; https://entitys.io/magazin/contentserv-centric-pxm-uebernahme Established concerns (validated sources): Contentserv acquisition by Centric Software (Feb 2025) creates unresolved procurement risk: Centric acquisition announcement and independent sources provide zero information about third-party add-ons like PXHub post-acquisition roadmap; buyer cannot determine if product will continue independently, be integrated into Centric PXM, or be deprecated. Sources: https://www.centricsoftware.com/press-releases/centric-software-acquisition-ai-powered-pxm-solution-contentserv ; https://entitys.io/magazin/contentserv-centric-pxm-uebernahme Established positives (validated sources): Legal entity verified: German GmbH registered Munich District Court HRB 259794, managing director Frank Ipfelkofer identifiable since Oct 2020, VAT number DE338449822 valid. Sources: https://product-experience-solutions.com/legal ; https://rdap.org/domain/product-experience-solutions.com | Domain registration legitimate and continuous: product-experience-solutions.com registered Jan 2021, renewed Jan 2026, expires Jan 2027. Sources: https://rdap.org/domain/product-experience-solutions.com | Product functionality confirmed real: REST API, Flow Engine, import/export capabilities for Contentserv PIM/DAM documented on vendor website. Sources: https://product-experience-solutions.com/ | Contentserv (core dependency) rebranded to Centric PXM but NOT discontinued; existing installations confirmed operational with structured migration path offered. Sources: https://www.centricsoftware.com/press-releases/centric-software-acquisition-ai-powered-pxm-solution-contentserv ; https://entitys.io/magazin/contentserv-centric-pxm-uebernahme Uncertain, NOT established (no validated source): [green] No fraud, deliberate misconduct, or deceptive practices identified; no security breaches, CVEs, or regulatory violations found. (no evidence linked) | [yellow] Vendor marketing claims (60+ companies, 20 implementation partners, 150 integrations) completely unverifiable and implausible relative to team size/revenue: zero independent customer references, case studies, or verified adoption evidence located; contradicts claimed market acceptance. (no evidence linked) | [yellow] Tiny team (1-10 employees, estimated 1 FTE) for business-critical enterprise integration product: single identifiable managing director creates key person risk and capacity concerns for sustained development and enterprise support (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] No enterprise security/compliance documentation visible: missing ISO 27001, SOC 2, GDPR DPA, formal support SLAs, or documented support tiers; enterprise baseline cannot be verified. (no evidence linked) | [yellow] Minimal estimated annual revenue (~$256K) raises financial viability questions relative to claimed customer count and market position. (no evidence linked) | Unresolved after research (customer_verification): RED finding needs original-source confirmation (evidence NONE): Zero independent customer references, case studies, testimonials, or verified adoption evidence located. Marketing claims about 60+ companies cannot be corrobor | Unresolved after research (legal_regulatory): unresolved (INSUFFICIENT_EVIDENCE) | Unresolved after research (team_continuity): YELLOW finding needs original-source confirmation (evidence LEAD_ONLY): Company has 1-10 employees with single identifiable managing director (Frank Ipfelkofer) since October 2020; estimated annual revenue ~$256K; limited capacity f Adversarial review: YELLOW",
+    "confidence": "MEDIUM",
+    "investigation_status": "PARTIAL",
+    "sources": "https://www.xing.com/profile/Frank_Ipfelkofer ; https://product-experience-solutions.com/legal ; https://product-experience-solutions.com/ ; https://www.centricsoftware.com/press-releases/centric-software-acquisition-ai-powered-pxm-solution-contentserv ; https://entitys.io/magazin/contentserv-centric-pxm-uebernahme ; https://rdap.org/domain/product-experience-solutions.com",
+    "unsupported_observations": "[green] No fraud, deliberate misconduct, or deceptive practices identified; no security breaches, CVEs, or regulatory violations found. (no evidence linked) | [yellow] Vendor marketing claims (60+ companies, 20 implementation partners, 150 integrations) completely unverifiable and implausible relative to team size/revenue: zero independent customer references, case studies, or verified adoption evidence located; contradicts claimed market acceptance. (no evidence linked) | [yellow] Tiny team (1-10 employees, estimated 1 FTE) for business-critical enterprise integration product: single identifiable managing director creates key person risk and capacity concerns for sustained development and enterprise support (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] No enterprise security/compliance documentation visible: missing ISO 27001, SOC 2, GDPR DPA, formal support SLAs, or documented support tiers; enterprise baseline cannot be verified. (no evidence linked) | [yellow] Minimal estimated annual revenue (~$256K) raises financial viability questions relative to claimed customer count and market position. (no evidence linked)",
+    "unresolved_questions": [
+      "Will PXHub continue as independent product under Centric Software ownership, or be merged into Centric PXM or deprecated?",
+      "What is the actual verified customer count for PXHub? Can the 60+ companies claim be substantiated?",
+      "What security certifications (ISO 27001, SOC 2) or compliance standards does Product Experience Solutions meet?",
+      "What support capacity, SLAs, response times, and enterprise documentation are available?",
+      "Can a 1-person team sustainably support enterprise integration deployments and product development?",
+      "What is the upgrade/migration path for PXHub users if Centric PXM becomes the core platform?",
+      "Are there any planned discontinuation dates or forced migrations for PXHub users post-Contentserv acquisition?",
+      "Unresolved after research (customer_verification): RED finding needs original-source confirmation (evidence NONE): Zero independent customer references, case studies, testimonials, or verified adoption evidence located. Marketing claims about 60+ companies cannot be corrobor",
+      "Unresolved after research (legal_regulatory): unresolved (INSUFFICIENT_EVIDENCE)",
+      "Unresolved after research (team_continuity): YELLOW finding needs original-source confirmation (evidence LEAD_ONLY): Company has 1-10 employees with single identifiable managing director (Frank Ipfelkofer) since October 2020; estimated annual revenue ~$256K; limited capacity f",
+      "Unresolved after research (marketing_claims): YELLOW finding needs original-source confirmation (evidence NONE): Vendor claims 60+ companies and 20 implementation partners using PXHub; claims cannot be independently verified through customer references, case studies, or th",
+      "Unresolved after research (security_privacy): YELLOW finding needs original-source confirmation (evidence NONE): No security certifications (ISO 27001, SOC 2), GDPR compliance documentation, privacy policy, or SLAs found; vendor is data processor/integrator for Contentserv",
+      "Unresolved after research (documentation_support): YELLOW finding needs original-source confirmation (evidence NONE): No visible technical documentation, knowledge base, support portal, SLAs, or customer support structure identified; product website lacks detailed developer doc",
+      "[green] No fraud, deliberate misconduct, or deceptive practices identified; no security breaches, CVEs, or regulatory violations found. (no evidence linked)",
+      "[yellow] Vendor marketing claims (60+ companies, 20 implementation partners, 150 integrations) completely unverifiable and implausible relative to team size/revenue: zero independent customer references, case studies, or verified adoption evidence located; contradicts claimed market acceptance. (no evidence linked)",
+      "[yellow] Tiny team (1-10 employees, estimated 1 FTE) for business-critical enterprise integration product: single identifiable managing director creates key person risk and capacity concerns for sustained development and enterprise support (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[yellow] No enterprise security/compliance documentation visible: missing ISO 27001, SOC 2, GDPR DPA, formal support SLAs, or documented support tiers; enterprise baseline cannot be verified. (no evidence linked)",
+      "[yellow] Minimal estimated annual revenue (~$256K) raises financial viability questions relative to claimed customer count and market position. (no evidence linked)"
+    ],
+    "evidence": [
+      {
+        "id": "E1",
+        "url": "https://www.xing.com/profile/Frank_Ipfelkofer",
+        "status": "ORIGINAL_SOURCE_VERIFIED",
+        "quote_match": "exact",
+        "excerpt": "Frank Ipfelkofer - Solution Architect - Product Experience Solutions",
+        "published_date": null
+      },
+      {
+        "id": "E2",
+        "url": "https://www.companyhouse.de/Product-Experience-Solutions-GmbH-Putzbrunn",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Frank Thorsten Ipfelkofer ist Geschäftsführung seit 06.10.2020",
+        "published_date": null
+      },
+      {
+        "id": "E3",
+        "url": "https://product-experience-solutions.com/legal",
+        "status": "ORIGINAL_SOURCE_VERIFIED",
+        "quote_match": "exact",
+        "excerpt": "District Court Munich, HRB 259794; VAT registration number DE338449822",
+        "published_date": null
+      },
+      {
+        "id": "E4",
+        "url": "https://product-experience-solutions.com/",
+        "status": "ORIGINAL_SOURCE_VERIFIED",
+        "quote_match": "exact",
+        "excerpt": "configurable REST API and the Flow Engine are for the typical integration scenarios better integrated",
+        "published_date": "2026"
+      },
+      {
+        "id": "E5",
+        "url": "https://prospeo.io/c/product-experience-solutions",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "1-10 employees; estimated annual revenue approximately $256,665",
+        "published_date": null
+      },
+      {
+        "id": "E6",
+        "url": "https://www.centricsoftware.com/press-releases/centric-software-acquisition-ai-powered-pxm-solution-contentserv",
+        "status": "ORIGINAL_SOURCE_VERIFIED",
+        "quote_match": "exact",
+        "excerpt": "Centric Software Announces the Acquisition of AI-Powered PXM Solution, Contentserv",
+        "published_date": "2025-02-25"
+      },
+      {
+        "id": "E7",
+        "url": "https://entitys.io/magazin/contentserv-centric-pxm-uebernahme",
+        "status": "ORIGINAL_SOURCE_VERIFIED",
+        "quote_match": "exact",
+        "excerpt": "Contentserv ist jetzt Centric PXM: Was die Übernahme für Anwender bedeutet",
+        "published_date": null
+      },
+      {
+        "id": "E8",
+        "url": "https://rdap.org/domain/product-experience-solutions.com",
+        "status": "ORIGINAL_SOURCE_VERIFIED",
+        "quote_match": "exact",
+        "excerpt": "registration 2021-01-14; last changed 2026-01-15; expiration 2027-01-14",
+        "published_date": "2026-01-15"
+      },
+      {
+        "id": "C1",
+        "url": "https://entitys.io/magazin/contentserv-centric-pxm-uebernahme",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "This is precisely the point you should actively clarify as a user...securing documented end-of-life dates for existing versions and binding commitments for further development",
+        "published_date": null
+      }
+    ]
+  },
+  {
+    "id": "42",
+    "url": "https://www.easyproject.co/en/",
+    "product": "EasyProject",
+    "vendor": "Easy Software s.r.o.",
+    "overall": "Yellow",
+    "green_flags": "EasyProject is a confirmed, active SaaS product offered by Easy Software s.r.o. Present on multiple independent marketplaces (Microsoft, Capterra, G2, AlternativeTo) and confirmed in business information databases. Product supports task management, Gantt charts, resource planning, and team collaboration. Sources: https://www.easyproject.co/en/",
+    "yellow_flags": "None identified.",
+    "red_flags": "None identified.",
+    "reasoning": "[Investigation PARTIAL] Verdict YELLOW (confidence LOW; investigation PARTIAL). Established positives (validated sources): EasyProject is a confirmed, active SaaS product offered by Easy Software s.r.o. Present on multiple independent marketplaces (Microsoft, Capterra, G2, AlternativeTo) and confirmed in business information databases. Product supports task management, Gantt charts, resource planning, and team collaboration. Sources: https://www.easyproject.co/en/ Uncertain, NOT established (no validated source): [green] Direct contact channels provided on official website (phone, email) (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] Official easyproject.co website provides NO links to privacy policy, DPA, GDPR compliance statement, or data protection documentation; site-specific search returned zero results for these resources (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] No SLA, uptime guarantees, support tiers, or service-level commitments accessible on official website or through web search (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] No formal help center, knowledge base, or ticketed support system identified; support model undocumented (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] Contact information provided is Poland-based (+48 country code) despite company registered in Prague, Czech Republic; support location ambiguity unresolved (unverified lead: source content not checked). (cited evidence did not validate) | Unresolved after research (product_lifecycle): unresolved (INSUFFICIENT_EVIDENCE) | Unresolved after research (security_privacy): YELLOW finding needs original-source confirmation (evidence NONE): Official easyproject.co website displays no security certifications (SOC 2, ISO 27001), privacy policy, data protection statements, or compliance disclosures. A | Unresolved after research (legal_regulatory): YELLOW finding needs original-source confirmation (evidence NONE): No GDPR compliance statement, data processing agreement template, or regulatory disclosures publicly accessible on evaluated website. Third-party source (Altern Adversarial review: YELLOW",
+    "confidence": "LOW",
+    "investigation_status": "PARTIAL",
+    "sources": "https://www.easyproject.co/en/",
+    "unsupported_observations": "[green] Direct contact channels provided on official website (phone, email) (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] Official easyproject.co website provides NO links to privacy policy, DPA, GDPR compliance statement, or data protection documentation; site-specific search returned zero results for these resources (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] No SLA, uptime guarantees, support tiers, or service-level commitments accessible on official website or through web search (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] No formal help center, knowledge base, or ticketed support system identified; support model undocumented (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] Contact information provided is Poland-based (+48 country code) despite company registered in Prague, Czech Republic; support location ambiguity unresolved (unverified lead: source content not checked). (cited evidence did not validate)",
+    "unresolved_questions": [
+      "Does EasyProject officially hold SOC 2 Type II or ISO 27001 certifications? If so, what is the scope and validity period?",
+      "What is the vendor's formal GDPR compliance posture? Are a privacy policy and DPA available?",
+      "What SLA, uptime guarantee, and support tiers does EasyProject offer? Are these documented?",
+      "Who are named enterprise customers using EasyProject? Are case studies or customer references available?",
+      "What is the product release cadence and current version? Is there a published roadmap?",
+      "How many employees does Easy Software employ? What is the development team size and structure?",
+      "Unresolved after research (product_lifecycle): unresolved (INSUFFICIENT_EVIDENCE)",
+      "Unresolved after research (security_privacy): YELLOW finding needs original-source confirmation (evidence NONE): Official easyproject.co website displays no security certifications (SOC 2, ISO 27001), privacy policy, data protection statements, or compliance disclosures. A",
+      "Unresolved after research (legal_regulatory): YELLOW finding needs original-source confirmation (evidence NONE): No GDPR compliance statement, data processing agreement template, or regulatory disclosures publicly accessible on evaluated website. Third-party source (Altern",
+      "Unresolved after research (enterprise_readiness): YELLOW finding needs original-source confirmation (evidence NONE): No SLA, uptime guarantees, support tiers, or service-level commitments documented on official website or in accessible materials. No enterprise-grade security o",
+      "Unresolved after research (documentation_support): YELLOW finding needs original-source confirmation (evidence NONE): Official website homepage contains only marketing content; no help center, knowledge base, documentation links, support contact, or FAQ visible. Documentation a",
+      "Unresolved after research (customer_verification): YELLOW finding needs original-source confirmation (evidence NONE): Product has user reviews on G2 and Capterra confirming some level of adoption. Search results mention 100+ companies using the product. However, no named enterp",
+      "(evidence failed validation) ISO 27001 certification found is attributed to Easy Software AG (German/Austrian entity), not explicitly to Easy Software s.r.o. (Czech entity) or EasyProject product; scope attribution unverified (C1)",
+      "(evidence failed validation) No named enterprise customers, case studies, or customer references found; adoption claims (100+ companies, 80+ countries) unverified by independent customer confirmation (E7)",
+      "(evidence failed validation) Easy Software s.r.o. is a registered Czech company established 2006 with identifiable founder/CEO Filip Morávek and active marketplace presence (E7)",
+      "(evidence failed validation) EasyProject is a confirmed, active SaaS product on multiple independent marketplaces (Microsoft, Capterra, G2, AlternativeTo) with 2026 activity (E5, E6)",
+      "(evidence failed validation) Real adoption confirmed: independent user reviews on Capterra and G2; marketplace presence; product longevity and geographic reach (80+ countries) (E5, E7)",
+      "(evidence failed validation) No security breaches or CVEs discovered 2024-2026; no regulatory violations found (C1)",
+      "(evidence failed validation) Product actively maintained: last updated Jan 16, 2026 per independent source (C2)",
+      "(evidence failed validation) Broader Easy Software group holds ISO 27001 certification as of Feb 2026, demonstrating security governance at corporate level (C1)",
+      "[green] Direct contact channels provided on official website (phone, email) (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[yellow] Official easyproject.co website provides NO links to privacy policy, DPA, GDPR compliance statement, or data protection documentation; site-specific search returned zero results for these resources (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[yellow] No SLA, uptime guarantees, support tiers, or service-level commitments accessible on official website or through web search (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[yellow] No formal help center, knowledge base, or ticketed support system identified; support model undocumented (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[yellow] Contact information provided is Poland-based (+48 country code) despite company registered in Prague, Czech Republic; support location ambiguity unresolved (unverified lead: source content not checked). (cited evidence did not validate)"
+    ],
+    "evidence": [
+      {
+        "id": "E1",
+        "url": "https://www.easyproject.co/en/",
+        "status": "ORIGINAL_SOURCE_VERIFIED",
+        "quote_match": "exact",
+        "excerpt": "Task management, Gantt charts and much more! EasyProject - OnLine project management software",
+        "published_date": null
+      },
+      {
+        "id": "C3",
+        "url": "https://www.easyproject.co/en/about_us.html",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Contact: +48 606 286 611, [email protected], Address: ul. Broniewskiego 57, 05-510 Konstancin-Jeziorna / Chylice, Poland. No links to privacy policy, documentation, support, or compliance statements found.",
+        "published_date": null
+      }
+    ]
+  },
+  {
+    "id": "43",
+    "url": "https://it-demand-management.de/",
+    "product": "demand-fx (IT-Demandmanagement-Plattform)",
+    "vendor": "insert effect GmbH",
+    "overall": "Yellow",
+    "green_flags": "None identified.",
+    "yellow_flags": "None identified.",
+    "red_flags": "None identified.",
+    "reasoning": "[Investigation PARTIAL] Verdict YELLOW (confidence LOW; investigation PARTIAL). No reason could be established from validated sources. Uncertain, NOT established (no validated source): [green] insert effect GmbH is a legitimate, identifiable 20+ year old German company with legal registration (HRB 26812, Nürnberg), named CEO (Matthias Kolberg), complete imprint, and compliant privacy policies (unverified lead: source content not checked). (cited evidence did not validate) | [green] No regulatory violations, fines, security breaches, or misconduct detected for insert effect GmbH or demand-fx [WebSearch 3, WebSearch 4]. (no evidence linked) | [green] Recent institutional investment: Mainzer Stadtwerke acquired 50% stake in insert effect in 2025, confirming external validation and ongoing operational backing (unverified lead: source content not checked). (cited evidence did not validate) | [green] demand-fx is a real, actively maintained product with documented features (AI duplicate detection, human oversight per EU AI Act, structured classification, solution pathway evaluation) [WebFetch 1]. (no evidence linked) | [green] Realistic early-stage pricing (€4,990 for 90-day pilot, €800+/month post-pilot) suggests responsible go-to-market strategy, not aggressive overmarketing [WebFetch 1]. (no evidence linked) | [green] Concrete security practices documented: EU hosting, optional EU-sovereign data processing, Data Processing Agreements (AVV) provided, documented human oversight per EU AI Act [WebFetch 1]. (no evidence linked) | Unresolved after research (product_lifecycle): YELLOW finding needs original-source confirmation (evidence NONE): demand-fx is in early pilot phase (5 seats, 90 days, 2026) with clear post-pilot pricing (€800/month) but no announced general availability date or long-term ro | Unresolved after research (security_privacy): YELLOW finding needs original-source confirmation (evidence NONE): demand-fx implements EU hosting, optional EU-sovereign data processing path, provides Data Processing Agreements (AVV), and documents human oversight per EU AI  | Unresolved after research (enterprise_readiness): YELLOW finding needs original-source confirmation (evidence NONE): No enterprise security certifications (SOC 2, ISO 27001) or formal SLA published; personal onboarding from founding team during pilot phase, but post-pilot supp Adversarial review: YELLOW",
+    "confidence": "LOW",
+    "investigation_status": "PARTIAL",
+    "sources": "https://it-demand-management.de/datenschutz",
+    "unsupported_observations": "[green] insert effect GmbH is a legitimate, identifiable 20+ year old German company with legal registration (HRB 26812, Nürnberg), named CEO (Matthias Kolberg), complete imprint, and compliant privacy policies (unverified lead: source content not checked). (cited evidence did not validate) | [green] No regulatory violations, fines, security breaches, or misconduct detected for insert effect GmbH or demand-fx [WebSearch 3, WebSearch 4]. (no evidence linked) | [green] Recent institutional investment: Mainzer Stadtwerke acquired 50% stake in insert effect in 2025, confirming external validation and ongoing operational backing (unverified lead: source content not checked). (cited evidence did not validate) | [green] demand-fx is a real, actively maintained product with documented features (AI duplicate detection, human oversight per EU AI Act, structured classification, solution pathway evaluation) [WebFetch 1]. (no evidence linked) | [green] Realistic early-stage pricing (€4,990 for 90-day pilot, €800+/month post-pilot) suggests responsible go-to-market strategy, not aggressive overmarketing [WebFetch 1]. (no evidence linked) | [green] Concrete security practices documented: EU hosting, optional EU-sovereign data processing, Data Processing Agreements (AVV) provided, documented human oversight per EU AI Act [WebFetch 1]. (no evidence linked) | [green] insert effect has verifiable long-term customer relationships: Mainzer Stadtwerke contract since 2017 for meinRad bike-sharing and MaaS independently confirmed (unverified lead: source content not checked). (cited evidence did not validate) | [green] insert effect company website displays recognized customer logos (Deutsche Bahn, ING, Volvo, municipal utilities), indicating established market presence [WebFetch 2]. (no evidence linked) | [yellow] demand-fx remains in very early pilot phase (5 seats, 90 days) with no announced general availability date, long-term roadmap, or production timeline—material uncertainty for procurement [WebFetch 1, E2] (unverified lead: source content not checked). (no evidence linked) | [yellow] No enterprise security certifications (SOC 2 Type II, ISO 27001) or independent security audits visible; product handles sensitive IT procurement and organizational demand data but security posture not independently verified [WebFetch 1]. (no evidence linked) | [yellow] Post-pilot support model, SLA terms, incident response procedures, escalation matrix, and multi-tier support structure not publicly detailed; unclear what service-level commitment buyers would receive [WebFetch 1]. (no evidence linked) | [yellow] demand-fx itself has zero independent customer testimonials, case studies, or named references; insert effect company logos on website are not documented customer relationships for demand-fx specifically—only 3 projects (NürnbergMOBIL, Falcons, Tinker) receive detailed treatment [WebFetch 2]. (no evidence linked) | [yellow] Very limited production exposure (5 seats, 90 days maximum) prevents assessment of real-world product maturity, operational stability, performance at scale, or production-grade reliability [WebFetch 1]. (no evidence linked) | [yellow] Pilot customer references not publicly available; no independent verification possible that pilot deployment is successful or that customers plan post-pilot adoption. (no evidence linked)",
+    "unresolved_questions": [
+      "What is demand-fx's exact general availability timeline and roadmap post-pilot?",
+      "Will demand-fx pursue SOC 2 Type II or ISO 27001 certification, and if so, when?",
+      "What is the production support model, escalation procedure, and incident response SLA for demand-fx post-pilot?",
+      "Who comprises the dedicated development and support team for demand-fx, and what is their capacity relative to broader insert effect organization?",
+      "Will pilot customer references be made available for independent verification?",
+      "Unresolved after research (product_lifecycle): YELLOW finding needs original-source confirmation (evidence NONE): demand-fx is in early pilot phase (5 seats, 90 days, 2026) with clear post-pilot pricing (€800/month) but no announced general availability date or long-term ro",
+      "Unresolved after research (security_privacy): YELLOW finding needs original-source confirmation (evidence NONE): demand-fx implements EU hosting, optional EU-sovereign data processing path, provides Data Processing Agreements (AVV), and documents human oversight per EU AI ",
+      "Unresolved after research (enterprise_readiness): YELLOW finding needs original-source confirmation (evidence NONE): No enterprise security certifications (SOC 2, ISO 27001) or formal SLA published; personal onboarding from founding team during pilot phase, but post-pilot supp",
+      "Unresolved after research (enterprise_readiness): unresolved (INSUFFICIENT_EVIDENCE)",
+      "Unresolved after research (documentation_support): unresolved (INSUFFICIENT_EVIDENCE)",
+      "[green] insert effect GmbH is a legitimate, identifiable 20+ year old German company with legal registration (HRB 26812, Nürnberg), named CEO (Matthias Kolberg), complete imprint, and compliant privacy policies (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[green] No regulatory violations, fines, security breaches, or misconduct detected for insert effect GmbH or demand-fx [WebSearch 3, WebSearch 4]. (no evidence linked)",
+      "[green] Recent institutional investment: Mainzer Stadtwerke acquired 50% stake in insert effect in 2025, confirming external validation and ongoing operational backing (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[green] demand-fx is a real, actively maintained product with documented features (AI duplicate detection, human oversight per EU AI Act, structured classification, solution pathway evaluation) [WebFetch 1]. (no evidence linked)",
+      "[green] Realistic early-stage pricing (€4,990 for 90-day pilot, €800+/month post-pilot) suggests responsible go-to-market strategy, not aggressive overmarketing [WebFetch 1]. (no evidence linked)",
+      "[green] Concrete security practices documented: EU hosting, optional EU-sovereign data processing, Data Processing Agreements (AVV) provided, documented human oversight per EU AI Act [WebFetch 1]. (no evidence linked)",
+      "[green] insert effect has verifiable long-term customer relationships: Mainzer Stadtwerke contract since 2017 for meinRad bike-sharing and MaaS independently confirmed (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[green] insert effect company website displays recognized customer logos (Deutsche Bahn, ING, Volvo, municipal utilities), indicating established market presence [WebFetch 2]. (no evidence linked)",
+      "[yellow] demand-fx remains in very early pilot phase (5 seats, 90 days) with no announced general availability date, long-term roadmap, or production timeline—material uncertainty for procurement [WebFetch 1, E2] (unverified lead: source content not checked). (no evidence linked)",
+      "[yellow] No enterprise security certifications (SOC 2 Type II, ISO 27001) or independent security audits visible; product handles sensitive IT procurement and organizational demand data but security posture not independently verified [WebFetch 1]. (no evidence linked)",
+      "[yellow] Post-pilot support model, SLA terms, incident response procedures, escalation matrix, and multi-tier support structure not publicly detailed; unclear what service-level commitment buyers would receive [WebFetch 1]. (no evidence linked)",
+      "[yellow] demand-fx itself has zero independent customer testimonials, case studies, or named references; insert effect company logos on website are not documented customer relationships for demand-fx specifically—only 3 projects (NürnbergMOBIL, Falcons, Tinker) receive detailed treatment [WebFetch 2]. (no evidence linked)",
+      "[yellow] Very limited production exposure (5 seats, 90 days maximum) prevents assessment of real-world product maturity, operational stability, performance at scale, or production-grade reliability [WebFetch 1]. (no evidence linked)",
+      "[yellow] Pilot customer references not publicly available; no independent verification possible that pilot deployment is successful or that customers plan post-pilot adoption. (no evidence linked)"
+    ],
+    "evidence": [
+      {
+        "id": "E1",
+        "url": "https://inserteffect.com/",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Seit 2002 entwickeln wir Web und Apps... 280+ zufriedene Kundinnen und Kunden",
+        "published_date": "2026-11-27"
+      },
+      {
+        "id": "E2",
+        "url": "https://it-demand-management.de/",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "KI-gestützte Demand-Management-Plattform... Pilot 2026 — 5 Plätze... IT-Bedarfe rein. Geprüfte Entscheidungen raus.",
+        "published_date": "2026-11-27"
+      },
+      {
+        "id": "E3",
+        "url": "https://www.zfk.de/unternehmen/nachrichten/mainzer-stadtwerke-beteiligen-sich-an-app-anbieter",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Mainzer Stadtwerke beteiligen sich an App-Anbieter insert effect",
+        "published_date": "2025"
+      },
+      {
+        "id": "E4",
+        "url": "https://it-demand-management.de/impressum",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "insert effect GmbH... Handelsregister: AG Nürnberg HRB 26812 Geschäftsführer: Matthias Kolberg",
+        "published_date": "2026-11-27"
+      },
+      {
+        "id": "E5",
+        "url": "https://inserteffect.com/",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "NürnbergMOBIL (mobility app), Nürnberg Falcons (basketball), Tinker Event Solutions",
+        "published_date": "2026-11-27"
+      },
+      {
+        "id": "E6",
+        "url": "https://it-demand-management.de/datenschutz",
+        "status": "ORIGINAL_SOURCE_VERIFIED",
+        "quote_match": "exact",
+        "excerpt": "Datenschutzerklärung für die Besucher:innen unserer Website",
+        "published_date": "2026-11-27"
+      },
+      {
+        "id": "E7",
+        "url": "https://www.zfk.de/unternehmen/nachrichten/mainzer-stadtwerke-beteiligen-sich-an-app-anbieter",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Insert Effect entwickelt Apps und Backendsysteme für ÖPNV-Unternehmen sowie Sharing-Anbieter. Seit 2017 mit Mainzer Mobilität vertraglich verbunden für meinRad Bike-Sharing und MaaS-Plattform.",
+        "published_date": "2025-12-04"
+      },
+      {
+        "id": "E8",
+        "url": "https://it-demand-management.de/impressum",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "insert effect GmbH, Hessestr. 5-7, 90443 Nürnberg, Deutschland. Phone: +49 911 / 274487-0. Email: info@inserteffect.com. Tax ID: DE273263321",
+        "published_date": "2026-11-27"
+      },
+      {
+        "id": "C1",
+        "url": "https://it-demand-management.de/",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "KI-gestützte Demand-Management-Plattform mit sieben Validierungsstationen: Duplikate, Bestand, Markt und Wirtschaftlichkeit vor dem Spend",
+        "published_date": "2026-11-27"
+      },
+      {
+        "id": "C2",
+        "url": "https://it-demand-management.de/",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Pilot: 4.990€ für 90 Tage (angerechnet). Produktion: 800€+ pro Monat",
+        "published_date": "2026-11-27"
+      },
+      {
+        "id": "C3",
+        "url": "https://it-demand-management.de/",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "EU-gehostet. Optionaler EU-souveräner Datenpfad für KI-Verarbeitung ganz in Europa",
+        "published_date": "2026-11-27"
+      },
+      {
+        "id": "C4",
+        "url": "https://inserteffect.com/",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Kundenlogos: 1. FC Köln, Deutsche Bahn, ING, Volvo, Stadt Mainz, VAG Nürnberg, Sparda-Bank, Telefónica/O₂, Stadtwerke München. Detaillierte Fallstudien nur für NürnbergMOBIL, Nürnberg Falcons, Tinker Event Solutions",
+        "published_date": "2026-11-27"
+      }
+    ]
+  },
+  {
+    "id": "44",
+    "url": "https://www.voidtools.com/",
+    "product": "Everything (Windows Desktop Search Engine)",
+    "vendor": "voidtools",
+    "overall": "Green",
+    "green_flags": "18-year domain and company history (2008–present) demonstrates stability. Sources: https://www.voidtools.com/about/ ; https://rdap.org/domain/voidtools.com | Explicit privacy policy with no remote data transmission; local-only file indexing. Sources: https://www.voidtools.com/privacy/ | Identified founder (David Carpenter) with 22-year commitment to project. Sources: https://www.voidtools.com/about/",
+    "yellow_flags": "Single-person maintainer (David Carpenter) with no documented succession plan. Sources: https://www.voidtools.com/about/ | One fixed CVE (CVE-2023-27704, ReDoS) disclosed in older versions; current version patched. Sources: https://github.com/happy0717/CVE-2023-27704",
+    "red_flags": "None identified.",
+    "reasoning": "Verdict GREEN (confidence MEDIUM; investigation COMPLETE). Established concerns (validated sources): Single-person maintainer (David Carpenter) with no documented succession plan. Sources: https://www.voidtools.com/about/ | One fixed CVE (CVE-2023-27704, ReDoS) disclosed in older versions; current version patched. Sources: https://github.com/happy0717/CVE-2023-27704 Established positives (validated sources): 18-year domain and company history (2008–present) demonstrates stability. Sources: https://www.voidtools.com/about/ ; https://rdap.org/domain/voidtools.com | Explicit privacy policy with no remote data transmission; local-only file indexing. Sources: https://www.voidtools.com/privacy/ | Identified founder (David Carpenter) with 22-year commitment to project. Sources: https://www.voidtools.com/about/ Uncertain, NOT established (no validated source): [green] Active releases in 2026; stable version 1.4.1.1032 and beta 1.5.0.1424b both current (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] Freeware with donations only; no formal business entity supporting enterprise SLAs (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] No formal enterprise support structure; not suitable for mission-critical deployment. (no evidence linked) | [yellow] Limited documentation on enterprise deployment or compliance (e.g., GDPR, SOC 2) for regulated use. (no evidence linked) | Unresolved after research (security_privacy): YELLOW finding needs original-source confirmation (evidence NONE): One fixed CVE disclosed (CVE-2023-27704 ReDoS in v<1.4.1.1022); current stable version (1.4.1.1032) is patched; privacy policy explicitly states no data collect | Unresolved after research (team_continuity): YELLOW finding needs original-source confirmation (evidence NONE): Single-person project: David Carpenter is sole founder and maintainer with 22-year track record; no succession plan documented [E7, E11] | Unresolved after research (enterprise_readiness): YELLOW finding needs original-source confirmation (evidence NONE): Freeware model with optional donations only; no formal SLA, support structure, or enterprise licensing; suitable for casual desktop use but not enterprise deplo",
+    "confidence": "MEDIUM",
+    "investigation_status": "COMPLETE",
+    "sources": "https://www.voidtools.com/about/ ; https://www.voidtools.com/privacy/ ; https://www.voidtools.com/faq/ ; https://rdap.org/domain/voidtools.com ; https://github.com/happy0717/CVE-2023-27704",
+    "unsupported_observations": "[green] Active releases in 2026; stable version 1.4.1.1032 and beta 1.5.0.1424b both current (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] Freeware with donations only; no formal business entity supporting enterprise SLAs (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] No formal enterprise support structure; not suitable for mission-critical deployment. (no evidence linked) | [yellow] Limited documentation on enterprise deployment or compliance (e.g., GDPR, SOC 2) for regulated use. (no evidence linked)",
+    "unresolved_questions": [
+      "Is there a documented succession plan or contingency for the Everything project if David Carpenter becomes unavailable?",
+      "Are there identifiable enterprise customers using Everything in regulated or mission-critical roles?",
+      "What is the revenue sustainability model and donor base for ongoing development?",
+      "(evidence failed validation) No FTC, regulatory complaints, or legal findings; privacy-compliant [E8]",
+      "Unresolved after research (security_privacy): YELLOW finding needs original-source confirmation (evidence NONE): One fixed CVE disclosed (CVE-2023-27704 ReDoS in v<1.4.1.1022); current stable version (1.4.1.1032) is patched; privacy policy explicitly states no data collect",
+      "Unresolved after research (team_continuity): YELLOW finding needs original-source confirmation (evidence NONE): Single-person project: David Carpenter is sole founder and maintainer with 22-year track record; no succession plan documented [E7, E11]",
+      "Unresolved after research (enterprise_readiness): YELLOW finding needs original-source confirmation (evidence NONE): Freeware model with optional donations only; no formal SLA, support structure, or enterprise licensing; suitable for casual desktop use but not enterprise deplo",
+      "[green] Active releases in 2026; stable version 1.4.1.1032 and beta 1.5.0.1424b both current (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[yellow] Freeware with donations only; no formal business entity supporting enterprise SLAs (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[yellow] No formal enterprise support structure; not suitable for mission-critical deployment. (no evidence linked)",
+      "[yellow] Limited documentation on enterprise deployment or compliance (e.g., GDPR, SOC 2) for regulated use. (no evidence linked)"
+    ],
+    "evidence": [
+      {
+        "id": "E1",
+        "url": "https://www.voidtools.com/about/",
+        "status": "ORIGINAL_SOURCE_VERIFIED",
+        "quote_match": "exact",
+        "excerpt": "voidtools PTY LTD ACN: 624373397 ABN: 14624373397",
+        "published_date": null
+      },
+      {
+        "id": "E2",
+        "url": "https://www.voidtools.com/privacy/",
+        "status": "SOURCE_CONTENT_RETRIEVED",
+        "quote_match": "approximate",
+        "excerpt": "The \"Everything\" client stores a cache of all file and folder names...stored locally in the Everything.db file and is not sent anywhere remotely.",
+        "published_date": null
+      },
+      {
+        "id": "E3",
+        "url": "https://www.voidtools.com/faq/",
+        "status": "ORIGINAL_SOURCE_VERIFIED",
+        "quote_match": "exact",
+        "excerpt": "Does \"Everything\" contain any malware, spyware or adware?",
+        "published_date": null
+      },
+      {
+        "id": "E4",
+        "url": "https://www.voidtools.com/downloads/",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Download Everything 1.4.1.1032...Download Everything 1.5.0.1424b Beta",
+        "published_date": "2026-11-27"
+      },
+      {
+        "id": "E6",
+        "url": "https://rdap.org/domain/voidtools.com",
+        "status": "ORIGINAL_SOURCE_VERIFIED",
+        "quote_match": "exact",
+        "excerpt": "registration 2008-02-20; last changed 2026-10-07; expiration 2034-02-20",
+        "published_date": "2026-10-07"
+      },
+      {
+        "id": "E9",
+        "url": "https://github.com/happy0717/CVE-2023-27704",
+        "status": "ORIGINAL_SOURCE_VERIFIED",
+        "quote_match": "exact",
+        "excerpt": "CVE-2023-27704 Void Tools Everything lower than v1.4.1.1022 was discovered to contain a Regular Expression Denial of Service (ReDoS)",
+        "published_date": "2023"
+      },
+      {
+        "id": "E11",
+        "url": "https://www.voidtools.com/about/",
+        "status": "ORIGINAL_SOURCE_VERIFIED",
+        "quote_match": "exact",
+        "excerpt": "Founded and run by David Carpenter",
+        "published_date": null
+      }
+    ]
+  },
+  {
+    "id": "45",
+    "url": "https://www.sap.com/products/artificial-intelligence/joule-work.html",
+    "product": "SAP Joule Work",
+    "vendor": "SAP SE",
+    "overall": "Yellow",
+    "green_flags": "None identified.",
+    "yellow_flags": "None identified.",
+    "red_flags": "None identified.",
+    "reasoning": "[Investigation PARTIAL] Verdict YELLOW (confidence LOW; investigation PARTIAL). No reason could be established from validated sources. Uncertain, NOT established (no validated source): [green] SAP is a legitimate 30-year-old German public company with verifiable operational history. (no evidence linked) | [green] Joule Work confirmed as real, actively maintained product with documented Q1-Q3 2026 releases and October 2026 GA. (no evidence linked) | [green] Four major named customers (Novartis, Morgan Foods, Nestlé, PwC) confirmed in October 2026 announcements with specific use cases. (no evidence linked) | [green] SAP's incident response was transparent and immediate: disclosed same day (Nov 27), remediation started (key rotation, access limits, automated process suspension). (no evidence linked) | [green] Security architecture documented with multi-layer runtime security model; compliance framework (SOC 2, ISO 27001) published (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] Code integrity verification for Joule Work builds created during compromise window (detection timing unclear) not yet publicly confirmed by SAP. (no evidence linked) | Unresolved after research (company_legitimacy): unresolved (INSUFFICIENT_EVIDENCE) | Unresolved after research (security_privacy): unresolved (INSUFFICIENT_EVIDENCE) | Unresolved after research (legal_regulatory): unresolved (INSUFFICIENT_EVIDENCE) Adversarial review: YELLOW",
+    "confidence": "LOW",
+    "investigation_status": "PARTIAL",
+    "sources": "",
+    "unsupported_observations": "[green] SAP is a legitimate 30-year-old German public company with verifiable operational history. (no evidence linked) | [green] Joule Work confirmed as real, actively maintained product with documented Q1-Q3 2026 releases and October 2026 GA. (no evidence linked) | [green] Four major named customers (Novartis, Morgan Foods, Nestlé, PwC) confirmed in October 2026 announcements with specific use cases. (no evidence linked) | [green] SAP's incident response was transparent and immediate: disclosed same day (Nov 27), remediation started (key rotation, access limits, automated process suspension). (no evidence linked) | [green] Security architecture documented with multi-layer runtime security model; compliance framework (SOC 2, ISO 27001) published (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] Code integrity verification for Joule Work builds created during compromise window (detection timing unclear) not yet publicly confirmed by SAP. (no evidence linked) | [yellow] Residual supply-chain risk: if code committed during compromise window to branches later merged into product, could pose downstream vulnerability risk (unresolved pending investigation completion). (no evidence linked) | [yellow] Buyer cannot be certain of code assurance until investigation concludes and SAP confirms no compromised code reached Joule Work releases. (no evidence linked)",
+    "unresolved_questions": [
+      "Unresolved after research (company_legitimacy): unresolved (INSUFFICIENT_EVIDENCE)",
+      "Unresolved after research (security_privacy): unresolved (INSUFFICIENT_EVIDENCE)",
+      "Unresolved after research (legal_regulatory): unresolved (INSUFFICIENT_EVIDENCE)",
+      "Unresolved after research (product_lifecycle): unresolved (INSUFFICIENT_EVIDENCE)",
+      "Unresolved after research (product_existence): unresolved (INSUFFICIENT_EVIDENCE)",
+      "Unresolved after research (security_privacy): YELLOW finding needs original-source confirmation (evidence NONE): November 2026 GitHub incident: attackers stole credentials and accessed repositories. No customer code tampered or customer data breached per SAP/SecurityWeek. ",
+      "(evidence failed validation) GitHub incident investigation ongoing as of November 27, 2026; full scope of compromised repositories and code modifications not publicly disclosed (C1 caveat: 'investigation to date')",
+      "(evidence failed validation) Operational continuity: Joule Work services running normally post-incident with customer deployments proceeding (C2)",
+      "(evidence failed validation) No evidence of customer code access, data compromise, or delivery of tampered software to customers (C1)",
+      "[green] SAP is a legitimate 30-year-old German public company with verifiable operational history. (no evidence linked)",
+      "[green] Joule Work confirmed as real, actively maintained product with documented Q1-Q3 2026 releases and October 2026 GA. (no evidence linked)",
+      "[green] Four major named customers (Novartis, Morgan Foods, Nestlé, PwC) confirmed in October 2026 announcements with specific use cases. (no evidence linked)",
+      "[green] SAP's incident response was transparent and immediate: disclosed same day (Nov 27), remediation started (key rotation, access limits, automated process suspension). (no evidence linked)",
+      "[green] Security architecture documented with multi-layer runtime security model; compliance framework (SOC 2, ISO 27001) published (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[yellow] Code integrity verification for Joule Work builds created during compromise window (detection timing unclear) not yet publicly confirmed by SAP. (no evidence linked)",
+      "[yellow] Residual supply-chain risk: if code committed during compromise window to branches later merged into product, could pose downstream vulnerability risk (unresolved pending investigation completion). (no evidence linked)",
+      "[yellow] Buyer cannot be certain of code assurance until investigation concludes and SAP confirms no compromised code reached Joule Work releases. (no evidence linked)"
+    ],
+    "evidence": [
+      {
+        "id": "E3",
+        "url": "https://www.sap.com/taiwan/about/trust-center/certification-compliance.html",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "SAP publishes SOC 1, SOC 2, and ISO 27001 compliance reports for cloud services on annual 12-month audit cycles",
+        "published_date": "2026-11-01"
+      },
+      {
+        "id": "C3",
+        "url": "https://community.sap.com/t5/technology-blog-posts-by-sap/understanding-security-in-sap-joule-s-runtime/ba-p/14414450",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "SAP Joule's security is built into its runtime through two core layers: the Orchestration Runtime and the Execution Runtime, with security controls embedded throughout the request flow.",
+        "published_date": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "id": "46",
+    "url": "https://www.servicenow.com/products/it-asset-management.html",
+    "product": "ServiceNow IT Asset Management (ITAM)",
+    "vendor": "ServiceNow, Inc.",
+    "overall": "Yellow",
+    "green_flags": "ServiceNow is legitimate 30-year-old NYSE-traded company (NOW) with domain registered 1996. Sources: https://rdap.org/domain/servicenow.com",
+    "yellow_flags": "Hagens Berman shareholder investigation ongoing as of November 2026 examining whether cRPO growth metric may have been misled; investigation is early-stage with no findings yet. Requires governance monitoring. Sources: https://www.prnewswire.com/news-releases/servicenow-now-faces-investor-scrutiny-amid-crpo-questions-41-billion-market-capitalization-gone--hbss-302949607.html",
+    "red_flags": "None identified.",
+    "reasoning": "[Investigation PARTIAL] Verdict YELLOW (confidence LOW; investigation PARTIAL). Established concerns (validated sources): Hagens Berman shareholder investigation ongoing as of November 2026 examining whether cRPO growth metric may have been misled; investigation is early-stage with no findings yet. Requires governance monitoring. Sources: https://www.prnewswire.com/news-releases/servicenow-now-faces-investor-scrutiny-amid-crpo-questions-41-billion-market-capitalization-gone--hbss-302949607.html Established positives (validated sources): ServiceNow is legitimate 30-year-old NYSE-traded company (NOW) with domain registered 1996. Sources: https://rdap.org/domain/servicenow.com Uncertain, NOT established (no validated source): [green] ITAM product actively maintained in 2026 with AI automation capabilities; no deprecation signals (unverified lead: source content not checked). (cited evidence did not validate) | [green] Independent customer verification: major U.S. city (1.3M+ residents, 54 departments) deployed unified ServiceNow ITSM/ITOM/ITAM with 98% change success (unverified lead: source content not checked). (cited evidence did not validate) | [green] Company remains profitable: Q3 2026 subscription revenue $3,988M, 21% YoY growth, operationally sound (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] October 2026 stock crash: 27% decline ($41B market cap loss) following Q4 cRPO guidance disclosure showing growth deceleration from 21% (Q3) to 18.5% (Q4 expected). Reflects market skepticism about guidance accuracy. (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] Investigation concerns company-level financial disclosure practices, not product capability, but raises governance questions enterprises should clarify before large commitments. (no evidence linked) | Unresolved after research (product_existence): unresolved (INSUFFICIENT_EVIDENCE) | Unresolved after research (product_lifecycle): unresolved (INSUFFICIENT_EVIDENCE) | Unresolved after research (security_privacy): YELLOW finding needs original-source confirmation (evidence NONE): ServiceNow holds SOC 2 Type II, ISO 27001:2022, ISO 27018, and FedRAMP High certifications. However, multiple critical CVEs in 2024-2026 affect internet-facing  Adversarial review: YELLOW",
+    "confidence": "LOW",
+    "investigation_status": "PARTIAL",
+    "sources": "https://rdap.org/domain/servicenow.com ; https://www.prnewswire.com/news-releases/servicenow-now-faces-investor-scrutiny-amid-crpo-questions-41-billion-market-capitalization-gone--hbss-302949607.html",
+    "unsupported_observations": "[green] ITAM product actively maintained in 2026 with AI automation capabilities; no deprecation signals (unverified lead: source content not checked). (cited evidence did not validate) | [green] Independent customer verification: major U.S. city (1.3M+ residents, 54 departments) deployed unified ServiceNow ITSM/ITOM/ITAM with 98% change success (unverified lead: source content not checked). (cited evidence did not validate) | [green] Company remains profitable: Q3 2026 subscription revenue $3,988M, 21% YoY growth, operationally sound (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] October 2026 stock crash: 27% decline ($41B market cap loss) following Q4 cRPO guidance disclosure showing growth deceleration from 21% (Q3) to 18.5% (Q4 expected). Reflects market skepticism about guidance accuracy. (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] Investigation concerns company-level financial disclosure practices, not product capability, but raises governance questions enterprises should clarify before large commitments. (no evidence linked)",
+    "unresolved_questions": [
+      "Unresolved after research (product_existence): unresolved (INSUFFICIENT_EVIDENCE)",
+      "Unresolved after research (product_lifecycle): unresolved (INSUFFICIENT_EVIDENCE)",
+      "Unresolved after research (security_privacy): YELLOW finding needs original-source confirmation (evidence NONE): ServiceNow holds SOC 2 Type II, ISO 27001:2022, ISO 27018, and FedRAMP High certifications. However, multiple critical CVEs in 2024-2026 affect internet-facing ",
+      "Unresolved after research (legal_regulatory): YELLOW finding needs original-source confirmation (evidence NONE): Shareholder investigation by Hagens Berman ongoing as of November 2026 examining potential cRPO guidance misrepresentation. October 29, 2026 stock crash elimina",
+      "Unresolved after research (financial_viability): YELLOW finding needs original-source confirmation (evidence NONE): ServiceNow demonstrated strong Q3 2026 performance: $3,988M subscription revenue (21% YoY growth), $29.7B total RPO (22% growth). October 2026 stock crash refle",
+      "Unresolved after research (financial_viability): unresolved (INSUFFICIENT_EVIDENCE)",
+      "(evidence failed validation) Critical vulnerabilities (CVE-2026-6875, CVE-2026-74820) were disclosed transparently and patched immediately on disclosure date [C3]",
+      "(evidence failed validation) SOC 2 Type II, ISO 27001:2022, ISO 27018, FedRAMP High certifications held [E7]",
+      "[green] ITAM product actively maintained in 2026 with AI automation capabilities; no deprecation signals (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[green] Independent customer verification: major U.S. city (1.3M+ residents, 54 departments) deployed unified ServiceNow ITSM/ITOM/ITAM with 98% change success (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[green] Company remains profitable: Q3 2026 subscription revenue $3,988M, 21% YoY growth, operationally sound (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[yellow] October 2026 stock crash: 27% decline ($41B market cap loss) following Q4 cRPO guidance disclosure showing growth deceleration from 21% (Q3) to 18.5% (Q4 expected). Reflects market skepticism about guidance accuracy. (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[yellow] Investigation concerns company-level financial disclosure practices, not product capability, but raises governance questions enterprises should clarify before large commitments. (no evidence linked)"
+    ],
+    "evidence": [
+      {
+        "id": "E1",
+        "url": "https://rdap.org/domain/servicenow.com",
+        "status": "ORIGINAL_SOURCE_VERIFIED",
+        "quote_match": "exact",
+        "excerpt": "registration 1996-03-06; last changed 2026-07-14; expiration 2033-03-07; registrar CSC Corporate Domains, Inc.; status client transfer prohibited",
+        "published_date": "2026-11-27"
+      },
+      {
+        "id": "E2",
+        "url": "https://support.servicenow.com/kb?id=kb_article_view&sysparm_article=KB3235180",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "CVE-2026-6875 critical remote code execution; CVE-2025-12420 authentication bypass; CVE-2024-4879 and CVE-2024-5217 require immediate patching",
+        "published_date": "2026-11-27"
+      },
+      {
+        "id": "E3",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/servicenow-stock-falls-crpo-growth-144947961.html",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "ServiceNow stock fell 26-27% on October 29 after Q3 guidance showed cRPO growth slowing to 18.5% versus 19.5-19.8% expected; shareholder investigation launched",
+        "published_date": "2026-10-29"
+      },
+      {
+        "id": "E4",
+        "url": "https://www.prnewswire.com/news-releases/servicenow-now-faces-investor-scrutiny-amid-crpo-questions-41-billion-market-capitalization-gone--hbss-302949607.html",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Hagens Berman investigation into whether ServiceNow sufficiently transparent about cRPO revenue metrics; $41 billion market cap erased",
+        "published_date": "2026-11-01"
+      },
+      {
+        "id": "E5",
+        "url": "https://www.zensar.com/insights/case-study/public-sector/it-services/one-of-the-largest-cities-of-us-delivers-unified-enterprise-wide-itsm-platform-scale-servicenow",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Major U.S. city achieved unified ServiceNow ITSM, ITOM, and ITAM deployment with 98% change success rate and annual asset reconciliation across 54 departments",
+        "published_date": "2025-09-15"
+      },
+      {
+        "id": "E6",
+        "url": "https://investor.servicenow.com/news/news-details/2026/ServiceNow-Reports-Third-Quarter-2026-Financial-Results/default.aspx",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Q3 2026 subscription revenue $3,988 million, 21% YoY growth; remaining performance obligations $13.65 billion, 21% growth",
+        "published_date": "2026-10-29"
+      },
+      {
+        "id": "E8",
+        "url": "https://www.servicenow.com/in/products/it-asset-management/what-is-itam.html",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "ITAM runs on ServiceNow AI Platform with autonomous AI Agents automating tasks from asset planning through end-of-life across hardware, software, and cloud cost management",
+        "published_date": "2026-11-27"
+      },
+      {
+        "id": "C1",
+        "url": "https://www.prnewswire.com/news-releases/servicenow-now-faces-investor-scrutiny-amid-crpo-questions-41-billion-market-capitalization-gone--hbss-302949607.html",
+        "status": "SOURCE_CONTENT_RETRIEVED",
+        "quote_match": "approximate",
+        "excerpt": "Hagens Berman inquiry examining whether ServiceNow 'may have misled investors about the value of its widely-touted cRPO growth metric and whether it may have been improperly manipulated'",
+        "published_date": "2026-11-21"
+      },
+      {
+        "id": "C2",
+        "url": "https://www.prnewswire.com/news-releases/servicenow-now-faces-investor-scrutiny-amid-crpo-questions-41-billion-market-capitalization-gone--hbss-302949607.html",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "October 28, 2026 earnings call: CFO disclosed Q4 cRPO growth expected 18.5% (down from 21% Q3) due to pulled-forward renewals; stock crashed 27% next day",
+        "published_date": "2026-10-29"
+      }
+    ]
+  },
+  {
+    "id": "47",
+    "url": "https://www.clearview.ai/",
+    "product": "Clearview AI (facial recognition and face search platform)",
+    "vendor": "Clearview AI, Inc.",
+    "overall": "Yellow",
+    "green_flags": "None identified.",
+    "yellow_flags": "None identified.",
+    "red_flags": "None identified.",
+    "reasoning": "[Investigation PARTIAL] Verdict YELLOW (confidence LOW; investigation PARTIAL). No reason could be established from validated sources. Uncertain, NOT established (no validated source): [green] Active government deployment with verified contracts (IRS $63K, CBP $225K in 2026). (no evidence linked) | [green] FedRAMP 'In Process' designation at High Impact Level indicates government cloud infrastructure maturity. (no evidence linked) | [green] SOC 2 Type II and TX-RAMP certifications provide audit attestation of security controls. (no evidence linked) | [green] Continuous product development with dedicated GovCloud platform released for federal market. (no evidence linked) | [green] Transparent alignment with GAO AI Accountability Framework principles. (no evidence linked) | [yellow] Recent UK ICO enforcement action (November 2026) demonstrates current regulatory risk and raises material governance questions about data sourcing practices. (no evidence linked) | Unresolved after research (legal_regulatory): RED finding needs original-source confirmation (evidence LEAD_ONLY): UK Information Commissioner's Office imposed £7.5 million fine (November 2026) for unlawfully obtaining facial images of UK citizens, directly contradicting the | Unresolved after research (security_privacy): RED finding needs original-source confirmation (evidence LEAD_ONLY): Recent regulatory finding establishes the company unlawfully collected and processed biometric data without lawful basis, undermining core trustworthiness for p | Unresolved after research (company_legitimacy): unresolved (INSUFFICIENT_EVIDENCE) Adversarial review: YELLOW",
+    "confidence": "LOW",
+    "investigation_status": "PARTIAL",
+    "sources": "",
+    "unsupported_observations": "[green] Active government deployment with verified contracts (IRS $63K, CBP $225K in 2026). (no evidence linked) | [green] FedRAMP 'In Process' designation at High Impact Level indicates government cloud infrastructure maturity. (no evidence linked) | [green] SOC 2 Type II and TX-RAMP certifications provide audit attestation of security controls. (no evidence linked) | [green] Continuous product development with dedicated GovCloud platform released for federal market. (no evidence linked) | [green] Transparent alignment with GAO AI Accountability Framework principles. (no evidence linked) | [yellow] Recent UK ICO enforcement action (November 2026) demonstrates current regulatory risk and raises material governance questions about data sourcing practices. (no evidence linked) | [yellow] Ongoing Illinois settlement restrictions limit commercial market availability and create licensing ambiguity for enterprise buyers. (no evidence linked) | [yellow] IRS policy reversal on facial recognition usage creates optics risk around government procurement consistency. (no evidence linked) | [yellow] FedRAMP 'In Process' status is not final authority; full authorization still pending. (no evidence linked) | [yellow] Limited visibility into how company will respond to and remediate November 2026 UK regulatory findings. (no evidence linked)",
+    "unresolved_questions": [
+      "Has Clearview AI disclosed any remediation, data deletion, or operational changes in response to the November 2026 UK ICO finding?",
+      "Are UK-sourced facial images still in the production database, or have they been purged?",
+      "What was the scope of unlawful collection—only UK citizens, or does it extend to other jurisdictions?",
+      "Will the November 2026 UK finding affect FedRAMP authorization or government contract renewals?",
+      "How does the Illinois commercial restriction interact with government-only GovCloud licensing; are there hidden licensing ambiguities?",
+      "(evidence failed validation) UK Information Commissioner's Office final order (November 2026) confirms unlawful collection of UK citizen facial images—a core data-sourcing violation that directly contradicts the company's privacy and legal compliance promises [E3]",
+      "(evidence failed validation) No disclosed remediation, data deletion, or operational changes following November 2026 UK regulatory finding; ongoing risk of repeated violations [E3]",
+      "(evidence failed validation) Commercial availability fundamentally restricted by Illinois settlement, creating material licensing ambiguity that prevents most enterprise buyers from accessing the full platform [E5]",
+      "Unresolved after research (legal_regulatory): RED finding needs original-source confirmation (evidence LEAD_ONLY): UK Information Commissioner's Office imposed £7.5 million fine (November 2026) for unlawfully obtaining facial images of UK citizens, directly contradicting the",
+      "Unresolved after research (security_privacy): RED finding needs original-source confirmation (evidence LEAD_ONLY): Recent regulatory finding establishes the company unlawfully collected and processed biometric data without lawful basis, undermining core trustworthiness for p",
+      "Unresolved after research (company_legitimacy): unresolved (INSUFFICIENT_EVIDENCE)",
+      "Unresolved after research (security_privacy): unresolved (INSUFFICIENT_EVIDENCE)",
+      "Unresolved after research (legal_regulatory): unresolved (INSUFFICIENT_EVIDENCE)",
+      "Unresolved after research (product_existence): unresolved (INSUFFICIENT_EVIDENCE)",
+      "[green] Active government deployment with verified contracts (IRS $63K, CBP $225K in 2026). (no evidence linked)",
+      "[green] FedRAMP 'In Process' designation at High Impact Level indicates government cloud infrastructure maturity. (no evidence linked)",
+      "[green] SOC 2 Type II and TX-RAMP certifications provide audit attestation of security controls. (no evidence linked)",
+      "[green] Continuous product development with dedicated GovCloud platform released for federal market. (no evidence linked)",
+      "[green] Transparent alignment with GAO AI Accountability Framework principles. (no evidence linked)",
+      "[yellow] Recent UK ICO enforcement action (November 2026) demonstrates current regulatory risk and raises material governance questions about data sourcing practices. (no evidence linked)",
+      "[yellow] Ongoing Illinois settlement restrictions limit commercial market availability and create licensing ambiguity for enterprise buyers. (no evidence linked)",
+      "[yellow] IRS policy reversal on facial recognition usage creates optics risk around government procurement consistency. (no evidence linked)",
+      "[yellow] FedRAMP 'In Process' status is not final authority; full authorization still pending. (no evidence linked)",
+      "[yellow] Limited visibility into how company will respond to and remediate November 2026 UK regulatory findings. (no evidence linked)"
+    ],
+    "evidence": [
+      {
+        "id": "E1",
+        "url": "https://www.prnewswire.com/news-releases/clearview-ais-clearview-govcloud-achieves-fedramp-in-process-designation-at-the-high-impact-level-302816257.html",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Clearview GovCloud Achieves FedRAMP 'In Process' Designation at the High Impact Level; holds SOC 2 Type II and TX-RAMP certifications; aligned with GAO AI Accountability Framework",
+        "published_date": "2026-07"
+      },
+      {
+        "id": "E2",
+        "url": "https://www.prnewswire.com/news-releases/clearview-ais-clearview-govcloud-achieves-fedramp-in-process-designation-at-the-high-impact-level-302816257.html",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Clearview GovCloud achieved FedRAMP 'In Process' designation at the High Impact Level and listed on FedRAMP Marketplace",
+        "published_date": "2026-07"
+      },
+      {
+        "id": "E3",
+        "url": "https://www.bankinfosecurity.com/uk-privacy-watchdog-imposes-75m-fine-on-clearview-ai-a-19123",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "UK Information Commissioner's Office imposed £7.5 million fine on Clearview AI for using unlawfully obtained UK citizen facial images",
+        "published_date": "2026-11"
+      },
+      {
+        "id": "E4",
+        "url": "https://dig.watch/updates/irs-purchases-clearview-ai-facial-recognition",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "IRS Criminal Investigation purchased $63,000 Clearview AI subscription in March 2026, reversing policy commitment to federal auditors about non-federal facial recognition systems",
+        "published_date": "2026-11"
+      },
+      {
+        "id": "E5",
+        "url": "http://euro.ecom.cmu.edu/program/law/08-732/Privacy/ACLUVClearview.pdf",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Settlement includes nationwide ban preventing Clearview AI from making faceprint database available to most businesses and private actors",
+        "published_date": "2020"
+      },
+      {
+        "id": "C1",
+        "url": "https://ico.org.uk/about-the-ico/media-centre/news-and-blogs/2025/10/uk-upper-tribunal-hands-down-judgment-on-clearview-ai-inc/",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Clearview unlawfully scraped images of UK residents from websites and social media, then incorporated them into a global database enabling facial recognition services. The ruling protects UK residents from having their data, including images, unlawfully scraped and then used in a global online database without their knowledge.",
+        "published_date": "2025-10"
+      },
+      {
+        "id": "C2",
+        "url": "https://ico.org.uk/about-the-ico/media-centre/news-and-blogs/2025/10/uk-upper-tribunal-hands-down-judgment-on-clearview-ai-inc/",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Upper Tribunal upheld three of the ICO's four grounds of appeal, affirming that Clearview's activities involved monitoring UK residents' behavior, the company cannot escape UK data protection law by serving foreign agencies, and UK GDPR applies regardless of Clearview's US location.",
+        "published_date": "2025-10"
+      },
+      {
+        "id": "C3",
+        "url": "https://www.burges-salmon.com/articles/102is6f/clearview-ai-wins-appeal-against-icos-privacy-fine/",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "As of December 19, 2025, Clearview received permission to appeal to the Court of Appeal against the Upper Tribunal decision, leaving the £7.5 million fine and regulatory findings actively contested and unresolved.",
+        "published_date": "2025-12"
+      },
+      {
+        "id": "C4",
+        "url": "https://www.burges-salmon.com/articles/102is6f/clearview-ai-wins-appeal-against-icos-privacy-fine/",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "No evidence found in public statements or disclosures that Clearview AI has announced data deletion, operational changes, or remediation plans in response to either the original ICO fine or the October 2025 Upper Tribunal decision; company is pursuing further appeals instead.",
+        "published_date": "2025-12"
+      },
+      {
+        "id": "C5",
+        "url": "https://chicago.suntimes.com/business/2022/5/9/23063901/clearview-ai-facial-recognition-illinois-aclu-privacy-data",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "ACLU v. Clearview AI settlement (May 2022): Clearview is permanently banned nationwide from making its faceprint database available to most businesses and other private entities; barred from selling access in Illinois for five years; permanently barred from selling to most private clients.",
+        "published_date": "2022-05"
+      }
+    ]
+  },
+  {
+    "id": "48",
+    "url": "https://www.mendix.com/platform/",
+    "product": "Mendix Platform",
+    "vendor": "Mendix (Siemens subsidiary)",
+    "overall": "Yellow",
+    "green_flags": "None identified.",
+    "yellow_flags": "Mendix 9 end-of-support confirmed: applications may stop working unexpectedly without notice; migration to Mendix 10 required for continued support. Sources: https://www.mendix.com/blog/gartner-mq-lcap-2025/",
+    "red_flags": "None identified.",
+    "reasoning": "[Investigation PARTIAL] Verdict YELLOW (confidence LOW; investigation PARTIAL). Established concerns (validated sources): Mendix 9 end-of-support confirmed: applications may stop working unexpectedly without notice; migration to Mendix 10 required for continued support. Sources: https://www.mendix.com/blog/gartner-mq-lcap-2025/ Uncertain, NOT established (no validated source): [green] Owned by Siemens AG, Fortune 500 DAX-listed multinational (€165B+ market cap) with stable long-term backing (unverified lead: source content not checked). (cited evidence did not validate) | [green] Gartner Magic Quadrant Leader status confirmed (ninth consecutive year as of July 2025, starting 2017; not 2016 as claimed in evidence summary, but core claim accurate). (no evidence linked) | [green] Active development with recent releases documented through November 2026 (Studio Pro 11.14). (no evidence linked) | [green] Security vulnerabilities handled transparently: CVE-2026-112136 and CVE-2026-112137 documented in CISA advisory with patches available (11.16.0, 11.12.7). (no evidence linked) | [green] Mendix 9 end-of-support has clear migration path to Mendix 10 with documented transition process. (no evidence linked) | [green] Domain registration 2005 with continuous archive history indicates long-term stability. (no evidence linked) | Unresolved after research (product_existence): unresolved (INSUFFICIENT_EVIDENCE) | Unresolved after research (security_privacy): YELLOW finding needs original-source confirmation (evidence LEAD_ONLY): Three CVEs disclosed July–November 2026: CVE-2026-48192 (CVSS 5.4 RCE via project files, fixed 11.12), CVE-2026-112136 (CVSS 8.8 HIGH remote MCP Server access,  | Unresolved after research (product_lifecycle): YELLOW finding needs original-source confirmation (evidence LEAD_ONLY): Active development with regular releases through November 2026 (Studio Pro 11.14). Mendix 9 reached end-of-support; applications remain deployable but unsupport Adversarial review: GREEN (verdict change accepted)",
+    "confidence": "LOW",
+    "investigation_status": "PARTIAL",
+    "sources": "https://www.mendix.com/customer-stories/siemens-in-low-code-finance-department-rides-the-wave/ ; https://www.mendix.com/blog/gartner-mq-lcap-2025/ ; https://support.mendix.com/hc/en-us/articles/29586316047516-Deploying-and-running-Mendix-9-applications-in-Mendix-Cloud-after-end-of-support",
+    "unsupported_observations": "[green] Owned by Siemens AG, Fortune 500 DAX-listed multinational (€165B+ market cap) with stable long-term backing (unverified lead: source content not checked). (cited evidence did not validate) | [green] Gartner Magic Quadrant Leader status confirmed (ninth consecutive year as of July 2025, starting 2017; not 2016 as claimed in evidence summary, but core claim accurate). (no evidence linked) | [green] Active development with recent releases documented through November 2026 (Studio Pro 11.14). (no evidence linked) | [green] Security vulnerabilities handled transparently: CVE-2026-112136 and CVE-2026-112137 documented in CISA advisory with patches available (11.16.0, 11.12.7). (no evidence linked) | [green] Mendix 9 end-of-support has clear migration path to Mendix 10 with documented transition process. (no evidence linked) | [green] Domain registration 2005 with continuous archive history indicates long-term stability. (no evidence linked) | [yellow] CVE cluster confirmed: CVE-2026-112136 (CVSS 8.8 HIGH, MCP Server network exposure) and CVE-2026-112137 (CVSS 5.4 MEDIUM, CSRF) disclosed November 2026; patches required (11.16.0, 11.12.7) before production deployment (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] Marketing material inaccuracy: Gartner recognition claim stated as 'tenth consecutive year (2016–2026)' but correct claim is ninth consecutive year starting 2017 (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] Pricing and licensing details not publicly transparent; vendor engagement required to clarify SKU and commercial terms. (no evidence linked)",
+    "unresolved_questions": [
+      "Unresolved after research (product_existence): unresolved (INSUFFICIENT_EVIDENCE)",
+      "Unresolved after research (security_privacy): YELLOW finding needs original-source confirmation (evidence LEAD_ONLY): Three CVEs disclosed July–November 2026: CVE-2026-48192 (CVSS 5.4 RCE via project files, fixed 11.12), CVE-2026-112136 (CVSS 8.8 HIGH remote MCP Server access, ",
+      "Unresolved after research (product_lifecycle): YELLOW finding needs original-source confirmation (evidence LEAD_ONLY): Active development with regular releases through November 2026 (Studio Pro 11.14). Mendix 9 reached end-of-support; applications remain deployable but unsupport",
+      "Unresolved after research (ownership_acquisitions): unresolved (INSUFFICIENT_EVIDENCE)",
+      "Unresolved after research (documentation_support): unresolved (INSUFFICIENT_EVIDENCE)",
+      "Unresolved after research (team_continuity): unresolved (INSUFFICIENT_EVIDENCE)",
+      "[green] Owned by Siemens AG, Fortune 500 DAX-listed multinational (€165B+ market cap) with stable long-term backing (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[green] Gartner Magic Quadrant Leader status confirmed (ninth consecutive year as of July 2025, starting 2017; not 2016 as claimed in evidence summary, but core claim accurate). (no evidence linked)",
+      "[green] Active development with recent releases documented through November 2026 (Studio Pro 11.14). (no evidence linked)",
+      "[green] Security vulnerabilities handled transparently: CVE-2026-112136 and CVE-2026-112137 documented in CISA advisory with patches available (11.16.0, 11.12.7). (no evidence linked)",
+      "[green] Mendix 9 end-of-support has clear migration path to Mendix 10 with documented transition process. (no evidence linked)",
+      "[green] Domain registration 2005 with continuous archive history indicates long-term stability. (no evidence linked)",
+      "[yellow] CVE cluster confirmed: CVE-2026-112136 (CVSS 8.8 HIGH, MCP Server network exposure) and CVE-2026-112137 (CVSS 5.4 MEDIUM, CSRF) disclosed November 2026; patches required (11.16.0, 11.12.7) before production deployment (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[yellow] Marketing material inaccuracy: Gartner recognition claim stated as 'tenth consecutive year (2016–2026)' but correct claim is ninth consecutive year starting 2017 (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[yellow] Pricing and licensing details not publicly transparent; vendor engagement required to clarify SKU and commercial terms. (no evidence linked)"
+    ],
+    "evidence": [
+      {
+        "id": "E1",
+        "url": "https://www.mendix.com/blog/gartner-mq-lcap-2025/",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Mendix Named a Gartner® Leader Again! Mendix has been recognized as a Leader for the tenth consecutive year",
+        "published_date": null
+      },
+      {
+        "id": "E2",
+        "url": "https://www.mendix.com/trust/",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "SOC 1, 2, and 3 Type 2 reports...ISO standards (22301, 27001, 27017, 27018, 27701, 9001, 42001)...HIPAA/HITECH compliance...FedRAMP authorization",
+        "published_date": null
+      },
+      {
+        "id": "E3",
+        "url": "https://docs.mendix.com/releasenotes/studio-pro/11.14/",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Studio Pro 11.14 released November 4, 2026 with capability to Clear from device nanoflow action",
+        "published_date": null
+      },
+      {
+        "id": "E4",
+        "url": "https://www.mendix.com/customer-stories/siemens-in-low-code-finance-department-rides-the-wave/",
+        "status": "ORIGINAL_SOURCE_VERIFIED",
+        "quote_match": "exact",
+        "excerpt": "Mendix Enables Siemens Finance Teams to Develop Their Own Applications",
+        "published_date": null
+      },
+      {
+        "id": "E5",
+        "url": "https://press.siemens.com/global/en/pressrelease/siemens-strengthens-its-digital-enterprise-leadership-acquisition-mendix",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Siemens strengthens its digital enterprise leadership with acquisition of mendix...Siemens announced today that it will acquire Mendix for €600 million",
+        "published_date": null
+      },
+      {
+        "id": "E7",
+        "url": "https://support.mendix.com/hc/en-us/articles/31268874775324-What-is-CVE-2026-91403-compromised-eMudhra-certificates-and-the-impact-in-Mendix-on-Kubernetes-Azure-and-Private-Mendix-Platform",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "CVE-2026-91403: Compromised eMudhra certificates...weak cryptographic keys in eMudhra intermediate certificates",
+        "published_date": null
+      },
+      {
+        "id": "E9",
+        "url": "https://docs.mendix.com/releasenotes/security-advisories/",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Mendix Documentation security advisories listing CVEs and vulnerability disclosures",
+        "published_date": null
+      },
+      {
+        "id": "E10",
+        "url": "https://support.mendix.com/hc/en-us/articles/29586316047516-Deploying-and-running-Mendix-9-applications-in-Mendix-Cloud-after-end-of-support",
+        "status": "SEARCH_SNIPPET_MATCHED",
+        "quote_match": "exact",
+        "excerpt": "After end-of-support, Mendix 9 deployments may stop working unexpectedly without prior notice",
+        "published_date": null
+      },
+      {
+        "id": "E11",
+        "url": "https://rdap.org/domain/mendix.com",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "RDAP record for mendix.com: registration 2005-06-07...Wayback Machine: earliest archived snapshot 2001-02-23",
+        "published_date": null
+      },
+      {
+        "id": "C1",
+        "url": "https://www.cisa.gov/news-events/ics-advisories/icsa-26-321-05",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "CVE-2026-112136: MCP Server does not properly restrict HTTP listener to loopback interface, leaving it exposed to remote systems; CVE-2026-112137: MCP Server fails to validate Content-Type and Origin headers enabling CSRF attacks",
+        "published_date": "2026-11"
+      },
+      {
+        "id": "C2",
+        "url": "https://www.cisa.gov/news-events/ics-advisories/icsa-26-321-05",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Affected versions: Mendix Studio Pro 11 versions 11.15.0 through 11.15.x (before 11.16.0) and 11.12.6-11.12.6 (before 11.12.7); patches available",
+        "published_date": "2026-11"
+      },
+      {
+        "id": "C3",
+        "url": "https://www.mendix.com/blog/gartner-mq-lcap-2025/",
+        "status": "ORIGINAL_SOURCE_VERIFIED",
+        "quote_match": "exact",
+        "excerpt": "Mendix is again named a Leader, the ninth consecutive year we've been recognized",
+        "published_date": "2025-07-30"
+      },
+      {
+        "id": "C4",
+        "url": "https://www.mendix.com/press/mendix-named-a-leader-2024-gartner-magic-quadrant-for-enterprise-low-code-application-development-platforms-for-the-eighth-consecutive-year/",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "2024: eighth consecutive year; 2023: fourth consecutive time; 2021: second consecutive year; 2016: Visionary status",
+        "published_date": "2024"
+      },
+      {
+        "id": "C5",
+        "url": "https://press.siemens.com/global/en/pressrelease/siemens-strengthens-its-digital-enterprise-leadership-acquisition-mendix",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Siemens announced that it will acquire Mendix for €600 million; deal closed October 2018",
+        "published_date": "2018"
+      }
+    ]
+  },
+  {
+    "id": "49",
+    "url": "https://www.videolan.org/",
+    "product": "VLC media player",
+    "vendor": "VideoLAN",
+    "overall": "Green",
+    "green_flags": "VideoLAN is a verifiable, registered French non-profit organization (Association loi de 1901) with a long-established domain (registered Feb 2000) and identifiable legal structure at a Paris address. Sources: https://rdap.org/domain/videolan.org ; https://www.videolan.org/videolan/ | VLC is actively maintained with recent security-focused release (VLC 3.0.24, Sept 2026, 130+ security fixes). No end-of-life announced. VLC 4.0 remains in development. Sources: https://www.videolan.org/security/",
+    "yellow_flags": "Two CVEs (CVE-2026-56711, CVE-2026-73324) were disclosed in September 2026 affecting VLC 3.0.0-3.0.23, but VideoLAN demonstrated good security hygiene by releasing patches in VLC 3.0.24 within the same month. Privacy policy explicitly states no telemetry collection. Responsible disclosure policy in place. Sources: https://www.videolan.org/security/ ; https://www.videolan.org/privacy.html",
+    "red_flags": "None identified.",
+    "reasoning": "[Investigation PARTIAL] Verdict GREEN (confidence MEDIUM; investigation PARTIAL). Established concerns (validated sources): Two CVEs (CVE-2026-56711, CVE-2026-73324) were disclosed in September 2026 affecting VLC 3.0.0-3.0.23, but VideoLAN demonstrated good security hygiene by releasing patches in VLC 3.0.24 within the same month. Privacy policy explicitly states no telemetry collection. Responsible disclosure policy in place. Sources: https://www.videolan.org/security/ ; https://www.videolan.org/privacy.html Established positives (validated sources): VideoLAN is a verifiable, registered French non-profit organization (Association loi de 1901) with a long-established domain (registered Feb 2000) and identifiable legal structure at a Paris address. Sources: https://rdap.org/domain/videolan.org ; https://www.videolan.org/videolan/ | VLC is actively maintained with recent security-focused release (VLC 3.0.24, Sept 2026, 130+ security fixes). No end-of-life announced. VLC 4.0 remains in development. Sources: https://www.videolan.org/security/ Uncertain, NOT established (no validated source): [green] Registered French non-profit organization with verifiable legal structure and 25+ year domain history. (no evidence linked) | [green] Free, open source software with transparently available source code and wide independent adoption across all major platforms. (no evidence linked) | [green] Active maintenance demonstrated by VLC 3.0.24 security update (Sept 2026) with 130+ fixes, showing ongoing development commitment. (no evidence linked) | [green] Explicit privacy policy stating no telemetry collection, aligned with stated values. (no evidence linked) | [green] Responsible security disclosure policy with documented security contact and prompt patching (CVEs patched same month as disclosure). (no evidence linked) | [yellow] Two CVEs (CVE-2026-56711, CVE-2026-73324) disclosed in Sept 2026 affecting VLC 3.0.0-3.0.23, though promptly patched in 3.0.24. (no evidence linked) | Unresolved after research (documentation_support): YELLOW finding needs original-source confirmation (evidence LEAD_ONLY): VideoLAN provides documentation, wiki, and help resources, but support is provided by volunteers with no SLA or guaranteed response times, which is typical for ",
+    "confidence": "MEDIUM",
+    "investigation_status": "PARTIAL",
+    "sources": "https://rdap.org/domain/videolan.org ; https://www.videolan.org/videolan/ ; https://www.videolan.org/security/ ; https://www.videolan.org/privacy.html",
+    "unsupported_observations": "[green] Registered French non-profit organization with verifiable legal structure and 25+ year domain history. (no evidence linked) | [green] Free, open source software with transparently available source code and wide independent adoption across all major platforms. (no evidence linked) | [green] Active maintenance demonstrated by VLC 3.0.24 security update (Sept 2026) with 130+ fixes, showing ongoing development commitment. (no evidence linked) | [green] Explicit privacy policy stating no telemetry collection, aligned with stated values. (no evidence linked) | [green] Responsible security disclosure policy with documented security contact and prompt patching (CVEs patched same month as disclosure). (no evidence linked) | [yellow] Two CVEs (CVE-2026-56711, CVE-2026-73324) disclosed in Sept 2026 affecting VLC 3.0.0-3.0.23, though promptly patched in 3.0.24. (no evidence linked) | [yellow] Limited team size (volunteers) may raise capacity concerns, though release cadence shows active maintenance. (no evidence linked) | [yellow] VLC 4.0 announced as 'coming soon' for extended period without stable release, indicating slow major version cadence. (no evidence linked) | [yellow] Support provided entirely by volunteers with no SLA or guaranteed response times, typical for open source but not for enterprise products. (no evidence linked) | [yellow] Financial details opaque (no public budget), though donation model is standard for established non-profits. (no evidence linked)",
+    "unresolved_questions": [
+      "What is VideoLAN's annual funding level or budget? (Low impact on verdict; non-profit has been operational 15+ years without insolvency)",
+      "Unresolved after research (documentation_support): YELLOW finding needs original-source confirmation (evidence LEAD_ONLY): VideoLAN provides documentation, wiki, and help resources, but support is provided by volunteers with no SLA or guaranteed response times, which is typical for ",
+      "[green] Registered French non-profit organization with verifiable legal structure and 25+ year domain history. (no evidence linked)",
+      "[green] Free, open source software with transparently available source code and wide independent adoption across all major platforms. (no evidence linked)",
+      "[green] Active maintenance demonstrated by VLC 3.0.24 security update (Sept 2026) with 130+ fixes, showing ongoing development commitment. (no evidence linked)",
+      "[green] Explicit privacy policy stating no telemetry collection, aligned with stated values. (no evidence linked)",
+      "[green] Responsible security disclosure policy with documented security contact and prompt patching (CVEs patched same month as disclosure). (no evidence linked)",
+      "[yellow] Two CVEs (CVE-2026-56711, CVE-2026-73324) disclosed in Sept 2026 affecting VLC 3.0.0-3.0.23, though promptly patched in 3.0.24. (no evidence linked)",
+      "[yellow] Limited team size (volunteers) may raise capacity concerns, though release cadence shows active maintenance. (no evidence linked)",
+      "[yellow] VLC 4.0 announced as 'coming soon' for extended period without stable release, indicating slow major version cadence. (no evidence linked)",
+      "[yellow] Support provided entirely by volunteers with no SLA or guaranteed response times, typical for open source but not for enterprise products. (no evidence linked)",
+      "[yellow] Financial details opaque (no public budget), though donation model is standard for established non-profits. (no evidence linked)"
+    ],
+    "evidence": [
+      {
+        "id": "E1",
+        "url": "https://rdap.org/domain/videolan.org",
+        "status": "ORIGINAL_SOURCE_VERIFIED",
+        "quote_match": "exact",
+        "excerpt": "registration 2000-02-03; last changed 2026-08-12; expiration 2035-02-03; registrar Gandi SAS; status client transfer prohibited.",
+        "published_date": "2026-08-12"
+      },
+      {
+        "id": "E2",
+        "url": "https://www.videolan.org/videolan/",
+        "status": "ORIGINAL_SOURCE_VERIFIED",
+        "quote_match": "exact",
+        "excerpt": "VideoLAN is a project of volunteers and a non-profit organization based in France, developing free and open source multimedia software",
+        "published_date": null
+      },
+      {
+        "id": "E3",
+        "url": "https://www.videolan.org/security/",
+        "status": "SOURCE_CONTENT_RETRIEVED",
+        "quote_match": "approximate",
+        "excerpt": "Please note that signed emails are welcome, and responsible disclosure is very much appreciated. Security contact is security@videolan.org.",
+        "published_date": null
+      },
+      {
+        "id": "E4",
+        "url": "https://www.videolan.org/security/",
+        "status": "SOURCE_CONTENT_RETRIEVED",
+        "quote_match": "exact",
+        "excerpt": "VideoLAN-SB-VLC-324 for version 3.0.24 (2026) and VideoLAN-SB-VLC-322 for version 3.0.22 (2025)",
+        "published_date": null
+      },
+      {
+        "id": "E7",
+        "url": "https://www.videolan.org/privacy.html",
+        "status": "SEARCH_SNIPPET_MATCHED",
+        "quote_match": "exact",
+        "excerpt": "VideoLAN does not collect any data or telemetry when VLC is running",
+        "published_date": null
+      },
+      {
+        "id": "E8",
+        "url": "https://en.wikipedia.org/wiki/VideoLAN",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "VLC media player is widely deployed and recognized; VideoLAN is established non-profit organization",
+        "published_date": null
+      },
+      {
+        "id": "E9",
+        "url": "https://www.videolan.org/support/",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "VideoLAN provides documentation, help center, and community support resources; developers are mostly volunteers",
+        "published_date": null
+      }
+    ]
+  },
+  {
+    "id": "50",
+    "url": "https://www.tldraw.com/",
+    "product": "tldraw",
+    "vendor": "tldraw",
+    "overall": "Yellow",
+    "green_flags": "Real product: free web app accessible without signup, 52k GitHub stars, continuous commits through Nov 2026. Sources: https://www.tldraw.com/ | Customer list verified: 21 independent companies on showcase page (Google, BlackRock, Autodesk, Replit, etc.) with featured case studies. Sources: https://tldraw.dev/showcase | Founder track record: Steve Ruiz has documented history (Framer, Play), venture-backed by Lux Capital, Amplify Partners. Sources: https://www.tldraw.com/",
+    "yellow_flags": "Product handles enterprise scale (ClickUp 10M+ users, adoption by Google, BlackRock, Autodesk). However, lack of GDPR compliance documentation and DPA means enterprises in regulated jurisdictions or with data protection obligations cannot adopt without vendor clarification. For US-based enterprises without GDPR obligations or for unregulated use cases, product is enterprise-ready. For regulated enterprises, this requires pre-contract vendor clarification. Sources: https://tldraw.dev/showcase",
+    "red_flags": "None identified.",
+    "reasoning": "[Investigation PARTIAL] Verdict YELLOW (confidence LOW; investigation PARTIAL). Established concerns (validated sources): Product handles enterprise scale (ClickUp 10M+ users, adoption by Google, BlackRock, Autodesk). However, lack of GDPR compliance documentation and DPA means enterprises in regulated jurisdictions or with data protection obligations cannot adopt without vendor clarification. For US-based enterprises without GDPR obligations or for unregulated use cases, product is enterprise-ready. For regulated enterprises, this requires pre-contract vendor clarification. Sources: https://tldraw.dev/showcase Established positives (validated sources): Real product: free web app accessible without signup, 52k GitHub stars, continuous commits through Nov 2026. Sources: https://www.tldraw.com/ | Customer list verified: 21 independent companies on showcase page (Google, BlackRock, Autodesk, Replit, etc.) with featured case studies. Sources: https://tldraw.dev/showcase | Founder track record: Steve Ruiz has documented history (Framer, Play), venture-backed by Lux Capital, Amplify Partners. Sources: https://www.tldraw.com/ Uncertain, NOT established (no validated source): [green] Enterprise adoption confirmed: ClickUp (10M+ users) relaunch documented April 2025, case study published, real use case (unverified lead: source content not checked). (cited evidence did not validate) | [green] Security record clean: no CVEs, no breaches, no regulatory complaints found in 2025-2026 (unverified lead: source content not checked). (cited evidence did not validate) | [green] Active development: SDK 4.0 released Sept 2025, continuous releases, healthy cadence through Nov 2026 (unverified lead: source content not checked). (cited evidence did not validate) | [green] Transparent licensing: commercial model change documented Sept 2025, free tier maintained, trial/hobby options available (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] GDPR/data protection compliance not documented: privacy policy lacks GDPR compliance statement, DPA reference, data retention periods, or clear international data transfer safeguards (SCCs/Adequacy Decisions) (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] No SOC 2 Type II or HIPAA certifications found for a company handling user-generated content internationally (unverified lead: source content not checked). (cited evidence did not validate) | Unresolved after research (security_privacy): YELLOW finding needs original-source confirmation (evidence LEAD_ONLY): No CVEs or public security incidents found. Responsible disclosure process in place (hello@tldraw.com, 24-hour response). However, privacy policy does not expli | Unresolved after research (legal_regulatory): YELLOW finding needs original-source confirmation (evidence LEAD_ONLY): No SOC 2, HIPAA, or GDPR certifications publicly documented. Privacy policy lacks explicit GDPR compliance statement despite EU headquarters and global operatio | Unresolved after research (enterprise_readiness): YELLOW finding needs original-source confirmation (evidence LEAD_ONLY): Product handles enterprise scale (ClickUp 10M users). However, no formal enterprise compliance certifications (SOC 2 Type II, GDPR). Privacy documentation lacks Adversarial review: YELLOW (verdict change accepted)",
+    "confidence": "LOW",
+    "investigation_status": "PARTIAL",
+    "sources": "https://www.tldraw.com/ ; https://tldraw.dev/showcase",
+    "unsupported_observations": "[green] Enterprise adoption confirmed: ClickUp (10M+ users) relaunch documented April 2025, case study published, real use case (unverified lead: source content not checked). (cited evidence did not validate) | [green] Security record clean: no CVEs, no breaches, no regulatory complaints found in 2025-2026 (unverified lead: source content not checked). (cited evidence did not validate) | [green] Active development: SDK 4.0 released Sept 2025, continuous releases, healthy cadence through Nov 2026 (unverified lead: source content not checked). (cited evidence did not validate) | [green] Transparent licensing: commercial model change documented Sept 2025, free tier maintained, trial/hobby options available (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] GDPR/data protection compliance not documented: privacy policy lacks GDPR compliance statement, DPA reference, data retention periods, or clear international data transfer safeguards (SCCs/Adequacy Decisions) (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] No SOC 2 Type II or HIPAA certifications found for a company handling user-generated content internationally (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] Data transfer language vague: 'may be transferred to the United States or other locations where privacy laws may not be as protective' without specific GDPR mechanisms (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] Privacy policy lacks data retention timeline and specific security guarantee: acknowledges 'security risk is inherent in all internet and information technologies' (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] Commercial licensing introduced Sept 2025: existing open-source users may face costs if adopting for production use; free tier applies only to non-commercial use (unverified lead: source content not checked). (cited evidence did not validate) | [yellow] Young company (founded 2022) with founder-led structure; VC backing mitigates but succession planning not documented. (no evidence linked)",
+    "unresolved_questions": [
+      "Does tldraw hold SOC 2 Type II certification or plan to obtain it?",
+      "What is the specific data retention period for user content and metadata?",
+      "Does the company have formal GDPR Data Processing Agreement (DPA) available for enterprise customers?",
+      "What are the specific safeguards for international data transfer?",
+      "What is the team size and succession plan beyond founder Steve Ruiz?",
+      "Unresolved after research (security_privacy): YELLOW finding needs original-source confirmation (evidence LEAD_ONLY): No CVEs or public security incidents found. Responsible disclosure process in place (hello@tldraw.com, 24-hour response). However, privacy policy does not expli",
+      "Unresolved after research (legal_regulatory): YELLOW finding needs original-source confirmation (evidence LEAD_ONLY): No SOC 2, HIPAA, or GDPR certifications publicly documented. Privacy policy lacks explicit GDPR compliance statement despite EU headquarters and global operatio",
+      "Unresolved after research (enterprise_readiness): YELLOW finding needs original-source confirmation (evidence LEAD_ONLY): Product handles enterprise scale (ClickUp 10M users). However, no formal enterprise compliance certifications (SOC 2 Type II, GDPR). Privacy documentation lacks",
+      "[green] Enterprise adoption confirmed: ClickUp (10M+ users) relaunch documented April 2025, case study published, real use case (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[green] Security record clean: no CVEs, no breaches, no regulatory complaints found in 2025-2026 (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[green] Active development: SDK 4.0 released Sept 2025, continuous releases, healthy cadence through Nov 2026 (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[green] Transparent licensing: commercial model change documented Sept 2025, free tier maintained, trial/hobby options available (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[yellow] GDPR/data protection compliance not documented: privacy policy lacks GDPR compliance statement, DPA reference, data retention periods, or clear international data transfer safeguards (SCCs/Adequacy Decisions) (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[yellow] No SOC 2 Type II or HIPAA certifications found for a company handling user-generated content internationally (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[yellow] Data transfer language vague: 'may be transferred to the United States or other locations where privacy laws may not be as protective' without specific GDPR mechanisms (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[yellow] Privacy policy lacks data retention timeline and specific security guarantee: acknowledges 'security risk is inherent in all internet and information technologies' (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[yellow] Commercial licensing introduced Sept 2025: existing open-source users may face costs if adopting for production use; free tier applies only to non-commercial use (unverified lead: source content not checked). (cited evidence did not validate)",
+      "[yellow] Young company (founded 2022) with founder-led structure; VC backing mitigates but succession planning not documented. (no evidence linked)"
+    ],
+    "evidence": [
+      {
+        "id": "E1",
+        "url": "https://www.tldraw.com/",
+        "status": "ORIGINAL_SOURCE_VERIFIED",
+        "quote_match": "exact",
+        "excerpt": "A free and instant virtual whiteboarding with online collaboration. No signup required.",
+        "published_date": "2026-11-27"
+      },
+      {
+        "id": "E2",
+        "url": "https://tldraw.dev/blog/clickup",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "ClickUp modernized its whiteboard for millions of users by replacing legacy infrastructure with tldraw SDK",
+        "published_date": null
+      },
+      {
+        "id": "E3",
+        "url": "https://tldraw.dev/showcase",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Customers include Google, Shopify, BlackRock, Autodesk, Replit shown on tldraw showcase",
+        "published_date": null
+      },
+      {
+        "id": "E4",
+        "url": "https://www.featuredcustomers.com/vendor/tldraw",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "9 tldraw Customer Reviews & References on FeaturedCustomers",
+        "published_date": null
+      },
+      {
+        "id": "E5",
+        "url": "https://github.com/tldraw/tldraw/commits",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Repository shows commits through November 2026, 52k stars, continuous SDK development",
+        "published_date": "2026-11-27"
+      },
+      {
+        "id": "E6",
+        "url": "https://github.com/tldraw/tldraw/security",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Security reporting: hello@tldraw.com with 24-hour response commitment",
+        "published_date": null
+      },
+      {
+        "id": "E7",
+        "url": "https://www.tldraw.com/privacy.html",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Privacy policy does not explicitly mention GDPR, data retention periods, or specific compliance frameworks",
+        "published_date": "2024-11-24"
+      },
+      {
+        "id": "E8",
+        "url": "https://tldraw.dev/pricing",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "SDK 4.0: commercial production use requires paid license; free trial (100 days) and hobby license available",
+        "published_date": "2025-09-01"
+      },
+      {
+        "id": "C1",
+        "url": "https://tldraw.dev/blog/clickup",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "ClickUp relaunch in December 2024 shows tldraw enabled 'high-quality foundation and native functionality.' Case study published April 9, 2025 confirms real adoption.",
+        "published_date": "2025-04-09"
+      },
+      {
+        "id": "C2",
+        "url": "https://www.tldraw.com/privacy.html",
+        "status": "UNVERIFIED",
+        "quote_match": "none",
+        "excerpt": "Privacy policy does NOT mention GDPR compliance, data retention periods, or Data Processing Agreement. International transfer language: 'may be transferred to the United States or other locations where privacy laws may not be as protective.' No SCCs or specific safeguards mentioned.",
+        "published_date": "2024-11-24"
+      },
+      {
+        "id": "C3",
+        "url": "https://tldraw.dev/showcase",
+        "status": "SOURCE_CONTENT_RETRIEVED",
+        "quote_match": "approximate",
+        "excerpt": "Showcase lists 21 customers: AlAI, bigpi, CADChat, Google, Replit, BlackRock, Loveable, ClickUp, Autodesk, Google Stitch, Luma, Runway, SchoolAI, Honeycomb, Padlet, Genio, JAM, Mobbin, Brisk, Aries, Dirac. Featured case studies from ClickUp, Padlet, Mobbin, JAM.",
+        "published_date": "2026-11-27"
+      }
+    ]
+  }
+]
