@@ -195,6 +195,8 @@ export function Report({report, simulated, retry, notes, onNotesChange, onReview
       <div className={'badge ' + (report.verdict || 'insufficient')}><Icon name={report.verdict === 'green' ? 'check' : 'alert'}/>{verdictLabel(report)}</div>
     </>}
     <p className="interpretation" id="verdict-reason">{report.interpretation}</p>
+    {!historical && !report.review && !report.dossier && !report.checks.some(c => c.status !== 'unverified' && c.evidence?.length) &&
+      <p className="coverage">This saved assessment predates the source dossier. Start a new investigation to collect passages for {report.productName || 'this product'}.</p>}
     {verdictSources.length > 0 && <div className="verdict-sources citation-source">
       <strong>{report.review ? 'Sources checked so far' : 'Verdict sources'}</strong>
       {verdictSources.map(source => <a key={source.id} href={source.url} target="_blank" rel="noopener noreferrer">

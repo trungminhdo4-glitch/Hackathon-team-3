@@ -22,6 +22,25 @@ test('a finalized evidence gap exports Yellow with the specific reason and separ
   assert.match(csvReport(row), /"Yellow"/)
 })
 
+test('older no-finding reports export the submitted address and activity trail without treating checked URLs as proof', () => {
+  const inputUrl = 'https://archive.example/'
+  const guide = 'https://external.example/guide'
+  const report = {rubricVersion:2, productName:'Archive Desk', inputUrl, vendor:null, verdict:'yellow',
+    checks:[],sources:[], limitations:['Some official search pages could not supply readable public text.'],
+    interpretation:'Private-team synchronization could not be verified.',
+    activity:[{stage:'retrieve',detail:'Retrieved readable source text',url:guide}]}
+  const row = datasetRow(report)
+  assert.equal(row.overall,'Yellow')
+  assert.match(row.green_flags,/Archive Desk.*No citation/)
+  assert.ok(row.green_flags.includes(inputUrl))
+  assert.match(row.green_flags,/again to collect/)
+  assert.match(row.reasoning,/Readable page recorded in the activity log/)
+  assert.ok(row.reasoning.includes(guide))
+  assert.doesNotMatch(row.green_flags + row.red_flags,/Some official search pages/)
+  assert.ok(!row.red_flags.includes(guide))
+  assert.match(row.vendor,/no verified passage naming the operator/)
+})
+
 test('flags explain the particular benefit or caution and preserve scoped observations with their citations', () => {
   const finding = { id: 'licensing', label: 'Licensing and access', status: 'supported', impact: 'routine',
     flag: 'green', claim: 'The team plan includes single sign-on.', explanation: 'The plan guide lists the entitlement.',

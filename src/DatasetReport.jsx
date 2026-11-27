@@ -20,7 +20,8 @@ export function DatasetReport({report, notes, onNotesChange, simulated}) {
   const [expanded, setExpanded] = useState(false)
   const [showMarkdown, setShowMarkdown] = useState(false)
   const row = datasetRow(report, notes, simulated)
-  const references = [...report.sources, ...(report.dossier?.observations || []), ...(report.dossier?.coverage || [])]
+  const references = [{url:report.inputUrl}, ...report.sources, ...(report.dossier?.observations || []),
+    ...(report.dossier?.coverage || []), ...(!report.dossier ? report.activity || [] : [])]
   const citations = new Set(references.flatMap(source => sourceAddress(source.url) ? [source.url, sourceAddress(source.url).href] : []))
   return <details className="dataset-report" onToggle={event => setExpanded(event.currentTarget.open)}>
     <summary>View or download dataset report</summary>

@@ -18,11 +18,32 @@ function observationText(item) {
 }
 
 export function operatorGap(report) {
-  if (report.vendor || !report.dossier) return ''
+  if (report.vendor || (!report.dossier && (isEarlierReport(report) || !sourceAddress(report.inputUrl)))) return ''
   const product = report.productName || report.inputUrl
+  if (!report.dossier) return 'The saved report includes no verified passage naming the operator of ' + product + '.'
   const page = report.dossier.coverage?.find(item => item.origin === 'submitted' || item.url === report.inputUrl)
   if (page?.status === 'unavailable') return 'The submitted product page could not identify the operator because its text was unavailable.'
   return 'A passage identifying the responsible operator of ' + product + ' has yet to pass the evidence checks.'
+}
+
+// Old reports retained activity and verdict citations even when they did not retain a source dossier.
+function savedSourceTrail(report) {
+  const pages = new Map()
+  const submitted = sourceAddress(report.inputUrl)
+  if (submitted) pages.set(submitted.href, 'Submitted product URL')
+  for (const e of report.activity || []) {
+    const url = sourceAddress(e.url)
+    if (!url || !['retrieve','read','search'].includes(e.stage)) continue
+    const detail = e.detail || ''
+    if (/unavailable|unreadable|failed|timed out/i.test(detail)) pages.set(url.href, 'Retrieval did not provide readable text')
+    else if (/retrieved readable|retrieved submitted|retrieved (?:public|source) text/i.test(detail)) pages.set(url.href, 'Readable page recorded in the activity log')
+    else if (!pages.has(url.href)) pages.set(url.href, 'URL recorded in the research activity')
+  }
+  for (const source of report.sources || []) {
+    const url = sourceAddress(source.url)
+    if (url) pages.set(url.href, 'Cited in the saved report')
+  }
+  return [...pages].map(([url,label]) => label + '\n' + url)
 }
 
 export function groupHighlights(checks) {
@@ -44,6 +65,7 @@ export function datasetRow(report, notes = '', simulated = false) {
   const sources = new Map(report.sources.map(source => [source.id, source.url]))
   const observations = report.dossier?.observations || []
   const pages = report.dossier?.coverage || []
+  const archive = !earlier && !report.dossier ? savedSourceTrail(report) : []
   function withSources(text, ids = []) {
     const urls = [...new Set(ids.map(id => sources.get(id)).filter(url => /^https?:\/\//i.test(url || '')))]
     return [text, ...urls].filter(Boolean).join('\n')
@@ -74,8 +96,18 @@ export function datasetRow(report, notes = '', simulated = false) {
     const subject = { green: 'Strengths', yellow: 'Cautions', red: 'Disqualifying risks' }[kind]
     if (report.verdict == null) return subject + ' could not be assessed. ' + report.interpretation
     const labels = [...new Set(report.checks.filter(c => c.evidence?.length && c.status !== 'unverified').map(c => c.label))]
-    if (!labels.length) return subject + ' remain unverified. ' +
-      (report.limitations?.[0] || report.interpretation || 'No criterion had enough validated evidence.')
+    if (!labels.length) {
+      const product = report.productName || report.inputUrl || 'this product'
+      if (kind === 'green') {
+        const documented = report.answer?.evidence?.find(item => item.quote && sources.has(item.sourceId))
+        if (documented) return withSources(product + ' · The saved answer cites this passage. No strength was established from it.\n“' + documented.quote + '”', [documented.sourceId])
+        return [product + ' · No citation in the saved checks demonstrates the claimed benefit.',
+          archive[0], 'Run the investigation again to collect and compare the source passages.'].filter(Boolean).join('\n')
+      }
+      if (kind === 'yellow') return product + ' · ' + (report.interpretation || 'The saved evidence leaves the core product claim unresolved.')
+      return 'Disqualifying risks remain unverified for ' + product + '. The saved checks contain no cited contradiction. ' +
+        (archive.length ? 'See the recorded source trail in reasoning.' : report.interpretation || '')
+    }
     if (kind === 'green' && groups.context.length) {
       return 'No strength was classified. The report documented the following finding. ' + describe(groups.context[0])
     }
@@ -98,13 +130,14 @@ export function datasetRow(report, notes = '', simulated = false) {
     report.verdictBasis === 'evidence_gap' && 'Yellow reflects an unresolved evidence gap.'].filter(Boolean)
   return {
     product: report.productName || report.inputUrl,
-    vendor: report.vendor || (report.dossier ? ['Operator unverified.', operatorGap(report), sourceAddress(report.inputUrl)?.href].filter(Boolean).join('\n') : 'Unverified'),
+    vendor: report.vendor || (operatorGap(report) ? ['Operator unverified.', operatorGap(report), sourceAddress(report.inputUrl)?.href].filter(Boolean).join('\n') : 'Unverified'),
     overall: labels[report.verdict] || 'Investigation incomplete',
     green_flags: flags('green'),
     yellow_flags: flags('yellow'),
     red_flags: flags('red'),
     reasoning: [withSources([...provenance, report.interpretation].filter(Boolean).join(' '), report.verdictEvidenceIds),
       ...(groups?.context ?? []).map(describe),
+      archive.length ? 'Saved source trail\n' + archive.join('\n\n') : '',
       ...observations.map(observationText),
       ...(report.testimony || []).map(t => withSources(['Customer testimony', t.text, t.explanation].filter(Boolean).join('\n'), t.evidenceIds)),
       report.dossier && (report.limitations || []).join('\n'),
