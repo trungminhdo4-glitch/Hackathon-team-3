@@ -20,13 +20,50 @@ export function isEarlierReport(report) {
   return report.rubricVersion !== 2
 }
 
-export async function requestAssessment(subject, question, model) {
+export async function requestAssessment(subject, question, model, onActivity) {
   const response = await fetch('/api/investigate', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', Accept: 'application/x-ndjson, application/json' },
     body: JSON.stringify({ subject, question: question || undefined, model }),
-    signal: AbortSignal.timeout(180_000),
+    signal: AbortSignal.timeout(250_000),
   })
+  if (response.ok && response.headers.get('content-type')?.includes('application/x-ndjson')) {
+    const reader = response.body.pipeThrough(new TextDecoderStream()).getReader()
+    const activity = []
+    let buffer = ''
+    let report
+    let failure
+    function receive(line) {
+      if (!line.trim()) return
+      const message = JSON.parse(line)
+      if (message.type === 'error') failure = message.error || 'The investigation could not finish.'
+      if (message.type === 'activity' && typeof message.event?.detail === 'string') {
+        activity.push(message.event)
+        onActivity?.(message.event)
+      }
+      if (message.type === 'result') report = message.report
+    }
+    try {
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) {
+          receive(buffer)
+          break
+        }
+        const lines = (buffer + value).split('\n')
+        buffer = lines.pop()
+        for (const line of lines) receive(line)
+      }
+    } catch (error) {
+      await reader.cancel().catch(() => {})
+      throw error
+    } finally {
+      reader.releaseLock()
+    }
+    if (failure) throw new Error(failure)
+    if (!report) throw new Error('The connection ended before the report arrived. Retry the investigation.')
+    return { ...report, activity: report.activity ?? activity }
+  }
   if (!response.headers.get('content-type')?.includes('application/json')) {
     throw new Error('The research server is unavailable. Try again in a moment.')
   }

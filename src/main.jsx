@@ -4,6 +4,7 @@ import '@fontsource/spectral/latin-600.css'
 import '@fontsource/spectral/latin-700.css'
 import { Brand, Icon } from './icons.jsx'
 import { Report } from './Report.jsx'
+import { ResearchActivity } from './ResearchActivity.jsx'
 import { requestAssessment } from './research.js'
 import { readHistory, saveHistory, SessionHistory } from './SessionHistory.jsx'
 import './style.css'
@@ -14,6 +15,7 @@ function Workspace() {
   const [subject, setSubject] = useState(active?.report.subject ?? active?.report.inputUrl ?? '')
   const [question, setQuestion] = useState(active?.report.question ?? '')
   const [busy, setBusy] = useState(false)
+  const [activity, setActivity] = useState([])
   const [error, setError] = useState('')
   const [catalog, setCatalog] = useState(null)
   const [catalogError, setCatalogError] = useState(false)
@@ -30,7 +32,7 @@ function Workspace() {
         if (controller.signal.aborted) return
         const models = data.models.filter(option => ['OpenAI', 'Meta'].includes(option.provider))
         const available = models.filter(option => option.available)
-        setCatalog(models)
+        setCatalog({ models, inventory: data.openAIInventory, defaultId: data.model })
         setModel(previous => available.find(option => option.id === previous)?.id ||
           available.find(option => option.id === data.model)?.id || available[0]?.id || '')
       })
@@ -38,7 +40,7 @@ function Workspace() {
     return () => controller.abort()
   }, [catalogAttempt])
 
-  const selected = catalog?.find(option => option.id === model && option.available)
+  const selected = catalog?.models.find(option => option.id === model && option.available)
   const canInvestigate = !busy && !!subject.trim() && !!selected
 
   function reloadModels() {
@@ -50,7 +52,7 @@ function Workspace() {
   function openReport(entry) {
     setSubject(entry.report.subject ?? entry.report.inputUrl)
     setQuestion(entry.report.question ?? '')
-    if (catalog?.some(option => option.available && option.id === entry.report.model)) setModel(entry.report.model)
+    if (catalog?.models.some(option => option.available && option.id === entry.report.model)) setModel(entry.report.model)
     setActive(entry)
     setError('')
   }
@@ -69,8 +71,10 @@ function Workspace() {
     setError('')
     setActive(null)
     setBusy(true)
+    setActivity([])
     try {
-      const report = await requestAssessment(subject.trim(), question.trim(), model)
+      const report = await requestAssessment(subject.trim(), question.trim(), model,
+        event => setActivity(previous => [...previous, event]))
       const entry = { id: crypto.randomUUID(), savedAt: Date.now(), report }
       const updated = [entry, ...entries]
       saveHistory(updated)
@@ -108,7 +112,7 @@ function Workspace() {
             onChange={event => { setModel(event.target.value); setError('') }}>
             {!selected && <option value="">{catalogError || catalog ? 'No models available' : 'Loading models…'}</option>}
             {['OpenAI', 'Meta'].map(provider => {
-              const options = catalog?.filter(option => option.provider === provider) || []
+              const options = catalog?.models.filter(option => option.provider === provider) || []
               return options.length > 0 && <optgroup key={provider} label={provider}>{options.map(option =>
                 <option key={option.id} value={option.id} disabled={!option.available}>
                   {option.label}{!option.available && ' (unavailable)'}
@@ -116,10 +120,21 @@ function Workspace() {
             })}
           </select>
           <div id="model-details">
+            {selected?.description && <p className="model-label">{selected.description}</p>}
             {selected?.provider === 'Meta' && <p className="model-label">OpenAI web search · {selected.searchModel}. Meta assesses the retrieved passages via Groq.</p>}
-            {catalog?.filter(option => !option.available && option.reason).map(option =>
+            {catalog?.models.filter(option => !option.available && option.reason).map(option =>
               <p key={option.id} className="model-label">{option.label} · {option.reason}</p>)}
           </div>
+          {catalog && <details className="model-guide"><summary>Compare models and see account access</summary>
+            <dl>{catalog.models.filter(option => option.description).map(option => <React.Fragment key={option.id}>
+              <dt>{option.label}{option.id === catalog.defaultId && ' · Demo default'}</dt>
+              <dd>{option.description}</dd>
+            </React.Fragment>)}</dl>
+            {Array.isArray(catalog.inventory) ? <details><summary>OpenAI account model IDs ({catalog.inventory.length})</summary>
+              <p>The selector includes models configured for this research workflow.</p>
+              <ul className="model-ids">{catalog.inventory.map(id => <li key={id}><code>{id}</code></li>)}</ul>
+            </details> : <p>OpenAI account inventory is unavailable.</p>}
+          </details>}
           {(catalogError || (catalog && !selected)) && <div className="model-retry">
             {catalogError && <p role="alert">The model list could not be loaded.</p>}
             <button className="retry" type="button" onClick={reloadModels}>Reload models</button>
@@ -130,7 +145,7 @@ function Workspace() {
         </div>
       </form>
       <SessionHistory entries={entries} current={active?.id} busy={busy} onOpen={openReport}/>
-      {busy && <p className="feedback" role="status">Researching the product and checking citations…</p>}
+      {(busy || error) && <ResearchActivity running={busy} events={activity}/>}
       {error && <section className="feedback error" role="alert"><div><strong>Investigation incomplete</strong><p>{error}</p></div>
         <button className="retry" disabled={!canInvestigate} onClick={investigate}>Retry</button></section>}
       {active && <><span className="sr-only" role="status">Assessment ready</span>

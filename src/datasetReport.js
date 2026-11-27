@@ -3,20 +3,14 @@ import { isEarlierReport } from './research.js'
 export const columns = ['product', 'vendor', 'overall', 'green_flags', 'yellow_flags', 'red_flags', 'reasoning', 'reviewer_notes_original']
 
 export function groupHighlights(checks) {
-  const supportedCapabilities = checks.filter(c => c.id === 'capability' && c.status === 'supported' &&
-    c.impact === 'routine' && c.evidence.length)
-  const coreEvidence = supportedCapabilities.flatMap(c => c.evidence)
-  const groups = { green: [], yellow: [], red: [] }
+  const groups = { green: [], yellow: [], red: [], context: [] }
   for (const check of checks) {
-    if (!check.evidence.length || check.status === 'unverified') continue
-    if (check.impact === 'disqualifying') groups.red.push(check)
+    if (!check.evidence?.length || check.status === 'unverified') continue
+    if (Object.hasOwn(groups, check.flag)) groups[check.flag].push(check)
+    else if (check.impact === 'disqualifying') groups.red.push(check)
     else if (check.impact === 'caveat') groups.yellow.push(check)
-    else if (supportedCapabilities.includes(check)) groups.green.push(check)
-    else if (check.id === 'experience' && check.status === 'supported') {
-      const corroboratesUse = check.evidence.some(account => coreEvidence.some(e =>
-        e.sourceId === account.sourceId && e.quote === account.quote))
-      if (corroboratesUse) groups.green.push(check)
-    }
+    else if (check.id === 'capability' && check.status === 'supported') groups.green.push(check)
+    else groups.context.push(check)
   }
   return groups
 }
@@ -29,15 +23,33 @@ export function datasetRow(report, notes = '', simulated = false) {
     const urls = [...new Set(ids.map(id => sources.get(id)).filter(url => /^https?:\/\//i.test(url || '')))]
     return [text, ...urls].filter(Boolean).join('\n')
   }
+  function describe(finding) {
+    const lines = [...new Set([finding.claim, finding.explanation, finding.consequence].filter(Boolean))]
+    return withSources(lines.join(' '), finding.evidenceIds ?? finding.evidence?.map(e => e.sourceId))
+  }
+  function emptyFlag(kind) {
+    if (earlier) return 'The original report recorded no ' + kind + ' flag.'
+    const subject = { green: 'Strengths', yellow: 'Cautions', red: 'Disqualifying risks' }[kind]
+    if (report.verdict == null) return subject + ' could not be assessed. ' + report.interpretation
+    const labels = [...new Set(report.checks.filter(c => c.evidence?.length && c.status !== 'unverified').map(c => c.label))]
+    if (!labels.length) return subject + ' remain unverified. ' +
+      (report.limitations?.[0] || report.interpretation || 'No criterion had enough validated evidence.')
+    if (kind === 'green' && groups.context.length) {
+      return 'No strength was classified. The report documented the following finding. ' + describe(groups.context[0])
+    }
+    const unknown = report.checks.find(c => c.status === 'unverified')
+    if (kind === 'yellow' && unknown) return 'No material caveat was established. ' +
+      unknown.label + ' remains open. ' + unknown.explanation
+    const missing = { green: 'a product strength', yellow: 'a material caveat', red: 'a disqualifying risk' }
+    return 'Evidence on ' + labels.join(', ').toLowerCase() + ' did not establish ' + missing[kind] + '.'
+  }
   function flags(kind) {
-    if (earlier && !Array.isArray(report.flags)) return 'Not recorded.'
-    const items = earlier ? report.flags.filter(f => f.kind === kind) : groups[kind]
+    const items = earlier ? (report.flags || []).filter(f => f.kind === kind) : groups[kind]
     const entries = items.map(f => {
-      const description = earlier ? f.text : kind === 'green' ? f.claim : f.explanation || f.consequence
-      const ids = f.evidenceIds ?? f.evidence?.map(e => e.sourceId)
-      return withSources(description, ids)
+      return earlier ? withSources([f.text, f.explanation].filter(Boolean).join(' '),
+        f.evidenceIds ?? f.evidence?.map(e => e.sourceId)) : describe(f)
     })
-    return [...new Set(entries)].join('\n\n') || 'None identified.'
+    return [...new Set(entries)].join('\n\n') || emptyFlag(kind)
   }
   const labels = { green: 'Green', yellow: 'Yellow', red: 'Red', insufficient: 'Insufficient evidence' }
   const provenance = [simulated && 'Simulated report.', earlier && 'Previous points-based rubric.'].filter(Boolean)
@@ -48,7 +60,8 @@ export function datasetRow(report, notes = '', simulated = false) {
     green_flags: flags('green'),
     yellow_flags: flags('yellow'),
     red_flags: flags('red'),
-    reasoning: withSources([...provenance, report.interpretation].filter(Boolean).join(' '), report.verdictEvidenceIds),
+    reasoning: [withSources([...provenance, report.interpretation].filter(Boolean).join(' '), report.verdictEvidenceIds),
+      ...(groups?.context ?? []).map(finding => finding.label + ' · ' + describe(finding))].filter(Boolean).join('\n\n'),
     reviewer_notes_original: notes,
   }
 }

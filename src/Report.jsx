@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { Icon } from './icons.jsx'
 import { DatasetReport } from './DatasetReport.jsx'
+import { ResearchActivity } from './ResearchActivity.jsx'
 import { groupHighlights } from './datasetReport.js'
 import { isEarlierReport, verdictLabel } from './research.js'
 
@@ -84,13 +85,19 @@ function EarlierBreakdown({report, sources}) {
   </section>
 }
 
-function Highlights({checks}) {
+function Highlights({checks, sources}) {
   const groups = groupHighlights(checks)
   return Object.entries(groups).map(([kind, findings]) => findings.length > 0 && <section className="highlights"
-    key={kind} aria-label={flagLabels[kind]}>
-    <h3><span className={'marker ' + kind} aria-hidden="true"/>{flagLabels[kind]}</h3>
+    key={kind} aria-label={flagLabels[kind] || 'Other documented findings'}>
+    <h3>{kind !== 'context' && <span className={'marker ' + kind} aria-hidden="true"/>}{flagLabels[kind] || 'Other documented findings'}</h3>
     <ul>{findings.map(finding => <li key={finding.anchor}>
-      <a href={'#' + finding.anchor}>{kind === 'green' ? finding.claim : finding.consequence}</a>
+      <a href={'#' + finding.anchor}>{finding.claim || finding.consequence}</a>
+      {finding.explanation !== finding.claim && <p className="finding-reason">{finding.explanation}</p>}
+      <div className="citation-source">{(finding.evidenceIds || []).map(id => {
+        const source = sources.get(id)
+        const url = sourceUrl(source)
+        return url && <a key={id} href={url.href} target="_blank" rel="noopener noreferrer">{source.title || url.hostname}</a>
+      })}</div>
     </li>)}</ul>
   </section>)
 }
@@ -151,7 +158,8 @@ export function Report({report, simulated, retry, notes, onNotesChange}) {
       </a>)}
     </div>}
     <DatasetReport report={report} notes={notes} onNotesChange={onNotesChange} simulated={simulated}/>
-    {!historical && <Highlights checks={findings}/>}
+    <ResearchActivity events={report.activity}/>
+    {!historical && <Highlights checks={findings} sources={sources}/>}
     {historical && <div className="historical-notice"><p>This saved report used the previous points-based rubric.</p>
       <button type="button" className="retry" disabled={!retry} onClick={retry}>Evaluate with current rubric</button></div>}
     {historical && (report.question || report.answer) && <section className="answer"><h3>{report.question || 'Product overview'}</h3>

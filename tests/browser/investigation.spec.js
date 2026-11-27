@@ -24,7 +24,8 @@ for (const [scenario, subject, verdict] of [
       try { await expect(page.getByRole('button', { name: 'Investigating…' })).toBeDisabled(); }
       finally { release(); }
     }
-    const report = await (await response).json();
+    const records = (await (await response).text()).trim().split('\n').map(line => JSON.parse(line));
+    const report = records.at(-1).report;
     expect(report.verdict).toBe(verdict);
     expect(report.rubricVersion).toBe(2);
     expect(report).not.toHaveProperty('score');
@@ -88,7 +89,7 @@ test('live failure offers retry and stays distinct from an insufficient-evidence
   const response = page.waitForResponse(r => r.url().endsWith('/api/investigate'));
   await page.getByRole('button', { name: 'Retry' }).click();
   const retry = await response;
-  expect(retry.ok()).toBe(false);
+  expect(JSON.parse((await retry.text()).trim().split('\n').at(-1)).type).toBe('error');
   expect(retry.request().postDataJSON().model).toBe('gpt-4.1-mini');
   await expect(page.getByRole('alert')).toBeVisible();
   await expect(page.getByText('Insufficient evidence', { exact: true })).toHaveCount(0);
@@ -160,6 +161,24 @@ test('recovers from a model-list failure and explains unavailable options', asyn
   await expect(page.getByRole('option', { name: 'Llama 3.3 70B (unavailable)' })).toBeDisabled();
   await expect(page.getByText(/Set GROQ_API_KEY on the server/)).toBeVisible();
   await expect(page.getByRole('button', { name: 'Investigate', exact: true })).toBeEnabled();
+});
+
+test('compares account models and shows search progress before and after the report arrives', async ({page}) => {
+  await page.goto('/');
+  await page.getByText('Compare models and see account access').click();
+  await page.getByText(/OpenAI account model IDs/).click();
+  await expect(page.getByText('text-embedding-3-small')).toBeVisible();
+  await expect(page.getByRole('combobox', {name: 'Assessment model'}).locator('option', {hasText: 'embedding'})).toHaveCount(0);
+  await page.getByLabel('Product, company, or URL').fill('Activity sample');
+  await page.getByRole('button', {name: 'Investigate', exact: true}).click();
+  await expect(page.getByRole('status')).toHaveText('Searching for the partner integration guide');
+  await expect(page.getByRole('button', {name: 'Investigating…'})).toBeDisabled();
+  await expect(page.locator('.report .badge')).toHaveText(verdictLabels.green);
+  await page.reload();
+  await page.getByText(/Research activity \(2\)/).click();
+  await expect(page.locator('.research-activity li')).toHaveCount(2);
+  await expect(page.locator('.research-activity li').first()).toContainText('Searching for the partner integration guide');
+  await expect(page.locator('.research-activity a')).toHaveAttribute('href', 'https://orbit.example/');
 });
 
 test('rechecking an earlier report saves a new assessment alongside the original', async ({ page }) => {

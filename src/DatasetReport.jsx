@@ -20,6 +20,7 @@ export function DatasetReport({report, notes, onNotesChange, simulated}) {
   const [expanded, setExpanded] = useState(false)
   const [showMarkdown, setShowMarkdown] = useState(false)
   const row = datasetRow(report, notes, simulated)
+  const citations = new Set(report.sources.filter(source => /^https?:\/\//i.test(source.url)).map(source => source.url))
   return <details className="dataset-report" onToggle={event => setExpanded(event.currentTarget.open)}>
     <summary>View or download dataset report</summary>
     {expanded && <><div className="dataset-actions">
@@ -32,7 +33,9 @@ export function DatasetReport({report, notes, onNotesChange, simulated}) {
       <div className="dataset-scroll" role="region" aria-label="Dataset table" tabIndex="0">
         <table><caption className="sr-only">Dataset report for {row.product}</caption>
           <thead><tr>{columns.map(key => <th key={key} scope="col">{key}</th>)}</tr></thead>
-          <tbody><tr>{columns.map(key => <td key={key}>{row[key]}</td>)}</tr></tbody>
+          <tbody><tr>{columns.map(key => <td key={key}>{row[key].split('\n').map((line, index) =>
+            <React.Fragment key={index}>{index > 0 && '\n'}{citations.has(line) ?
+              <a href={line} target="_blank" rel="noopener noreferrer">{line}</a> : line}</React.Fragment>)}</td>)}</tr></tbody>
         </table>
       </div>}
     <label htmlFor="reviewer-notes">Original reviewer notes <span>Optional · saved in this tab</span></label>

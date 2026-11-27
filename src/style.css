@@ -101,6 +101,20 @@ summary { padding: 8px 0; font-weight: 600 }
 .testimony figure { margin: 12px 0 0; padding: 12px 16px; background: var(--paper); border-left: 2px solid var(--rule) }
 .testimony figure > blockquote { border: 0; margin: 0; padding: 0; font-size: 16px }
 .empty-evidence { color: var(--muted); font-size: 14px }
+.model-guide { font-size: 13px; color: var(--body) }
+.model-guide > summary, .model-guide details > summary { color: var(--forest); width: fit-content }
+.model-guide dl, .model-guide details { margin: 6px 0 }
+.model-guide dt { font-weight: 650; margin-top: 7px }
+.model-guide dd { margin: 2px 0 6px }
+.model-ids { display: flex; flex-wrap: wrap; gap: 4px 10px; list-style: none; margin: 5px 0; padding: 0; max-height: 12rem; overflow: auto }
+.model-ids li { overflow-wrap: anywhere }
+.research-activity { margin: 12px 0; padding: 8px 14px; border-left: 2px solid var(--rule); background: var(--paper); color: var(--body); font-size: 14px; overflow-wrap: anywhere }
+.research-activity summary span, .step-stage { color: var(--muted) }
+.research-activity ol { max-height: 19rem; overflow: auto; padding-left: 22px; margin-block: 4px }
+.research-activity li { padding: 3px 0 }
+.step-stage { text-transform: capitalize; font-weight: 650; margin-right: .5em }
+.research-activity a, .dataset-report td a { color: var(--forest); text-underline-offset: 2px }
+.highlights li + li { margin-top: 6px }
 .finding h4 { margin: 0; font-size: 16px }
 .findings { margin-top: 12px; border-block: 1px solid var(--soft-rule) }
 .finding { padding: 13px 0 }

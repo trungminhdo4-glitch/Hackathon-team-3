@@ -5,6 +5,7 @@ import { fixtureResearch } from '../server/fixtures.js';
 
 const examples = new Map([
   ['Orbit Desk', 'credible'],
+  ['Activity sample', 'credible'],
   ['https://contradicted.example/', 'contradiction'],
   ['https://partial.example/', 'timeout'],
   ['https://uncited.example/', 'fabricated'],
@@ -12,17 +13,21 @@ const examples = new Map([
 ]);
 const catalog = {
   model: 'gpt-4.1',
+  openAIInventory: ['gpt-4.1', 'gpt-4.1-mini', 'text-embedding-3-small'],
   models: [
-    { id: 'gpt-4.1', label: 'GPT-4.1', provider: 'OpenAI', searchModel: 'gpt-4.1' },
+    { id: 'gpt-4.1', label: 'GPT-4.1', description: 'General-purpose instruction following.', provider: 'OpenAI', searchModel: 'gpt-4.1' },
     { id: 'gpt-4.1-mini', label: 'GPT-4.1 mini', provider: 'OpenAI', searchModel: 'gpt-4.1-mini' },
     { id: 'llama-3.3-70b-versatile', label: 'Llama 3.3 70B', provider: 'Meta', searchModel: 'gpt-4.1' },
   ].map(option => ({ ...option, available: true, reason: null })),
 };
-const api = createApi(async (subject, { question, model }) => {
+const api = createApi(async (subject, { question, model, onActivity }) => {
   const scenario = examples.get(subject);
+  onActivity({ stage: 'search', detail: 'Searching for the partner integration guide' });
   if (!scenario) throw new Error('Simulated provider failure');
   const url = subject.startsWith('https://') ? subject : 'https://orbit.example/';
   const { searchModel } = catalog.models.find(option => option.id === model);
+  if (subject === 'Activity sample') await new Promise(resolve => setTimeout(resolve, 1200));
+  onActivity({ stage: 'read', detail: 'Retrieved submitted page', url });
   return { ...assess(url, fixtureResearch(url, scenario, question)), subject, question, model, searchModel };
 }, () => catalog);
 
