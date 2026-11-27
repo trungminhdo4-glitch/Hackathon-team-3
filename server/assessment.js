@@ -253,10 +253,14 @@ function hasDecisiveEvidence(evidence, context) {
       if (!targets) return false;
       const action = new RegExp('(?:ordered|fined|barred|banned|prohibited|issued a final order against)\\s+(?:the\\s+)?(?:' + targets + ')(?![\\p{L}\\p{N}])|(?:' +
         targets + ')\\s+(?:was (?:fined|ordered|banned)|violated|falsely claimed|misrepresented|failed to)', 'iu');
-      return action.test(e.quote) && !/\b(?:never|did not|has not|no evidence)\b/i.test(surrounding);
+      const final = /\b(?:final(?:ized|ised)?\s+(?:(?:an?|the|its|consent)\s+)*order|binding (?:order|settlement))\b/i.test(doc.title + ' ' + surrounding);
+      const ban = new RegExp('(?:bars|bans|prohibits|forbids)\\s+' + '(?:' + targets + ')\\s+from\\s+(?:selling|sharing|transferring|processing|collecting|misrepresenting)', 'iu');
+      return (action.test(e.quote) || (final && ban.test(e.quote))) && !/\b(?:never|did not|has not|no evidence)\b/i.test(surrounding);
     }
     if (e.sourceType === 'Vendor publication') {
-      return /\b(?:discontinued|end[- ]of[- ]life|no longer (?:available|supported|maintained)|support (?:has )?ended|will (?:end support|be discontinued)|permanently shut down|will cease operations|is incompatible|is not compatible|does not (?:work|run) on)\b/i.test(e.quote);
+      return /\b(?:discontinued|end[- ]of[- ]life|no longer (?:available|supported|maintained)|support (?:has )?ended|will (?:end support|be discontinued)|permanently shut down|will cease operations|is incompatible|is not compatible|does not (?:work|run) on)\b/i.test(e.quote) ||
+        (!/\b(?:nicht|niemals|vielleicht|gegebenenfalls|falls|wenn)\b/iu.test(surrounding) &&
+          /\b(?:softwareentwicklung|entwicklung|support|wartung)\b[^.!?]{0,85}\b(?:wird|wurde)\b[^.!?]{0,50}\b(?:eingestellt|beendet)\b/iu.test(e.quote));
     }
     return (e.sourceType === 'External publication' || e.sourceType === 'Partner publication') &&
       /\b(?:tested|measured|benchmark|reproduced|experiment|audit)\b/i.test(e.quote) &&
@@ -273,7 +277,7 @@ const quantities = /\d+(?:[.,]\d+)?\s*(?:%|×|x\b|percent\b|milliseconds?\b|seco
 const normalizedQuantities = text => [...text.matchAll(quantities)].map(m =>
   m[0].toLowerCase().replace(/\s+/g, '').replace('percent','%').replace('×','x'));
 const licensingTerms = /\b(?:licen[cs]\w*|subscriptions?|plans?|tiers?|eligible|entitle\w*|add[- ]?on|accounts?|pay\w*|paid|free|cost|pric\w*|fees?|per (?:seat|user)|available (?:to|with|only)|limited availability program|permitted|commercial use|data access|access to|unlimited|(?:standard|basic|premium|enterprise|professional) edition)\b/i;
-const maintenanceTerms = /\b(?:maintain\w*|maintenance|release[ds]?|changelogs?|roadmaps?|patch(?:es|ed)?|updates?|supported (?:until|through|on|version|platform)|no longer supported|supports? (?:windows|android|ios|linux|macos)|support (?:window|period|ends?|ended|contract|team|channel|hours|contact|agreement)|discontinu\w*|end[- ]of[- ](?:life|sale|support)|retire\w*|migrat\w*|compatib\w*)\b/i;
+const maintenanceTerms = /\b(?:maintain\w*|maintenance|softwareentwicklung|wartung|release[ds]?|changelogs?|roadmaps?|patch(?:es|ed)?|updates?|supported (?:until|through|on|version|platform)|no longer supported|supports? (?:windows|android|ios|linux|macos)|support (?:window|period|ends?|ended|contract|team|channel|hours|contact|agreement)|discontinu\w*|end[- ]of[- ](?:life|sale|support)|retire\w*|migrat\w*|compatib\w*)\b/i;
 const securityTerms = /\b(?:secur\w*|privacy|personal data|protect\w*|encrypt\w*|compliance|compliant|certif\w*|audit\w*|incident|breach|vulnerab\w*|risk|remediat\w*|SOC\s?2|GDPR|ISO)\b/i;
 const credibilityTerms = /\b(?:customer\w*|partner\w*|certif\w*|regulat\w*|registry|registered|foundation|nonprofit|owner\w*|operat\w*|mislead\w*|claim\w*|order|decept\w*|fals\w*|endorse\w*|represent\w*|named|backed|member\w*)\b/i;
 
@@ -404,8 +408,9 @@ function assessClaim(proposal, context) {
     impact = 'routine';
     explanation = 'This is a vendor-selected customer account. It describes the quoted experience and leaves independent customer experience open.';
   }
-  const decisive = (impact === 'disqualifying' || (criterion === 'capability' && status === 'contradicted')) &&
+  const decisive = !outsideDecision && (impact === 'disqualifying' || (criterion === 'capability' && status === 'contradicted')) &&
     hasDecisiveEvidence(evidence, context);
+  if (impact === 'disqualifying' && outsideDecision) impact = 'routine';
   if (impact === 'disqualifying' && !decisive) {
     return unknown(criterion, 'The sources did not establish a serious contradiction or disqualifying risk for the intended use.');
   }
@@ -527,18 +532,69 @@ function observedCapability(raw, context) {
   return null;
 }
 
-function resultFor(checks, failed) {
+// A maintained product in actual independent use can be shortlisted without
+// treating its untested marketing claims as demonstrated capabilities.
+function operatingRecord(raw, context) {
+  if (!context.productName || context.question) return null;
+  const evidence = [...(raw.claims ?? []), ...(raw.testimony ?? []), raw.answer].filter(Boolean)
+    .flatMap(p => p.evidence ?? []);
+  const passages = [...evidence, ...(raw.sourcePassages ?? [])];
+  const seen = new Set();
+  let release;
+  let adoption;
+  for (const item of passages) {
+    const doc = context.documents.get(item.sourceId);
+    const quote = clean(item.quote);
+    if (!doc || !matchesPassage(doc, quote) || !scoped(doc, quote, context) || quote.endsWith('?')) continue;
+    const key = doc.id + '\n' + quote;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const local = site(hostOf(doc.url)) === site(context.host);
+    const surrounding = completeContext(doc, quote);
+    if (/\b(?:no longer|discontinued|unsupported|end[- ]of[- ]life|never|did not|failed to|plan(?:s)? to|scheduled|upcoming|candidate|beta|preview)\b/i.test(surrounding)) continue;
+    const years = quote.match(/\b20\d{2}\b/g) ?? [];
+    const year = new Date().getUTCFullYear();
+    const recent = years.some(y => Number(y) <= year && Number(y) >= year - 1);
+    if (local && recent && /\b(?:release[ds]?|changelog|published|update[ds]?|patch(?:es|ed)?|veröffentlicht)\b/iu.test(quote) &&
+        /\b\d+\.\d+(?:\.\d+)?\b/u.test(quote)) {
+      release ??= sourceEvidence(doc, item, context);
+    }
+    if (local || item.vendorAuthored || item.relation === 'vendor' || context.vendorDocs.some(d => clean(d.text).includes(quote))) continue;
+    // Require a customer's own operation, an implemented partner integration,
+    // or an actual distributor package record. A third-party logo list or
+    // republished sales pitch establishes none of these.
+    const ownUse = ['customer','review','partner'].includes(item.relation) && firsthand.test(quote);
+    const integration = item.relation === 'partner' && /\bour (?:connector|integration|service|plugin)\b.{1,100}\b(?:sends|receives|imports|exports|synchronizes|connects|uses)\b/i.test(quote);
+    const distribution = /\b(?:package|packaged|packages|repository|distribut(?:ed|ion))\b/i.test(doc.title + ' ' + quote) &&
+      /\b(?:stable|packaged|maintainer|distribution|repository)\b/i.test(quote) && /\b\d+\.\d+(?:\.\d+)?\b/u.test(quote);
+    if (ownUse || integration || distribution) adoption ??= sourceEvidence(doc, item, context);
+    if (release && adoption) break;
+  }
+  if (!release || !adoption) return null;
+  const records = [release,adoption];
+  return {id:'maintenance',label:criteria.maintenance[0],status:'supported',impact:'routine',flag:'green',
+    claim:context.productName + ' has a recent versioned release and independently documented use or distribution.',
+    explanation:'The publisher records a dated release: “' + release.quote + '” The independent source records use or distribution: “' + adoption.quote + '”',
+    consequence:'These records support shortlisting the maintained product for its documented use. Claims about particular outcomes still require direct evidence.',
+    evidence:records,evidenceIds:idsOf(records)};
+}
+
+function resultFor(checks, failed, operating, question) {
   if (failed) return { verdict: null, interpretation: 'The investigation failed before any usable text could be retrieved.', verdictEvidenceIds: [] };
   const decisive = checks.filter(c => c.status !== 'unverified' && c.impact === 'disqualifying');
   const cautions = checks.filter(c => c.status !== 'unverified' && c.impact === 'caveat');
   const capabilities = checks.filter(c => c.id === 'capability');
   const core = capabilities.find(c => c.status === 'supported' && c.flag === 'green');
-  const unresolved = capabilities.some(c => c.status !== 'supported' || c.flag === 'yellow');
+  const unresolved = capabilities.filter(c => c.status !== 'supported' || c.flag === 'yellow');
+  const secondaryOnly = !question && unresolved.every(c => ['limited_use','remediated'].includes(c.decisionScope));
   let verdict;
   let reasons;
   if (decisive.length) { verdict = 'red'; reasons = decisive; }
   else if (cautions.length) { verdict = 'yellow'; reasons = cautions; }
-  else if (core && !unresolved) { verdict = 'green'; reasons = [core]; }
+  else if (core && (!unresolved.length || secondaryOnly)) {
+    verdict = 'green'; reasons = [core];
+  }
+  else if (operating) { verdict = 'green'; reasons = [operating]; }
   else {
     const findings = checks.filter(c => c.status !== 'unverified' && c.evidenceIds.length &&
       !(c.id === 'capability' && c.status !== 'supported')).slice(0, 2);
@@ -549,6 +605,7 @@ function resultFor(checks, failed) {
   }
   const first = reasons[0];
   return { verdict, interpretation: first.explanation + ' ' + first.consequence,
+    ...(operating && first === operating && {verdictBasis:'operational_evidence'}),
     verdictEvidenceIds: [...new Set(reasons.flatMap(c => c.evidenceIds))] };
 }
 
@@ -586,7 +643,7 @@ export function assess(inputUrl, raw, {includeDossier = true} = {}) {
   context.vendor = vendorEvidence.length ? clean(raw.vendor.name) : null;
   const checks = Object.keys(criteria).flatMap(id => {
     const proposals = (raw.claims ?? []).filter(c => c.criterion === id);
-    return proposals.length ? proposals.map(c => assessClaim(c, context)) : [unknown(id)];
+    return proposals.length ? proposals.map(c => ({...assessClaim(c, context), decisionScope:c.decisionScope})) : [unknown(id)];
   });
   const contrast = entitlementContrast(context);
   if (contrast) {
@@ -606,7 +663,13 @@ export function assess(inputUrl, raw, {includeDossier = true} = {}) {
     check.flag ??= check.impact === 'disqualifying' ? 'red' : check.impact === 'caveat' ? 'yellow' :
       check.id === 'capability' && check.status === 'supported' ? 'green' : 'context';
   }
-  const decision = resultFor(checks, raw.failed || !documents.size);
+  const operating = operatingRecord(raw,context);
+  if (operating) {
+    const i = checks.findIndex(c => c.id === 'maintenance' && c.status === 'unverified');
+    if (i >= 0) checks[i] = operating;
+    else checks.push(operating);
+  }
+  const decision = resultFor(checks, raw.failed || !documents.size, operating, context.question);
   const answer = answerFrom(raw, context);
   const accounts = [...(raw.testimony ?? []).flatMap(t => collectEvidence(t, context, 'experience')),
     ...checks.flatMap(c => c.evidence.filter(e => reportedExperience.test(e.sourceType)))];

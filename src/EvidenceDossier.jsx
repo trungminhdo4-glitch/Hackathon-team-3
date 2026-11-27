@@ -1,5 +1,6 @@
 import React from 'react'
 import { coverageLabels, findingLabels, sourceAddress } from './datasetReport.js'
+import { pageAttempts } from '../shared/retrieval.js'
 import './evidenceDossier.css'
 
 function SourceLink({url, title}) {
@@ -26,12 +27,18 @@ export function EvidenceDossier({dossier, interpretation}) {
         <SourceLink url={item.url}/>
       </article>)}</div>
     </details>)}
-    {coverage.length > 0 && <details className="source-coverage">
+    {coverage.length > 0 && <details className="source-coverage" id="retrieval-log">
       <summary>Pages checked ({coverage.length})</summary>
       <ul>{coverage.map((page, i) => <li key={i}>
         <SourceLink url={page.url} title={page.title}/>
         <strong>{coverageLabels[page.status] || page.status}</strong>
-        {page.reason && <span>{page.reason}</span>}
+        {(page.status === 'documented' || page.status === 'cited') && page.reason && <span>{page.reason}</span>}
+        {pageAttempts(page).map((attempt, j) => <div key={j}>
+          <span>{attempt.lane}{attempt.redirected && <> · Requested <SourceLink url={attempt.requestedUrl} title={attempt.requestedUrl}/></>}</span>
+          {attempt.reason && <span>{attempt.reason}</span>}
+          {attempt.next && <span><b>Next search</b> · {attempt.next}</span>}
+        </div>)}
+        {bySource.get(page.url)?.[0]?.quote && <blockquote>{bySource.get(page.url)[0].quote}</blockquote>}
       </li>)}</ul>
     </details>}
   </section>

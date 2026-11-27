@@ -210,7 +210,7 @@ test('bounded searches ground rubric claims, answers and customer testimony in r
     assert.ok(options.signal instanceof AbortSignal);
     if (!task.documents) {
       assert.equal(options.maxTurns, 2);
-      assert.match(task.task, task.lane === 'official' ? /advertised outcome/ : /core promise/);
+      assert.match(task.task, task.lane === 'official' ? /contracting operator/ : /regulator decisions/);
       lanes.push(task.lane);
       return resultFor(task.lane === 'official' ? ['https://1.1.1.1/enterprise/terms'] :
         ['https://1.1.1.1/copied-review','https://8.8.8.8/review']);
@@ -246,7 +246,9 @@ test('bounded searches ground rubric claims, answers and customer testimony in r
     assert.equal(statement.evidence[0].sourceId, 'S1');
   }
   assert.deepEqual(raw.testimony[0].evidence, [{sourceId:'S3',quote:review,relation:'review',author:'Taylor',vendorAuthored:false}]);
-  assert.deepEqual(raw.coverage.independent, {searched:true,discovered:2,retrieved:1});
+  const { attempts, ...totals } = raw.coverage.independent;
+  assert.deepEqual(totals, {searched:true,discovered:2,retrieved:1});
+  assert.deepEqual(attempts, [{requestedUrl:'https://8.8.8.8/review',url:'https://8.8.8.8/review',outcome:'read'}]);
 });
 
 test('blocked independent publishers trigger bounded fallback retrieval without treating blocked pages as sources', async t => {
@@ -273,13 +275,18 @@ test('blocked independent publishers trigger bounded fallback retrieval without 
   assert.equal(raw.documents[1].url, 'https://8.8.4.4/review');
   assert.equal(raw.coverage.independent.retrieved, 1);
   assert.equal(raw.incomplete, true);
-  assert.match(raw.limitations.join(' '), /independent search pages could not supply/);
+  assert.match(raw.limitations.join(' '), /independent search read 1 of 6 attempted URLs/);
+  const {coverage} = assess('https://1.1.1.1/',raw).dossier;
+  const blocked = coverage.find(item => item.url === 'https://8.8.8.8/review');
+  assert.equal(blocked.status, 'unavailable');
+  assert.deepEqual(blocked.attempts, [{lane:'independent',requestedUrl:blocked.url,outcome:'unavailable',failure:{code:'http',httpStatus:403}}]);
+  assert.ok(coverage.some(item => item.attempts?.some(attempt => attempt.outcome === 'read')));
   assert.equal(requests.length, 7); // submitted page + six bounded candidate reads
   // A readable generic page leaves the use-evidence gap open and merits one more focused search.
   assert.equal(raw.coverage.independent.followUp, 'completed');
   assert.ok(events.some(e => e.stage === 'assess'));
   assert.ok(events.some(e => e.detail.includes('Following up')));
-  assert.ok(events.some(e => e.url === 'https://9.9.9.9/review' && e.detail.includes('unavailable')));
+  assert.ok(events.some(e => e.url === 'https://9.9.9.9/review' && e.status === 'unavailable' && e.detail.includes('HTTP 403')));
 });
 
 test('a procedure deep in a long guide retains its task, literal setting, command and observed result', async t => {

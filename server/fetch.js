@@ -63,17 +63,18 @@ async function readPage(url, signal) {
       return { redirect: validatePublicUrl(new URL(headers.location, url).href) };
     }
     const mime = (headers['content-type'] || '').split(';')[0].trim().toLowerCase();
-    if (statusCode !== 200 || !['text/html', 'application/xhtml+xml', 'text/plain'].includes(mime) ||
+    if (statusCode !== 200) throw Object.assign(new Error('The page returned an HTTP error.'), {httpStatus:statusCode});
+    if (!['text/html', 'application/xhtml+xml', 'text/plain'].includes(mime) ||
         headers['content-disposition']?.toLowerCase().includes('attachment') ||
         (headers['content-encoding'] && headers['content-encoding'] !== 'identity')) {
-      throw new Error('The page did not return readable public text.');
+      throw Object.assign(new Error('The response format could not be read.'), {code:'UNSUPPORTED_FORMAT'});
     }
-    if (Number(headers['content-length']) > maxBytes) throw new Error('Page exceeds retrieval size limit.');
+    if (Number(headers['content-length']) > maxBytes) throw Object.assign(new Error('Page exceeds retrieval size limit.'), {code:'SIZE_LIMIT'});
     const chunks = [];
     let bytes = 0;
     for await (const chunk of response) {
       bytes += chunk.length;
-      if (bytes > maxBytes) throw new Error('Page exceeds retrieval size limit.');
+      if (bytes > maxBytes) throw Object.assign(new Error('Page exceeds retrieval size limit.'), {code:'SIZE_LIMIT'});
       chunks.push(chunk);
     }
     const charset = /;\s*charset\s*=\s*["']?([^;"'\s]+)/i.exec(headers['content-type'])?.[1];
@@ -88,7 +89,9 @@ export async function fetchPublicText(value, { signal } = {}) {
   const bounded = signal ? AbortSignal.any([signal, deadline]) : deadline;
   let url = validatePublicUrl(String(value));
   for (let redirects = 0; redirects <= 3; redirects++) {
-    const page = await readPage(url, bounded);
+    let page;
+    try { page = await readPage(url, bounded); }
+    catch (error) { throw bounded.aborted ? bounded.reason : error; }
     if (page.redirect) { url = page.redirect; continue; }
     const defaultEncoding = isUtf8(page.body) ? 'utf-8' : 'windows-1252';
     if (page.mime === 'text/plain') {
@@ -135,5 +138,5 @@ export async function fetchPublicText(value, { signal } = {}) {
     const text = [body.slice(0, 39999 - legal.length), legal].filter(Boolean).join('\n');
     return { url: url.href, title, text, links: [...links], linkContexts };
   }
-  throw new Error('Page exceeded the redirect limit.');
+  throw Object.assign(new Error('Page exceeded the redirect limit.'), {code:'REDIRECT_LIMIT'});
 }

@@ -116,5 +116,21 @@ export function buildDossier(report, documents, raw) {
   for (const item of raw.unavailableSources ?? []) {
     if (!retrieved.has(item.url)) coverage.push({...item,status:'unavailable'});
   }
+  // Match on the final URL so a readable redirect still points at the retained
+  // passages. Keep the requested URL and the actual lane for each attempt.
+  const byUrl = new Map(coverage.map(row => [row.url, row]));
+  for (const [lane,search] of Object.entries(raw.coverage || {})) {
+    for (const attempt of search.attempts ?? []) {
+      let page = byUrl.get(attempt.url);
+      if (!page) {
+        page = {url:attempt.url,title:new URL(attempt.url).hostname,origin:'web_search',
+          status:attempt.outcome === 'excluded_publisher' ? 'excluded_publisher' : 'unavailable'};
+        byUrl.set(page.url,page);
+        coverage.push(page);
+      }
+      (page.attempts ??= []).push({lane, requestedUrl:attempt.requestedUrl, outcome:attempt.outcome,
+        ...(attempt.failure && {failure:attempt.failure})});
+    }
+  }
   return {observations, coverage};
 }

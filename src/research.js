@@ -13,6 +13,7 @@ const earlierVerdicts = {
 
 export function verdictLabel(report) {
   if (report.review) return 'Awaiting your input'
+  if (report.verdict === 'green' && report.verdictBasis === 'operational_evidence') return 'Green · Maintained product with documented adoption'
   if (report.verdict === 'yellow' && report.verdictBasis === 'evidence_gap') return 'Yellow · Evidence gap'
   const labels = isEarlierReport(report) ? earlierVerdicts : currentVerdicts
   return labels[report.verdict] || 'Investigation incomplete'

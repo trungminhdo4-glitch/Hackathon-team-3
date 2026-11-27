@@ -1,8 +1,9 @@
 import { isEarlierReport } from './research.js'
 import { describeCapabilityGap } from '../shared/evidenceGap.js'
+import { pageAttempts, reportLimitations } from '../shared/retrieval.js'
 
 export const columns = ['product', 'vendor', 'overall', 'green_flags', 'yellow_flags', 'red_flags', 'reasoning', 'reviewer_notes_original']
-export const coverageLabels = { cited: 'Cited in the assessment', documented: 'Passage retained', no_usable_passage: 'No usable passage', unavailable: 'Could not retrieve text' }
+export const coverageLabels = { cited: 'Cited in the assessment', documented: 'Passage retained', no_usable_passage: 'No usable passage', unavailable: 'Could not retrieve text', excluded_publisher:'Publisher redirect excluded from independent evidence' }
 export const findingLabels = { supported: 'Supported', partly_supported: 'Partly supported', contradicted: 'Contradicted', documented: 'Documented in source', unverified: 'Unverified' }
 
 export function sourceAddress(value) {
@@ -158,8 +159,10 @@ export function datasetRow(report, notes = '', simulated = false) {
       archive.length ? 'Saved source trail\n' + archive.join('\n\n') : '',
       ...observations.map(observationText),
       ...(report.testimony || []).map(t => withSources(['Customer testimony', t.text, t.explanation].filter(Boolean).join('\n'), t.evidenceIds)),
-      report.dossier && (report.limitations || []).join('\n'),
-      ...pages.map(page => [coverageLabels[page.status] || page.status, page.title, page.reason, sourceAddress(page.url)?.href].filter(Boolean).join('\n'))]
+      report.dossier && reportLimitations(report).join('\n'),
+      ...pages.map(page => [coverageLabels[page.status] || page.status, page.title, sourceAddress(page.url)?.href,
+        ...pageAttempts(page).map(attempt => [attempt.lane, attempt.redirected && sourceAddress(attempt.requestedUrl)?.href,
+          attempt.reason || page.reason, attempt.next && 'Next search · ' + attempt.next].filter(Boolean).join('\n'))].filter(Boolean).join('\n'))]
       .filter(Boolean).join('\n\n'),
     reviewer_notes_original: notes,
   }
@@ -218,8 +221,12 @@ export function markdownReport(row, report) {
   }
   if (report.dossier.coverage?.length) appendix.push('## Pages checked')
   for (const page of report.dossier.coverage || []) {
-    appendix.push('- ' + [link(page.url, page.title), coverageLabels[page.status] || prose(page.status), prose(page.reason)].filter(Boolean).join(' · '))
+    for (const attempt of pageAttempts(page)) {
+      appendix.push('- ' + [link(page.url, page.title), attempt.lane, coverageLabels[page.status] || prose(page.status),
+        attempt.redirected && link(attempt.requestedUrl, 'Original URL'), prose(attempt.reason || page.reason),
+        attempt.next && 'Next search · ' + prose(attempt.next)].filter(Boolean).join(' · '))
+    }
   }
-  if (report.limitations?.length) appendix.push('## Unknowns and limitations', report.limitations.map(s => '- ' + prose(s)).join('\n'))
+  if (report.limitations?.length) appendix.push('## Unknowns and limitations', reportLimitations(report).map(s => '- ' + prose(s)).join('\n'))
   return table + '\n' + appendix.filter(Boolean).join('\n\n') + '\n'
 }

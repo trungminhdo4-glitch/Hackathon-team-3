@@ -2,9 +2,11 @@ import { Agent, Runner, webSearchTool } from '@openai/agents';
 import { z } from 'zod';
 import { getDomain } from 'tldts';
 import { fetchPublicText, lookupPublic, validatePublicUrl } from './fetch.js';
+import { explainReadFailure, retrievalFailure } from '../shared/retrieval.js';
 import { assess, namesEntity } from './assessment.js';
 import { getResearchModel, isDemoModel, META_MODEL } from './models.js';
 import { assessWithLlama } from './groq.js';
+import { needsDisposition, prioritizeRecords, procurementSignals } from './procurementSources.js';
 export { getResearchModel } from './models.js';
 
 const evidence = z.object({
@@ -32,7 +34,9 @@ function reportSchema(passageId) {
 const report = reportSchema(z.string());
 
 const instructions = `Research software products, from desktop and open-source tools to hosted services.
-Does this software deliver its main promise to the intended users on the terms advertised?
+Evaluate a buyer's decision: is the exact offering operated, maintained and credible for its ordinary use today; which verified condition should a buyer resolve before purchase; or what verified material blocker warrants stopping? At a corporate or portfolio URL, identify the business and representative in-scope products. Avoid making a new homepage headline the sole product under review.
+Identify who contracts, who maintains the software, and whether independent adoption, distribution or a current release supports ongoing use. A buyer need not reproduce every advertised feature to establish ordinary operation. Never infer specific performance, security or clinical efficacy from adoption. Separate the exact product/edition from a predecessor, parent, trial, or optional module.
+Distinguish context from purchase conditions. A product pivot, ownership change, pricing tiers, a single maintainer or a responsibly remediated incident alone need not change the decision. Look for a concrete impact on ordinary buyers: changed entitlements or support, unavailable successor path, documented distribution compromise, or a current unresolved control. For serious claims verify the claimant, subject, exact language, date and disposition, including any remediation.
 Always assess the product overall for its typical intended audience, including when only a URL is supplied.
 Answer an optional question alongside that assessment. A restriction limited to an unusual use belongs in the answer;
 assign it overall material impact only if the evidence shows it changes the ordinary buyer's decision.
@@ -154,8 +158,8 @@ export function searchSources(rawResponses, onActivity) {
 }
 
 const discoveryTasks = {
-  official: 'Identify the exact edition, intended audience and advertised outcome. Find the vendor’s explicit promise AND a concrete documented workflow or measured demonstration of that outcome. Search the user’s specific question, relevant plan or licensing terms, account or data access limits, dated releases, support and retirement notices. Look for material security, privacy or compliance promises when they matter to the use. Follow renames and redirects to the right edition. For a non-product URL, seek the authoritative record for that domain. Cite up to five readable original documents, with enough context to distinguish advertised claims from evidence of delivery.',
-  independent: 'Test the core promise for typical users. Find deployments, independently measured outcomes, and firsthand reviews. Search separately for major documented issues that could change the overall decision, even if the optional question concerns just one feature. When relevant to the promise, look up the product and operator in regulator or oversight records. Retrieve the original decision, scope, date, and any later resolution or remediation. Also consider audits, incident responses, partner confirmations, and support or migration notices as applicable. Distinguish firsthand observations from sponsored claims and allegations. Cite the strongest readable original sources, including evidence that disagrees with the vendor. Choose sources for this product category. For a B2B tool, look for public G2, Capterra, Gartner Peer Insights or marketplace reviews that describe actual usage; also consider an explicitly attributed public LinkedIn customer post or a named customer implementation. Verify authorship. A vendor LinkedIn post, reseller product listing or GTM announcement is a lead about positioning, not independent proof. For developer or open-source tools prefer customer technical guides, issue resolutions and integration tests; for regulated claims seek the original oversight record. Prefer the original customer over a case-study aggregator.',
+  official: 'Identify the exact product or portfolio, contracting operator, ordinary buyer and edition. Check public release notes and dates, last supported version, ownership/rename/successor notices, and included versus paid entitlements. For open-source software look for maintainers, signed releases and support commitments; for a commercial company check legal terms, who supplies support, actual plan documentation and what the site claims about partners, customers or funding. Capture the original language of consequential notices. Find the vendor’s explicit promise AND a concrete documented workflow or measured demonstration of that outcome. Search the user’s specific question, relevant plan or licensing terms, account or data access limits, dated releases, support and retirement notices. Look for material security, privacy or compliance promises when they matter to the use. Follow renames and redirects to the right edition. For a non-product URL, seek the authoritative record for that domain. Cite up to five readable original documents, with enough context to distinguish advertised claims from evidence of delivery.',
+  independent: 'Find evidence that would affect a shortlist for this exact product and operator. Seek named customer-owned deployment guides, package distributor/release records, or an independently documented integration. Search product and operator names for regulator decisions, incident and remediation records, continuity/ownership changes or independently verified references as appropriate. For high-risk data or compliance products prioritize a final regulator disposition and its exact respondent and scope. For suspicious logos, find what the named organization itself says the relationship is. Benchmark extraordinary performance claims separately from verifying ordinary operation. Find deployments, independently measured outcomes, and firsthand reviews. Search separately for major documented issues that could change the overall decision, even if the optional question concerns just one feature. When relevant to the promise, look up the product and operator in regulator or oversight records. Retrieve the original decision, scope, date, and any later resolution or remediation. Also consider audits, incident responses, partner confirmations, and support or migration notices as applicable. Distinguish firsthand observations from sponsored claims and allegations. Cite the strongest readable original sources, including evidence that disagrees with the vendor. Choose sources for this product category. For a B2B tool, look for public G2, Capterra, Gartner Peer Insights or marketplace reviews that describe actual usage; also consider an explicitly attributed public LinkedIn customer post or a named customer implementation. Verify authorship. A vendor LinkedIn post, reseller product listing or GTM announcement is a lead about positioning, not independent proof. For developer or open-source tools prefer customer technical guides, issue resolutions and integration tests; for regulated claims seek the original oversight record. Prefer the original customer over a case-study aggregator.',
 };
 const publisher = value => getDomain(new URL(value).hostname, { allowPrivateDomains: true }) || new URL(value).hostname;
 
@@ -239,6 +243,7 @@ function selectSources(urls, inputUrl, lane, excluded) {
     return true;
   });
   if (lane === 'independent') candidates = candidates.filter(url => publisher(url) !== publisher(inputUrl));
+  candidates = prioritizeRecords(candidates, inputUrl, lane);
   const first = new Set();
   const diverse = candidates.filter(url => {
     const site = publisher(url);
@@ -246,17 +251,27 @@ function selectSources(urls, inputUrl, lane, excluded) {
     first.add(site);
     return true;
   });
-  return [...new Set([...diverse, ...candidates])].slice(0, 6);
+  return [...new Set([...candidates.slice(0, 2), ...diverse, ...candidates])].slice(0, 6);
 }
 
-function readablePage(doc) {
-  if (!doc) return false;
+function unreadableCode(doc) {
+  if (!doc) return 'PAGE_EMPTY';
   let body = doc.text.trim();
   if (doc.title && body.startsWith(doc.title)) body = body.slice(doc.title.length).trim();
-  if (body === doc.title || body.length < 15 || body.split(/\s+/u).length < 3) return false;
   const challenge = /(?:you(?:'ve| have) been blocked by network security|verify (?:that )?you are human|enable javascript and cookies to continue|checking your browser before accessing|your request (?:was|has been) blocked|you don.t have permission to access)/i;
   const challengeTitle = /^(?:access denied|just a moment[.\s…]*|security checkpoint|verify you are human|captcha)$/i.test(doc.title?.trim());
-  return !challengeTitle && !(body.length < 1800 && challenge.test(body));
+  if (challengeTitle || (body.length < 1800 && challenge.test(body))) return 'PAGE_CHALLENGE';
+  if (body === doc.title || body.length < 15 || body.split(/\s+/u).length < 3) return 'PAGE_EMPTY';
+  return null;
+}
+
+function readablePage(doc) { return !unreadableCode(doc); }
+
+async function readPublicPage(url, signal) {
+  const page = await fetchPublicText(url, {signal});
+  const code = unreadableCode(page);
+  if (code) throw Object.assign(new Error('No readable text.'), {code});
+  return page;
 }
 
 // Attach a public reason only at a provider boundary. Never return a credential, SDK payload or raw exception.
@@ -295,16 +310,16 @@ async function readSuggestedPages(guidance, documents, limitations, deadline, on
     if (documents.some(doc => addressKey(doc.url) === addressKey(url))) continue;
     try {
       onActivity?.({stage:'retrieve',role:'server',detail:'Checking the suggested public source',url});
-      const doc = await fetchPublicText(url, {signal:deadline});
-      if (!readablePage(doc)) throw new Error('No readable text');
+      const doc = await readPublicPage(url, deadline);
       if (!documents.some(existing => addressKey(existing.url) === addressKey(doc.url))) {
         documents.push({...doc, id:'S' + (documents.length + 1), origin:'suggested'});
       }
       onActivity?.({stage:'retrieve',role:'server',detail:'Retrieved readable text from the suggested source',url:doc.url});
     } catch (error) {
       if (error.code === 'UNSAFE_URL') throw error;
-      limitations.push('A suggested page could not supply readable public text.');
-      onActivity?.({stage:'retrieve',role:'server',status:'unavailable',detail:'Suggested source text unavailable',url});
+      const failure = retrievalFailure(error);
+      limitations.push('Suggested page at ' + new URL(url).hostname + ' — ' + explainReadFailure(failure)[0]);
+      onActivity?.({stage:'retrieve',role:'server',status:'unavailable',failure,detail:explainReadFailure(failure)[0],url});
     }
   }
   // Keep all literal URLs out of the hosted prompt: checked pages enter as documents
@@ -337,14 +352,14 @@ async function readSubmittedPage(inputUrl, deadline, documents, limitations, onA
   await lookupPublic(inputUrl, {signal:AbortSignal.any([deadline,AbortSignal.timeout(5000)])});
   try {
     onActivity?.({stage:'retrieve',role:'server',detail:'Reading the submitted product page',url:inputUrl});
-    const page = await fetchPublicText(inputUrl, {signal:deadline});
-    if (!readablePage(page)) throw new Error('The submitted page returned no substantive text.');
+    const page = await readPublicPage(inputUrl,deadline);
     documents.push({...page,id:'S1',origin:'submitted'});
     onActivity?.({stage:'retrieve',role:'server',detail:'Retrieved readable product-page text',url:page.url});
   } catch (error) {
     if (error.code === 'UNSAFE_URL') throw error;
-    limitations.push('The submitted page could not be read within the retrieval limits.');
-    onActivity?.({stage:'retrieve',role:'server',status:'unavailable',detail:'Product-page text unavailable',url:inputUrl});
+    const failure = retrievalFailure(error);
+    limitations.push('Submitted page at ' + new URL(inputUrl).hostname + ' — ' + explainReadFailure(failure)[0]);
+    onActivity?.({stage:'retrieve',role:'server',status:'unavailable',failure,detail:explainReadFailure(failure)[0],url:inputUrl});
   }
 }
 
@@ -360,7 +375,7 @@ export async function research(value, { signal, subject, question, session, onAc
     if (event.status === 'unavailable' && event.url) unreadable.set(event.url, {
       url:event.url, title:new URL(event.url).hostname,
       origin:event.url === inputUrl ? 'submitted' : event.role === 'server' ? 'suggested' : 'web_search',
-      reason:event.detail + '. No passage from this attempt can support a finding.',
+      reason:event.detail, ...(event.failure && {failure:event.failure}),
     });
     notify?.(event);
   }
@@ -497,7 +512,9 @@ function preparePassages(documents, inputUrl, topic) {
     // Keep the adjacent task description/result with its own exact passage ID, within the same document budget.
     const nearby = workflow.flatMap(item => [ordered[item.index - 1], ordered[item.index + 1]]).filter(Boolean);
     const priority = [
-      ...ranked.slice(0, 2), ...workflow,
+      ...ranked.slice(0, 2),
+      ...procurementSignals.map(pattern => ranked.find(item => pattern.test(item.text))).filter(Boolean),
+      ...workflow,
       ...aspects.map((_, i) => ranked.find(item => item.groups[i])).filter(Boolean),
       ...nearby,
       ...ranked,
@@ -548,7 +565,7 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
     if (!search.searched || !search.urls.length) {
       limitations.push('The ' + lane + ' search ' + (search.searched ? 'returned no citable URLs.' : 'did not complete.'));
     }
-    queues.push({ lane, candidates: selectSources(search.urls, inputUrl, lane, excluded) });
+    queues.push({ lane, candidates: selectSources(search.urls, inputUrl, lane, excluded), attempts:[] });
   }
   const errors = runs.filter(run => run.status === 'rejected').map(run => stageFailure(run.reason,'Hosted search',deadline));
   const fatal = errors.find(error => !(error instanceof IncompleteStage));
@@ -564,17 +581,18 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
       const key = addressKey(url);
       if (!reads.has(key)) {
         onActivity?.({stage:'retrieve', model, role, detail:'Reading a search result', url});
-        reads.set(key, fetchPublicText(url, { signal: deadline }).then(page => {
-          if (readablePage(page)) return page;
-          return null;
-        }).catch(() => null).then(page => {
-          onActivity?.({stage:'retrieve', model, role, status:page ? 'read' : 'unavailable', detail:page ? 'Retrieved readable source text' : 'Readable source text unavailable', url:page?.url ?? url});
-          return page;
+        reads.set(key, readPublicPage(url, deadline).then(page => ({page}), error => ({failure:retrievalFailure(error)})).then(result => {
+          const {page,failure} = result;
+          onActivity?.({stage:'retrieve', model, role, status:page ? 'read' : 'unavailable',
+            detail:page ? 'Retrieved readable source text' : explainReadFailure(failure)[0], failure, url:page?.url ?? url});
+          return result;
         }));
       }
-      const page = await reads.get(key);
-      if (!readablePage(page)) return null;
-      if (queue.lane === 'independent' && publisher(page.url) === publisher(inputUrl)) return null;
+      const {page,failure} = await reads.get(key);
+      const excludedPublisher = page && queue.lane === 'independent' && publisher(page.url) === publisher(inputUrl);
+      queue.attempts.push({requestedUrl:url, url:page?.url || url, ...(failure && {failure}),
+        outcome:failure ? 'unavailable' : excludedPublisher ? 'excluded_publisher' : 'read'});
+      if (!page || excludedPublisher) return null;
       return page;
     }));
   }
@@ -584,7 +602,8 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
       pages.push(...(await fetchBatch(queue, queue.candidates.slice(4, 6))).filter(Boolean));
     }
     const useEvidence = /\b(?:deploy\w*|implement\w*|integrat\w*|tested|benchmark\w*|reviewed|customers? (?:report|use)|step [1-9]|we (?:use|found|ran|were able)|I (?:use|tried|could)|in production|final order|support ended)\b/i;
-    if (queue.lane === 'independent' && !pages.some(page => useEvidence.test(page.text)) && !deadline.aborted) {
+    const checkDisposition = queue.lane === 'independent' && needsDisposition(pages);
+    if (queue.lane === 'independent' && (checkDisposition || !pages.some(page => useEvidence.test(page.text))) && !deadline.aborted) {
       // Only one recovery search and three new pages, all under the original deadline.
       const attempt = coverage.independent;
       attempt.followUp = 'attempted';
@@ -594,7 +613,7 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
       attempt.followUpModel = followUpModel;
       const progress = event => onActivity?.({...event,model:followUpModel,role:delegate ? 'specialist' : 'researcher'});
       try {
-        progress({stage:'search', status:'attempted', detail:delegate ? 'Delegating the evidence gap to the Luna search specialist' :
+        progress({stage:'search', status:'attempted', detail:checkDisposition ? 'Checking the issuing authority for the final disposition and scope of the reported proceeding' : delegate ? 'Delegating the evidence gap to the Luna search specialist' :
           sol ? 'Luna is unavailable for this run. Sol is following up on the evidence gap.' : 'Following up on a gap in independent usage or testing evidence'});
         const searchAgent = delegate ? new Agent({
           name:'Independent evidence specialist', model:helperModel, tools:[webSearchTool()],
@@ -604,7 +623,8 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
         const followUp = await runner.run(searchAgent, JSON.stringify({
           lane: 'independent-followup', inputUrl, ...topic, originalPageTitle: submitted?.title,
           previousPublishers: [...new Set(queue.candidates.map(publisher))],
-          task: 'Earlier independent pages supplied insufficient evidence of actual use. Find original documentation of who did which task with this exact edition and what happened. Seek customer-run help desks, university setup guides, integration documentation, independent tests, or attributed firsthand accounts. Search alternate publishers. Avoid vendor reposts, blocked sites, generic mentions and sibling editions.',
+          ...(checkDisposition && {priority:'An earlier source mentions a proposed or pending proceeding. Find the issuing authority’s final order, dismissal or current docket for this operator and product. Check the scope, date and remedy. Treat provisional statements as allegations.', proceedingLeads:pages.filter(p => needsDisposition([p])).map(p => ({title:p.title, url:p.url}))}),
+          task: 'Earlier pages left a buyer question unresolved. Prioritize the most decision-changing open issue: current independent distribution or deployment, exact release/support window or ownership transition, entitlements, or the original final disposition and remediation of a reported issue. Cross-check the exact product, operator and edition. Seek customer-run help desks, university setup guides, integration documentation, independent tests, or attributed firsthand accounts. Search alternate publishers. Avoid vendor reposts, blocked sites, generic mentions and sibling editions.',
         }), { maxTurns: 1, signal: AbortSignal.any([deadline, AbortSignal.timeout(28_000)]) });
         const search = searchSources(followUp.rawResponses, progress);
         attempt.searched ||= search.searched;
@@ -627,10 +647,15 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
     return pages;
   }));
   for (const [i, group] of retrieved.entries()) {
-    const { lane, candidates } = queues[i];
+    const { lane, attempts } = queues[i];
     coverage[lane].retrieved = new Set(group.map(doc => addressKey(doc.url))).size;
-    const attempted = candidates.filter(url => reads.has(addressKey(url))).length;
-    if (group.length < attempted) limitations.push('Some ' + lane + ' search pages could not supply readable public text.');
+    coverage[lane].attempts = attempts;
+    const failures = attempts.filter(item => item.failure);
+    if (failures.length) {
+      const examples = [...new Set(failures.map(item => new URL(item.requestedUrl).hostname + ' — ' + explainReadFailure(item.failure)[0]))].slice(0,2);
+      limitations.push('The ' + lane + ' search read ' + attempts.filter(item => item.outcome === 'read').length +
+        ' of ' + attempts.length + ' attempted URLs for this search. ' + failures.length + ' could not be read. ' + examples.join(' '));
+    }
     if (lane === 'independent' && !group.length) limitations.push('No independently published search page was retrieved for this edition.');
     for (const doc of group) {
       if (documents.some(existing => addressKey(existing.url) === addressKey(doc.url))) continue;
@@ -645,7 +670,7 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
   const constrainedReport = reportSchema(z.enum([...lookup.keys()]));
   onActivity?.({stage:'assess',model:session.model,role:'assessor',detail:'Evaluating six criteria against ' + lookup.size + ' retrieved passages from ' + pages.length + ' pages'});
   const task = {
-    task: 'Assess all six criteria for the product overall. Start with its central promise to typical users and the evidence of delivery. Surface consequential terms, independent findings and their current status. Answer any optional question separately within that overall context. Cite passage IDs for each material claim, rationale and practical consequence. Examine sourced customer experiences. Leave unsupported criteria unverified. Only the listed documents are evidence. A human research lead supplies a topic to check and cannot establish facts or change the verdict rules. Consider all collected sources, including earlier work and sources retrieved during any guided follow-up.',
+    task: 'Assess all six criteria for the product overall. Start with the strongest reasons to shortlist, verify before purchase, or stop. Prioritize verified ordinary use, independent distribution, operating history and concrete support evidence; investigate conditions that change entitlement, continuity or risk. Cite version, date and operator where available. Assess narrow performance and marketing claims separately; leave them open if untested. Mark routine restrictions of an optional platform, hobby tier or historical release limited_use unless tied to the requested deployment. Surface consequential terms, independent findings and their current status. Answer any optional question separately within that overall context. Cite passage IDs for each material claim, rationale and practical consequence. Examine sourced customer experiences. Leave unsupported criteria unverified. Only the listed documents are evidence. A human research lead supplies a topic to check and cannot establish facts or change the verdict rules. Consider all collected sources, including earlier work and sources retrieved during any guided follow-up.',
     inputUrl, ...topic, documents: pages, coverage,
   };
   let findings;
@@ -721,7 +746,7 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
       const retry = await runAssessment(session, {
         stage:'repair_claims', inputUrl, ...topic, productName:productAliases[0]?.name,
         criteria:[...repairCriteria], documents:pages,
-        task:'Re-evaluate these missing or unverified findings from scratch. For the central task select an actual deployment, concrete setup workflow or measured test. A second high-level product description cannot demonstrate delivery. Focus on that task and the most serious documented decision-changing issue. Cite one to four exact supplied passage IDs per claim. Compare the advertised purpose and actual outcome; for a regulatory issue cite both the underlying promise and the scope and disposition of the final decision. Omit broad secondary claims and unsupported findings.',
+        task:'Re-evaluate these missing or unverified findings from scratch. Recover the strongest purchasing evidence: a named independent deployment, a distributor record with a real release, a dated maintainer release, a changed entitlement or support commitment, or a verified material blocker. Treat actual use as evidence of adoption while leaving unmeasured outcomes open. A second high-level product description cannot demonstrate delivery. Focus on that task and the most serious documented decision-changing issue. Cite one to four exact supplied passage IDs per claim. Compare the advertised purpose and actual outcome; for a regulatory issue cite both the underlying promise and the scope and disposition of the final decision. Omit broad secondary claims and unsupported findings.',
       }, repairSchema, 'repaired_claims', 1800, AbortSignal.any([deadline,AbortSignal.timeout(22_000)]));
       const repair = repairSchema.parse(retry);
       for (const candidate of repair.claims) {

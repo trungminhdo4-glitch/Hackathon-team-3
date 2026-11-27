@@ -555,3 +555,43 @@ test('a material edition contrast is established by two actual first-party passa
   raw.documents[0].text = raw.documents[0].text.replace(base,'Orbit Desk is included with the most expensive enterprise subscription.');
   assert.equal(assess(url, raw).verdict,'green');
 });
+
+test('a maintained, independently distributed product can be shortlisted while an unmeasured outcome stays open', () => {
+  const raw = fixture();
+  raw.claims = [];
+  raw.testimony = [];
+  const release = 'Orbit Desk released version 3.1.2 in ' + new Date().getUTCFullYear() + '.';
+  const packaged = 'The stable distribution repository includes Orbit Desk package 3.1.2 for service teams.';
+  raw.documents[0].text += ' ' + release;
+  raw.documents.push({id:'R1',title:'Distribution repository for Orbit Desk',origin:'web_search',
+    url:'https://distribution.example/packages/orbit',text:packaged});
+  raw.sourcePassages = [{sourceId:'S1',quote:release,criterion:'maintenance'}, {sourceId:'R1',quote:packaged,criterion:'maintenance'}];
+  const report = assess(url,raw);
+  assert.equal(report.verdict,'green');
+  assert.deepEqual(report.verdictEvidenceIds,['S1','R1']);
+  assert.equal(check(report,'capability').status,'unverified');
+  assert.match(report.interpretation,/dated release/);
+  raw.documents[0].text += ' ' + packaged;
+  assert.equal(assess(url,raw).verdict,'insufficient','a republished product claim cannot confirm distribution');
+});
+
+test('an unresolved optional feature does not veto a verified ordinary deployment', () => {
+  const raw=fixture();
+  raw.claims.push({criterion:'capability',status:'unverified',decisionScope:'limited_use',
+    claim:'An optional agent can reconcile external mail queues.',evidence:[]});
+  assert.equal(assess(url,raw).verdict,'green');
+  raw.question='Can this agent reconcile our external mail queue?';
+  assert.equal(assess(url,raw).verdict,'insufficient');
+});
+
+test('a product-wide end-of-development notice can be a material procurement blocker in its original language', () => {
+  const raw=fixture();
+  const quote='Die Softwareentwicklung für Orbit Desk wird nach 2026 eingestellt.';
+  raw.documents[0].text += ' ' + quote;
+  raw.claims.push({criterion:'maintenance',status:'supported',impact:'disqualifying',decisionScope:'ordinary_use',
+    claim:'The publisher announces the end of development for Orbit Desk.',reason:'The publisher dates the end of development.',
+    consequence:'A buyer requiring ongoing development needs an alternative.',evidence:[cite('S1',quote)]});
+  assert.equal(assess(url,raw).verdict,'red');
+  raw.claims.at(-1).decisionScope='limited_use';
+  assert.equal(assess(url,raw).verdict,'green');
+});

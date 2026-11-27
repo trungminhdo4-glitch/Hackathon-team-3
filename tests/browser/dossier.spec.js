@@ -5,11 +5,13 @@ test('an unresolved review shows the cited source, the classification obstacle a
   const quote = 'A team can publish calendar slots from a shared workspace.'
   const report = {productName:'Blue Calendar', rubricVersion:2, subject:url, inputUrl:url, vendor:null,
     verdict:null, interpretation:'Team scheduling remains unconfirmed.', checks:[{id:'capability', label:'Core capability',
-      status:'unverified', evidence:[], explanation:'No team deployment was found.'}], sources:[], limitations:[],
+    status:'unverified', evidence:[], explanation:'No team deployment was found.'}], sources:[], limitations:['One independent URL could not be read.'],
     dossier:{observations:[{sourceId:'S1',url,title:'Blue Calendar workspace',kind:'Product page', status:'documented',
       criterion:'capability',quote,finding:'The publisher describes team scheduling.',
       reason:'This page establishes the advertised feature.'}],
-      coverage:[{url,title:'Blue Calendar workspace',origin:'submitted',status:'documented',reason:'Product claim retained.'}]},
+      coverage:[{url,title:'Blue Calendar workspace',origin:'submitted',status:'documented',reason:'Product claim retained.'},
+        {url:'https://reviews.example/team',title:'Team deployment',origin:'web_search',status:'unavailable',
+          attempts:[{lane:'independent',requestedUrl:'https://reviews.example/team',outcome:'unavailable',failure:{code:'http',httpStatus:403}}]}]},
     review:{id:'sample',mode:'local',prompt:'Which deployment should we verify?',expiresAt:new Date(Date.now()+600_000).toISOString(),
       brief:{known:'The homepage advertises shared calendar slots.',knownUrl:url,knownTitle:'Calendar page',
         obstacle:'The only independent source described the personal edition.',green:'Verify an actual team deployment.',
@@ -27,10 +29,17 @@ test('an unresolved review shows the cited source, the classification obstacle a
   }
   await expect(review.getByText(report.review.prompt,{exact:true})).toHaveCount(1)
   const dossier = page.getByRole('region',{name:'What the sources say'})
-  await expect(dossier.getByText(quote,{exact:true})).toBeVisible()
+  await expect(dossier.locator('.dossier-record').getByText(quote,{exact:true})).toBeVisible()
   await expect(dossier.getByRole('link',{name:'blue.example'})).toHaveAttribute('href',url)
-  await dossier.getByText('Pages checked (1)').click()
+  await page.getByText('Unknowns and limitations (1)').click()
+  await page.getByRole('link',{name:/See the URLs checked/}).click()
   await expect(dossier.getByText('Product claim retained.')).toBeVisible()
+  const log = dossier.locator('.source-coverage')
+  await expect(log.getByText('Independent search',{exact:true})).toBeVisible()
+  await expect(log.getByRole('link',{name:'Team deployment'})).toHaveAttribute('href','https://reviews.example/team')
+  await expect(log.getByText(/returned HTTP 403/)).toBeVisible()
+  await expect(log.getByText(/publicly accessible equivalent/)).toBeVisible()
+  await expect(log.getByText(quote,{exact:true})).toBeVisible()
   await page.getByText('Related source passages').click()
   await expect(page.locator('.criterion-context blockquote')).toHaveText(quote)
 })

@@ -5,6 +5,7 @@ import { ResearchActivity } from './ResearchActivity.jsx'
 import { EvidenceDossier, ReviewBrief } from './EvidenceDossier.jsx'
 import { groupHighlights, operatorGap, savedGapDetail } from './datasetReport.js'
 import { isEarlierReport, verdictLabel } from './research.js'
+import { reportLimitations } from '../shared/retrieval.js'
 
 const claimStatuses = {
   supported: 'Supported',
@@ -164,6 +165,7 @@ function ReviewQuestion({report, expired, guidance, onGuidanceChange, onReview, 
 }
 
 export function Report({report, simulated, retry, notes, onNotesChange, onReview, guidance, onGuidanceChange, expired}) {
+  const limitations = reportLimitations(report)
   const title = useRef(null)
   useEffect(() => { title.current?.focus() }, [report])
   const sources = new Map(report.sources.map(source => [source.id, source]))
@@ -236,9 +238,13 @@ export function Report({report, simulated, retry, notes, onNotesChange, onReview
       <h3 id="question-title">Your product question</h3><p className="question-text">{report.question}</p>
       {answer}
     </section>}
-    {report.limitations.length > 0 && <details className="unknowns">
-      <summary>Unknowns and limitations ({report.limitations.length})</summary>
-      <ul>{report.limitations.map((item,i) => <li key={i}>{item}</li>)}</ul></details>}
+    {limitations.length > 0 && <details className="unknowns">
+      <summary>Unknowns and limitations ({limitations.length})</summary>
+      <ul>{limitations.map((item,i) => <li key={i}>{item}</li>)}</ul>
+      {!!report.dossier?.coverage?.length && <a href="#retrieval-log" onClick={event => {
+        const log = event.currentTarget.closest('.report')?.querySelector('.source-coverage')
+        if (log) log.open = true
+      }}>See the URLs checked, passages found and next search suggestions</a>}</details>}
     {!historical && !report.review && report.verdict === null && <button className="retry" disabled={!retry} onClick={retry}>Retry</button>}
   </section>
 }
