@@ -1,0 +1,608 @@
+{
+  "url": "https://www.avast.com/de-de/index",
+  "product": "Avast consumer security (Free Antivirus / Avast One), German site avast.com/de-de",
+  "vendor": "Avast (brand of Gen Digital Inc.; operating entity Avast Software s.r.o., Prague)",
+  "overall": "RED",
+  "confidence": "HIGH",
+  "summary": "Avast is a real, financially backed and technically well-rated antivirus, owned by Gen Digital. Two final regulator decisions in 2024, from the FTC and the Czech DPA, found it sold or transferred re-identifiable browsing data of users via Jumpshot while telling users the data was anonymous. For a privacy and security vendor this contradicts its core promise. Under the rubric it stays RED despite the settlement, the payment and the passage of time. Continuing Dutch and UK claims add to the concern. Technical quality and finances are strong, and the data practice was stopped in 2020.",
+  "green_flags": [
+    "Parent Gen Digital is profitable, with about $5B FY26 revenue [E5].",
+    "Recent AV-TEST certifications and awards [E7].",
+    "Patched CVEs and no breach found [E8].",
+    "Included in Stiftung Warentest tests [E10]."
+  ],
+  "yellow_flags": [
+    "Dutch and UK civil claims over browsing data are ongoing [E4].",
+    "Overlapping SKUs and the Avast One repackaging make licensing unclear [E11].",
+    "Recurrent local privilege-escalation CVEs [E8].",
+    "Gen Digital's multi-brand portfolio makes consolidation possible [E6]."
+  ],
+  "red_flags": [
+    "The FTC final order (June 2024) found Avast and Jumpshot sold re-identifiable browsing data. It required a $16.5M payment and banned selling browsing data for advertising [E1].",
+    "The Czech DPA's final GDPR decision (April 2024) fined Avast CZK 351M for transferring non-anonymised browsing data of about 100M users to Jumpshot [E2]."
+  ],
+  "reasoning": "Two independent final regulator findings establish the vendor's own misconduct: monetising user browsing data, with deceptive anonymity claims, in a privacy and security product. The rubric says such findings stay RED after settlement. The mitigating facts are the cessation of Jumpshot in 2020, the compliance order, the strong parent and the good detection results. Those do not remove the trust problem. Confidence is MEDIUM because the vendor site could not be fetched and the details come from search summaries.\n\nAdversarial review: The vendor's own misconduct is established by two final regulator decisions: the FTC order and the Czech DPA's binding GDPR fine. It consists of selling users' re-identifiable browsing data while claiming it was anonymous. That directly contradicts the central promise of a privacy and security product, and it is relevant to a German and EU buyer. Under the weighing rules it stays RED even though the vendor paid and changed its practices. The positives are real but do not offset it. These are Gen Digital's financial strength, independent test results and a normal CVE patching cadence. The ongoing Dutch and UK claims and the SKU ambiguity add to the concern. Confidence is HIGH because the regulator findings are final, are confirmed and apply to this exact vendor.",
+  "identity": {
+    "product": "Avast consumer security (Free Antivirus / Avast One), German site avast.com/de-de",
+    "vendor": "Avast (brand of Gen Digital Inc.; operating entity Avast Software s.r.o., Prague)",
+    "legal_name": "Avast Software s.r.o. (Czech); parent Gen Digital Inc.",
+    "parent_company": "Gen Digital Inc. (Nasdaq: GEN)",
+    "previous_names": [
+      "Avast plc",
+      "Alwil Software"
+    ],
+    "official_domain": "avast.com",
+    "alternative_domains": [],
+    "country": "Czech Republic / USA",
+    "category": "Consumer and SMB antivirus and security, privacy",
+    "target_customers": "Consumers and small business; separate Avast Business line",
+    "deployment_model": "Endpoint software, mobile apps and cloud",
+    "data_processed": "Endpoint files, URLs and browsing metadata, device data",
+    "license_model": "Freemium and subscription",
+    "product_status": "Active. Avast One was relaunched in May 2026 as a free app with paid add-ons, and Avast Pro Antivirus was reportedly folded into it.",
+    "ambiguity_notes": "The submitted URL is the consumer German page. The snapshot fetch failed with a proxy 403, so no vendor page content was read. Avast Business is a separate product. Free Antivirus, Avast One and Premium are overlapping SKUs."
+  },
+  "claims": [
+    {
+      "claim": "Avast is a major, legitimate security vendor owned by Gen Digital",
+      "status": "VERIFIED",
+      "evidence_ids": [
+        "E5",
+        "E6"
+      ],
+      "note": null
+    },
+    {
+      "claim": "Avast previously told users that data passed to Jumpshot was anonymous",
+      "status": "CONTRADICTED",
+      "evidence_ids": [
+        "E1",
+        "E2"
+      ],
+      "note": "The Czech DPA found the data was not anonymised. The FTC found it re-identifiable."
+    },
+    {
+      "claim": "Avast products have strong detection results",
+      "status": "VERIFIED",
+      "evidence_ids": [
+        "E7"
+      ],
+      "note": "Based on AV-TEST listings, which came back via search summary only."
+    }
+  ],
+  "findings": [
+    {
+      "criterion": "legal_regulatory",
+      "severity": "RED",
+      "finding": "A final FTC order (June 2024) found Avast and Jumpshot sold re-identifiable browsing data of Avast users to third parties from 2014 to 2020. The FTC also found this contradicted privacy claims. Avast paid $16.5M and is banned from selling browsing data for advertising. This is the vendor's own misconduct against the core promise of a privacy and security product.",
+      "evidence_ids": [
+        "E1"
+      ],
+      "verification_status": "CONFIRMED",
+      "still_relevant": true,
+      "source_urls": [
+        "https://www.ftc.gov/news-events/news/press-releases/2024/06/ftc-finalizes-order-avast-banning-it-selling-or-licensing-web-browsing-data-advertising-requiring-it"
+      ]
+    },
+    {
+      "criterion": "legal_regulatory",
+      "severity": "RED",
+      "finding": "The Czech DPA's final and binding decision (April 2024) fined Avast Software s.r.o. CZK 351M for GDPR violations. The regulator found the data transferred to Jumpshot was not anonymised, contrary to what Avast told users. This is a first-hand GDPR finding relevant to a German and EU buyer.",
+      "evidence_ids": [
+        "E2"
+      ],
+      "verification_status": "CONFIRMED",
+      "still_relevant": true,
+      "source_urls": [
+        "https://uoou.gov.cz/en/news/business-communication/czech-dpa-imposed-fine-of-351-million-czk-for-gdpr-infringement"
+      ]
+    },
+    {
+      "criterion": "legal_regulatory",
+      "severity": "YELLOW",
+      "finding": "Follow-on litigation continues. The Dutch CUIC mass claim and a UK class claim are still referenced, while the US wiretap suit was dismissed on appeal in Oct 2025.",
+      "evidence_ids": [
+        "E3",
+        "E4"
+      ],
+      "verification_status": "CONFIRMED",
+      "still_relevant": true,
+      "source_urls": [
+        "https://law360.com/articles/2404328",
+        "https://nltimes.nl/node/67202"
+      ]
+    },
+    {
+      "criterion": "security_privacy",
+      "severity": "YELLOW",
+      "finding": "There is a steady flow of local privilege-escalation and parser CVEs in Avast products during 2025-2026. These were patched via updates. This is normal for a mature AV product, and no breach was found.",
+      "evidence_ids": [
+        "E8"
+      ],
+      "verification_status": "CONFIRMED",
+      "still_relevant": true,
+      "source_urls": [
+        "https://www.zerodayinitiative.com/advisories/ZDI-26-271/"
+      ]
+    },
+    {
+      "criterion": "product_existence",
+      "severity": "GREEN",
+      "finding": "The product is real, widely deployed and independently tested. AV-TEST certifications and awards are recent.",
+      "evidence_ids": [
+        "E7",
+        "E10"
+      ],
+      "verification_status": "CONFIRMED",
+      "still_relevant": true,
+      "source_urls": [
+        "https://av-test.org/en/news/av-test-awards-2025-for-avast/",
+        "https://www.test.de/antivirenprogramme"
+      ]
+    },
+    {
+      "criterion": "financial_viability",
+      "severity": "GREEN",
+      "finding": "The parent Gen Digital is highly profitable, with about $5B FY26 revenue.",
+      "evidence_ids": [
+        "E5"
+      ],
+      "verification_status": "CONFIRMED",
+      "still_relevant": true,
+      "source_urls": [
+        "https://newsroom.gendigital.com/2026-05-07-Gen-Crosses-5B-in-FY26-Revenue-with-Growth-Accelerating-to-Double-Digits"
+      ]
+    },
+    {
+      "criterion": "ownership_acquisitions",
+      "severity": "INFO",
+      "finding": "Avast has been part of Gen Digital since 2022. Gen runs several overlapping brands (Norton, Avast, AVG, Avira), so consolidation of SKUs is possible. Avast One was relaunched in 2026 and Pro was reportedly folded in.",
+      "evidence_ids": [
+        "E6"
+      ],
+      "verification_status": "CONFIRMED",
+      "still_relevant": true,
+      "source_urls": [
+        "https://thepaypers.com/digital-identity-security-online-fraud/nortonlifelock-avast-merge-into-gen-digital--1259072"
+      ]
+    },
+    {
+      "criterion": "product_lifecycle",
+      "severity": "YELLOW",
+      "finding": "SKU overlap (Free, One, Premium, Business) and recent packaging changes make it unclear which product is being licensed. No end-of-life notice was found for the main products.",
+      "evidence_ids": [
+        "E11"
+      ],
+      "verification_status": "UNVERIFIED",
+      "still_relevant": true,
+      "source_urls": [
+        "https://community.avast.com/t/importan-notice-unsupported-operating-systems/908468"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E1",
+      "url": "https://www.ftc.gov/news-events/news/press-releases/2024/06/ftc-finalizes-order-avast-banning-it-selling-or-licensing-web-browsing-data-advertising-requiring-it",
+      "title": null,
+      "publisher": "FTC",
+      "published_date": "2024-06-26",
+      "excerpt": "ftc finalizes order avast banning it selling or licensing web browsing data advertising requiring it",
+      "criterion": "legal_regulatory",
+      "source_type": "regulator",
+      "independent": true,
+      "stance": "undermines_trust",
+      "about": "Final FTC order against Avast and Jumpshot over sale of re-identifiable browsing data (about $16.5M, 2014-2020, deletion of data and models, ban on selling browsing data for advertising)",
+      "validation_status": "VERIFIED_QUOTE",
+      "validation_note": "excerpt found in search result text",
+      "retrieved_at": "2026-11-27T15:10:55.849942+00:00"
+    },
+    {
+      "id": "E2",
+      "url": "https://uoou.gov.cz/en/news/business-communication/czech-dpa-imposed-fine-of-351-million-czk-for-gdpr-infringement",
+      "title": null,
+      "publisher": "UOOU (Czech Office for Personal Data Protection)",
+      "published_date": "2024-04-15",
+      "excerpt": "Czech DPA imposed fine of 351 million CZK for GDPR infringement",
+      "criterion": "legal_regulatory",
+      "source_type": "regulator",
+      "independent": true,
+      "stance": "undermines_trust",
+      "about": "Final and binding GDPR fine on Avast Software s.r.o. for transfers of pseudonymised browsing history of about 100M users to Jumpshot in 2019",
+      "validation_status": "SEARCH_OBSERVED",
+      "validation_note": "direct fetch failed (ProxyError: 403 Forbidden (agent proxy: no rule or network setting allows this h); only seen in search results",
+      "retrieved_at": "2026-11-27T15:10:55.849942+00:00"
+    },
+    {
+      "id": "E3",
+      "url": "https://law360.com/articles/2404328",
+      "title": null,
+      "publisher": "Law360",
+      "published_date": "2025-10-27",
+      "excerpt": "9th Circ. Won't Revive Avast Extension Users' Wiretap Suit",
+      "criterion": "legal_regulatory",
+      "source_type": "journalism",
+      "independent": true,
+      "stance": "neutral",
+      "about": "A US wiretap class action over the browser extension was dismissed on appeal",
+      "validation_status": "VERIFIED_QUOTE",
+      "validation_note": "excerpt found in search result text",
+      "retrieved_at": "2026-11-27T15:10:55.849942+00:00"
+    },
+    {
+      "id": "E4",
+      "url": "https://nltimes.nl/node/67202",
+      "title": null,
+      "publisher": "NL Times",
+      "published_date": null,
+      "excerpt": "Over 10,000 plan to sue Avast over data selling claims",
+      "criterion": "legal_regulatory",
+      "source_type": "journalism",
+      "independent": true,
+      "stance": "undermines_trust",
+      "about": "Dutch CUIC mass claim over data sales; a UK claim is also referenced on avast.com/avastclaimsuk; outcomes unverified",
+      "validation_status": "VERIFIED_QUOTE",
+      "validation_note": "excerpt found in search result text",
+      "retrieved_at": "2026-11-27T15:10:55.849942+00:00"
+    },
+    {
+      "id": "E5",
+      "url": "https://newsroom.gendigital.com/2026-05-07-Gen-Crosses-5B-in-FY26-Revenue-with-Growth-Accelerating-to-Double-Digits",
+      "title": null,
+      "publisher": "Gen Digital",
+      "published_date": "2026-05-07",
+      "excerpt": "Gen Crosses $5B in FY26 Revenue with Growth Accelerating to Double-Digits",
+      "criterion": "financial_viability",
+      "source_type": "vendor_official",
+      "independent": false,
+      "stance": "supports_trust",
+      "about": "Parent is financially strong: FY26 revenue about $5B, FY27 guidance raised",
+      "validation_status": "VERIFIED_QUOTE",
+      "validation_note": "excerpt found in search result text",
+      "retrieved_at": "2026-11-27T15:10:55.849942+00:00"
+    },
+    {
+      "id": "E6",
+      "url": "https://thepaypers.com/digital-identity-security-online-fraud/nortonlifelock-avast-merge-into-gen-digital--1259072",
+      "title": null,
+      "publisher": "The Paypers",
+      "published_date": "2022-11",
+      "excerpt": "NortonLifeLock and Avast merge into Gen Digital",
+      "criterion": "ownership_acquisitions",
+      "source_type": "journalism",
+      "independent": true,
+      "stance": "neutral",
+      "about": "Avast merged with NortonLifeLock in 2022 to form Gen Digital; the Avast brand is retained",
+      "validation_status": "SEARCH_OBSERVED",
+      "validation_note": "direct fetch failed (ProxyError: 403 Forbidden (agent proxy: no rule or network setting allows this h); only seen in search results",
+      "retrieved_at": "2026-11-27T15:10:55.849942+00:00"
+    },
+    {
+      "id": "E7",
+      "url": "https://av-test.org/en/news/av-test-awards-2025-for-avast/",
+      "title": null,
+      "publisher": "AV-TEST",
+      "published_date": "2026-03-12",
+      "excerpt": "AV-TEST Awards 2025 for Avast",
+      "criterion": "product_existence",
+      "source_type": "independent_audit",
+      "independent": true,
+      "stance": "supports_trust",
+      "about": "Avast received the Best macOS Security Award for consumers and has recent certifications",
+      "validation_status": "SEARCH_OBSERVED",
+      "validation_note": "direct fetch failed (ProxyError: 403 Forbidden (agent proxy: no rule or network setting allows this h); only seen in search results",
+      "retrieved_at": "2026-11-27T15:10:55.849942+00:00"
+    },
+    {
+      "id": "E8",
+      "url": "https://www.zerodayinitiative.com/advisories/ZDI-26-271/",
+      "title": null,
+      "publisher": "Zero Day Initiative",
+      "published_date": "2026",
+      "excerpt": "Advisory Details",
+      "criterion": "security_privacy",
+      "source_type": "security_research",
+      "independent": true,
+      "stance": "neutral",
+      "about": "CVE-2026-5424, a local privilege escalation in the Gen self-protection driver of Avast Premium Security, fixed in 26.3 or later. Further Gen advisories for Avast, AVG and Norton were found for versions before 26.7 (CVE-2026-80301 to 80303), from search summaries only.",
+      "validation_status": "VERIFIED_QUOTE",
+      "validation_note": "excerpt found in search result text",
+      "retrieved_at": "2026-11-27T15:10:55.849942+00:00"
+    },
+    {
+      "id": "E9",
+      "url": "https://forbes.cz/mise-splnena-ondrej-vlcek-odstoupil-z-funkce-prezidenta-gen-digital/",
+      "title": null,
+      "publisher": "Forbes CZ",
+      "published_date": "2024-05",
+      "excerpt": "Mise splněna: Ondřej Vlček odstoupil z funkce prezidenta Gen Digital",
+      "criterion": "team_continuity",
+      "source_type": "journalism",
+      "independent": true,
+      "stance": "neutral",
+      "about": "Avast's long-time leader stepped down as Gen president in June 2024. Gen is run by CEO Pilette.",
+      "validation_status": "SEARCH_OBSERVED",
+      "validation_note": "direct fetch failed (ProxyError: 403 Forbidden (agent proxy: no rule or network setting allows this h); only seen in search results",
+      "retrieved_at": "2026-11-27T15:10:55.849942+00:00"
+    },
+    {
+      "id": "E10",
+      "url": "https://www.test.de/antivirenprogramme",
+      "title": null,
+      "publisher": "Stiftung Warentest",
+      "published_date": "2026-02",
+      "excerpt": "Antivirenprogramme im Test",
+      "criterion": "customer_verification",
+      "source_type": "independent_audit",
+      "independent": true,
+      "stance": "neutral",
+      "about": "Avast Free Antivirus and Avast One were tested by Stiftung Warentest (02/2026). Scores are paywalled and were not read.",
+      "validation_status": "SEARCH_OBSERVED",
+      "validation_note": "direct fetch failed (ProxyError: 403 Forbidden (agent proxy: no rule or network setting allows this h); only seen in search results",
+      "retrieved_at": "2026-11-27T15:10:55.849942+00:00"
+    },
+    {
+      "id": "E11",
+      "url": "https://community.avast.com/t/importan-notice-unsupported-operating-systems/908468",
+      "title": null,
+      "publisher": "Avast Community",
+      "published_date": null,
+      "excerpt": "Importan Notice - Unsupported Operating Systems",
+      "criterion": "product_lifecycle",
+      "source_type": "vendor_official",
+      "independent": false,
+      "stance": "neutral",
+      "about": "Avast ends support for older operating systems, which is a normal lifecycle practice",
+      "validation_status": "VERIFIED_QUOTE",
+      "validation_note": "excerpt found in search result text",
+      "retrieved_at": "2026-11-27T15:10:55.849942+00:00"
+    }
+  ],
+  "research_coverage": {
+    "company_legitimacy": {
+      "relevance": "HIGH",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Avast Gen Digital merger Avast brand 2026"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 0,
+      "summary": "Well-known vendor, part of Nasdaq-listed Gen Digital, Czech roots.",
+      "open_questions": []
+    },
+    "marketing_claims": {
+      "relevance": "HIGH",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Avast Jumpshot Czech data protection authority fine UOOU",
+        "Avast Antivirus AV-TEST 2026 test results"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 0,
+      "summary": "Regulators found past anonymity claims about user data to be untrue. Detection claims are supported by AV-TEST. The vendor site could not be fetched.",
+      "open_questions": []
+    },
+    "security_privacy": {
+      "relevance": "HIGH",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Avast vulnerability OR breach OR CVE 2025 2026",
+        "Avast FTC Jumpshot order data sale"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 1,
+      "summary": "A history of data sale is confirmed. Routine CVEs are patched. No breach was found.",
+      "open_questions": []
+    },
+    "legal_regulatory": {
+      "relevance": "HIGH",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Avast FTC Jumpshot order data sale",
+        "Avast Jumpshot Czech data protection authority fine UOOU",
+        "Avast Ofcom OR UK ICO OR lawsuit OR class action Avast Software 2025"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 4,
+      "summary": "A final FTC order and a final Czech DPA fine are confirmed. Civil claims are ongoing in the Netherlands and the UK.",
+      "open_questions": []
+    },
+    "product_lifecycle": {
+      "relevance": "MEDIUM",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Avast Free Antivirus Avast One discontinued OR Ende OR end of life 2026"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 1,
+      "summary": "The product is active. Packaging is being consolidated into Avast One. No EOL notice was found.",
+      "open_questions": []
+    },
+    "customer_verification": {
+      "relevance": "LOW",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Avast Datenschutz Verbraucherzentrale OR Stiftung Warentest Avast Antivirus Test"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 1,
+      "summary": "Mass-market consumer product. Independent tests are available (AV-TEST, Stiftung Warentest). Specific customer logos were not checked.",
+      "open_questions": []
+    },
+    "ownership_acquisitions": {
+      "relevance": "MEDIUM",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Avast Gen Digital merger Avast brand 2026"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 1,
+      "summary": "Owned by Gen Digital since the 2022 merger. A multi-brand portfolio.",
+      "open_questions": []
+    },
+    "team_continuity": {
+      "relevance": "MEDIUM",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Avast Software s.r.o. Prague Gen Digital leadership CEO Vlcek Ondrej Vlcek departure"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 1,
+      "summary": "Founder-era leadership has left operational roles. Professional corporate management is in place.",
+      "open_questions": []
+    },
+    "product_existence": {
+      "relevance": "HIGH",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Avast Antivirus AV-TEST 2026 test results"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 1,
+      "summary": "Real, continuously updated and certified.",
+      "open_questions": []
+    },
+    "documentation_support": {
+      "relevance": "LOW",
+      "status": "INSUFFICIENT_EVIDENCE",
+      "reported_status": "INSUFFICIENT_EVIDENCE",
+      "queries_executed": [
+        "Avast Free Antivirus Avast One discontinued OR Ende OR end of life 2026"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 0,
+      "summary": "The community and support portals exist. The vendor site was not fetchable and support quality was not assessed.",
+      "open_questions": []
+    },
+    "financial_viability": {
+      "relevance": "MEDIUM",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Gen Digital annual report fiscal 2026 revenue Avast Norton"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 1,
+      "summary": "The parent is very strong financially.",
+      "open_questions": []
+    },
+    "enterprise_readiness": {
+      "relevance": "MEDIUM",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Avast Antivirus AV-TEST 2026 test results"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 0,
+      "summary": "The submitted page is the consumer site. The separate Avast Business line has AV-TEST business certifications. SOC 2 and ISO certifications were not verified.",
+      "open_questions": []
+    },
+    "_summary": {
+      "covered": 11,
+      "total": 12,
+      "observed_search_queries": 10
+    }
+  },
+  "follow_ups": [
+    {
+      "trigger": "Final FTC order and Czech DPA fine",
+      "action": "Searched for appeals, follow-on litigation and the current status",
+      "outcome": "The Czech fine is final and binding. The FTC order is final. Dutch and UK civil claims are open, and the US suit was dismissed."
+    },
+    {
+      "trigger": "2026 CVEs",
+      "action": "Checked severity and fixes",
+      "outcome": "Local privilege escalation issues, fixed in 26.3 and 26.7. No exploitation reported."
+    }
+  ],
+  "contradictions": [
+    "Avast told users that the Jumpshot data was anonymous, but the Czech DPA and FTC found it was not anonymised and was re-identifiable [E1, E2].",
+    "The orchestrator snapshot failed with a proxy 403, so no vendor-page claims could be checked."
+  ],
+  "unresolved_questions": [
+    "Do current Avast privacy terms and telemetry settings comply with the FTC order and GDPR?",
+    "What are the outcomes of the Dutch and UK claims?",
+    "Are SOC 2 or ISO 27001 certifications available for Avast Business?",
+    "What are the exact licensing terms of Avast One tiers versus Business products?"
+  ],
+  "limitations": [
+    "The vendor site was not fetchable (proxy 403), so marketing claims were not verified from the vendor page.",
+    "Some evidence comes from search summaries rather than fetched pages.",
+    "The AV-TEST and Stiftung Warentest detailed scores were not read.",
+    "Some CVE dates in the search results were inconsistent.",
+    "Direct HTTP fetch of the product site failed (ProxyError: 403 Forbidden (agent proxy: no rule or network setting allows this host))."
+  ],
+  "preliminary_verdict": "RED",
+  "critic": {
+    "model": "sonnet",
+    "triggers": [
+      "contradictions reported",
+      "RED without HIGH confidence"
+    ],
+    "final_verdict": "RED",
+    "changed": false,
+    "challenges": [
+      "Checked that the evidence concerns this exact vendor and product. The FTC order and the Czech DPA fine name Avast Software s.r.o. and the Avast antivirus and browser-extension products. The product under review is the same consumer Avast line, so this is not a sibling or similarly named product.",
+      "Checked whether the findings were overturned or dismissed. The FTC order was finalized in June 2024 and the Czech DPA decision is final and binding. Only the US wiretap class suit was dismissed on appeal (E3). That does not undo the regulator findings.",
+      "Checked whether this is an incident done TO the vendor. It is not. It is the vendor's own misconduct: selling re-identifiable browsing data while telling users it was anonymous. That contradicts the core promise of a privacy and security product.",
+      "Checked whether remediation or the passage of time justifies downgrading to YELLOW. Under the weighing rules, a final regulator order or fine establishing own misconduct against the core promise stays RED after settlement or remediation. Strong parent finances, AV-TEST results and a patched-CVE cadence do not outweigh it.",
+      "No searches were used. The evidence summary already settles the verdict, and further searching could not change it."
+    ],
+    "searches": [],
+    "fetches": []
+  },
+  "guardrail_notes": [],
+  "validation_summary": {
+    "VERIFIED_QUOTE": 6,
+    "SEARCH_OBSERVED": 5,
+    "valid": 11,
+    "total": 11
+  },
+  "observed_queries": [
+    "Avast FTC Jumpshot order data sale",
+    "Avast Gen Digital merger Avast brand 2026",
+    "Avast Jumpshot Czech data protection authority fine UOOU",
+    "Avast vulnerability OR breach OR CVE 2025 2026",
+    "Gen Digital annual report fiscal 2026 revenue Avast Norton",
+    "Avast Antivirus AV-TEST 2026 test results",
+    "Avast Free Antivirus Avast One discontinued OR Ende OR end of life 2026",
+    "Avast Ofcom OR UK ICO OR lawsuit OR class action Avast Software 2025",
+    "Avast Software s.r.o. Prague Gen Digital leadership CEO Vlcek Ondrej Vlcek departure",
+    "Avast Datenschutz Verbraucherzentrale OR Stiftung Warentest Avast Antivirus Test"
+  ],
+  "observed_fetches": [],
+  "execution_metrics": {
+    "duration_seconds": 72.4,
+    "claude_calls": 2,
+    "turns": 14,
+    "search_requests": 10,
+    "web_fetch_requests": 0,
+    "input_tokens": 151465,
+    "output_tokens": 19623,
+    "cache_read_tokens": 37443,
+    "cache_creation_tokens": 26454,
+    "estimated_api_equivalent_cost_usd": 0.3334,
+    "models_used": [
+      "claude-sonnet-5-5",
+      "claude-haiku-5-5"
+    ],
+    "session_ids": [
+      "1e23ab5e-0ae3-4e85-bf7f-c67616406edd",
+      "1c279eeb-f50f-48db-ac17-f8425ef74306"
+    ],
+    "permission_denials": 0,
+    "errors": []
+  },
+  "mode": "fast",
+  "generated_at": "2026-11-27T15:11:06.480597+00:00"
+}

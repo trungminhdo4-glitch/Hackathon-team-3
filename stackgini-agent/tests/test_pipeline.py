@@ -147,3 +147,16 @@ def test_batch_limit_then_resume(cfg, no_network, fake_claude, monkeypatch):
 
 def test_all_valid_evidence_statuses_known():
     assert VALID_EVIDENCE == {"VERIFIED_QUOTE", "RETRIEVED", "SEARCH_OBSERVED"}
+
+
+def test_critic_cannot_upgrade_to_green_without_new_evidence(cfg, no_network, fake_claude, monkeypatch):
+    monkeypatch.setenv("FAKE_CLAUDE_SCENARIO", "critic_upgrade")
+    rep = asyncio.run(investigate("https://acme.example.com/", Deps.build(cfg), log=lambda m: None, use_cache=False))
+    assert rep.overall == "RED"
+    assert any("upgrade" in n and "rejected" in n for n in rep.guardrail_notes)
+
+
+def test_critic_prompt_contains_full_rubric(cfg):
+    from research.critic import critic_system_prompt
+    p = critic_system_prompt(cfg)
+    assert "adversarial reviewer" in p and "# Taste" in p and "Misconduct versus incident" in p

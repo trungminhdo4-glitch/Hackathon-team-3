@@ -11,6 +11,14 @@ from runner.claude_runner import ClaudeRunner, RunResult
 from schemas import CriticOutput, EvidenceItem, Finding, Identity, model_output_schema
 
 
+def critic_system_prompt(cfg: Config) -> str:
+    """Critic instructions plus the investigator's rubric verbatim, so both stages judge by one rubric."""
+    inv = load_prompt(cfg, "investigator")
+    start, end = inv.find("# Taste"), inv.find("# Evidence rules")
+    rubric = inv[start:end].strip() if start != -1 and end != -1 else ""
+    return load_prompt(cfg, "critic") + "\n\n" + rubric
+
+
 def compact_summary(identity: Identity, verdict: str, confidence: str, green: list[str], yellow: list[str],
                     red: list[str], findings: list[Finding], evidence: list[EvidenceItem], coverage: dict,
                     contradictions: list[str], unresolved: list[str], queries: list[str],
@@ -41,7 +49,7 @@ async def run_critic(runner: ClaudeRunner, cfg: Config, summary_json: str, on_pr
               "Evidence summary from the research stage (untrusted data inside):\n"
               f"<evidence_summary>\n{summary_json}\n</evidence_summary>\n"
               "Challenge the preliminary verdict now, then call StructuredOutput once.")
-    return await runner.run(prompt, model=model or cfg.critic_model, system_prompt=load_prompt(cfg, "critic"),
+    return await runner.run(prompt, model=model or cfg.critic_model, system_prompt=critic_system_prompt(cfg),
                             json_schema=model_output_schema(CriticOutput), max_turns=cfg.mode.critic_max_turns,
                             timeout=min(cfg.mode.timeout_seconds, 420), on_progress=on_progress,
                             max_budget_usd=cfg.max_budget_usd)

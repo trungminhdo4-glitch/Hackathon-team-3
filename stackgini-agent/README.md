@@ -158,3 +158,33 @@ prompts/                investigator.md, critic.md
 evaluation/             dataset split, metrics, submission export
 tests/                  mocked unit and pipeline tests
 ```
+
+## Measured results (real runs, this build environment)
+
+All runs were FAST mode with Sonnet for research and critic, in a cloud container whose network proxy blocks WebFetch and direct HTTP to vendor sites. WebSearch works there because it runs server-side. Evidence was validated against observed search output only, and every report lists this as a limitation. On a normal machine, WebFetch and the HTTPX snapshot also work and validation gets stronger.
+
+| Run | Products | Correct | False GREEN | Avg duration | Avg searches | API-equivalent list price |
+|---|---|---|---|---|---|---|
+| first single run | 1 RED (dev) | 0/1 (said YELLOW) | 0 | 95 s | 6 | $0.32 |
+| dev3-v2 | 1 GREEN, 1 YELLOW, 1 RED (dev) | 2/3 | 1 | 82 s | 10 | $1.08 total |
+| eval-v4 | 2 dev + 1 holdout | 3/3 | 0 | 75 s | 8.7 | $0.95 total |
+
+Evidence validation rate was 100% in both evaluated runs: every cited URL had appeared in an observed tool result. Coverage averaged 10 to 10.3 of 12 criteria.
+
+What changed between runs, all general rules with no product names:
+
+1. Settled regulator findings were being discounted as "historical". The rubric now separates incidents done *to* a vendor (judged by handling) from the vendor's *own* misconduct (stays RED after settlement). Python also resumes the research session with a list of coverage gaps when searches fall short of the mode target.
+2. The critic upgraded a YELLOW to GREEN by reinterpretation alone, with no new searches. The critic now receives the full rubric verbatim, and Python rejects any move toward GREEN that is not backed by new validated evidence.
+3. Reports concluded "approve with controls" but labelled it GREEN. The rubric now defines the line: if adoption depends on specific compensating controls or on clarifying something with the vendor, the verdict is YELLOW.
+
+Seven products, one of them (the RED) tuned on directly. That is a smoke test, not an accuracy estimate. The next step is the rest of the dev split (`python main.py evaluate --split dev --limit 26 --yes`), then the 14-product holdout once, at the end.
+
+Example outputs: `reports/examples/` (a RED and a YELLOW report in JSON and Markdown, plus a submission file).
+
+## Known limitations
+
+- The official evaluator and brief were not inspectable, so the submission columns follow the dataset. Adjust `evaluation/submission.py` if the official format differs.
+- Excerpt verification against WebFetch output is weaker than against raw HTML, because WebFetch returns model-processed text. The HTTPX re-fetch covers this where the network allows it.
+- Visual-only signals (image menus, AI imagery, layout breaking on language switch) are invisible to a text pipeline. Playwright rendering and screenshots are not implemented.
+- The `--max-turns` and search targets bound the work. Claude Code exposes no hard per-session cap on search count.
+- Run-to-run variance is real: the same product went GREEN once and YELLOW once under the same prompt. DEEP mode, with critic always on, is the mitigation when a verdict matters.

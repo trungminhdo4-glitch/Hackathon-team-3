@@ -23,7 +23,7 @@ from research.judge import apply_remap_text, attach_sources, judge, needs_critic
 from research.validator import EvidenceValidator, summarize
 from runner.claude_runner import ClaudeRunner, RunResult, SubscriptionLimitError
 from runner.usage import merge_result_usage
-from schemas import ExecutionMetrics, Identity, Report
+from schemas import VALID_EVIDENCE, ExecutionMetrics, Identity, Report
 from tools.safe_url import check_url
 from tools.website import SafeFetcher, render_snapshot, snapshot_site
 
@@ -213,6 +213,15 @@ async def investigate(url: str, deps: Deps, log: Optional[Log] = None, use_cache
                 f.evidence_ids = remap_ids(f.evidence_ids, remap2)
             findings += critic.additional_findings
             attach_sources(findings, evidence)
+            # Asymmetry: moving toward GREEN needs new validated evidence, not reinterpretation.
+            rank = {"GREEN": 0, "YELLOW": 1, "RED": 2}
+            new_valid = [e for e in new_ev if e.validation_status in VALID_EVIDENCE]
+            if critic.final_verdict == "GREEN" and rank[j.verdict] > 0 and not new_valid:
+                guard_notes.append(f"critic upgrade {j.verdict}->GREEN rejected: no new validated evidence "
+                                   "resolved the concerns")
+                log(f"Critic upgrade to GREEN rejected (no new validated evidence); keeping {j.verdict}")
+                critic.final_verdict, critic.confidence = j.verdict, j.confidence
+                critic.green_flags, critic.yellow_flags, critic.red_flags = [], [], []
             cg = critic.green_flags or final_green
             cy = critic.yellow_flags or final_yellow
             cr = critic.red_flags or final_red

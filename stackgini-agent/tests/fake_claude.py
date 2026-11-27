@@ -54,7 +54,11 @@ crit = ["company_legitimacy", "marketing_claims", "security_privacy", "legal_reg
         "customer_verification", "ownership_acquisitions", "team_continuity", "product_existence",
         "documentation_support", "financial_viability", "enterprise_readiness"]
 
-if is_critic:
+if is_critic and scenario == "critic_upgrade":
+    out = {"final_verdict": "GREEN", "confidence": "MEDIUM", "changed": True, "challenges": ["reinterpreted"],
+           "additional_evidence": [], "additional_findings": [], "green_flags": ["fine [E1]"],
+           "yellow_flags": [], "red_flags": [], "reasoning": "looks fine", "needs_escalation": False}
+elif is_critic:
     out = {"final_verdict": "RED", "confidence": "HIGH", "changed": False,
            "challenges": ["Checked FTC order is about this Acme entity: yes"],
            "additional_evidence": [], "additional_findings": [],

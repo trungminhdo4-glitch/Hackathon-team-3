@@ -1,0 +1,585 @@
+{
+  "url": "https://notepad-plus-plus.org/",
+  "product": "Notepad++",
+  "vendor": "Don Ho (individual/open-source project)",
+  "overall": "YELLOW",
+  "confidence": "MEDIUM",
+  "summary": "Notepad++ is a genuine, widely used, actively maintained free editor that has existed since 2003. It is led by one maintainer with no legal entity. Its updater was hijacked in 2025 by a suspected state actor, and 2026 saw many CVEs. Handling was transparent and fixes were quick. Enterprises can use it with controls.",
+  "green_flags": [
+    "More than 20 years of continuous development, with active 8.9.x releases and wide adoption [E3, E11]",
+    "Transparent incident disclosure and a hardened update process [E2, E5]",
+    "Free for commercial use under the GPL [E8]",
+    "No regulatory or legal misconduct found [E9]"
+  ],
+  "yellow_flags": [
+    "Single lead maintainer, no corporate entity or SLA, and a recent state-sponsored update-hijack supply-chain compromise [E2, E3]",
+    "Many 2026 CVEs, including code execution, and no SECURITY.md [E1, E7]",
+    "Code signing lapsed in 2025 and a self-signed certificate was used until 8.8.7 [E6]",
+    "Lookalike and impersonation sites make the download source a risk [E10]"
+  ],
+  "red_flags": [],
+  "reasoning": "There is no deception, misconduct or abandonment, so the product is not RED. A normal procurement process is not enough, though. A single maintainer, a recent supply-chain compromise and frequent 2026 CVEs mean a buyer should add compensating controls: pin and test the latest patched version, deploy through managed software distribution, disable or proxy the auto-updater, download only from official sources, and verify signatures. That makes it YELLOW.\n\nAdversarial review: Notepad++ is a legitimate, widely used and actively maintained open-source editor. Nothing RED-grade was found. The vendor's own conduct is clean, and the supply-chain compromise was done to the project and handled transparently. The recent incident with a single maintainer still leaves a single point of failure, and 2026 CVEs and the code-signing lapse add risk. A buyer would need compensating controls: pin versions, use managed deployment, control the auto-updater and download only from official sources. That makes YELLOW the right verdict.",
+  "identity": {
+    "product": "Notepad++",
+    "vendor": "Don Ho (individual/open-source project)",
+    "legal_name": null,
+    "parent_company": null,
+    "previous_names": [],
+    "official_domain": "notepad-plus-plus.org",
+    "alternative_domains": [
+      "github.com/notepad-plus-plus/notepad-plus-plus",
+      "community.notepad-plus-plus.org"
+    ],
+    "country": "France",
+    "category": "Source code / text editor (Windows desktop)",
+    "target_customers": "Developers and general users, including commercial use",
+    "deployment_model": "Windows desktop application with auto-updater (WinGUp)",
+    "data_processed": "Local files; no cloud data",
+    "license_model": "Free, open source (GPL)",
+    "product_status": "Active; frequent releases through 8.9.x in 2026",
+    "ambiguity_notes": "Many fake/lookalike sites and an unofficial macOS port (renamed Nextpad++ in May 2026) exist. Only notepad-plus-plus.org and the GitHub repository are official."
+  },
+  "claims": [
+    {
+      "claim": "Notepad++ has been maintained since 2003 by Don Ho and is actively released (8.9.x in 2026)",
+      "status": "VERIFIED",
+      "evidence_ids": [
+        "E3",
+        "E4"
+      ],
+      "note": null
+    },
+    {
+      "claim": "The update mechanism was hardened after the 2025 compromise (signed and verified updates) and is described by the project as effectively unexploitable",
+      "status": "PARTIALLY_VERIFIED",
+      "evidence_ids": [
+        "E2",
+        "E5"
+      ],
+      "note": "This is the project's own claim. It was reported by The Register and Privacy Guides and has not been independently audited."
+    },
+    {
+      "claim": "The software is free for any use, including commercial",
+      "status": "VERIFIED",
+      "evidence_ids": [
+        "E8"
+      ],
+      "note": null
+    }
+  ],
+  "findings": [
+    {
+      "criterion": "security_privacy",
+      "severity": "YELLOW",
+      "finding": "The update channel was hijacked via a hosting-provider compromise from about June to Dec 2025, with targeted malware delivery, and was later hardened. In 2026 there were many further CVEs, including code-execution and installer issues in 8.9.x, and the repository has no SECURITY.md. The disclosure and fixes were reasonably transparent and fast, but the incident is recent and the patch cadence is high [E1, E2, E5, E7].",
+      "evidence_ids": [
+        "E1",
+        "E2",
+        "E5",
+        "E7"
+      ],
+      "verification_status": "CONFIRMED",
+      "still_relevant": true,
+      "source_urls": [
+        "https://csa.gov.sg/alerts-and-advisories/alerts/al-2026-044",
+        "https://www.helpnetsecurity.com/2026/02/02/2025-notepad-supply-chain-compromise/",
+        "https://www.theregister.com/2026/02/18/notepadplusplus_security_update/",
+        "https://www.github.com/notepad-plus-plus/notepad-plus-plus/security"
+      ]
+    },
+    {
+      "criterion": "team_continuity",
+      "severity": "YELLOW",
+      "finding": "The project depends on one lead maintainer, Don Ho, with community contributors. It has run since 2003 with continuous releases, but the bus factor and single point of failure remain, now combined with a recent supply-chain compromise [E3, E4].",
+      "evidence_ids": [
+        "E3",
+        "E4"
+      ],
+      "verification_status": "CONFIRMED",
+      "still_relevant": true,
+      "source_urls": [
+        "https://github.com/notepad-plus-plus/notepad-plus-plus/releases",
+        "https://www.neowin.net/software/notepad-898/"
+      ]
+    },
+    {
+      "criterion": "company_legitimacy",
+      "severity": "YELLOW",
+      "finding": "There is no corporate legal entity or contractual vendor. Lookalike and impersonation sites are common, so downloads must come only from the official domain or GitHub [E10].",
+      "evidence_ids": [
+        "E10"
+      ],
+      "verification_status": "CONFIRMED",
+      "still_relevant": true,
+      "source_urls": [
+        "https://www.bleepingcomputer.com/news/security/notepad-plus-plus-wants-your-help-in-parasite-website-shutdown/"
+      ]
+    },
+    {
+      "criterion": "enterprise_readiness",
+      "severity": "YELLOW",
+      "finding": "There is no SLA, vendor support or formal certification. Code-signing lapsed in 2025 before being restored in 8.8.7. Enterprises should pin versions, deploy through managed channels, and manage the auto-updater [E6, E8].",
+      "evidence_ids": [
+        "E6",
+        "E8"
+      ],
+      "verification_status": "CONFIRMED",
+      "still_relevant": true,
+      "source_urls": [
+        "https://www.notepad-plus-plus.org/news/v883-self-signed-certificate",
+        "https://www.notepad-plus-plus.org/resources"
+      ]
+    },
+    {
+      "criterion": "legal_regulatory",
+      "severity": "INFO",
+      "finding": "No regulatory action or lawsuit against the project was found. The only item is a May 2026 trademark dispute over an unofficial macOS port, which ended in a rename [E9].",
+      "evidence_ids": [
+        "E9"
+      ],
+      "verification_status": "CONFIRMED",
+      "still_relevant": false,
+      "source_urls": [
+        "https://www.macrumors.com/2026/05/13/notepad-plus-plus-mac-nextpad-dispute-settlement/"
+      ]
+    },
+    {
+      "criterion": "team_continuity",
+      "severity": "YELLOW",
+      "finding": "A single maintainer combined with a supply-chain compromise that ended less than a year ago is a bus-factor and single-point-of-failure risk, even though it was well handled.",
+      "evidence_ids": [
+        "E2",
+        "E3"
+      ],
+      "verification_status": "CONFIRMED",
+      "still_relevant": true,
+      "source_urls": [
+        "https://www.helpnetsecurity.com/2026/02/02/2025-notepad-supply-chain-compromise/",
+        "https://github.com/notepad-plus-plus/notepad-plus-plus/releases"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E1",
+      "url": "https://csa.gov.sg/alerts-and-advisories/alerts/al-2026-044",
+      "title": null,
+      "publisher": null,
+      "published_date": "2026",
+      "excerpt": "Vulnerability in Notepad++",
+      "criterion": "security_privacy",
+      "source_type": "regulator",
+      "independent": true,
+      "stance": "undermines_trust",
+      "about": "CVE-2026-3008 in 8.9.3, fixed in 8.9.4. This is one of several 2026 CVEs, including CVE-2026-25926, 6539, 5525, 46710, 48770, 48778 and 48800.",
+      "validation_status": "VERIFIED_QUOTE",
+      "validation_note": "excerpt found in search result text",
+      "retrieved_at": "2026-11-27T15:15:12.184036+00:00"
+    },
+    {
+      "id": "E2",
+      "url": "https://www.helpnetsecurity.com/2026/02/02/2025-notepad-supply-chain-compromise/",
+      "title": null,
+      "publisher": null,
+      "published_date": "2026-02-02",
+      "excerpt": "How state-sponsored attackers hijacked Notepad++ updates",
+      "criterion": "security_privacy",
+      "source_type": "journalism",
+      "independent": true,
+      "stance": "undermines_trust",
+      "about": "Update traffic was hijacked through a hosting-provider compromise from about June to Dec 2025. Only targeted users were affected. The project migrated hosts and added signature checks in 8.8.9.",
+      "validation_status": "VERIFIED_QUOTE",
+      "validation_note": "excerpt found in search result text",
+      "retrieved_at": "2026-11-27T15:15:12.184036+00:00"
+    },
+    {
+      "id": "E3",
+      "url": "https://github.com/notepad-plus-plus/notepad-plus-plus/releases",
+      "title": null,
+      "publisher": null,
+      "published_date": null,
+      "excerpt": "Notepad++ release 8.9.8 ... @donho donho released this 23 Aug",
+      "criterion": "product_lifecycle",
+      "source_type": "primary_technical",
+      "independent": true,
+      "stance": "supports_trust",
+      "about": "Continuous releases by Don Ho",
+      "validation_status": "VERIFIED_QUOTE",
+      "validation_note": "excerpt found in search result text",
+      "retrieved_at": "2026-11-27T15:15:12.184036+00:00"
+    },
+    {
+      "id": "E4",
+      "url": "https://www.neowin.net/software/notepad-898/",
+      "title": null,
+      "publisher": null,
+      "published_date": null,
+      "excerpt": "notepad 898",
+      "criterion": "product_lifecycle",
+      "source_type": "journalism",
+      "independent": true,
+      "stance": "supports_trust",
+      "about": "The 8.9.8 release was followed by 8.9.8.1 and 8.9.9 (Nov 2026, per the Japanese report). Ho is the lead maintainer.",
+      "validation_status": "VERIFIED_QUOTE",
+      "validation_note": "excerpt found in search result text",
+      "retrieved_at": "2026-11-27T15:15:12.184036+00:00"
+    },
+    {
+      "id": "E5",
+      "url": "https://www.theregister.com/2026/02/18/notepadplusplus_security_update/",
+      "title": null,
+      "publisher": null,
+      "published_date": "2026-02-18",
+      "excerpt": "Notepad++ declares hardened update process 'effectively unexploitable'",
+      "criterion": "security_privacy",
+      "source_type": "journalism",
+      "independent": true,
+      "stance": "supports_trust",
+      "about": "Remediation of the update-integrity issue",
+      "validation_status": "VERIFIED_QUOTE",
+      "validation_note": "excerpt found in search result text",
+      "retrieved_at": "2026-11-27T15:15:12.184036+00:00"
+    },
+    {
+      "id": "E6",
+      "url": "https://www.notepad-plus-plus.org/news/v883-self-signed-certificate",
+      "title": null,
+      "publisher": null,
+      "published_date": null,
+      "excerpt": "Notepad++ v8.8.3 - Self-signed Certificate: Certified by Code, Not Corporations",
+      "criterion": "enterprise_readiness",
+      "source_type": "vendor_official",
+      "independent": false,
+      "stance": "undermines_trust",
+      "about": "Code signing lapsed in 2025 and a self-signed certificate was used. A GlobalSign certificate was restored in v8.8.7.",
+      "validation_status": "VERIFIED_QUOTE",
+      "validation_note": "excerpt found in search result text",
+      "retrieved_at": "2026-11-27T15:15:12.184036+00:00"
+    },
+    {
+      "id": "E7",
+      "url": "https://www.github.com/notepad-plus-plus/notepad-plus-plus/security",
+      "title": null,
+      "publisher": null,
+      "published_date": null,
+      "excerpt": "This project has not set up a SECURITY.md file yet.",
+      "criterion": "security_privacy",
+      "source_type": "primary_technical",
+      "independent": true,
+      "stance": "undermines_trust",
+      "about": "No formal security policy in the repository",
+      "validation_status": "VERIFIED_QUOTE",
+      "validation_note": "excerpt found in search result text",
+      "retrieved_at": "2026-11-27T15:15:12.184036+00:00"
+    },
+    {
+      "id": "E8",
+      "url": "https://www.notepad-plus-plus.org/resources",
+      "title": null,
+      "publisher": null,
+      "published_date": null,
+      "excerpt": "free of charge in any environment, including commercial ones",
+      "criterion": "enterprise_readiness",
+      "source_type": "vendor_official",
+      "independent": false,
+      "stance": "supports_trust",
+      "about": "Licensing for commercial use (paraphrased from the search summary)",
+      "validation_status": "VERIFIED_QUOTE",
+      "validation_note": "excerpt found in search result text",
+      "retrieved_at": "2026-11-27T15:15:12.184036+00:00"
+    },
+    {
+      "id": "E9",
+      "url": "https://www.macrumors.com/2026/05/13/notepad-plus-plus-mac-nextpad-dispute-settlement/",
+      "title": null,
+      "publisher": null,
+      "published_date": "2026-05-13",
+      "excerpt": "Notepad++ Mac Port Renamed Nextpad++ After Trademark Row",
+      "criterion": "legal_regulatory",
+      "source_type": "journalism",
+      "independent": true,
+      "stance": "neutral",
+      "about": "The trademark dispute was resolved by a rename. This is not misconduct by the project.",
+      "validation_status": "VERIFIED_QUOTE",
+      "validation_note": "excerpt found in search result text",
+      "retrieved_at": "2026-11-27T15:15:12.184036+00:00"
+    },
+    {
+      "id": "E10",
+      "url": "https://www.bleepingcomputer.com/news/security/notepad-plus-plus-wants-your-help-in-parasite-website-shutdown/",
+      "title": null,
+      "publisher": null,
+      "published_date": null,
+      "excerpt": "notepad plus plus wants your help in parasite website shutdown",
+      "criterion": "company_legitimacy",
+      "source_type": "journalism",
+      "independent": true,
+      "stance": "neutral",
+      "about": "Lookalike and parasite sites impersonate the project",
+      "validation_status": "VERIFIED_QUOTE",
+      "validation_note": "excerpt found in search result text",
+      "retrieved_at": "2026-11-27T15:15:12.184036+00:00"
+    },
+    {
+      "id": "E11",
+      "url": "https://www.star-history.com/notepad-plus-plus/notepad-plus-plus/",
+      "title": null,
+      "publisher": null,
+      "published_date": null,
+      "excerpt": "28.7k Stars",
+      "criterion": "customer_verification",
+      "source_type": "other",
+      "independent": true,
+      "stance": "supports_trust",
+      "about": "Large adoption signal (search-result snippet; July 2026 snapshot)",
+      "validation_status": "VERIFIED_QUOTE",
+      "validation_note": "excerpt found in search result text",
+      "retrieved_at": "2026-11-27T15:15:12.184036+00:00"
+    }
+  ],
+  "research_coverage": {
+    "company_legitimacy": {
+      "relevance": "MEDIUM",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Notepad++ fake website malware impersonation",
+        "Notepad++ GPL license sponsors donations Don Ho France company funding"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 1,
+      "summary": "This is a well-known individual-led open-source project with a long history. There is no company entity, and impersonators exist.",
+      "open_questions": []
+    },
+    "marketing_claims": {
+      "relevance": "LOW",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Notepad++ security audit OR \"bug bounty\" OR \"SECURITY.md\" OR \"OpenSSF\""
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 0,
+      "summary": "There are no inflated claims. The 'effectively unexploitable' claim about the update process is the project's own and unaudited.",
+      "open_questions": []
+    },
+    "security_privacy": {
+      "relevance": "HIGH",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Notepad++ vulnerability CVE 2026",
+        "Notepad++ update hijack supply chain attack hosting"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 4,
+      "summary": "There was a 2025 update-hijack supply-chain incident and many 2026 CVEs. Remediation was prompt.",
+      "open_questions": []
+    },
+    "legal_regulatory": {
+      "relevance": "MEDIUM",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Notepad++ Don Ho lawsuit OR controversy OR legal"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 1,
+      "summary": "No regulatory or court action was found, only a trademark row.",
+      "open_questions": []
+    },
+    "product_lifecycle": {
+      "relevance": "HIGH",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Notepad++ 8.9.8 release",
+        "Notepad++ Don Ho developer maintainer release notes"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 2,
+      "summary": "Actively maintained, with 8.9.x releases through Nov 2026.",
+      "open_questions": []
+    },
+    "customer_verification": {
+      "relevance": "LOW",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Notepad++ users number downloads GitHub stars maintainers contributors"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 1,
+      "summary": "There are no named-customer claims. Adoption is evidenced by GitHub stars and download figures, which are not official.",
+      "open_questions": []
+    },
+    "ownership_acquisitions": {
+      "relevance": "LOW",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Notepad++ GPL license sponsors donations Don Ho France company funding"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 0,
+      "summary": "There are no acquisitions or owner changes. Don Ho is the founder and owner.",
+      "open_questions": []
+    },
+    "team_continuity": {
+      "relevance": "MEDIUM",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Notepad++ Don Ho developer maintainer release notes"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 0,
+      "summary": "There is a single lead maintainer plus contributors, with continuous activity since 2003.",
+      "open_questions": []
+    },
+    "product_existence": {
+      "relevance": "HIGH",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Notepad++ 8.9.8 release"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 0,
+      "summary": "The product exists and is widely deployed. Repository and release pages confirm it.",
+      "open_questions": []
+    },
+    "documentation_support": {
+      "relevance": "MEDIUM",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Notepad++ Don Ho developer maintainer release notes"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 0,
+      "summary": "There is an active community forum, per-version release notes and a wiki. There is no commercial support.",
+      "open_questions": []
+    },
+    "financial_viability": {
+      "relevance": "LOW",
+      "status": "INSUFFICIENT_EVIDENCE",
+      "reported_status": "INSUFFICIENT_EVIDENCE",
+      "queries_executed": [
+        "Notepad++ GPL license sponsors donations Don Ho France company funding"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 0,
+      "summary": "Funded by donations. No financial data was found. The project paid 647 EUR for 3 years for a code-signing certificate.",
+      "open_questions": []
+    },
+    "enterprise_readiness": {
+      "relevance": "MEDIUM",
+      "status": "INVESTIGATED",
+      "reported_status": "INVESTIGATED",
+      "queries_executed": [
+        "Notepad++ enterprise deployment code signing certificate AI Copilot controversy"
+      ],
+      "unconfirmed_queries": [],
+      "valid_evidence": 2,
+      "summary": "No SLA, SBOM or certifications were found. The code-signing lapse was fixed. There is no security policy file.",
+      "open_questions": []
+    },
+    "_summary": {
+      "covered": 11,
+      "total": 12,
+      "observed_search_queries": 10
+    }
+  },
+  "follow_ups": [
+    {
+      "trigger": "Direct fetch of notepad-plus-plus.org was blocked by the proxy",
+      "action": "Confirm the current version, license and signing certificate on the official site and GitHub",
+      "outcome": "Not completed in this session; relied on search results."
+    },
+    {
+      "trigger": "Several 2026 CVEs",
+      "action": "Check the NVD and the release notes for the version to be deployed",
+      "outcome": "Deploy only the latest patched version (8.9.9 or later)."
+    }
+  ],
+  "contradictions": [
+    "Search sources disagree on the latest version (8.9.8.1 versus 8.9.9). Wikipedia's stable-release figure is outdated.",
+    "The license is reported as GPL-2.0-or-later in one source and GPL-3.0-or-later in another."
+  ],
+  "unresolved_questions": [
+    "The current latest version and its patch status",
+    "Whether the project plans an independent security audit or a security policy",
+    "Succession and continuity plans for the lead maintainer"
+  ],
+  "limitations": [
+    "WebFetch was blocked by the proxy, so the official site and the incident write-up were not read directly.",
+    "Findings rely on search-result summaries and third-party reporting.",
+    "The search budget was not fully used for CVE detail, and the 2026 CVE list is incomplete.",
+    "Direct HTTP fetch of the product site failed (ProxyError: 403 Forbidden (agent proxy: no rule or network setting allows this host)).",
+    "2 WebFetch call(s) failed: https://notepad-plus-plus.org/news/hijacked-incident-info-update/, https://notepad-plus-plus.org/"
+  ],
+  "preliminary_verdict": "YELLOW",
+  "critic": {
+    "model": "sonnet",
+    "triggers": [
+      "contradictions reported"
+    ],
+    "final_verdict": "YELLOW",
+    "changed": false,
+    "challenges": [
+      "Checked whether anything RED-grade was missed. The evidence shows no regulator or court misconduct, no deception and no abandonment. The only legal item is a trademark dispute over an unofficial macOS port.",
+      "Checked whether YELLOW was only 'not much found'. It was not. The product is plainly real and maintained, but a state-sponsored update-channel hijack ran from June to December 2025. Code signing lapsed and was replaced by a self-signed certificate. Many 2026 CVEs include code-execution issues. Lead-maintainer dependence remains.",
+      "Checked the incident handling. Disclosure was transparent and the update process was hardened, so this is not RED. The project's 'effectively unexploitable' claim is its own and unaudited. There is no SECURITY.md and no independent audit.",
+      "No new searches were run. The evidence summary was enough to decide, and extra searches were unlikely to change the verdict."
+    ],
+    "searches": [],
+    "fetches": []
+  },
+  "guardrail_notes": [],
+  "validation_summary": {
+    "VERIFIED_QUOTE": 11,
+    "valid": 11,
+    "total": 11
+  },
+  "observed_queries": [
+    "Notepad++ vulnerability CVE 2026",
+    "Notepad++ update hijack supply chain attack hosting",
+    "Notepad++ Don Ho developer maintainer release notes",
+    "Notepad++ fake website malware impersonation",
+    "Notepad++ GPL license sponsors donations Don Ho France company funding",
+    "Notepad++ 8.9.8 release",
+    "Notepad++ enterprise deployment code signing certificate AI Copilot controversy",
+    "Notepad++ Don Ho lawsuit OR controversy OR legal",
+    "Notepad++ security audit OR \"bug bounty\" OR \"SECURITY.md\" OR \"OpenSSF\"",
+    "Notepad++ users number downloads GitHub stars maintainers contributors"
+  ],
+  "observed_fetches": [
+    "https://notepad-plus-plus.org/news/hijacked-incident-info-update/",
+    "https://notepad-plus-plus.org/"
+  ],
+  "execution_metrics": {
+    "duration_seconds": 99.9,
+    "claude_calls": 2,
+    "turns": 17,
+    "search_requests": 10,
+    "web_fetch_requests": 2,
+    "input_tokens": 138620,
+    "output_tokens": 24048,
+    "cache_read_tokens": 85347,
+    "cache_creation_tokens": 35639,
+    "estimated_api_equivalent_cost_usd": 0.4104,
+    "models_used": [
+      "claude-sonnet-5-5",
+      "claude-haiku-5-5"
+    ],
+    "session_ids": [
+      "77a986f2-de6a-42dc-a224-fdd09ec9d13b",
+      "b367f34c-ba29-4e98-802a-53a4403718f9"
+    ],
+    "permission_denials": 0,
+    "errors": []
+  },
+  "mode": "fast",
+  "generated_at": "2026-11-27T15:15:22.177405+00:00"
+}

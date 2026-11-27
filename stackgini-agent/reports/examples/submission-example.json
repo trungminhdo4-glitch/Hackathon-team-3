@@ -1,0 +1,86 @@
+[
+  {
+    "id": "6",
+    "url": "https://www.postfix.org/",
+    "product": "Postfix (open-source MTA)",
+    "vendor": "Wietse Venema / Postfix project (no company)",
+    "overall": "Green",
+    "green_flags": "Over 25 years of continuous development, with releases through Sep 2026 [E1, E2]. Transparent advisories and fast patches, including for the 2023 SMTP smuggling issue [E3, E4, E7]. Permissive dual IPL/EPL licence [E5]. Packaged and supported by major Linux distributions, and a market-leading MTA [E5, E6].",
+    "yellow_flags": "Bus factor: one lead maintainer and no documented succession plan [E10]. Only about four branches are supported, so deployments must be kept current [E8].",
+    "red_flags": "None identified.",
+    "reasoning": "Maintainer track record, release cadence, wide adoption and well-handled security fixes outweigh the bus-factor and no-vendor-SLA notes. Under the rubric, a decades-old project with a credible maintainer and continuous releases stays GREEN. Confidence is MEDIUM because the postfix.org fetch was blocked and I relied on search results and mirrors. Review: GREEN",
+    "confidence": "MEDIUM",
+    "sources": [
+      "https://en.wikipedia.org/wiki/List_of_mail_server_software",
+      "https://endoflife.date/postfix",
+      "https://github.com/vdukhovni/postfix",
+      "https://postfix.cs.utah.edu/announcements/postfix-3.11.7.html",
+      "https://postfix.org/lists.html",
+      "https://postfix.org/smtp-smuggling.html",
+      "https://security-tracker.debian.org/CVE-2026-43964",
+      "https://sources.debian.org/src/postfix/3.11.0-4/debian/copyright",
+      "https://www.linuxcompatible.org/story/postfix-3115-drops-dos-and-memory-corruption-fixes-discovered-with-ai-assist/",
+      "https://www.postfix.org/announcements/postfix-3.11.6.html"
+    ],
+    "unresolved_questions": [
+      "Is there a formal succession or governance plan for the project?",
+      "Which branches are officially supported today (see the postfix.org release policy)?"
+    ]
+  },
+  {
+    "id": "30",
+    "url": "https://notepad-plus-plus.org/",
+    "product": "Notepad++",
+    "vendor": "Don Ho (individual/open-source project)",
+    "overall": "Yellow",
+    "green_flags": "More than 20 years of continuous development, with active 8.9.x releases and wide adoption [E3, E11] Transparent incident disclosure and a hardened update process [E2, E5] Free for commercial use under the GPL [E8] No regulatory or legal misconduct found [E9]",
+    "yellow_flags": "Single lead maintainer, no corporate entity or SLA, and a recent state-sponsored update-hijack supply-chain compromise [E2, E3] Many 2026 CVEs, including code execution, and no SECURITY.md [E1, E7] Code signing lapsed in 2025 and a self-signed certificate was used until 8.8.7 [E6] Lookalike and impersonation sites make the download source a risk [E10]",
+    "red_flags": "None identified.",
+    "reasoning": "There is no deception, misconduct or abandonment, so the product is not RED. A normal procurement process is not enough, though. A single maintainer, a recent supply-chain compromise and frequent 2026 CVEs mean a buyer should add compensating controls: pin and test the latest patched version, deploy through managed software distribution, disable or proxy the auto-updater, download only from official sources, and verify signatures. That makes it YELLOW. Review: YELLOW",
+    "confidence": "MEDIUM",
+    "sources": [
+      "https://csa.gov.sg/alerts-and-advisories/alerts/al-2026-044",
+      "https://github.com/notepad-plus-plus/notepad-plus-plus/releases",
+      "https://www.bleepingcomputer.com/news/security/notepad-plus-plus-wants-your-help-in-parasite-website-shutdown/",
+      "https://www.github.com/notepad-plus-plus/notepad-plus-plus/security",
+      "https://www.helpnetsecurity.com/2026/02/02/2025-notepad-supply-chain-compromise/",
+      "https://www.macrumors.com/2026/05/13/notepad-plus-plus-mac-nextpad-dispute-settlement/",
+      "https://www.neowin.net/software/notepad-898/",
+      "https://www.notepad-plus-plus.org/news/v883-self-signed-certificate",
+      "https://www.notepad-plus-plus.org/resources",
+      "https://www.star-history.com/notepad-plus-plus/notepad-plus-plus/",
+      "https://www.theregister.com/2026/02/18/notepadplusplus_security_update/"
+    ],
+    "unresolved_questions": [
+      "The current latest version and its patch status",
+      "Whether the project plans an independent security audit or a security policy",
+      "Succession and continuity plans for the lead maintainer"
+    ]
+  },
+  {
+    "id": "39",
+    "url": "https://www.irfanview.com/",
+    "product": "IrfanView",
+    "vendor": "Irfan Skiljan (individual developer)",
+    "overall": "Green",
+    "green_flags": "Thirty years of continuous development with independent coverage and active 2026 releases [E1, E4] Clear, cheap perpetual business licence [E3] No lawsuits, regulator actions or vendor breach found [E8]",
+    "yellow_flags": "Recurring parser and plugin RCE CVEs, patched via updates; keep plugins current [E5, E6, E7] Sole developer and no registered entity found, so there is a bus-factor risk [E2] Mirror and lookalike download sites and antivirus false positives; download from irfanview.com only [E8]",
+    "red_flags": "None identified.",
+    "reasoning": "The product is real and actively maintained, and the vendor has a long track record. Under the rubric, a decades-old single maintainer with continuous releases stays GREEN with a bus-factor note. The CVEs are in optional format plugins and were fixed, which is normal for an image-parsing tool. Licensing is unambiguous, though the free private tier and paid commercial tier must be respected. Confidence is MEDIUM because the vendor site could not be fetched and there is no registry record for the sole proprietor. Review: GREEN",
+    "confidence": "MEDIUM",
+    "sources": [
+      "https://en.wikipedia.org/wiki/IrfanView",
+      "https://irfanview.info/eula.htm",
+      "https://portableapps.com/node/57855",
+      "https://soc.cyber.wa.gov.au/advisories/20240722001-IrfanView-Plugin-Vulnerability/",
+      "https://www.fosshub.com/IrfanView.html",
+      "https://www.irfanview.com/main_what_is_engl.htm",
+      "https://www.rapid7.com/db/vulnerabilities/cve-2025-7310/",
+      "https://zerodayinitiative.com/advisories/ZDI-24-974"
+    ],
+    "unresolved_questions": [
+      "Is there a registered Austrian trade entity for invoicing and VAT?",
+      "What support and response times apply to paid licences?"
+    ]
+  }
+]
