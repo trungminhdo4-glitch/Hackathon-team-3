@@ -33,7 +33,7 @@ export function fixtureResearch(inputUrl, scenario, question = '') {
   if (scenario === 'contradiction') {
     const promise = 'Orbit Desk automatically routes every customer ticket.';
     page.text += ' ' + promise;
-    raw.documents.push(doc('S2', 'https://regulator.example/final-order', 'Final order concerning Orbit Desk', correction));
+    raw.documents.push(doc('S2', 'https://www.ftc.gov/test-fixtures/final-order', 'Final order concerning Orbit Desk', correction));
     raw.claims.push(claim('capability', promise, correction, 'A team requiring automatic routing of every ticket cannot rely on this promise.',
       [cite('S1', promise, 'vendor'), cite('S2', correction, 'authority')], 'contradicted', 'disqualifying'));
     return raw;

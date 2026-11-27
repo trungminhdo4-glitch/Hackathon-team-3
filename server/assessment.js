@@ -1,4 +1,5 @@
 import { getDomain } from 'tldts';
+import { changedEnforcementStatus, enforcementRecord, isEnforcementSource } from './enforcement.js';
 import { buildDossier } from './evidenceDossier.js';
 import { describeCapabilityGap } from '../shared/evidenceGap.js';
 
@@ -146,7 +147,8 @@ function sourceEvidence(doc, item, context) {
       partner: ['Partner publication', 'A separate publisher documenting its own integration.'],
       customer: ['Customer documentation', 'A customer’s own account of implementation or use.'],
       registry: ['Registry record', 'Documentary evidence within the registry’s remit.'],
-      authority: ['Authority publication', 'Documentary evidence of the issuing authority’s own findings.'],
+      authority: isEnforcementSource(doc) ? ['Authority publication', 'A record published by an oversight authority.'] :
+        ['External publication', 'This publication does not establish the issuing authority’s decision.'],
     };
     [sourceType, weight] = descriptions[item.relation] ?? ['External publication', 'Context requiring corroboration.'];
   }
@@ -232,11 +234,12 @@ function bindingClaimRestriction(evidence, context) {
   const remedies = evidence.filter(e => e.sourceType === 'Authority publication');
   for (const item of remedies) {
     const doc = context.documents.get(item.sourceId);
+    if (!isEnforcementSource(doc) || changedEnforcementStatus(doc,context)) continue;
     const surrounding = completeContext(doc, item.quote);
     if (!restriction.test(item.quote) || /\b(?:if approved|proposed|would (?:prohibit|bar|require)|reversed|vacated|overturned|no longer applies|not required|never (?:issued|finalized)|did not (?:issue|finalize)|no final order|not true|false that)\b/i.test(surrounding)) continue;
     const record = [doc.title, item.quote].join(' ');
     if (/\b(?:ability|abilities|capabilit\w*|effective\w*|perform\w*|substitute|protect\w*|secur\w*|privacy|diagnos\w*|accurac\w*|function\w*|automat\w*)\b/i.test(item.quote) &&
-        finalOrder.test(record) && namesRespondent.test(record)) return item;
+        finalOrder.test(record) && namesRespondent.test(item.quote)) return item;
   }
   return null;
 }
@@ -248,6 +251,11 @@ function hasDecisiveEvidence(evidence, context) {
     const surrounding = completeContext(doc, e.quote);
     if (/\b(?:alleged|allegation|rumou?r|hypothetical|proposed|would|if|may have|could have|not true|false that|denied that|overturned|reversed|since resolved|has been resolved|no longer applies|not (?:discontinued|incompatible|end[- ]of[- ]life))\b/i.test(surrounding)) return false;
     if (e.sourceType === 'Authority publication' || e.sourceType === 'Registry record') {
+      if (!isEnforcementSource(doc) || changedEnforcementStatus(doc,context)) return false;
+      // Data-practice sanctions get their own finding from the adjudicated
+      // practice and disposition. A model-selected legal label or fine alone
+      // cannot establish a contradiction about a product’s advertised ability.
+      if (!/\b(?:decept\w*|mislead\w*|misrepresent\w*|fals\w*|impersonat\w*|unsubstantiated|unsupported claims?)\b/i.test(e.quote)) return false;
       // Identify the subject of the decision, not a brand mentioned as a victim.
       const targets = [context.productName, ...context.aliases, context.vendor].filter(Boolean).map(escapeRegex).join('|');
       if (!targets) return false;
@@ -657,6 +665,28 @@ export function assess(inputUrl, raw, {includeDossier = true} = {}) {
   if (core.length === 1 && core[0].status === 'unverified') {
     const observed = observedCapability(raw,context);
     if (observed) checks[checks.indexOf(core[0])] = observed;
+  }
+  const record = enforcementRecord(context);
+  if (record) {
+    const {doc,practice,action,date,remedy,update} = record;
+    const evidence = [...new Set([practice,action,remedy,date].filter(Boolean))]
+      .map(quote => sourceEvidence(doc,{quote,relation:'authority'},context));
+    if (update) evidence.push(sourceEvidence(update.doc,{quote:update.quote,relation:'authority'},context));
+    const setAside = update?.status === 'set_aside';
+    const unresolved = update?.status === 'uncertain';
+    const identified = setAside || unresolved ? 'The enforcement record includes a subsequent change in status.' :
+      'A regulator sanctioned the handling of data in this service.';
+    const description = [date && date + '.', '“' + practice + '”', action !== practice && '“' + action + '”',
+      update && 'The official update states, “' + update.quote + '”'].filter(Boolean).join(' ');
+    const finding = {id:'security',label:criteria.security[0],status:'supported',
+      impact:setAside ? 'routine' : unresolved ? 'caveat' : 'disqualifying', claim:identified, explanation:description,
+      consequence:setAside ? 'Assess the product in light of the subsequent disposition.' :
+        unresolved ? 'Confirm the outcome of the review before relying on the original decision.' :
+        'The sanctioned practice creates a material compliance risk for deployments within the scope of the decision. Verify which users and data your deployment would cover.',
+      evidence,evidenceIds:idsOf(evidence)};
+    const slot = checks.findIndex(c => c.id === 'security' && c.status === 'unverified');
+    if (slot >= 0) checks[slot] = finding;
+    else checks.push(finding);
   }
   for (const check of checks) {
     // Deterministic findings (such as a binding order or an entitlement contrast) take precedence over model labels.

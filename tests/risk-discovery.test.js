@@ -6,6 +6,9 @@ import { syncBuiltinESMExports } from 'node:module';
 import { Readable } from 'node:stream';
 import test from 'node:test';
 import { research } from '../server/live.js';
+import { assess } from '../server/assessment.js';
+import { createReviewWorkflow } from '../server/reviews.js';
+import { datasetRow } from '../src/datasetReport.js';
 
 const submitted = 'https://atlasid.example/';
 const article = 'https://press.example/review';
@@ -61,7 +64,10 @@ for (const initialDecision of [false,true]) {
           return hosted([notice, article]);
         }
         documents = task.documents;
-        return {finalOutput:{productNames:[],vendor:null,answer:{evidence:[]},testimony:[],claims:[],sourcePassages:[]}};
+        if (task.stage === 'repair_claims') return {finalOutput:{claims:[]}};
+        const identity = task.documents.find(doc => doc.url === submitted).passages[0];
+        return {finalOutput:{productNames:[{name:'AtlasID',passageId:identity.id}],vendor:null,
+          answer:{evidence:[]},testimony:[],claims:[],sourcePassages:[]}};
       }}};
     const raw = await research(submitted,{session,subject:'private description'});
     assert.equal(queries.length,1);
@@ -78,5 +84,17 @@ for (const initialDecision of [false,true]) {
     assert.ok(evidence.some(p => p.text === status));
     assert.ok(evidence.length <= 22 && evidence.reduce((sum,p) => sum + p.text.length,0) <= 4300);
     assert.ok(raw.documents.some(doc => doc.url === article));
+    // The assessor returned no claims. A retained authority finding must still reach
+    // the verdict, the interactive/bulk finalization path, and the eight-column report.
+    const workflow = createReviewWorkflow(() => assess(submitted, raw), {
+      openGate:() => assert.fail('A verified material risk must not pause for evidence of matching accuracy'),
+    });
+    const report = await workflow.start({subject:submitted,review:initialDecision},{},[]);
+    assert.equal(report.verdict,'red');
+    assert.deepEqual(report.verdictEvidenceIds.map(id => report.sources.find(source => source.id === id).url),[notice]);
+    const row = datasetRow(report);
+    assert.equal(row.overall,'Red');
+    assert.ok(row.red_flags.includes(finding) && row.red_flags.includes(notice));
+    assert.ok(row.reasoning.includes(notice));
   });
 }

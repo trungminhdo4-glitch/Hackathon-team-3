@@ -465,8 +465,8 @@ test('a binding order limiting an advertised capability outweighs minor caveats 
   const raw = fixture('tier');
   const final = 'In April the commission finalized an order requiring Orbit Desk to stop making deceptive claims about the capabilities of its routing engine.';
   const draft = 'The proposed order would prohibit the company from making unsupported claims about its automation.';
-  raw.documents.push({id:'R1',url:'https://commission.example/orders/desk',origin:'web_search',title:'Orbit Desk final record',text:final});
-  raw.documents.push({id:'R2',url:'https://commission.example/consultations',origin:'web_search',title:'Open consultations',text:draft});
+  raw.documents.push({id:'R1',url:'https://www.ftc.gov/test-fixtures/orders/desk',origin:'web_search',title:'Orbit Desk final record',text:final});
+  raw.documents.push({id:'R2',url:'https://www.ftc.gov/test-fixtures/consultations',origin:'web_search',title:'Open consultations',text:draft});
   raw.claims.push({criterion:'credibility',status:'supported',impact:'routine',
     claim:'There is an order.',reason:'A restriction was discussed.',consequence:'Check the regulator record.',
     evidence:[cite('R1',final,'authority'),cite('R2',draft,'authority')]});

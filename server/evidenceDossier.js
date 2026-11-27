@@ -1,5 +1,6 @@
 import { getDomain } from 'tldts';
 import { searchProviderLabel } from '../shared/retrieval.js';
+import { isOversightPublisher } from './procurementSources.js';
 
 const compact = text => String(text || '').replace(/\s+/gu, ' ').trim();
 const sentences = new Intl.Segmenter(undefined, { granularity: 'sentence' });
@@ -39,8 +40,9 @@ export function buildDossier(report, documents, raw) {
   const texts = new Map(documents.map(doc => [doc.id, compact(doc.text)]));
   const submittedPublisher = publisher(report.inputUrl);
   function kindFor(doc) {
-    return doc.origin === 'submitted' ? 'Product page' :
-      publisher(doc.url) === submittedPublisher ? 'Publisher documentation' : 'External publication';
+    if (doc.origin === 'submitted') return 'Product page';
+    if (publisher(doc.url) === submittedPublisher) return 'Publisher documentation';
+    return isOversightPublisher(doc.url) ? 'Public authority site' : 'External publication';
   }
   function add(evidence, fields) {
     const doc = indexed.get(evidence.sourceId);
@@ -72,14 +74,15 @@ export function buildDossier(report, documents, raw) {
     const productWords = [report.productName, ...(raw.productAliases ?? []).map(p => p.name)]
       .filter(Boolean).map(s => s.toLowerCase());
     const namesProduct = text => productWords.some(p => text.toLowerCase().includes(p));
-    const firstParty = kind !== 'External publication';
+    const firstParty = kind === 'Product page' || kind === 'Publisher documentation';
     const sourceTitle = doc.title || new URL(doc.url).hostname;
     let contexts = 0;
     function addContext(quote, criterion) {
       quote = compact(quote);
       if (!isSubstantive(quote) || quoted.has(quote) || !texts.get(doc.id).includes(quote)) return;
       const topic = topics[criterion] || 'the product and intended use';
-      const reason = firstParty ? 'The publisher states this on “' + sourceTitle + '”. It records the publisher’s position on ' + topic + '. A separate test or record is needed to establish delivery or accuracy.' :
+      const reason = kind === 'Public authority site' ? 'This public authority page mentions ' + topic + '. The assessment retained the passage as context. Check who issued it, its disposition and which product and jurisdiction it covers.' :
+        firstParty ? 'The publisher states this on “' + sourceTitle + '”. It records the publisher’s position on ' + topic + '. A separate test or record is needed to establish delivery or accuracy.' :
         '“' + sourceTitle + '” supplies context for ' + topic + '. Its statement alone leaves the edition, authorship or outcome to be corroborated.';
       add({sourceId:doc.id,quote}, {criterion:topics[criterion] ? criterion : null,status:'documented',finding:quote,reason});
       quoted.add(quote);

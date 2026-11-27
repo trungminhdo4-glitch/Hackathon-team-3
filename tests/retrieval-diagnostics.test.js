@@ -4,6 +4,18 @@ import { pageAttempts, retrievalFailure } from '../shared/retrieval.js';
 import { datasetRow, markdownReport } from '../src/datasetReport.js';
 import { buildDossier } from '../server/evidenceDossier.js';
 
+test('a public consultation is labeled by its publisher without being presented as an enforcement finding', () => {
+  const quote = 'The consultation asks whether the proposed privacy rules should cover the sample product.';
+  const doc = {id:'S2', url:'https://www.edpb.europa.eu/consultation/sample', title:'Public consultation',
+    origin:'web_search', text:quote};
+  const report = {productName:'Sample', inputUrl:'https://sample.example/', checks:[], testimony:[], sources:[]};
+  const raw = {sourcePassages:[{sourceId:'S2', quote, criterion:'security'}]};
+  const dossier = buildDossier(report, [doc], raw);
+  assert.equal(dossier.observations[0].kind, 'Public authority site');
+  assert.equal(dossier.observations[0].status, 'documented');
+  assert.equal(dossier.coverage[0].status, 'documented');
+});
+
 test('public failure categories omit raw transport details and preserve unknown causes on earlier reports', () => {
   assert.deepEqual(retrievalFailure({name:'TimeoutError',message:'private socket'}), {code:'timeout'});
   assert.deepEqual(retrievalFailure({code:'PAGE_CHALLENGE'}), {code:'challenge'});
