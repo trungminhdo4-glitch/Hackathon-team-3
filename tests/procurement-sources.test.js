@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { hasOversightLead, isOversightPublisher, needsDisposition, prioritizeRecords } from '../server/procurementSources.js';
+import { hasOversightLead, isOversightPublisher, likelyDownload, needsDisposition, prioritizeRecords } from '../server/procurementSources.js';
 
 test('source selection reserves room for a final order and lifecycle record in a long result list', () => {
   const urls = ['https://research.example/deployment', 'https://news.example/opinion',
@@ -41,4 +41,17 @@ test('use of sensitive data merits a scoped disposition search even when adoptio
   assert.ok(needsDisposition([...pages,{...decision,text:'The proposed decision includes a fine of EUR 2 million for AtlasID.'}],inputUrl,'AtlasID'));
   assert.equal(needsDisposition([...pages,decision],inputUrl,'AtlasID'),false);
   assert.equal(hasOversightLead({title:'Dashboard',text:'Read our privacy policy and the GDPR FAQ.'}),false);
+});
+
+test('authority case links may identify a regulator lead even when the document format cannot be read', () => {
+  const inputUrl = 'https://atlasid.example/';
+  const queryFile = 'https://ico.org.uk/notices/download?file=AtlasID-penalty%2Epdf';
+  const applicationPdf = 'https://ico.org.uk/AtlasID-decision?format=application%2Fpdf';
+  const publicNotice = 'https://ico.org.uk/action-weve-taken/enforcement/atlasid-decision';
+  for (const address of [queryFile,applicationPdf]) assert.ok(likelyDownload(address));
+  assert.deepEqual(prioritizeRecords([queryFile, applicationPdf, publicNotice],inputUrl,'independent'),[publicNotice,queryFile,applicationPdf]);
+  assert.ok(needsDisposition([],inputUrl,undefined,{candidateUrls:[queryFile],requireCaseLead:true}));
+  assert.equal(needsDisposition([],inputUrl,undefined,{candidateUrls:[queryFile.replace('AtlasID','Unrelated')],requireCaseLead:true}),false);
+  const sectorOnly = [{title:'AtlasID',text:'AtlasID provides biometric identification.'}];
+  assert.equal(needsDisposition(sectorOnly,inputUrl,undefined,{requireCaseLead:true}),false);
 });

@@ -4,7 +4,7 @@ import { getDomainWithoutSuffix } from 'tldts';
 // https://www.edpb.europa.eu/about-edpb/our-members_en
 // A host match identifies a possible primary source. The record still needs an issuing
 // authority, respondent, product scope and a verified disposition.
-const oversightHosts = new Set([
+export const oversightDomains = Object.freeze([
   'edpb.europa.eu', 'edps.europa.eu', 'curia.europa.eu', 'dsb.gv.at',
   'autoriteprotectiondonnees.be', 'gegevensbeschermingsautoriteit.be', 'cpdp.bg',
   'azop.hr', 'dataprotection.gov.cy', 'uoou.gov.cz', 'datatilsynet.dk', 'aki.ee',
@@ -19,13 +19,14 @@ export function isOversightPublisher(value) {
   if (!URL.canParse(value)) return false;
   const url = new URL(value);
   return url.protocol === 'https:' && !url.username && !url.password && !url.port &&
-    oversightHosts.has(url.hostname.toLowerCase().replace(/^www\./, ''));
+    oversightDomains.includes(url.hostname.toLowerCase().replace(/^www\./, ''));
 }
 
 // These cues select documents to read. Verdicts still require verified passages.
 const regulatedUse = /\b(?:(?:facial|face|biometric)[- ](?:recognition|identification|matching)|fingerprint database|mass surveillance|location data broker|automated (?:credit|hiring|eligibility) decisions?)\b/i;
 const proceeding = /\b(?:proposed (?:settlement|order|decision)|(?:regulator|commission|authority) (?:alleges|filed a complaint)|pending (?:enforcement|litigation)|regulatory penalt(?:y|ies)|enforcement action|administrative fine|illegally (?:collected|processed)|unlawful (?:collection|processing)|fined (?:by|for)|fined.{1,50}\b(?:million|processing))\b/i;
 const provisional = /\b(?:propos(?:ed|al)|would|if approved|intends? to|considering|potential fine|could (?:impose|be fined))\b/i;
+const recordPath = /fine[sd]?|penalt|decision|enforcement|sanction|determination|investigation|order|appeal|ruling|judgment|national-news/i;
 const disposition = /\b(?:impos(?:ed|es)\b.{0,90}\b(?:fines?|penalt(?:y|ies)|ban)|fin(?:ed|es)\b.{0,100}(?:\d|\bmillion)|(?:fine|penalty) of\b.{0,24}\d|(?:issued|finali[sz]ed)\b.{0,32}\b(?:final (?:decision|order)|order)|entered (?:a |the )?consent decree|ordered\b.{0,120}\b(?:stop|cease|delet\w*|eras\w*|suspend\w*)|dismissed (?:the |all )?charges)\b/i;
 export const oversightPassageSignals = [
   disposition,
@@ -48,15 +49,25 @@ export const procurementSignals = [
   /\b(?:released version|security release|maintenance release|deployed|in production|integrated with)\b/i,
 ];
 
+const fileExtension = /\.(?:pdf|zip|exe|msi|dmg)(?:$|[?#/])/i;
+export function likelyDownload(value) {
+  const url = new URL(value);
+  if (fileExtension.test(url.pathname)) return true;
+  for (const [name, parameter] of url.searchParams) {
+    if (fileExtension.test(parameter) ||
+        (/^(?:format|type|output)$/i.test(name) && /^(?:application\/)?pdf$/i.test(parameter))) return true;
+  }
+  return false;
+}
+
 export function prioritizeRecords(urls, inputUrl, lane) {
   if (urls.length < 2) return urls;
   const vendor = new URL(inputUrl).hostname.replace(/^www\./, '');
   function priority(value) {
     const {hostname, pathname} = new URL(value);
     const path = pathname.toLowerCase();
-    if (/\.(?:pdf|zip|exe|msi|dmg)$/i.test(path)) return -1;
-    if (lane === 'independent' && isOversightPublisher(value) &&
-      /fine[sd]?|penalt|decision|enforcement|sanction|determination|order|appeal|ruling|judgment|national-news/.test(path)) return 5;
+    if (likelyDownload(value)) return -1;
+    if (lane === 'independent' && isOversightPublisher(value) && recordPath.test(path)) return 5;
     if (/final[-_/]?(?:order|decision)|finalizes?[-_/]|consent[-_/]decree/.test(path)) return 4;
     if (/end[-_/]of[-_/](?:life|sale|support)|lifecycle|security[-_/]advis|acquisition|release[-_/]notes|changelog/.test(path)) return 3;
     if (lane === 'official' && (hostname === vendor || hostname.endsWith('.' + vendor)) &&
@@ -68,19 +79,28 @@ export function prioritizeRecords(urls, inputUrl, lane) {
   return priority(urls[0]) < 0 ? candidates : [...new Set([urls[0], ...candidates])];
 }
 
-export function needsDisposition(pages, inputUrl, pageTitle = '') {
-  if (!pages.some(hasOversightLead)) return false;
+export function needsDisposition(pages, inputUrl, pageTitle = '', {candidateUrls = [], requireCaseLead = false} = {}) {
   // A press story or a primary decision about a different company is still
   // only a lead for this investigation. This check controls a search slot.
   const normalize = text => text.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
   const site = inputUrl && getDomainWithoutSuffix(inputUrl, {allowPrivateDomains:true});
   const labels = [site, ...pageTitle.split(/[|–—]/u)].filter(Boolean).map(normalize)
     .filter(label => label.length >= 3 && !['home','homepage','welcome','index','officialwebsite'].includes(label));
+  const mentionsSubject = text => !inputUrl || labels.some(label => normalize(text).includes(label));
+  const caseLead = pages.some(page => {
+    const text = [page.title, page.text].join(' ');
+    return (proceeding.test(text) || disposition.test(text)) && mentionsSubject(text);
+  }) || candidateUrls.some(value => {
+    if (!isOversightPublisher(value)) return false;
+    const url = new URL(value);
+    const record = [url.pathname, ...[...url.searchParams.values()].filter(v => fileExtension.test(v))].join(' ');
+    return recordPath.test(record) && mentionsSubject(record);
+  });
+  if (!caseLead && (requireCaseLead || !pages.some(hasOversightLead))) return false;
   return !pages.some(page => {
     if (!isOversightPublisher(page.url) || provisional.test(page.title)) return false;
     const record = [page.title, page.text].join(' ');
-    const normalizedRecord = normalize(record);
-    return (!inputUrl || labels.some(label => normalizedRecord.includes(label))) &&
+    return mentionsSubject(record) &&
       record.split(/(?<=[.!?])\s+|\n/u).some(sentence => !provisional.test(sentence) && disposition.test(sentence));
   });
 }

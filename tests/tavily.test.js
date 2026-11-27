@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { mapTavily, searchTavily } from '../server/tavily.js';
+import { oversightDomains } from '../server/procurementSources.js';
 
 const apiKey = 'test-credential';
 const query = 'Acme Recorder software customer deployment';
@@ -60,6 +61,17 @@ test('Tavily distinguishes an empty result set from malformed or excessive outpu
     new Response(new Uint8Array(1024 * 1024))]) {
     await assert.rejects(request(response), {code:'TAVILY_UNAVAILABLE'});
   }
+});
+
+test('targeted regulatory recovery restricts Tavily to the vetted authority publishers', async () => {
+  const fetchImpl = async (_url,options) => {
+    const payload = JSON.parse(options.body);
+    assert.deepEqual(payload.include_domains,oversightDomains);
+    assert.equal(payload.include_domains_mode,'restrict');
+    assert.equal(payload.search_depth,'basic');
+    return Response.json({results:[]});
+  };
+  assert.deepEqual(await searchTavily(query,{apiKey,fetchImpl,oversightOnly:true}),[]);
 });
 
 test('Tavily maps API and transport errors without exposing provider details or secrets', async () => {

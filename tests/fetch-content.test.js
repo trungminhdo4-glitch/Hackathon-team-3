@@ -43,3 +43,29 @@ test('product text survives long menus while legal text and navigation leads rem
   assert.deepEqual(result.links, ['https://1.1.1.1/sibling']);
   assert.deepEqual(result.linkContexts, []);
 });
+
+test('an oversized submitted HTML page supplies only complete title and description tags for discovery', async t => {
+  const title = 'AtlasID | Facial recognition';
+  const description = 'AtlasID offers facial recognition for public agencies.';
+  const head = '<head><title>' + title + '</title><meta name="description" content="' + description + '"></head>';
+  const data = head + '<body><a href="/other">Selected by the vendor</a>Claim excluded. ' + 'x'.repeat(1024 * 1024);
+  let declared = true;
+  let body = data;
+  t.mock.method(https, 'get', (_url, _options, callback) => {
+    const res = Object.assign(Readable.from([Buffer.from(body)]), {
+      statusCode:200, headers:{'content-type':'text/html', ...(declared && {'content-length':String(body.length)})},
+    });
+    queueMicrotask(() => callback(res));
+    return new EventEmitter();
+  });
+  for (declared of [true, false]) {
+    await assert.rejects(fetchPublicText('https://1.1.1.1/'), {code:'SIZE_LIMIT'});
+    const result = await fetchPublicText('https://1.1.1.1/', {allowMetadataOnSize:true});
+    assert.equal(result.metadataOnly, true);
+    assert.equal(result.title, title);
+    assert.equal(result.text, title + '\n' + description);
+    assert.deepEqual(result.links, []);
+  }
+  body = '<head><title>partial title ' + 'x'.repeat(1024 * 1024);
+  await assert.rejects(fetchPublicText('https://1.1.1.1/', {allowMetadataOnSize:true}), {code:'SIZE_LIMIT'});
+});

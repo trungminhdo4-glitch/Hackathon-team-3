@@ -1,4 +1,5 @@
 import { lookupPublic, validatePublicUrl } from './fetch.js';
+import { oversightDomains } from './procurementSources.js';
 
 const maxBytes = 512 * 1024;
 const maxResults = 5;
@@ -85,7 +86,8 @@ export async function searchTavily(query, options = {}) {
   const text = typeof query === 'string' ? query.trim() : '';
   if (!text || text.length > 400) throw new TavilyError('TAVILY_QUERY');
   return discover('search', {query:text, search_depth:'basic', max_results:maxResults,
-    include_answer:false, include_raw_content:false, auto_parameters:false}, options);
+    include_answer:false, include_raw_content:false, auto_parameters:false,
+    ...(options.oversightOnly && {include_domains:oversightDomains, include_domains_mode:'restrict'})}, options);
 }
 
 export async function mapTavily(inputUrl, options = {}) {

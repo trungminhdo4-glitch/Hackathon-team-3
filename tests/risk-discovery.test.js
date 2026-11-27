@@ -23,7 +23,7 @@ function hosted(urls) {
     action:{type:'search',query:'AtlasID',sources:urls.map(url => ({type:'url',url}))}}]}}]};
 }
 
-function serveSources(t) {
+function serveSources(t, extra = {}) {
   t.mock.method(dns,'lookup',async () => [{address:'1.1.1.1', family:4}]);
   syncBuiltinESMExports();
   t.after(() => { t.mock.restoreAll(); syncBuiltinESMExports(); });
@@ -32,14 +32,64 @@ function serveSources(t) {
     [submitted]:'<title>AtlasID</title><p>' + productText + '</p>',
     [article]:'<title>Agency account</title><p>' + pressText + '</p>',
     [notice]:'<title>National authority decision concerning AtlasID</title><main>' + noise + '<p>' + finding + '</p><p>' + status + '</p></main>',
+    ...extra,
   };
   t.mock.method(https,'get',(url,_options,onResponse) => {
     assert.ok(bodies[url.href], 'Unexpected fixture read');
-    const response = Object.assign(Readable.from([Buffer.from(bodies[url.href])]),{
-      statusCode:200,headers:{'content-type':'text/html'},
+    const source = bodies[url.href];
+    const response = Object.assign(Readable.from([Buffer.from(source.body ?? source)]),{
+      statusCode:source.status ?? 200,headers:{'content-type':source.contentType ?? 'text/html'},
     });
     queueMicrotask(() => onResponse(response));
     return new EventEmitter();
+  });
+}
+
+for (const scenario of ['timeout and regulator PDF','two hosted reads','no case lead','regulator search returned no HTML']) {
+  test('conditional Tavily disposition search · ' + scenario, async t => {
+    const linkedFile = 'https://www.oaic.gov.au/initiated-investigation/AtlasID?file=full-decision.pdf';
+    const unrelated = 'https://news.example/claims';
+    const fallbackPages = [1,2,3].map(i => 'https://public.example/atlasid/account-' + i);
+    const privateSubject = 'Confidential rollout plan';
+    const hasCase = scenario !== 'no case lead';
+    serveSources(t,{
+      [article]:'<title>AtlasID adoption</title><p>Investigators deployed the facial recognition software for image searches.</p>',
+      [submitted]:{body:'Unavailable',status:403},
+      [linkedFile]:{body:'document',contentType:'application/pdf'},
+      ...Object.fromEntries(fallbackPages.map(url => [url,'<title>AtlasID deployment</title><p>Our staff tested AtlasID at two locations.</p>'])),
+    });
+    const queries = [], activity = [];
+    const session = {agent:{},model:'gpt-6-luna',searchModel:'gpt-6-luna',
+      tavilySearch:async (query,options) => {
+        queries.push(query);
+        if (!options.oversightOnly) return hasCase ? [article,linkedFile] : [article];
+        assert.ok(options.signal instanceof AbortSignal);
+        assert.match(query,/atlasid\.example.*regulator.*appeal.*-filetype:pdf/);
+        assert.ok(!query.includes(privateSubject));
+        return scenario === 'regulator search returned no HTML' ? [linkedFile,unrelated] : [linkedFile, unrelated, notice];
+      },
+      runner:{async run(_agent,input) {
+        const task = JSON.parse(input);
+        if (task.lane === 'independent-followup' && scenario === 'two hosted reads') return hosted(fallbackPages);
+        if (task.lane) throw new DOMException('Hosted search timed out','TimeoutError');
+        return {finalOutput:{productNames:[],vendor:null,answer:{evidence:[]},testimony:[],claims:[],sourcePassages:[]}};
+      }}};
+    const raw = await research(submitted,{session,subject:privateSubject,onActivity:event => activity.push(event)});
+    const attempts = raw.coverage.independent.attempts;
+    assert.equal(queries.length,hasCase ? 2 : 1);
+    assert.ok(!attempts.some(item => item.url === unrelated));
+    if (hasCase) assert.ok(attempts.some(item => item.url === linkedFile && item.failure?.code === 'format'));
+    const recovered = hasCase && scenario !== 'regulator search returned no HTML';
+    assert.equal(raw.documents.some(doc => doc.url === notice),recovered);
+    if (recovered) assert.ok(attempts.some(item => item.url === notice && item.provider === 'tavily' && item.outcome === 'read'));
+    if (scenario === 'two hosted reads') {
+      assert.equal(attempts.filter(item => fallbackPages.includes(item.url)).length,2);
+      assert.equal(attempts.length,5); // two initial + three shared recovery reads
+    }
+    if (scenario === 'regulator search returned no HTML') {
+      assert.ok(activity.some(e => e.provider === 'tavily' && e.detail.includes(queries[1])));
+      assert.ok(raw.limitations.some(message => message.includes('OpenAI follow-up and the Tavily') && message.includes(queries[1])));
+    }
   });
 }
 

@@ -8,6 +8,8 @@ import ipaddr from 'ipaddr.js';
 import { loadBuffer } from 'cheerio';
 
 const maxBytes = 1024 * 1024;
+const metadataBytes = 256 * 1024;
+const sizeError = () => Object.assign(new Error('Page exceeds retrieval size limit.'), {code:'SIZE_LIMIT'});
 const invalid = () => Object.assign(new Error('Enter a public HTTP or HTTPS product URL without credentials or a custom port.'), { status: 400, code: 'UNSAFE_URL' });
 
 function publicAddress(address) {
@@ -42,7 +44,7 @@ export async function lookupPublic(value, { signal = AbortSignal.timeout(5000), 
   } finally { listener?.[Symbol.dispose](); }
 }
 
-async function readPage(url, signal) {
+async function readPage(url, signal, allowMetadataOnSize) {
   const addresses = await lookupPublic(url.href, { signal });
   // Supply only previously checked addresses to the socket, retaining Host, SNI and TLS checks.
   const pinnedLookup = (_host, options, done) => {
@@ -69,43 +71,65 @@ async function readPage(url, signal) {
         (headers['content-encoding'] && headers['content-encoding'] !== 'identity')) {
       throw Object.assign(new Error('The response format could not be read.'), {code:'UNSUPPORTED_FORMAT'});
     }
-    if (Number(headers['content-length']) > maxBytes) throw Object.assign(new Error('Page exceeds retrieval size limit.'), {code:'SIZE_LIMIT'});
+    const canReadHead = allowMetadataOnSize && mime === 'text/html';
+    let metadataOnly = Number(headers['content-length']) > maxBytes;
+    if (metadataOnly && !canReadHead) throw sizeError();
     const chunks = [];
     let bytes = 0;
+    const limit = metadataOnly ? metadataBytes : maxBytes;
     for await (const chunk of response) {
+      if (bytes + chunk.length > limit) {
+        if (!canReadHead) throw sizeError();
+        chunks.push(chunk.subarray(0, limit - bytes));
+        metadataOnly = true;
+        break;
+      }
       bytes += chunk.length;
-      if (bytes > maxBytes) throw Object.assign(new Error('Page exceeds retrieval size limit.'), {code:'SIZE_LIMIT'});
       chunks.push(chunk);
+      if (metadataOnly && bytes === limit) break;
     }
     const charset = /;\s*charset\s*=\s*["']?([^;"'\s]+)/i.exec(headers['content-type'])?.[1];
-    return { body: Buffer.concat(chunks), mime, charset };
+    const body = Buffer.concat(chunks);
+    return { body: metadataOnly ? body.subarray(0,metadataBytes) : body, mime, charset, metadataOnly };
   } finally { response.destroy(); }
 }
 
 const compact = text => text.replace(/\s+/g, ' ').trim();
 
-export async function fetchPublicText(value, { signal, sameHost = false } = {}) {
+export async function fetchPublicText(value, { signal, sameHost = false, allowMetadataOnSize = false } = {}) {
   const deadline = AbortSignal.timeout(8000);
   const bounded = signal ? AbortSignal.any([signal, deadline]) : deadline;
   let url = validatePublicUrl(String(value));
   const initialHost = url.hostname;
   for (let redirects = 0; redirects <= 3; redirects++) {
     let page;
-    try { page = await readPage(url, bounded); }
+    try { page = await readPage(url, bounded, allowMetadataOnSize); }
     catch (error) { throw bounded.aborted ? bounded.reason : error; }
     if (page.redirect) {
       if (sameHost && page.redirect.hostname !== initialHost) throw Object.assign(new Error('Map redirect changed hostname.'), {code:'MAP_HOST_CHANGED'});
       url = page.redirect;
       continue;
     }
-    const defaultEncoding = isUtf8(page.body) ? 'utf-8' : 'windows-1252';
+    const defaultEncoding = page.metadataOnly || isUtf8(page.body) ? 'utf-8' : 'windows-1252';
     if (page.mime === 'text/plain') {
       let decoder;
       try { decoder = new TextDecoder(page.charset || defaultEncoding); }
       catch { decoder = new TextDecoder(defaultEncoding); }
       return { url: url.href, text: compact(decoder.decode(page.body)).slice(0, 40000), title: url.hostname, links: [], linkContexts: [] };
     }
-    const $ = loadBuffer(page.body, {encoding:{transportLayerEncodingLabel:page.charset, defaultEncoding}});
+    const $ = loadBuffer(page.body, {sourceCodeLocationInfo:page.metadataOnly,
+      encoding:{transportLayerEncodingLabel:page.charset, defaultEncoding}});
+    if (page.metadataOnly) {
+      // A clipped body or an unfinished title cannot supply citable text.
+      // Keep only intact head metadata to identify the product and guide discovery.
+      const titleNode = $('head > title').get(0);
+      const title = titleNode?.sourceCodeLocation?.endTag && compact($(titleNode).text());
+      const description = compact($('head > meta[name="description" i]').attr('content') ||
+        $('head > meta[property="og:description" i]').attr('content') || '');
+      if (!title || title.length > 200) throw sizeError();
+      return {url:url.href, title, text:[title,description.slice(0,700)].filter(Boolean).join('\n'),
+        links:[], linkContexts:[], metadataOnly:true};
+    }
     $('script,style,template,noscript,svg,iframe,[hidden],[aria-hidden="true"]').remove();
     const title = compact($('title').first().text()).slice(0, 200) || url.hostname;
     const description = $('meta[name="description"]').first().attr('content') || '';
