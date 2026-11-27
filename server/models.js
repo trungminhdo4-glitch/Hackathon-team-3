@@ -1,9 +1,11 @@
 export const META_MODEL = 'llama-3.3-70b-versatile';
+const DEFAULT_MODEL = 'gpt-6.2-sol';
+const HELPER_MODEL = 'gpt-6-luna';
 const openAIModels = [
+  { id: DEFAULT_MODEL, label: 'GPT-6.2 Sol',
+    description: 'Balances reasoning and cost when comparing claims across several sources.' },
   { id: 'gpt-6.2-astra', label: 'GPT-6.2 Astra',
-    description: 'Best starting point for difficult assessments that compare conflicting claims across several sources. Highest cost of these GPT-6 options.' },
-  { id: 'gpt-6.2-sol', label: 'GPT-6.2 Sol',
-    description: 'Balances reasoning and cost for routine investigations with several evidence sources.' },
+    description: 'Most capable option here for difficult assessments with conflicting claims across sources. Highest cost of these GPT-6 options.' },
   { id: 'gpt-6.1-terra', label: 'GPT-6.1 Terra',
     description: 'Efficient at summarizing documents and writing clear findings. Its visual capabilities are outside this text-only workflow.' },
   { id: 'gpt-6-luna', label: 'GPT-6 Luna',
@@ -20,7 +22,7 @@ function profileFor(id) {
 }
 
 export function getResearchModel() {
-  const model = process.env.OPENAI_MODEL?.trim() || openAIModels[0].id;
+  const model = process.env.OPENAI_MODEL?.trim() || DEFAULT_MODEL;
   if (!profileFor(model)) {
     throw new Error('OPENAI_MODEL must be a supported SaaSLens research model.');
   }
@@ -71,7 +73,8 @@ export async function listModels() {
     const reason = !openAIKey ? 'Set OPENAI_API_KEY on the server.' :
       !openAI ? 'Could not verify OpenAI model access.' :
       !openAI.has(id) ? 'Unavailable to this OpenAI project.' : null;
-    return { id, label, description, provider: 'OpenAI', searchModel: id, available: !reason, reason };
+    const helperModel = !reason && profileFor(id).id === DEFAULT_MODEL && openAI.has(HELPER_MODEL) ? HELPER_MODEL : null;
+    return { id, label, description, provider: 'OpenAI', searchModel: id, helperModel, available: !reason, reason };
   });
   const search = models.find(option => option.id === preferred);
   const reason = !search.available ? 'Requires the configured OpenAI web search model.' :
@@ -80,7 +83,7 @@ export async function listModels() {
     !groq.has(META_MODEL) ? 'Unavailable to this Groq project.' : null;
   models.push({ id: META_MODEL, label: 'Llama 3.3 70B', provider: 'Meta',
     description: 'OpenAI searches the web and Meta Llama evaluates the retrieved passages through Groq.',
-    searchModel: preferred, available: !reason, reason });
+    searchModel: preferred, helperModel: null, available: !reason, reason });
   const defaultModel = search.available ? preferred : models.find(option => option.available)?.id ?? preferred;
   return { model: defaultModel, models, openAIInventory: openAI ? [...openAI].sort() : null };
 }

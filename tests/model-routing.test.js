@@ -63,6 +63,74 @@ test('the selected GPT model performs both discovery and synthesis', async t => 
   assert.equal(fetch.mock.callCount(), 0);
 });
 
+test('Sol delegates only a bounded evidence gap and retains responsibility for the assessment', async t => {
+  const sol = 'gpt-6.2-sol', luna = 'gpt-6-luna';
+  const scenarios = [
+    {name:'usable independent evidence',model:sol,helper:luna,hasEvidence:true},
+    {name:'weak independent evidence',model:sol,helper:luna,expected:luna},
+    {name:'dated Sol snapshot',model:sol + '-2026-01-01',helper:luna,expected:luna},
+    {name:'unavailable Luna',model:sol,helper:null,expected:sol},
+    {name:'different selected model',model:'gpt-6.2-astra',helper:luna,expected:'gpt-6.2-astra'},
+    {name:'Luna access rejected',model:sol,helper:luna,expected:luna,failure:'rejected'},
+    {name:'helper response without a web search',model:sol,helper:luna,expected:luna,failure:'no-search'},
+  ];
+  for (const scenario of scenarios) await t.test(scenario.name, async t => {
+    setDemoEnv(t);
+    process.env.OPENAI_MODEL = scenario.model;
+    const session = createResearchSession(scenario.model);
+    const events = [], calls = [];
+    const use = 'We deployed Parcel Mail to send signed letters between offices.';
+    t.mock.method(https,'get',(url,_options,callback) => {
+      const applied = url.hostname === '8.8.4.4' || (url.hostname === '8.8.8.8' && scenario.hasEvidence);
+      const text = applied ? use : 'Parcel Mail is a messaging product.';
+      const page = Object.assign(Readable.from([Buffer.from(text)]),{statusCode:200,headers:{'content-type':'text/plain'}});
+      queueMicrotask(() => callback(page));
+      return new EventEmitter();
+    });
+    t.mock.method(session.runner,'run',async (agent,input,options) => {
+      const task = JSON.parse(input);
+      const lane = task.lane ?? 'assessment';
+      calls.push({lane,model:agent.model});
+      if (lane === 'assessment') {
+        assert.equal(agent,session.agent);
+        assert.deepEqual(agent.tools,[]);
+        return {finalOutput:emptyReport};
+      }
+      const followUp = lane === 'independent-followup';
+      if (followUp) {
+        assert.equal(agent.model,scenario.expected);
+        assert.equal(agent === session.agent,scenario.expected !== luna);
+        assert.equal(options.maxTurns,1);
+        assert.equal(agent.tools.length,1);
+        if (scenario.failure === 'rejected') throw new Error('Provider denied access');
+        if (scenario.failure === 'no-search') return {rawResponses:[]};
+      } else assert.equal(agent,session.agent);
+      const urls = followUp ? ['https://8.8.4.4/deployment'] : lane === 'independent' ? ['https://8.8.8.8/guide'] : [];
+      const action = {type:'search',query:lane + ' evidence',sources:urls.map(url => ({type:'url',url}))};
+      return {rawResponses:[{providerData:{output:[{type:'web_search_call',status:'completed',action}]}}]};
+    });
+    const result = await research('https://1.1.1.1/',{session,helperModel:scenario.helper,onActivity:event => events.push(event)});
+    const attempts = calls.filter(call => call.lane === 'independent-followup');
+    assert.deepEqual(attempts.map(call => call.model),scenario.expected ? [scenario.expected] : []);
+    assert.deepEqual(calls.at(-1),{lane:'assessment',model:scenario.model});
+    assert.ok(result.documents.some(d => d.url === 'https://8.8.8.8/guide'));
+    assert.equal(result.coverage.independent.followUpModel,scenario.expected);
+    const specialist = events.filter(e => e.role === 'specialist');
+    if (scenario.expected !== luna) return assert.deepEqual(specialist,[]);
+    assert.ok(specialist.every(e => e.model === luna));
+    assert.equal(specialist[0].status,'attempted');
+    assert.equal(specialist.at(-1).status,scenario.failure ? 'incomplete' : 'completed');
+    assert.equal(result.coverage.independent.followUp,specialist.at(-1).status);
+    if (scenario.failure) {
+      assert.ok(result.limitations.some(item => item.includes('Luna could not complete')));
+      assert.ok(!specialist.some(e => e.status === 'completed'));
+    } else {
+      assert.ok(specialist.some(e => e.detail.includes('independent-followup evidence')));
+      assert.ok(result.documents.some(d => d.url === 'https://8.8.4.4/deployment'));
+    }
+  });
+});
+
 test('Meta sends synthesis and repair to Llama with exact schemas while OpenAI runs discovery', async t => {
   setDemoEnv(t);
   const { session, lanes } = mockDiscovery(t, META_MODEL);

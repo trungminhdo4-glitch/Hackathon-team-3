@@ -68,15 +68,18 @@ async function handle(req, res, investigate, catalog) {
       res.flushHeaders();
     }
     const activity = [];
-    const onActivity = ({ stage, detail, url }) => {
+    const onActivity = ({ stage, detail, url, model, role, status }) => {
       const event = { stage, detail, at: new Date().toISOString() };
+      if (model) event.model = model;
+      if (role) event.role = role;
+      if (status) event.status = status;
       if (url) {
         try { event.url = validatePublicUrl(url).href; } catch { /* Keep the event as text. */ }
       }
       activity.push(event);
       if (streaming) sendLine({ type: 'activity', event });
     };
-    const report = await investigate(subject, { question, model: selected.id, onActivity });
+    const report = await investigate(subject, { question, model: selected.id, helperModel: selected.helperModel ?? null, onActivity });
     if (activity.length) report.activity = activity;
     if (!streaming) return json(res, 200, report);
     sendLine({ type: 'result', report });

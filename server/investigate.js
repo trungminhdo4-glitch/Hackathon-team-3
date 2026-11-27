@@ -22,7 +22,7 @@ export function parseSubject(value) {
   return { subject, url: null };
 }
 
-export async function investigateProduct(value, { question = '', model, onActivity } = {}) {
+export async function investigateProduct(value, { question = '', model, helperModel, onActivity } = {}) {
   const { subject, url } = parseSubject(value);
   if (!process.env.OPENAI_API_KEY?.trim()) throw new Error('Server API key unavailable.');
   const signal = AbortSignal.timeout(180_000);
@@ -32,9 +32,12 @@ export async function investigateProduct(value, { question = '', model, onActivi
   if (!inputUrl) {
     throw new InputError('Could not identify one official product page. Enter its public URL or specify the company and edition.');
   }
-  const findings = await research(inputUrl, { subject, question, session, signal, onActivity });
+  const findings = await research(inputUrl, { subject, question, session, signal, onActivity, helperModel });
   onActivity?.({stage:'validate',detail:'Checking quotations, product edition and source attribution'});
   const report = assess(inputUrl, findings);
   onActivity?.({stage:'verdict',detail:'Completed the assessment with ' + report.sources.length + ' cited sources'});
-  return { ...report, subject, question, model: session.model, searchModel: session.searchModel };
+  const followUp = findings.coverage?.independent;
+  const specialistCompleted = helperModel && followUp?.followUp === 'completed' && followUp.followUpModel === helperModel;
+  return { ...report, subject, question, model: session.model, searchModel: session.searchModel,
+    ...(specialistCompleted && { helperModel }) };
 }
