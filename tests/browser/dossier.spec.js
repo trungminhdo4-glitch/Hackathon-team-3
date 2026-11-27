@@ -37,6 +37,7 @@ test('an unresolved review shows the cited source, the classification obstacle a
   const log = dossier.locator('.source-coverage')
   await expect(log.getByText('Independent search',{exact:true})).toBeVisible()
   await expect(log.getByRole('link',{name:'Team deployment'})).toHaveAttribute('href','https://reviews.example/team')
+  await expect(log.getByText('https://reviews.example/team',{exact:true})).toBeVisible()
   await expect(log.getByText(/returned HTTP 403/)).toBeVisible()
   await expect(log.getByText(/publicly accessible equivalent/)).toBeVisible()
   await expect(log.getByText(quote,{exact:true})).toBeVisible()

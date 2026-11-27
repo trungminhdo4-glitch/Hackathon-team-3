@@ -31,6 +31,7 @@ export function EvidenceDossier({dossier, interpretation}) {
       <summary>Pages checked ({coverage.length})</summary>
       <ul>{coverage.map((page, i) => <li key={i}>
         <SourceLink url={page.url} title={page.title}/>
+        {page.status === 'unavailable' && <small className="attempted-url">{page.url}</small>}
         <strong>{coverageLabels[page.status] || page.status}</strong>
         {(page.status === 'documented' || page.status === 'cited') && page.reason && <span>{page.reason}</span>}
         {pageAttempts(page).map((attempt, j) => <div key={j}>

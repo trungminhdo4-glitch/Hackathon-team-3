@@ -21,11 +21,12 @@ export async function readBody(req, maxBytes = 16384) {
   return input;
 }
 
-export function recordActivity(activity, { stage, detail, url, model, role, status }) {
+export function recordActivity(activity, { stage, detail, url, model, role, status, lane }) {
   const event = { stage, detail, at: new Date().toISOString() };
   if (model) event.model = model;
   if (role) event.role = role;
   if (status) event.status = status;
+  if (['official','independent','guided'].includes(lane)) event.lane = lane;
   if (url) {
     try { event.url = validatePublicUrl(url).href; } catch { /* Keep unsafe references as text-only events. */ }
   }

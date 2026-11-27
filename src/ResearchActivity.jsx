@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { laneNames } from '../shared/retrieval.js'
 
 function publicLink(value) {
   try {
@@ -37,7 +38,7 @@ export function ResearchActivity({events = [], running = false, savedGap}) {
       <ol aria-label={selected ? 'Activity for ' + selected : 'Activity timeline'}>{visible.map((event, i) => {
         const url = publicLink(event.url)
         return <li key={i}>
-          <span className="step-stage">{event.stage}</span>
+          <span className="step-stage">{laneNames[event.lane] || event.stage}</span>
           {event.model && <strong>{event.model} · </strong>}
           <span>{detail(event)} {url && <a href={url.href} target="_blank" rel="noopener noreferrer">{url.hostname}</a>}</span>
         </li>

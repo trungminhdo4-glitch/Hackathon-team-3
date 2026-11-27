@@ -11,6 +11,7 @@
 .source-coverage ul { padding-left: 20px; }
 .source-coverage li { margin: 9px 0; overflow-wrap: anywhere; }
 .source-coverage li strong, .source-coverage li span { display: block; }
+.attempted-url { display: block; color: var(--muted); overflow-wrap: anywhere; }
 .review-brief dl { margin: 12px 0; }
 .review-brief dl div { margin: 7px 0; }
 .review-brief dt { font-weight: 650; }
