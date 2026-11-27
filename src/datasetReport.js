@@ -18,6 +18,10 @@ export function savedGapDetail(report) {
   if (report.evidenceGap || isEarlierReport(report) || /placeholder or example domain/i.test(report.interpretation)) return null
   if (!report.review && report.verdict !== 'insufficient' && report.verdictBasis !== 'evidence_gap') return null
   if (!report.activity?.some(event => event.detail?.startsWith('Evidence review found an unresolved core claim.'))) return null
+  if (report.review?.prompt && report.review.mode === 'sdk') {
+    return {summary:'The researcher paused on this question about ' + (report.productName || report.inputUrl) + '.',
+      missing:report.review.prompt}
+  }
   return describeCapabilityGap(report)
 }
 

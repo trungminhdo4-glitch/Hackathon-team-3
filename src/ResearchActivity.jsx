@@ -13,6 +13,8 @@ export function ResearchActivity({events = [], running = false, savedGap}) {
   const [open, setOpen] = useState(false)
   if (!running && !events.length) return null
   const latest = events.at(-1)
+  const detail = event => savedGap && event.detail?.startsWith('Evidence review found an unresolved core claim.')
+    ? [savedGap.summary, savedGap.reason, savedGap.missing].filter(Boolean).join(' ') : event.detail
   const actor = event => event.model || (event.role === 'human' ? 'Reviewer' : 'SaaSLens')
   const actors = Map.groupBy(events, actor)
   const selected = actors.has(filter) ? filter : ''
@@ -26,7 +28,7 @@ export function ResearchActivity({events = [], running = false, savedGap}) {
           onClick={() => { setFilter(name); setOpen(true) }}>
           <strong>{name}</strong><small>{items.some(event => event.role === 'specialist') ? 'Search specialist' :
             name === 'SaaSLens' ? 'Research workflow' : name === 'Reviewer' ? 'Human input' : 'Research agent'}</small>
-          <span>{items.at(-1).detail}</span>
+          <span>{detail(items.at(-1))}</span>
         </button>)}
       </div>
       <details open={open} onToggle={event => setOpen(event.currentTarget.open)}>
@@ -37,9 +39,7 @@ export function ResearchActivity({events = [], running = false, savedGap}) {
         return <li key={i}>
           <span className="step-stage">{event.stage}</span>
           {event.model && <strong>{event.model} · </strong>}
-          <span>{event.detail} {url && <a href={url.href} target="_blank" rel="noopener noreferrer">{url.hostname}</a>}</span>
-          {savedGap && event.detail?.startsWith('Evidence review found an unresolved core claim.') &&
-            <p>{savedGap.summary} {savedGap.missing}</p>}
+          <span>{detail(event)} {url && <a href={url.href} target="_blank" rel="noopener noreferrer">{url.hostname}</a>}</span>
         </li>
       })}</ol>
     </details></>}

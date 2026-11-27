@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { columns, datasetRow, csvReport, csvReports, markdownReport } from '../src/datasetReport.js'
+import { columns, datasetRow, csvReport, csvReports, markdownReport, savedGapDetail } from '../src/datasetReport.js'
 
 test('an insufficient report exports its verdict, verified flags, and human notes separately', () => {
   const report = { rubricVersion: 2, verdict: 'insufficient', productName: 'Acme', vendor: null,
@@ -79,6 +79,8 @@ test('saved generic activity is explained from its specific unresolved claim wit
   assert.equal(row.overall, 'Yellow')
   assert.ok(row.reasoning.includes(claim))
   assert.match(row.reasoning, /no verified passage/i)
+  const prompt = 'Which deployment shows the agent running with the signed-in user’s permissions?'
+  assert.equal(savedGapDetail({...report, review:{mode:'sdk', prompt}}).missing, prompt)
   assert.ok(!datasetRow({...report, verdict:'green', verdictBasis:null}).reasoning.includes(claim))
 })
 
