@@ -11,7 +11,9 @@
     "start": "node --env-file-if-exists=.env.local server/start.js",
     "build": "vite build",
     "test": "node --test tests/*.test.js",
-    "test:ui": "playwright test"
+    "test:ui": "playwright test",
+    "test:veritas": "node --test veritas/tests/*.test.js",
+    "bench:veritas": "node veritas/bench/run.js"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",

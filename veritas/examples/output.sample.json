@@ -1,0 +1,271 @@
+{
+  "provider": "fixture",
+  "stats": {
+    "searches": 28,
+    "fetches": 0,
+    "fetchFailures": 0,
+    "searchFailures": 0,
+    "cacheHits": 2,
+    "judgeCalls": 0,
+    "judgeRejected": 0,
+    "injections": 8,
+    "startedAt": 1795791574205,
+    "runtimeMs": 45
+  },
+  "rows": [
+    {
+      "id": "demo-1",
+      "url": "https://acmecloud.example/",
+      "product": "Acme Cloud Service Desk",
+      "vendor": "Acme Cloud",
+      "overall": "Red",
+      "green_flags": "Acme Cloud supports SCIM provisioning. (source: https://docs.acmecloud.example/scim)",
+      "yellow_flags": "Trusted by Globex and Telekom. [only partially supported] (source: https://telekom.example/techboost) | Acme Cloud is used by over 57 million people. [vendor-claimed only, not independently confirmed] (source: https://acmecloud.example/)",
+      "red_flags": "The FTC fined Acme Cloud $1 million for deceptive claims. (source: https://www.ftc.gov/news/acme) | Vendor claim contradicted: Acme Cloud has operated since 2009. (source: https://www.northdata.de/acme-cloud) | Vendor claim contradicted: Acme Cloud is SOC 2 Type II certified. (source: https://trust.acmecloud.example/)",
+      "reasoning": "3 evidence-backed red flag(s). 2 item(s) need verification."
+    }
+  ],
+  "detail": [
+    {
+      "vendor": {
+        "id": "demo-1",
+        "url": "https://acmecloud.example/",
+        "vendor": "Acme Cloud",
+        "product": "Acme Cloud Service Desk",
+        "domain": "https://acmecloud.example/"
+      },
+      "row": {
+        "id": "demo-1",
+        "url": "https://acmecloud.example/",
+        "product": "Acme Cloud Service Desk",
+        "vendor": "Acme Cloud",
+        "overall": "Red",
+        "green_flags": "Acme Cloud supports SCIM provisioning. (source: https://docs.acmecloud.example/scim)",
+        "yellow_flags": "Trusted by Globex and Telekom. [only partially supported] (source: https://telekom.example/techboost) | Acme Cloud is used by over 57 million people. [vendor-claimed only, not independently confirmed] (source: https://acmecloud.example/)",
+        "red_flags": "The FTC fined Acme Cloud $1 million for deceptive claims. (source: https://www.ftc.gov/news/acme) | Vendor claim contradicted: Acme Cloud has operated since 2009. (source: https://www.northdata.de/acme-cloud) | Vendor claim contradicted: Acme Cloud is SOC 2 Type II certified. (source: https://trust.acmecloud.example/)",
+        "reasoning": "3 evidence-backed red flag(s). 2 item(s) need verification."
+      },
+      "flags": [
+        {
+          "polarity": "green",
+          "text": "Acme Cloud supports SCIM provisioning.",
+          "verdict": "SUPPORTED",
+          "claims": [
+            {
+              "vendor_id": "demo-1",
+              "claim": "Acme Cloud supports SCIM provisioning.",
+              "answer": true,
+              "verdict": "SUPPORTED",
+              "confidence": 0.62,
+              "explanation": "Supported by the vendor's own technical documentation (primary source for documented capabilities).",
+              "evidence": [
+                {
+                  "url": "https://docs.acmecloud.example/scim",
+                  "quote": "Acme Cloud supports SCIM provisioning.",
+                  "source_type": "technical_documentation",
+                  "stance": "supports",
+                  "quote_verified": true,
+                  "independent": false,
+                  "retrieved_at": "2026-11-27T14:59:34.221Z"
+                }
+              ],
+              "limitations": [
+                "No independent confirmation found; based on vendor documentation.",
+                "Embedded instructions detected and ignored in acmecloud.example."
+              ]
+            }
+          ]
+        },
+        {
+          "polarity": "green",
+          "text": "Trusted by Globex and Telekom.",
+          "verdict": "PARTIALLY_SUPPORTED",
+          "claims": [
+            {
+              "vendor_id": "demo-1",
+              "claim": "Globex is a customer of Acme Cloud.",
+              "answer": true,
+              "verdict": "SUPPORTED",
+              "confidence": 0.75,
+              "explanation": "Supported by 1 independent evidence family/families.",
+              "evidence": [
+                {
+                  "url": "https://globex.example/news/service-desk",
+                  "quote": "Globex selected Acme Cloud to run its IT service desk and completed the rollout in 2025.",
+                  "source_type": "customer",
+                  "stance": "supports",
+                  "quote_verified": true,
+                  "independent": true,
+                  "retrieved_at": "2026-11-27T14:59:34.236Z"
+                }
+              ],
+              "limitations": [
+                "Some sources refer to a different or unconfirmed entity and were excluded.",
+                "Embedded instructions detected and ignored in acmecloud.example."
+              ]
+            },
+            {
+              "vendor_id": "demo-1",
+              "claim": "Telekom is a customer of Acme Cloud.",
+              "answer": null,
+              "verdict": "PARTIALLY_SUPPORTED",
+              "confidence": 0.75,
+              "explanation": "Evidence establishes only part of the claim or a weaker version of it.",
+              "evidence": [
+                {
+                  "url": "https://telekom.example/techboost",
+                  "quote": "Acme Cloud is a member of the Telekom TechBoost startup program, which offers cloud credits to startups.",
+                  "source_type": "customer",
+                  "stance": "partial",
+                  "quote_verified": true,
+                  "independent": true,
+                  "retrieved_at": "2026-11-27T14:59:34.236Z"
+                }
+              ],
+              "limitations": [
+                "Some sources refer to a different or unconfirmed entity and were excluded.",
+                "Relationship documented as partner/programme, not customer.",
+                "Embedded instructions detected and ignored in acmecloud.example."
+              ]
+            }
+          ]
+        },
+        {
+          "polarity": "green",
+          "text": "Acme Cloud is used by over 57 million people.",
+          "verdict": "SELF_REPORTED",
+          "claims": [
+            {
+              "vendor_id": "demo-1",
+              "claim": "The company is used by over 57 million people.",
+              "answer": null,
+              "verdict": "SELF_REPORTED",
+              "confidence": 0.56,
+              "explanation": "Only vendor-controlled sources (own website, press releases or copies of them) state this.",
+              "evidence": [
+                {
+                  "url": "https://acmecloud.example/",
+                  "quote": "Acme Cloud is used by over 57 million people worldwide.",
+                  "source_type": "vendor",
+                  "stance": "supports",
+                  "quote_verified": true,
+                  "independent": false,
+                  "retrieved_at": "2026-11-27T14:59:34.243Z"
+                }
+              ],
+              "limitations": [
+                "Some cited passages could not be found in the retrieved source and were not used.",
+                "Older source reports a lower figure (temporal inconsistency).",
+                "Embedded instructions detected and ignored in acmecloud.example."
+              ]
+            }
+          ]
+        },
+        {
+          "polarity": "red",
+          "text": "The FTC fined Acme Cloud $1 million for deceptive claims.",
+          "verdict": "SUPPORTED",
+          "claims": [
+            {
+              "vendor_id": "demo-1",
+              "claim": "The FTC fined Acme Cloud $1 million for deceptive claims.",
+              "answer": true,
+              "verdict": "SUPPORTED",
+              "confidence": 0.82,
+              "explanation": "Supported by 1 independent evidence family/families.",
+              "evidence": [
+                {
+                  "url": "https://www.ftc.gov/news/acme",
+                  "quote": "The FTC fined Acme Cloud $1 million for deceptive claims that its tool makes websites compliant.",
+                  "source_type": "regulator",
+                  "stance": "supports",
+                  "quote_verified": true,
+                  "independent": true,
+                  "retrieved_at": "2026-11-27T14:59:34.246Z",
+                  "publication_date": "2025-04-22"
+                }
+              ],
+              "limitations": [
+                "Embedded instructions detected and ignored in acmecloud.example."
+              ]
+            }
+          ]
+        },
+        {
+          "polarity": "green",
+          "text": "Acme Cloud has operated since 2009.",
+          "verdict": "REFUTED",
+          "claims": [
+            {
+              "vendor_id": "demo-1",
+              "claim": "Acme Cloud has operated since 2009.",
+              "answer": false,
+              "verdict": "REFUTED",
+              "confidence": 0.47,
+              "explanation": "Contradicted by 1 evidence family/families including independent sources.",
+              "evidence": [
+                {
+                  "url": "https://www.northdata.de/acme-cloud",
+                  "quote": "Acme Cloud GmbH was incorporated in 2019 in Berlin.",
+                  "source_type": "registry",
+                  "stance": "refutes",
+                  "quote_verified": true,
+                  "independent": true,
+                  "retrieved_at": "2026-11-27T14:59:34.247Z"
+                }
+              ],
+              "limitations": [
+                "Source gives a different founding/start year.",
+                "Embedded instructions detected and ignored in acmecloud.example."
+              ]
+            }
+          ]
+        },
+        {
+          "polarity": "green",
+          "text": "Acme Cloud is SOC 2 Type II certified.",
+          "verdict": "REFUTED",
+          "claims": [
+            {
+              "vendor_id": "demo-1",
+              "claim": "The company claims SOC 2 Type II certification.",
+              "answer": false,
+              "verdict": "REFUTED",
+              "confidence": 0.51,
+              "explanation": "Contradicted by 1 evidence family/families.",
+              "evidence": [
+                {
+                  "url": "https://trust.acmecloud.example/",
+                  "quote": "Acme Cloud is currently working towards SOC 2 Type II and expects the audit next year.",
+                  "source_type": "vendor",
+                  "stance": "refutes",
+                  "quote_verified": true,
+                  "independent": false,
+                  "retrieved_at": "2026-11-27T14:59:34.248Z"
+                }
+              ],
+              "limitations": [
+                "Some cited passages could not be found in the retrieved source and were not used.",
+                "Quantity matches.",
+                "Certification in progress, not achieved.",
+                "Embedded instructions detected and ignored in acmecloud.example."
+              ]
+            },
+            {
+              "vendor_id": "demo-1",
+              "claim": "The company Acme Cloud is.",
+              "answer": null,
+              "verdict": "INSUFFICIENT_EVIDENCE",
+              "confidence": 0,
+              "explanation": "No retrieved evidence establishes or contradicts the claim. Absence of evidence is not treated as refutation.",
+              "evidence": [],
+              "limitations": [
+                "Embedded instructions detected and ignored in acmecloud.example."
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

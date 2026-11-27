@@ -1,0 +1,13 @@
+[
+  {
+    "vendor": { "id": "demo-1", "url": "https://acmecloud.example/", "vendor": "Acme Cloud", "product": "Acme Cloud Service Desk", "domain": "https://acmecloud.example/" },
+    "flags": [
+      { "polarity": "green", "text": "Acme Cloud supports SCIM provisioning." },
+      { "polarity": "green", "text": "Trusted by Globex and Telekom." },
+      { "polarity": "green", "text": "Acme Cloud is used by over 57 million people." },
+      { "polarity": "red", "text": "The FTC fined Acme Cloud $1 million for deceptive claims." },
+      { "polarity": "green", "text": "Acme Cloud has operated since 2009." },
+      { "polarity": "green", "text": "Acme Cloud is SOC 2 Type II certified." }
+    ]
+  }
+]

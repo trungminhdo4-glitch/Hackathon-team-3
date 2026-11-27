@@ -81,6 +81,16 @@ export function heuristicStance(claim, e, { now = new Date() } = {}) {
   const critHit = crit.filter(t => lp.includes(t));
   const specificity = crit.length ? critHit.length / crit.length : Math.min(1, relevance + 0.2);
 
+  // Adapter-supplied term lists (e.g. from SaaSLens checks) override token overlap.
+  const refuteTerms = claim.qualifiers?.refute_terms ?? [];
+  if (refuteTerms.some(t => lp.includes(String(t).toLowerCase()))) {
+    return { stance: 'refutes', relevance: 1, specificity: 1, notes: ['source states a contradicting designation'], qualifiers: quals };
+  }
+  const matchTerms = claim.qualifiers?.match_terms ?? [];
+  if (matchTerms.length) {
+    const any = matchTerms.filter(t => lp.includes(String(t).toLowerCase()));
+    return { stance: any.length ? 'supports' : 'neutral', relevance: any.length ? 1 : 0, specificity: Math.min(1, any.length / 2 + 0.5), notes: [], qualifiers: quals };
+  }
   // Founding/start-year statements are on-topic for "since YEAR" claims even without word overlap.
   const foundingTopic = claim.claim_type === 'historical' && FOUNDING.test(passage) && compareYears(claim.text, passage) !== 'absent';
   if (relevance < 0.25 && critHit.length === 0 && !foundingTopic) return { stance: 'neutral', relevance, specificity, notes: ['passage not about the claim'], qualifiers: quals };

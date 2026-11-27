@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-27T14:58:22.050Z",
+  "generated_at": "2026-11-27T15:00:44.250Z",
   "budget": {
     "maxSearchesPerClaim": 3,
     "maxRounds": 2,
@@ -23,7 +23,7 @@
           "citation_validity": "not measured (variant does not validate)",
           "injection_quote_leaks": 0,
           "searches_per_claim": 1,
-          "runtime_ms": 18
+          "runtime_ms": 16
         },
         "failures": [
           {
@@ -211,7 +211,7 @@
           "citation_validity": 1,
           "injection_quote_leaks": 0,
           "searches_per_claim": 4,
-          "runtime_ms": 12
+          "runtime_ms": 15
         },
         "failures": []
       }
@@ -231,7 +231,7 @@
           "citation_validity": "not measured (variant does not validate)",
           "injection_quote_leaks": 0,
           "searches_per_claim": 1,
-          "runtime_ms": 1
+          "runtime_ms": 0
         },
         "failures": [
           {
@@ -330,7 +330,7 @@
           "citation_validity": 1,
           "injection_quote_leaks": 0,
           "searches_per_claim": 1,
-          "runtime_ms": 3
+          "runtime_ms": 5
         },
         "failures": [
           {
@@ -359,7 +359,7 @@
           "citation_validity": 1,
           "injection_quote_leaks": 0,
           "searches_per_claim": 4.17,
-          "runtime_ms": 5
+          "runtime_ms": 7
         },
         "failures": []
       }

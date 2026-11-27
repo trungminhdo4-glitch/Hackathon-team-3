@@ -143,3 +143,17 @@ test('verifyFlags end-to-end on a vendor with a fixture corpus', async () => {
   assert.equal(row.overall, 'Red');
   assert.match(row.yellow_flags, /vendor-claimed only/);
 });
+
+test('SaaSLens adapter: fabricated sources/quotes are dropped, registry contradiction refutes', async () => {
+  const { fromSaasLens } = await import('../adapters.js');
+  const { fixtureResearch } = await import('../../server/fixtures.js');
+  const url = 'https://orbit-desk.example/';
+  const run = async sc => { const { claims, evidence } = fromSaasLens(url, fixtureResearch(url, sc)); return verifyClaims(claims, evidence, null, {}); };
+  const credible = await run('credible');
+  assert.equal(credible.find(v => v.claim_id.endsWith('independent')).status, 'SUPPORTED');
+  const fabricated = await run('fabricated');
+  assert.equal(fabricated.find(v => v.claim_id.endsWith('independent')).status, 'INSUFFICIENT_EVIDENCE');
+  assert.equal(fabricated.find(v => v.claim_id.endsWith('operator')).status, 'INSUFFICIENT_EVIDENCE');
+  const contradiction = await run('contradiction');
+  assert.equal(contradiction.find(v => v.claim_id.endsWith('identity')).status, 'REFUTED');
+});
