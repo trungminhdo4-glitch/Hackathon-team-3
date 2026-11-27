@@ -1,0 +1,8 @@
+.env
+.venv/
+__pycache__/
+cache/
+/verdicts.*
+/eval-results.*
+ah3-brief-stackgini-agents-with-taste.pdf
+hackathon_40_solutions_commented*.csv

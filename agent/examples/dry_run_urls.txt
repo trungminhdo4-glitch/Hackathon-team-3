@@ -1,0 +1,6 @@
+# Unseen smoke tests; none is in the supplied 40-row CSV.
+https://www.notion.com/
+https://www.sqlite.org/
+https://www.usebruno.com/
+https://www.lastpass.com/
+https://www.freepdfconvert.com/
