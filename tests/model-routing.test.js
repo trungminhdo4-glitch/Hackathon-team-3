@@ -9,7 +9,7 @@ import { createResearchSession, research } from '../server/live.js';
 import { META_MODEL } from '../server/models.js';
 
 function setDemoEnv(t) {
-  const values = { OPENAI_MODEL: 'gpt-4.1-mini', OPENAI_API_KEY: 'openai-test-only', GROQ_API_KEY: 'groq-test-only' };
+  const values = { OPENAI_MODEL: 'gpt-4.1-mini', OPENAI_API_KEY: 'openai-test-only', GROQ_API_KEY: 'groq-test-only', TAVILY_API_KEY: '' };
   for (const [key, value] of Object.entries(values)) {
     const old = process.env[key];
     t.after(() => {

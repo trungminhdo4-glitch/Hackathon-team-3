@@ -27,7 +27,7 @@ export async function investigateProduct(value, { question = '', model, helperMo
   if (!process.env.OPENAI_API_KEY?.trim()) throw new Error('Server API key unavailable.');
   const signal = AbortSignal.timeout(180_000);
   const session = createResearchSession(model);
-  const searchActivity = event => onActivity?.({...event,model:session.searchModel,role:'researcher'});
+  const searchActivity = event => onActivity?.({...event,model:session.searchModel,role:'researcher',provider:'openai'});
   if (!url && !priorFindings) searchActivity({stage:'search',detail:'Looking up the official product URL for ' + subject});
   const inputUrl = url ?? priorFindings?.inputUrl ?? await resolveProductUrl(subject, question, session, signal, searchActivity);
   if (!inputUrl) {

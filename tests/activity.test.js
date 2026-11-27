@@ -21,7 +21,7 @@ test('activity arrives before the verdict and is retained in the final report', 
   const gate = new Promise(resolve => { finish = resolve; });
   t.after(finish);
   const response = await request(t, async (_value, {onActivity}) => {
-    onActivity({stage: 'read', lane: 'independent', detail: 'Read the guide', url: 'https://atlas.example/guide'});
+    onActivity({stage: 'read', role:'server', provider:'tavily', lane: 'independent', detail: 'Read the guide', url: 'https://atlas.example/guide'});
     await gate;
     return {verdict: 'green'};
   });
@@ -30,6 +30,8 @@ test('activity arrives before the verdict and is retained in the final report', 
   assert.equal(first.type, 'activity');
   assert.equal(first.event.url, 'https://atlas.example/guide');
   assert.equal(first.event.lane, 'independent');
+  assert.equal(first.event.provider, 'tavily');
+  assert.equal(first.event.model, undefined);
   assert.ok(Date.parse(first.event.at));
   finish();
   let remaining = '';
@@ -48,5 +50,6 @@ test('a provider failure after progress ends the stream with a public error', as
   });
   const messages = (await response.text()).trim().split('\n').map(line => JSON.parse(line));
   assert.deepEqual(messages.map(message => message.type), ['activity', 'error']);
+  assert.equal(messages[0].event.provider, undefined);
   assert.doesNotMatch(messages[1].error, /sensitive provider/);
 });

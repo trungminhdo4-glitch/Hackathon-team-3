@@ -9,6 +9,9 @@ import { fetchPublicText, lookupPublic, validatePublicUrl } from '../server/fetc
 import { research, searchSources } from '../server/live.js';
 import { assess } from '../server/assessment.js';
 
+// These fixtures exercise OpenAI-only discovery even when the shell has a live Tavily key.
+delete process.env.TAVILY_API_KEY;
+
 test('public URL checks exclude credentials, local names and non-public IP ranges', () => {
   for (const input of ['file:///local', 'http://user:pw@sample.org', 'http://localhost.',
     'http://127.0.0.1/', 'https://[::1]/', 'https://[::ffff:192.168.1.1]/', 'https://169.254.1.1/']) {
@@ -248,7 +251,7 @@ test('bounded searches ground rubric claims, answers and customer testimony in r
   assert.deepEqual(raw.testimony[0].evidence, [{sourceId:'S3',quote:review,relation:'review',author:'Taylor',vendorAuthored:false}]);
   const { attempts, ...totals } = raw.coverage.independent;
   assert.deepEqual(totals, {searched:true,discovered:2,retrieved:1});
-  assert.deepEqual(attempts, [{requestedUrl:'https://8.8.8.8/review',url:'https://8.8.8.8/review',outcome:'read'}]);
+  assert.deepEqual(attempts, [{provider:'openai',requestedUrl:'https://8.8.8.8/review',url:'https://8.8.8.8/review',outcome:'read'}]);
 });
 
 test('blocked independent publishers trigger bounded fallback retrieval without treating blocked pages as sources', async t => {
@@ -279,7 +282,7 @@ test('blocked independent publishers trigger bounded fallback retrieval without 
   const {coverage} = assess('https://1.1.1.1/',raw).dossier;
   const blocked = coverage.find(item => item.url === 'https://8.8.8.8/review');
   assert.equal(blocked.status, 'unavailable');
-  assert.deepEqual(blocked.attempts, [{lane:'independent',requestedUrl:blocked.url,outcome:'unavailable',failure:{code:'http',httpStatus:403}}]);
+  assert.deepEqual(blocked.attempts, [{lane:'independent',provider:'openai',requestedUrl:blocked.url,outcome:'unavailable',failure:{code:'http',httpStatus:403}}]);
   assert.ok(coverage.some(item => item.attempts?.some(attempt => attempt.outcome === 'read')));
   assert.equal(requests.length, 7); // submitted page + six bounded candidate reads
   // A readable generic page leaves the use-evidence gap open and merits one more focused search.

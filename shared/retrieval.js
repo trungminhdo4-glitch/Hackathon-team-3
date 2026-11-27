@@ -38,6 +38,12 @@ export function explainReadFailure(failure) {
 export const laneNames = {official:'Official search', independent:'Independent search', guided:'Guided search',
   submitted:'Submitted page', suggested:'Suggested page', web_search:'Search result · lane unrecorded'};
 
+export function searchProviderLabel(provider) {
+  if (provider === 'tavily') return 'Tavily'
+  if (provider === 'openai') return 'OpenAI web search'
+  return ''
+}
+
 export function reportLimitations(report) {
   const notes = report.limitations || [];
   const pages = report.dossier?.coverage;
@@ -62,7 +68,7 @@ export function pageAttempts(page) {
       reason = page.reason;
       next = 'Try a document naming the product edition and describing the task or purchasing condition.';
     }
-    return {lane:laneNames[attempt.lane] || 'Search lane unrecorded', requestedUrl:attempt.requestedUrl,
+    return {lane:laneNames[attempt.lane] || 'Search lane unrecorded', provider:searchProviderLabel(attempt.provider), requestedUrl:attempt.requestedUrl,
       redirected:attempt.requestedUrl !== page.url, reason, next};
   });
 }

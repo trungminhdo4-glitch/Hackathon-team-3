@@ -13,14 +13,20 @@ try {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input),
     });
     const result = await response.json();
+    const tavilySearch = result.activity?.filter(event => event.provider === 'tavily' && event.stage === 'search');
+    const tavilyPages = result.dossier?.coverage.filter(page => page.attempts?.some(attempt => attempt.provider === 'tavily'));
     console.log(JSON.stringify({ input, resolvedUrl: result.inputUrl, product: result.productName, answer: result.answer?.text,
-      status: response.status, rubricVersion: result.rubricVersion, verdict: result.verdict, interpretation: result.interpretation,
+      status: response.status, rubricVersion: result.rubricVersion, model: result.model, verdict: result.verdict, interpretation: result.interpretation,
+      openAIQueries: result.activity?.filter(event => event.provider === 'openai' && event.detail.startsWith('Searched for')).length,
+      tavilySearch: tavilySearch?.map(({status,detail}) => ({status,detail})),
+      tavilyPages: tavilyPages?.map(({url,status}) => ({url,status})),
       checks: result.checks?.map(({ id, status, claim, evidenceIds, explanation, consequence }) =>
         ({ id, status, claim, evidenceIds, explanation, consequence })),
       testimony: result.testimony?.map(({ text, explanation, evidence }) => ({ text, explanation, evidence })),
       sources: result.sources?.map(({ id, url }) => ({ id, url })), limitations: result.limitations, error: result.error }));
     if (!response.ok || result.rubricVersion !== 2 || !result.verdict || 'score' in result ||
         new Set(result.checks?.map(check => check.id)).size !== 6) process.exitCode = 1;
+    if (process.env.TAVILY_API_KEY?.trim() && !tavilySearch?.some(event => event.status === 'completed')) process.exitCode = 1;
   }));
 } finally {
   server.close();

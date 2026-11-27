@@ -1,4 +1,5 @@
 import { getDomain } from 'tldts';
+import { searchProviderLabel } from '../shared/retrieval.js';
 
 const compact = text => String(text || '').replace(/\s+/gu, ' ').trim();
 const sentences = new Intl.Segmenter(undefined, { granularity: 'sentence' });
@@ -129,6 +130,7 @@ export function buildDossier(report, documents, raw) {
         coverage.push(page);
       }
       (page.attempts ??= []).push({lane, requestedUrl:attempt.requestedUrl, outcome:attempt.outcome,
+        ...(searchProviderLabel(attempt.provider) && {provider:attempt.provider}),
         ...(attempt.failure && {failure:attempt.failure})});
     }
   }
