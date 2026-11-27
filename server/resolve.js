@@ -9,7 +9,7 @@ function comparable(value) {
 
 // A model nomination is only a lead. Require a tool-returned page at the
 // same URL, or the exact origin for a homepage, before public-page retrieval.
-export async function resolveProductUrl(subject, question, { agent, runner }, signal) {
+export async function resolveProductUrl(subject, question, { agent, runner }, signal, onActivity) {
   const previous = agent.instructions;
   let result;
   try {
@@ -18,7 +18,7 @@ export async function resolveProductUrl(subject, question, { agent, runner }, si
   } finally {
     agent.instructions = previous;
   }
-  const { searched, urls } = searchSources(result.rawResponses);
+  const { searched, urls } = searchSources(result.rawResponses, onActivity);
   if (!searched) throw new Error('Product lookup did not complete.');
   const lead = /^OFFICIAL\s+(https?:\/\/[^\s<>()[\]]+)/i.exec(String(result.finalOutput ?? '').trim());
   if (!lead) return null;

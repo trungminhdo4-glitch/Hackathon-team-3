@@ -59,6 +59,21 @@ test('model-written links cannot enter the search citation catalog', () => {
   assert.deepEqual(searchSources([{ providerData: { output: [message] } }]), { searched: false, urls: [] });
 });
 
+test('search activity reports actual provider actions and excludes private pages and untrusted answer prose', () => {
+  const activity = [];
+  const call = action => ({type:'web_search_call',status:'completed',action});
+  searchSources([{providerData:{output:[
+    call({type:'search',queries:['Parcel Mail customer deployment']}),
+    call({type:'open_page',url:'https://example.org/guide'}),
+    call({type:'find_in_page',url:'http://localhost/private'}),
+    {type:'message',content:[{text:'I searched a fabricated site.'}]},
+  ]}}], event => activity.push(event));
+  assert.deepEqual(activity, [
+    {stage:'search',detail:'Searched for “Parcel Mail customer deployment”'},
+    {stage:'search',detail:'Search tool opened a page',url:'https://example.org/guide'},
+  ]);
+});
+
 test('a discovery timeout preserves a readable page as incomplete research without claims', async t => {
   serveOnce(t, 200, { 'content-type': 'text/plain' }, 'A public project page.');
   t.mock.method(Runner.prototype, 'run', async () => { throw new DOMException('Time limit', 'TimeoutError'); });
@@ -112,7 +127,7 @@ test('bounded searches ground rubric claims, answers and customer testimony in r
     const official = { passageId: officialId, relation: 'vendor', author: null, vendorAuthored: true };
     const reviewer = { passageId: reviewId, relation: 'review', author: 'Taylor', vendorAuthored: false };
     const bogus = { ...reviewer, passageId: 'S999.2' };
-    const license = { criterion:'licensing',claim:'Business use requires a license.',status:'supported',impact:'caveat',
+    const license = { criterion:'licensing',claim:'Business use requires a license.',status:'supported',impact:'caveat',significance:'limitation',
       reason:'The vendor specifies a business license.',consequence:'Business users need this license.',evidence:[official] };
     return { finalOutput: { productNames: [{name: 'Orbit Desk Enterprise', passageId: officialId}], vendor: null, answer: {evidence:[bogus,official]},
       testimony: [{evidence:[reviewer,bogus]}],
@@ -156,13 +171,19 @@ test('blocked independent publishers trigger bounded fallback retrieval without 
     const independent = ['8.8.8.8','9.9.9.9','4.2.2.2','1.0.0.1','8.8.4.4','4.2.2.1','4.2.2.3'];
     return resultFor(task.lane === 'independent' ? independent.map(ip => 'https://' + ip + '/review') : []);
   }} };
-  const raw = await research('https://1.1.1.1/', {session});
+  const events = [];
+  const raw = await research('https://1.1.1.1/', {session,onActivity:event => events.push(event)});
   assert.equal(raw.documents.length, 2);
   assert.equal(raw.documents[1].url, 'https://8.8.4.4/review');
   assert.equal(raw.coverage.independent.retrieved, 1);
   assert.equal(raw.incomplete, true);
   assert.match(raw.limitations.join(' '), /independent search pages could not supply/);
   assert.equal(requests.length, 7); // submitted page + six bounded candidate reads
+  // A readable generic page leaves the use-evidence gap open and merits one more focused search.
+  assert.equal(raw.coverage.independent.followUp, 'completed');
+  assert.ok(events.some(e => e.stage === 'assess'));
+  assert.ok(events.some(e => e.detail.includes('Following up')));
+  assert.ok(events.some(e => e.url === 'https://9.9.9.9/review' && e.detail.includes('unavailable')));
 });
 
 test('a procedure deep in a long guide retains its task, literal setting, command and observed result', async t => {
@@ -204,7 +225,7 @@ test('the source-attested edition in the original URL wins over its paid compara
     const cite = text => ({passageId:passages.find(p => p.text === text).id, relation:'vendor',vendorAuthored:true,author:null});
     return {finalOutput:{productNames:[{name:paid,passageId:cite(condition).passageId}],vendor:null,
       answer:{evidence:[cite(base),cite(condition)]},testimony:[],claims:[{
-        criterion:'licensing',claim:'Incorrect paraphrase that a fake citation would support.',reason:'Invented',consequence:'Invented',
+        criterion:'licensing',significance:'limitation',claim:'Incorrect paraphrase that a fake citation would support.',reason:'Invented',consequence:'Invented',
         status:'supported',impact:'caveat',evidence:[cite(base),{...cite(condition),passageId:'S9.99'}],
       }] }};
   }}};
@@ -286,7 +307,7 @@ test('one tool-free repair restores a missing core claim; a failed repair leaves
       if (task.lane) return resultFor([]);
       const passages = task.documents[0].passages;
       const reference = text => ({passageId:passages.find(p => p.text === text).id,relation:'vendor',vendorAuthored:true,author:null});
-      const claim = (criterion,text) => ({criterion,claim:text,status:'supported',impact:'routine',
+      const claim = (criterion,text) => ({criterion,claim:text,status:'supported',impact:'routine',significance:'benefit',
         reason:'A specific source documents this.',consequence:'The user can use this documented capability.',evidence:[reference(text)]});
       const capability = claim('capability',core);
       if (task.stage === 'repair_claims') {

@@ -22,15 +22,19 @@ export function parseSubject(value) {
   return { subject, url: null };
 }
 
-export async function investigateProduct(value, { question = '', model } = {}) {
+export async function investigateProduct(value, { question = '', model, onActivity } = {}) {
   const { subject, url } = parseSubject(value);
   if (!process.env.OPENAI_API_KEY?.trim()) throw new Error('Server API key unavailable.');
-  const signal = AbortSignal.timeout(120_000);
+  const signal = AbortSignal.timeout(180_000);
   const session = createResearchSession(model);
-  const inputUrl = url ?? await resolveProductUrl(subject, question, session, signal);
+  if (!url) onActivity?.({stage:'search',detail:'Looking up the official product URL for ' + subject});
+  const inputUrl = url ?? await resolveProductUrl(subject, question, session, signal, onActivity);
   if (!inputUrl) {
     throw new InputError('Could not identify one official product page. Enter its public URL or specify the company and edition.');
   }
-  const findings = await research(inputUrl, { subject, question, session, signal });
-  return { ...assess(inputUrl, findings), subject, question, model: session.model, searchModel: session.searchModel };
+  const findings = await research(inputUrl, { subject, question, session, signal, onActivity });
+  onActivity?.({stage:'validate',detail:'Checking quotations, product edition and source attribution'});
+  const report = assess(inputUrl, findings);
+  onActivity?.({stage:'verdict',detail:'Completed the assessment with ' + report.sources.length + ' cited sources'});
+  return { ...report, subject, question, model: session.model, searchModel: session.searchModel };
 }

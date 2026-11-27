@@ -302,7 +302,7 @@ function collectEvidence(proposal, context, kind) {
 
 function unknown(criterion, reason) {
   const [label, consequence] = criteria[criterion];
-  return { id: criterion, label, claim: '', status: 'unverified', impact: 'routine',
+  return { id: criterion, label, claim: '', status: 'unverified', impact: 'routine', flag: 'context',
     explanation: reason || 'The retrieved evidence did not establish a finding for this criterion.',
     consequence, evidence: [], evidenceIds: [] };
 }
@@ -389,7 +389,11 @@ function assessClaim(proposal, context) {
     const publishers = new Set(evidence.filter(e => e.sourceType !== 'Vendor-hosted testimonial').map(e => site(hostOf(context.documents.get(e.sourceId).url))));
     if (publishers.size < 2) impact = 'routine';
   }
-  return { id: criterion, label: criteria[criterion][0], claim, status, impact, explanation,
+  // Direction describes a cited finding. Materiality decides whether it affects the overall verdict.
+  const flag = status === 'unverified' ? 'context' : impact === 'disqualifying' ? 'red' :
+    impact === 'caveat' || status === 'contradicted' || proposal.significance === 'limitation' ? 'yellow' :
+    status === 'supported' && (proposal.significance === 'benefit' || criterion === 'capability') ? 'green' : 'context';
+  return { id: criterion, label: criteria[criterion][0], claim, status, impact, flag, explanation,
     consequence: status === 'unverified' ? criteria[criterion][1] : consequence, evidence, evidenceIds: idsOf(evidence) };
 }
 
@@ -498,16 +502,19 @@ function resultFor(checks, failed) {
   const decisive = checks.filter(c => c.status !== 'unverified' && c.impact === 'disqualifying');
   const cautions = checks.filter(c => c.status !== 'unverified' && c.impact === 'caveat');
   const capabilities = checks.filter(c => c.id === 'capability');
-  const core = capabilities.find(c => c.status === 'supported');
-  const unresolved = capabilities.some(c => c.status !== 'supported');
+  const core = capabilities.find(c => c.status === 'supported' && c.flag === 'green');
+  const unresolved = capabilities.some(c => c.status !== 'supported' || c.flag === 'yellow');
   let verdict;
   let reasons;
   if (decisive.length) { verdict = 'red'; reasons = decisive; }
   else if (cautions.length) { verdict = 'yellow'; reasons = cautions; }
   else if (core && !unresolved) { verdict = 'green'; reasons = [core]; }
   else {
-    return { verdict: 'insufficient', interpretation: 'The retrieved evidence does not establish the core promise for this use. ' +
-      criteria.capability[1], verdictEvidenceIds: [...new Set(capabilities.flatMap(c => c.evidenceIds))] };
+    const established = checks.filter(c => c.status !== 'unverified' && c.evidenceIds.length).slice(0, 2);
+    const known = established.map(c => c.claim).join(' ');
+    return { verdict: 'insufficient', interpretation: (known ? 'The sources establish the following. ' + known + ' ' : '') +
+      'The retrieved evidence does not establish the full core promise for this use. ' + criteria.capability[1],
+      verdictEvidenceIds: [...new Set([...established, ...capabilities].flatMap(c => c.evidenceIds))] };
   }
   const first = reasons[0];
   return { verdict, interpretation: first.explanation + ' ' + first.consequence,
@@ -559,6 +566,11 @@ export function assess(inputUrl, raw) {
   if (core.length === 1 && core[0].status === 'unverified') {
     const observed = observedCapability(raw,context);
     if (observed) checks[checks.indexOf(core[0])] = observed;
+  }
+  for (const check of checks) {
+    // Deterministic findings (such as a binding order or an entitlement contrast) take precedence over model labels.
+    check.flag ??= check.impact === 'disqualifying' ? 'red' : check.impact === 'caveat' ? 'yellow' :
+      check.id === 'capability' && check.status === 'supported' ? 'green' : 'context';
   }
   const decision = resultFor(checks, raw.failed || !documents.size);
   const answer = answerFrom(raw, context);

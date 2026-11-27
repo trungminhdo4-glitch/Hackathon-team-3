@@ -54,6 +54,35 @@ test('a documented feature behind a paid tier can change the decision', () => {
   assert.deepEqual(report.verdictEvidenceIds, ['S1']);
 });
 
+test('a verified secondary benefit is cited even if the core task is unresolved', () => {
+  const raw = fixture();
+  raw.claims = [];
+  raw.testimony = [];
+  const quote = 'Orbit Desk includes encrypted backups with the base plan.';
+  raw.documents[0].text += ' ' + quote;
+  raw.claims.push({criterion:'security', significance:'benefit', status:'supported', impact:'routine',
+    claim:quote, reason:'The publisher documents encryption for stored backups.', consequence:'Buyers can include this documented control in their review.',
+    evidence:[cite('S1',quote)]});
+  const report = assess(url,raw);
+  assert.equal(report.verdict,'insufficient');
+  assert.equal(check(report,'security').flag,'green');
+  assert.equal(check(report,'capability').flag,'context');
+  assert.deepEqual(report.verdictEvidenceIds,['S1']);
+  assert.ok(report.interpretation.includes(quote));
+});
+
+test('one documented customer limitation stays visible without controlling the overall decision', () => {
+  const raw = fixture();
+  const quote = 'We encountered a delay importing the first ticket into Orbit Desk.';
+  raw.documents[2].text = quote;
+  raw.claims[1] = {criterion:'experience', significance:'limitation', status:'supported', impact:'caveat',
+    claim:quote, reason:quote, consequence:'This was reported on one installation.', evidence:[cite('S3',quote,'review')]};
+  const report = assess(url,raw);
+  assert.equal(report.verdict,'green');
+  assert.equal(check(report,'experience').impact,'routine');
+  assert.equal(check(report,'experience').flag,'yellow');
+});
+
 test('a documented final finding about the central promise takes precedence', () => {
   const raw = fixture();
   const contradiction = fixture('contradiction');
