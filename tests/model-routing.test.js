@@ -127,6 +127,8 @@ test('Sol delegates only a bounded evidence gap and retains responsibility for t
     } else {
       assert.ok(specialist.some(e => e.detail.includes('independent-followup evidence')));
       assert.ok(result.documents.some(d => d.url === 'https://8.8.4.4/deployment'));
+      assert.ok(specialist.some(e => e.stage === 'retrieve' && e.url === 'https://8.8.4.4/deployment' &&
+        e.detail === 'Retrieved readable source text'));
     }
   });
 });

@@ -557,7 +557,7 @@ function placeholderReport(inputUrl, doc, limitations) {
 export function assess(inputUrl, raw) {
   const host = hostOf(inputUrl);
   const documents = new Map((raw.documents ?? []).filter(doc => doc.id && hostOf(doc.url) &&
-    ['submitted', 'web_search'].includes(doc.origin) && clean(doc.text)).map(doc => [doc.id, doc]));
+    ['submitted', 'web_search', 'suggested'].includes(doc.origin) && clean(doc.text)).map(doc => [doc.id, doc]));
   const submitted = [...documents.values()].find(doc => doc.origin === 'submitted');
   const limitations = new Set((raw.limitations ?? []).map(clean).filter(Boolean));
   const placeholder = !raw.failed && placeholderReport(inputUrl, submitted, limitations);

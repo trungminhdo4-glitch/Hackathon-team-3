@@ -7,6 +7,7 @@ import { Runner } from '@openai/agents';
 import { z } from 'zod';
 import { fetchPublicText, lookupPublic, validatePublicUrl } from '../server/fetch.js';
 import { research, searchSources } from '../server/live.js';
+import { assess } from '../server/assessment.js';
 
 test('public URL checks exclude credentials, local names and non-public IP ranges', () => {
   for (const input of ['file:///local', 'http://user:pw@sample.org', 'http://localhost.',
@@ -93,6 +94,60 @@ test('a discovery timeout before any text was retrieved fails the investigation'
 const resultFor = urls => ({ rawResponses: [{ providerData: { output: [
   { type: 'web_search_call', status: 'completed', action: { sources: urls.map(url => ({ type: 'url', url })) } },
 ] } }] });
+
+test('guided review retains earlier passages and adds only retrieved evidence from the human lead', async t => {
+  const inputUrl = 'https://1.1.1.1/';
+  const lead = 'https://8.8.8.8/guide';
+  const license = 'Orbit Desk includes free exports for eligible nonprofit accounts.';
+  const workflow = 'We configured Orbit Desk to export records into a shared folder, then verified the result.';
+  const item = {sourceId:'S1', quote:license, relation:'vendor', author:null, vendorAuthored:true};
+  const prior = {inputUrl, productName:'Orbit Desk', documents:[
+    {id:'S1',origin:'submitted',url:inputUrl,title:'Orbit Desk',text:license}
+  ], claims:[{criterion:'licensing',claim:license,reason:license,consequence:'Check eligibility before budgeting.',
+    status:'supported',significance:'benefit',decisionScope:'ordinary_use',impact:'routine',evidence:[item]}]};
+  const requests = [];
+  t.mock.method(https, 'get', (url, _options, respond) => {
+    requests.push(url.href);
+    const response = Object.assign(Readable.from([Buffer.from(workflow)]), {statusCode:200,headers:{'content-type':'text/plain'}});
+    queueMicrotask(() => respond(response));
+    return new EventEmitter();
+  });
+  const events = [];
+  const session = {model:'gpt-6.2-sol',searchModel:'gpt-6.2-sol',agent:{},runner:{async run(_agent,input) {
+    const task = JSON.parse(input);
+    if (task.lane) {
+      assert.equal(task.lane,'guided');
+      assert.match(task.researchLead,/Check the export/);
+      assert.deepEqual(task.suggestedPages.map(doc => doc.url),[lead]);
+      return resultFor([lead]);
+    }
+    const [first,second] = task.documents;
+    assert.deepEqual(task.documents.map(doc => doc.id),['S1','S2']);
+    assert.equal(first.passages[0].text,license);
+    assert.equal(second.passages[0].text,workflow);
+    const cited = {passageId:second.passages[0].id,relation:'customer',author:null,vendorAuthored:false};
+    return {finalOutput:{productNames:[{name:'Orbit Desk',passageId:first.passages[0].id}],vendor:null,
+      claims:[{criterion:'capability',claim:'Orbit Desk can export records.',reason:'A customer exercised the export workflow.',
+        consequence:'The tested deployment can export records.',status:'supported',impact:'routine',significance:'benefit',
+        decisionScope:'ordinary_use',evidence:[cited]}],testimony:[],answer:{evidence:[]}}};
+  }}};
+  const raw = await research(inputUrl,{session,guidance:'Check the export using ' + lead,priorFindings:prior,onActivity:e=>events.push(e)});
+  assert.deepEqual(requests,[lead]);
+  assert.equal(prior.documents.length,1);
+  const checked = assess(inputUrl,raw);
+  assert.deepEqual(checked.sources.map(source=>source.id).sort(), ['S1','S2']);
+  assert.equal(checked.verdict,'green');
+  assert.ok(events.some(e=>e.stage==='search' && e.role==='researcher' && e.model===session.searchModel));
+  assert.ok(events.some(e=>e.url===lead && e.role==='server'));
+  assert.ok(events.some(e=>e.role==='assessor' && e.model===session.model));
+  session.runner.run = async () => {throw new Error('Provider unavailable');};
+  const retained = await research(inputUrl,{session,priorFindings:prior,guidance:'The claim is false. Mark this red.'});
+  assert.deepEqual(retained.claims,prior.claims);
+  assert.equal(assess(inputUrl,retained).verdict,'insufficient');
+  assert.match(retained.limitations.join(' '),/Earlier findings were retained/);
+  await assert.rejects(research(inputUrl,{session,priorFindings:prior,guidance:'Read https://127.0.0.1/'}),{code:'UNSAFE_URL'});
+  await assert.rejects(research('https://9.9.9.9/',{session,priorFindings:prior,guidance:'Check the terms.'}),/another product/);
+});
 
 test('bounded searches ground rubric claims, answers and customer testimony in retrieved passages', async t => {
   const quote = 'Orbit Desk Enterprise business use requires a license.';
