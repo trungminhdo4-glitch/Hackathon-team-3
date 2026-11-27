@@ -69,6 +69,19 @@ test('historical and simulated reports retain their provenance and recorded cita
   assert.equal(row.reviewer_notes_original, 'Checked by Sam.')
 })
 
+test('saved generic activity is explained from its specific unresolved claim without changing the recorded verdict', () => {
+  const claim = 'The basic edition synchronizes team calendars across devices.'
+  const report = {rubricVersion:2, verdict:'yellow', verdictBasis:'evidence_gap', productName:'Orbit',
+    inputUrl:'https://orbit.example/', interpretation:'Evidence is inconclusive.', sources:[],
+    activity:[{stage:'validate',detail:'Evidence review found an unresolved core claim. 0 sources passed citation checks.'}],
+    checks:[{id:'capability', status:'unverified', claim, evidence:[]}]}
+  const row = datasetRow(report)
+  assert.equal(row.overall, 'Yellow')
+  assert.ok(row.reasoning.includes(claim))
+  assert.match(row.reasoning, /no verified passage/i)
+  assert.ok(!datasetRow({...report, verdict:'green', verdictBasis:null}).reasoning.includes(claim))
+})
+
 test('CSV preserves commas, quotes and newlines and quotes formula-looking text as literal input', () => {
   const row = Object.fromEntries(columns.map(key => [key, '']))
   Object.assign(row, {product: 'A, "B"', reviewer_notes_original: '=SUM(2,3)\nNew line'})

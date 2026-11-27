@@ -1,5 +1,6 @@
 import { getDomain } from 'tldts';
 import { buildDossier } from './evidenceDossier.js';
+import { describeCapabilityGap } from '../shared/evidenceGap.js';
 
 const criteria = {
   capability: ['Core capability', 'Look for a working procedure, a deployment, or a test of the promised outcome.'],
@@ -324,7 +325,12 @@ function assessClaim(proposal, context) {
   const { criterion } = proposal;
   const outsideDecision = ['limited_use', 'remediated', 'unclear'].includes(proposal.decisionScope) ||
     (proposal.decisionScope === 'requested_use' && !context.question);
-  if (!statuses.has(proposal.status)) return unknown(criterion);
+  if (!statuses.has(proposal.status)) {
+    const unresolved = unknown(criterion);
+    const proposed = textOnly(proposal.claim);
+    if (criterion === 'capability' && proposal.status === 'unverified' && proposed) unresolved.investigatedClaim = proposed;
+    return unresolved;
+  }
   // The issuer's final restriction is itself a separately checkable claim.
   // A rejected companion excerpt (including a preliminary order) cannot
   // override that record or supply additional allegations to its rationale.
@@ -341,12 +347,13 @@ function assessClaim(proposal, context) {
   if (!evidence.length) {
     // Never inherit prose or materiality from a claim that lost a citation.
     // A remaining official entitlement can stand alone as a new finding.
-    const validRefs = (proposal.evidence ?? []).every(item => {
+    const references = proposal.evidence ?? [];
+    const validRefs = references.every(item => {
       const doc = context.documents.get(item.sourceId);
       return doc && matchesPassage(doc, clean(item.quote));
     });
     if (criterion === 'licensing' && validRefs) {
-      const terms = proposal.evidence.flatMap(item => collectEvidence({ evidence: [item] }, context, criterion))
+      const terms = references.flatMap(item => collectEvidence({ evidence: [item] }, context, criterion))
         .filter(e => e.sourceType === 'Vendor publication' && licensingTerms.test(e.quote));
       if (terms.length) {
         const limitsAccess = terms.some(e => /\b(?:requires? a (?:separate|paid|premium)|additional (?:license|licence|subscription)|only (?:available|included)|when you add (?:a|an) .{0,60}licen[cs]e|limited to (?:eligible|paid)|available only)\b/i.test(e.quote));
@@ -356,7 +363,12 @@ function assessClaim(proposal, context) {
             criteria[criterion][1], evidence: terms, evidenceIds: idsOf(terms) };
       }
     }
-    return unknown(criterion, 'The proposed evidence could not be verified for this product and criterion.');
+    if (!references.length) return unknown(criterion, 'No supporting passage was supplied for this check.');
+    if (!validRefs) return unknown(criterion, 'At least one proposed quotation could not be matched to text from a retrieved source.');
+    if (references.some(item => !scoped(context.documents.get(item.sourceId), clean(item.quote), context))) {
+      return unknown(criterion, 'The proposed passages could not all be tied to ' + (context.productName || context.host) + ' and its edition.');
+    }
+    return unknown(criterion, 'The passages did not supply a declarative statement with the source attribution required for ' + criteria[criterion][0].toLowerCase() + '.');
   }
   const claim = textOnly(proposal.claim);
   const reason = textOnly(proposal.reason);
@@ -528,11 +540,11 @@ function resultFor(checks, failed) {
   else if (cautions.length) { verdict = 'yellow'; reasons = cautions; }
   else if (core && !unresolved) { verdict = 'green'; reasons = [core]; }
   else {
-    const findings = checks.filter(c => c.status !== 'unverified' && c.evidenceIds.length).slice(0, 2);
+    const findings = checks.filter(c => c.status !== 'unverified' && c.evidenceIds.length &&
+      !(c.id === 'capability' && c.status !== 'supported')).slice(0, 2);
     const known = findings.map(c => c.status === 'supported' ? 'Supported finding: ' + c.claim :
       (c.status === 'contradicted' ? 'Contradicted claim: ' : 'Partly supported claim: ') + '“' + c.claim + '” ' + c.explanation).join(' ');
-    return { verdict: 'insufficient', interpretation: (known ? known + ' ' : '') +
-      'The retrieved evidence does not establish the full core promise for this use. ' + criteria.capability[1],
+    return { verdict: 'insufficient', interpretation: known,
       verdictEvidenceIds: [...new Set([...findings, ...capabilities].flatMap(c => c.evidenceIds))] };
   }
   const first = reasons[0];
@@ -609,19 +621,17 @@ export function assess(inputUrl, raw, {includeDossier = true} = {}) {
   const usedIds = idsOf([...vendorEvidence, ...checks.flatMap(c => c.evidence), ...(answer?.evidence ?? []), ...testimony.flatMap(t => t.evidence)]);
   const report = { rubricVersion: 2, inputUrl, productName: productName || host, vendor: context.vendor, vendorEvidence, answer,
     ...decision, checks, testimony, sources: usedIds.map(id => listedSource(documents.get(id))), limitations: [...limitations] };
+  if (includeDossier) report.dossier = buildDossier(report,[...documents.values()],raw);
+  if (report.verdict === 'insufficient') {
+    const gap = describeCapabilityGap(report);
+    report.evidenceGap = gap;
+    report.interpretation = [gap.summary, gap.reason, gap.missing, report.interpretation].filter(Boolean).join(' ');
+  }
   if (!includeDossier) return report;
-  report.dossier = buildDossier(report,[...documents.values()],raw);
   for (const check of checks.filter(c => c.status === 'unverified')) {
     const observation = report.dossier.observations.find(item => item.criterion === check.id && item.status === 'documented');
     if (observation) check.explanation += ' The collected passage from “' + observation.title +
       '” is retained as source context. ' + criteria[check.id][1];
-  }
-  if (report.verdict === 'insufficient' && !checks.some(c => c.status !== 'unverified')) {
-    const available = report.dossier.observations;
-    const first = available.find(o => o.kind === 'Product page' && o.criterion === 'capability') ||
-      available.find(o => o.criterion === 'capability') || available[0];
-    if (first) report.interpretation = '“' + first.title + '” states: “' + first.quote + '” ' +
-      'This establishes what the source published. The collected passages did not verify delivery of the core promise for the submitted product and edition.';
   }
   return report;
 }

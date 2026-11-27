@@ -30,6 +30,12 @@ test('a rejected proposal leaves only real source statements in the dossier, inc
   assert.deepEqual(coverage.map(row => row.status), ['documented','documented','no_usable_passage','unavailable']);
   assert.ok(observations.every(o => o.url && o.title && o.kind && o.reason && o.finding));
   assert.doesNotMatch(JSON.stringify(result.dossier), /intentional misconduct|A made-up order|Invented report|Manage cookie preferences/);
+  assert.equal(result.evidenceGap.target,quote);
+  assert.equal(result.evidenceGap.sourceUrl,url);
+  assert.match(result.evidenceGap.reason,/quotation could not be matched/);
+  assert.ok(result.interpretation.includes(quote));
+  assert.ok(result.evidenceGap.request.includes('Nubia'));
+  assert.doesNotMatch(result.interpretation,/intentional misconduct|A made-up order/);
 });
 
 test('documented observations and accepted contradictions have distinct status and provenance', () => {
@@ -247,6 +253,40 @@ test('a measured performance claim requires measured evidence', () => {
   const raw = fixture();
   raw.claims[0].claim = 'Orbit Desk has 99% accuracy.';
   assert.equal(assess(url, raw).verdict, 'insufficient');
+});
+
+test('an unresolved capability explains the exact output that the verified deployment did not establish', () => {
+  const raw = fixture();
+  raw.claims[0] = {...raw.claims[0], status:'partly_supported',
+    claim:'Orbit Desk automatically assigns tickets to the correct service team.',
+    reason:'The connector guide shows a ticket reaching the queue. It does not show which team received the ticket.',
+    consequence:'Confirm team assignment with the routing log for a test ticket.'};
+  const result = assess(url,raw);
+  assert.equal(result.verdict,'insufficient');
+  assert.equal(result.evidenceGap.target,raw.claims[0].claim);
+  assert.equal(result.evidenceGap.reason,raw.claims[0].reason);
+  assert.equal(result.evidenceGap.missing,raw.claims[0].consequence);
+  assert.ok(result.interpretation.includes('which team received the ticket'));
+  assert.ok(result.evidenceGap.request.includes(raw.claims[0].claim));
+});
+
+test('a URL with no identifiable product task asks for the edition, task and expected result', () => {
+  const report = assess(url,fixture('timeout'));
+  assert.equal(report.verdict,'insufficient');
+  assert.equal(report.evidenceGap.target,undefined);
+  assert.match(report.evidenceGap.summary,/testable user task and expected result for orbit.example/);
+  assert.match(report.evidenceGap.request,/Which product or edition.*result/);
+  assert.doesNotMatch(report.interpretation,/full core promise|unresolved core claim/);
+});
+
+test('an explicitly unverified proposition remains a research question without borrowing a different passage', () => {
+  const raw = fixture('fabricated');
+  raw.claims = [{criterion:'capability',status:'unverified',claim:'Orbit Desk exports monthly queue time breakdowns.',evidence:[]}];
+  const report = assess(url,raw);
+  assert.equal(report.evidenceGap.target,raw.claims[0].claim);
+  assert.match(report.evidenceGap.summary,/researcher investigated this proposition/);
+  assert.match(report.evidenceGap.reason,/no verified passage/);
+  assert.equal(report.evidenceGap.sourceUrl,undefined);
 });
 
 test('a copied vendor passage does not become an independently observed outcome', () => {

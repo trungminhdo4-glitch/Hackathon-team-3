@@ -1,4 +1,5 @@
 import { isEarlierReport } from './research.js'
+import { describeCapabilityGap } from '../shared/evidenceGap.js'
 
 export const columns = ['product', 'vendor', 'overall', 'green_flags', 'yellow_flags', 'red_flags', 'reasoning', 'reviewer_notes_original']
 export const coverageLabels = { cited: 'Cited in the assessment', documented: 'Passage retained', no_usable_passage: 'No usable passage', unavailable: 'Could not retrieve text' }
@@ -10,6 +11,14 @@ export function sourceAddress(value) {
     if (['http:', 'https:'].includes(url.protocol) && !url.username && !url.password) return url
   } catch {}
   return null
+}
+
+// Earlier activity logs recorded only a generic outcome. Explain it from the saved evidence.
+export function savedGapDetail(report) {
+  if (report.evidenceGap || isEarlierReport(report) || /placeholder or example domain/i.test(report.interpretation)) return null
+  if (!report.review && report.verdict !== 'insufficient' && report.verdictBasis !== 'evidence_gap') return null
+  if (!report.activity?.some(event => event.detail?.startsWith('Evidence review found an unresolved core claim.'))) return null
+  return describeCapabilityGap(report)
 }
 
 function observationText(item) {
@@ -60,6 +69,7 @@ export function groupHighlights(checks) {
 }
 
 export function datasetRow(report, notes = '', simulated = false) {
+  const savedGap = savedGapDetail(report)
   const earlier = isEarlierReport(report)
   const groups = earlier ? null : groupHighlights(report.checks)
   const sources = new Map(report.sources.map(source => [source.id, source.url]))
@@ -83,7 +93,9 @@ export function datasetRow(report, notes = '', simulated = false) {
     if (report.dossier) {
       const known = observations.find(item => item.kind === 'Product page') || observations[0]
       if (kind === 'green' && known) {
-        return 'The reviewer can verify this source statement. Evidence for a product benefit remains open.\n' + observationText(known)
+        const gap = report.evidenceGap || savedGap
+        return (gap ? gap.summary + ' ' + gap.missing : 'The reviewer can verify this source statement. Evidence for a product benefit remains open.') +
+          '\n' + observationText(known)
       }
       if (kind === 'yellow' && report.verdictBasis === 'evidence_gap') return report.interpretation
       const read = pages.filter(page => page.status !== 'unavailable')
@@ -136,6 +148,8 @@ export function datasetRow(report, notes = '', simulated = false) {
     yellow_flags: flags('yellow'),
     red_flags: flags('red'),
     reasoning: [withSources([...provenance, report.interpretation].filter(Boolean).join(' '), report.verdictEvidenceIds),
+      savedGap && [savedGap.summary, savedGap.reason, savedGap.missing].filter(Boolean).join(' '),
+      sourceAddress((report.evidenceGap || savedGap)?.sourceUrl)?.href,
       ...(groups?.context ?? []).map(describe),
       archive.length ? 'Saved source trail\n' + archive.join('\n\n') : '',
       ...observations.map(observationText),

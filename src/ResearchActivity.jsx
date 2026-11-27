@@ -8,7 +8,7 @@ function publicLink(value) {
   return null
 }
 
-export function ResearchActivity({events = [], running = false}) {
+export function ResearchActivity({events = [], running = false, savedGap}) {
   const [filter, setFilter] = useState('')
   const [open, setOpen] = useState(false)
   if (!running && !events.length) return null
@@ -38,6 +38,8 @@ export function ResearchActivity({events = [], running = false}) {
           <span className="step-stage">{event.stage}</span>
           {event.model && <strong>{event.model} · </strong>}
           <span>{event.detail} {url && <a href={url.href} target="_blank" rel="noopener noreferrer">{url.hostname}</a>}</span>
+          {savedGap && event.detail?.startsWith('Evidence review found an unresolved core claim.') &&
+            <p>{savedGap.summary} {savedGap.missing}</p>}
         </li>
       })}</ol>
     </details></>}

@@ -54,3 +54,14 @@ test('the review explains its decision boundary using actual retrieved material 
   assert.match(gate.brief.red, /contradict/);
   assert.match(gate.prompt, /Orbit Team plan/);
 });
+
+test('the offline review prompt names the same advertised outcome and missing proof as the report', async () => {
+  const gap = {summary:'Orbit advertises routing by team.', reason:'The guide only showed the ticket in the queue.',
+    missing:'The destination team for that ticket remains unknown.',request:'Can you share a trace showing which team received the test ticket?',
+    sourceUrl:'https://orbit.example/guide', sourceTitle:'Routing guide',sourceQuote:'Tickets from the integration arrive in the shared queue.'};
+  const gate = await openReviewGate({...report,searchModel:null,evidenceGap:gap,
+    checks:[{id:'capability',label:'Core capability',status:'partly_supported'}]});
+  assert.equal(gate.prompt,gap.request);
+  assert.equal(gate.brief.knownUrl,gap.sourceUrl);
+  assert.ok(gate.brief.obstacle.includes(gap.missing));
+});

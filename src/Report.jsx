@@ -3,7 +3,7 @@ import { Icon } from './icons.jsx'
 import { DatasetReport } from './DatasetReport.jsx'
 import { ResearchActivity } from './ResearchActivity.jsx'
 import { EvidenceDossier, ReviewBrief } from './EvidenceDossier.jsx'
-import { groupHighlights, operatorGap } from './datasetReport.js'
+import { groupHighlights, operatorGap, savedGapDetail } from './datasetReport.js'
 import { isEarlierReport, verdictLabel } from './research.js'
 
 const claimStatuses = {
@@ -169,6 +169,9 @@ export function Report({report, simulated, retry, notes, onNotesChange, onReview
   const sources = new Map(report.sources.map(source => [source.id, source]))
   const verdictSources = (report.verdictEvidenceIds ?? []).map(id => sources.get(id)).filter(sourceUrl)
   const historical = isEarlierReport(report)
+  const savedGap = savedGapDetail(report)
+  const gap = report.evidenceGap || savedGap
+  const gapSource = sourceUrl({url:gap?.sourceUrl})
   const findings = historical ? [] : report.checks.map((check, i) => ({ ...check, anchor: 'finding-' + (i + 1) }))
   const answer = report.answer ? <CitedFinding finding={report.answer} sources={sources}/> :
     <p>The retrieved sources did not establish an answer to this question.</p>
@@ -195,6 +198,10 @@ export function Report({report, simulated, retry, notes, onNotesChange, onReview
       <div className={'badge ' + (report.verdict || 'insufficient')}><Icon name={report.verdict === 'green' ? 'check' : 'alert'}/>{verdictLabel(report)}</div>
     </>}
     <p className="interpretation" id="verdict-reason">{report.interpretation}</p>
+    {savedGap && <p><strong>What the evidence could not verify</strong><br/>
+      {[savedGap.summary, savedGap.reason, savedGap.missing].filter(Boolean).join(' ')}</p>}
+    {gapSource && <p className="citation-source">Passage behind the open question · <a href={gapSource.href}
+      target="_blank" rel="noopener noreferrer">{gap.sourceTitle || gapSource.hostname}<Icon name="external"/></a></p>}
     {!historical && !report.review && !report.dossier && !report.checks.some(c => c.status !== 'unverified' && c.evidence?.length) &&
       <p className="coverage">This saved assessment predates the source dossier. Start a new investigation to collect passages for {report.productName || 'this product'}.</p>}
     {verdictSources.length > 0 && <div className="verdict-sources citation-source">
@@ -205,7 +212,7 @@ export function Report({report, simulated, retry, notes, onNotesChange, onReview
     </div>}
     {report.reviewOutcome?.guidance && <p className="human-guidance"><strong>Your research lead</strong> {report.reviewOutcome.guidance}</p>}
     {!report.review && <DatasetReport report={report} notes={notes} onNotesChange={onNotesChange} simulated={simulated}/>}
-    <ResearchActivity events={report.activity}/>
+    <ResearchActivity events={report.activity} savedGap={savedGap}/>
     <EvidenceDossier dossier={report.dossier} interpretation={report.interpretation}/>
     {!historical && <Highlights checks={findings} sources={sources}/>}
     {historical && <div className="historical-notice"><p>This saved report used the previous points-based rubric.</p>

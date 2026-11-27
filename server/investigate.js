@@ -39,7 +39,7 @@ export async function investigateProduct(value, { question = '', model, helperMo
   onFindings?.({...findings,inputUrl});
   const unresolved = report.verdict === 'insufficient';
   onActivity?.({stage:unresolved ? 'validate' : 'verdict',role:'server',detail:unresolved
-    ? 'Evidence review found an unresolved core claim. ' + report.sources.length + ' sources passed citation checks.'
+    ? [report.evidenceGap?.summary || report.interpretation, report.evidenceGap?.reason, report.evidenceGap?.missing].filter(Boolean).join(' ')
     : 'Evaluated the findings against the rubric using ' + report.sources.length + ' cited sources'});
   const followUp = findings.coverage?.independent;
   const specialistCompleted = helperModel && followUp?.followUp === 'completed' && followUp.followUpModel === helperModel;

@@ -57,13 +57,18 @@ export async function openReviewGate(report, runner = new Runner({tracingDisable
   const passages = anchors(report).slice(0, 24);
   const selected = (criterion, kind, task) => {
     const label = gaps.get(criterion);
-    const anchor = passages.find(item => item.criterion === criterion) ?? passages[0];
+    const gap = criterion === 'capability' && report.evidenceGap;
+    const anchor = gap ? gap.sourceUrl && {url:gap.sourceUrl, title:gap.sourceTitle, quote:gap.sourceQuote} :
+      passages.find(item => item.criterion === criterion) || passages[0];
     const suggested = kind === 'source' && anchor
       ? 'Can you share ' + (thresholds[criterion] ?? thresholds.capability)[0] + ' for ' + product +
         ' so we can check the ' + label + ' claim in “' + (anchor.title || new URL(anchor.url).hostname) + '”?'
       : question(product, label, kind);
-    const prompt = task?.trim() || suggested;
-    return {prompt, brief:buildBrief(report,criterion,label,prompt,anchor)};
+    const prompt = task?.trim() || gap?.request || suggested;
+    const brief = buildBrief(report,criterion,label,prompt,anchor);
+    if (gap) brief.obstacle = [gap.summary, gap.reason, gap.missing].filter(Boolean).join(' ');
+    if (gap?.target && !anchor) brief.known = 'The collected sources did not establish the specific proposition under review.';
+    return {prompt, brief};
   };
   const fallback = {mode: 'local', state: null, ...selected(gaps.keys().next().value, 'source')};
   if (!report.searchModel) return fallback;
