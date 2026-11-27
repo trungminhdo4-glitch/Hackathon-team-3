@@ -14,9 +14,13 @@ try {
     });
     const result = await response.json();
     console.log(JSON.stringify({ input, resolvedUrl: result.inputUrl, product: result.productName, answer: result.answer?.text,
-      flags: result.flags?.map(flag => flag.kind), status: response.status, verdict: result.verdict, score: result.score,
-      sources: result.sources?.map(source => source.url), limitations: result.limitations, error: result.error }));
-    if (!response.ok || !result.verdict) process.exitCode = 1;
+      status: response.status, rubricVersion: result.rubricVersion, verdict: result.verdict, interpretation: result.interpretation,
+      checks: result.checks?.map(({ id, status, claim, evidenceIds, explanation, consequence }) =>
+        ({ id, status, claim, evidenceIds, explanation, consequence })),
+      testimony: result.testimony?.map(({ text, explanation, evidence }) => ({ text, explanation, evidence })),
+      sources: result.sources?.map(({ id, url }) => ({ id, url })), limitations: result.limitations, error: result.error }));
+    if (!response.ok || result.rubricVersion !== 2 || !result.verdict || 'score' in result ||
+        new Set(result.checks?.map(check => check.id)).size !== 6) process.exitCode = 1;
   }));
 } finally {
   server.close();

@@ -2,7 +2,7 @@
 
 **Does the available evidence show that this software delivers its main promise to its intended users, on the terms advertised?** The verdict describes what a prospective user can reasonably rely on and which limitations could change their decision.
 
-This is a proposed rubric for the next model. It is based on the [40 labeled sample reviews](hackathon_40_solutions_commented%20%281%29.csv). The running app still uses the earlier evidence score.
+SaaSLens uses this rubric for new investigations. It is based on the [40 labeled sample reviews](hackathon_40_solutions_commented%20%281%29.csv). Earlier reports retain their original verdict in session history.
 
 ## What to evaluate
 
