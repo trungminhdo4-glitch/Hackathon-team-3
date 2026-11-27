@@ -188,3 +188,15 @@ test('score(): missing, duplicate, unexpected and invalid rows are reported; cov
   for (const re of [/duplicate/, /unexpected id 99/, /without prediction: 4/, /invalid label/]) assert.ok(s.problems.some(p => re.test(p)), re.source);
   assert.deepEqual(stratifiedIds(csv, 3), ['1', '2', '3']);
 });
+
+test('guard mode: teammate verdict stands unless VERITAS has a verified reason against it', async () => {
+  const { guard } = await import('../replay.js');
+  const neg = [{ class: 'MATERIAL_NEGATIVE', polarity: 'red', material: true }];
+  const open = [{ class: 'AMBIGUOUS', polarity: 'red', material: true }];
+  const weak = [{ class: 'WEAK_POSITIVE', polarity: 'green' }];
+  assert.equal(guard('Green', { overall: 'Yellow' }, weak).overall, 'Green');       // conservative VERITAS does not downgrade
+  assert.equal(guard('Green', { overall: 'Yellow' }, open).overall, 'Yellow');      // open material issue blocks Green
+  assert.equal(guard('Yellow', { overall: 'Red' }, neg).overall, 'Red');            // established material negative
+  assert.equal(guard('RED', { overall: 'Yellow' }, weak).overall, 'Yellow');        // unsupported Red withdrawn
+  assert.equal(guard('RED', { overall: 'Red' }, neg).overall, 'Red');
+});

@@ -1,0 +1,272 @@
+{
+  "generated_at": "2026-11-27T15:51:32.282Z",
+  "data_mode": "keyless-live-fetch",
+  "config": "researcher=fetch provider=none judge=none",
+  "n_inputs": 40,
+  "cache": null,
+  "variants": {
+    "A1_VERITAS_VERIFY": {
+      "evaluated": 40,
+      "expected": 40,
+      "coverage": 1,
+      "accuracy_on_evaluated": 0.4,
+      "accuracy_full_coverage": 0.4,
+      "macro_f1": 0.19,
+      "per_class": {
+        "Green": {
+          "precision": 0,
+          "recall": 0,
+          "f1": 0,
+          "support": 14
+        },
+        "Yellow": {
+          "precision": 0.4,
+          "recall": 1,
+          "f1": 0.571,
+          "support": 16
+        },
+        "Red": {
+          "precision": 0,
+          "recall": 0,
+          "f1": 0,
+          "support": 10
+        }
+      },
+      "false_green_on_non_green": 0,
+      "critical_false_green_on_red": 0,
+      "false_red_on_non_red": 0,
+      "non_ok_rows": 3,
+      "confusion_ref_by_pred": {
+        "Green": {
+          "Green": 0,
+          "Yellow": 14,
+          "Red": 0
+        },
+        "Yellow": {
+          "Green": 0,
+          "Yellow": 16,
+          "Red": 0
+        },
+        "Red": {
+          "Green": 0,
+          "Yellow": 10,
+          "Red": 0
+        }
+      },
+      "problems": [],
+      "note": "Agreement with Stackgini reference labels on 40 development rows (±15 pp sampling margin), not independently established factual correctness.",
+      "runtime_ms": 17039,
+      "budget": {
+        "search": 0,
+        "fetch": 0,
+        "llm": 0
+      },
+      "status_counts": {
+        "ok": 37,
+        "research_failed": 3
+      },
+      "predictions": [
+        {
+          "id": "1",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "2",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "3",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "4",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "5",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "6",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "7",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "8",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "9",
+          "overall": "Yellow",
+          "status": "research_failed"
+        },
+        {
+          "id": "10",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "11",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "12",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "13",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "14",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "15",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "16",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "17",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "18",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "19",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "20",
+          "overall": "Yellow",
+          "status": "research_failed"
+        },
+        {
+          "id": "21",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "22",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "23",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "24",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "25",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "26",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "27",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "28",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "29",
+          "overall": "Yellow",
+          "status": "research_failed"
+        },
+        {
+          "id": "30",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "31",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "32",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "33",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "34",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "35",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "36",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "37",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "38",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "39",
+          "overall": "Yellow",
+          "status": "ok"
+        },
+        {
+          "id": "40",
+          "overall": "Yellow",
+          "status": "ok"
+        }
+      ]
+    }
+  }
+}

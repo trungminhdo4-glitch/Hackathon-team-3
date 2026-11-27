@@ -75,7 +75,7 @@ Overall decision:
 - **Yellow:** a material concern that is not fully established, an established material caveat, failed or incomplete research without independent positives, or identity contradicted.
 - **Green:** at least one STRONG_POSITIVE and nothing material against it.
 
-Flag counts no longer matter. Failed or incomplete research is never Green. A flag with several atomic claims keeps the evidence of the parts that hold and is narrowed to them (`combineAtoms`).
+Flag counts no longer matter. Failed research is never Green. Incomplete research blocks Green only when a material question stayed open (`materialGaps`, e.g. the risk search could not run); one unreachable page does not cancel strong independent evidence. A material red concern whose citation cannot be verified blocks Green as an "Open question", written without a citation. A flag with several atomic claims keeps the evidence of the parts that hold and is narrowed to them (`combineAtoms`).
 
 ## Benchmark (measured, offline, synthetic)
 
@@ -123,73 +123,112 @@ The only C failure, `fr-06` ("offers an offline mode" is not recognised as a cap
 - Search snippets count as discovery material only. A quote is verified only against fetched page text or provider raw content (`ho-12`).
 - The engine has no access to environment variables beyond `TAVILY_API_KEY`, which is read only by `tavilyProvider`.
 
-## Phase 2: adaptive pipeline and blind run
+## Running it (batch, demo, benchmark)
 
 ```powershell
-# full pipeline on the blind input (keys from .env.local if present)
+# full pipeline on the blind input (keys from .env.local if present; mode is printed first)
 npm run veritas:batch -- --input blind.csv --output submission.csv --audit audit.json --deadline 2026-11-27T19:35:00+01:00 --concurrency 6
-# resume after a crash (skips vendors already in the checkpoint)
+# no keys at all: keyless collector, no search, no judge (explicit)
+npm run veritas:batch -- --input blind.csv --output submission.csv --researcher collect --provider none --judge none
+# resume after a crash (reuses only completed rows of the same configuration and id->url)
 npm run veritas:batch -- --input blind.csv --output submission.csv --checkpoint veritas-run.jsonl --resume
 # single product (finalist demo)
 npm run veritas:batch -- --url https://product.example/
-# real-dataset benchmark A0-A3 (needs keys), or score any submission
-npm run veritas:dataset -- --limit 10
+# audit a teammate's research output without keys (re-fetches the cited pages)
+node veritas/replay.js --agent-audit verdicts.json --report report.json --refetch --out replay-report.json
+# real-dataset benchmark: cached research (no keys), keyless live collection, or score any submission
+npm run veritas:dataset -- --research-cache research-cache.json --cache-only
+npm run veritas:dataset -- --researcher collect
 npm run veritas:dataset -- --score submission.csv
 ```
 
-- **Researcher:** `saaslens` (`server/live.js research()`, needs `OPENAI_API_KEY`) is the default when a key exists. Otherwise `fetch` (submitted page only). `fixture` is for dry runs.
-- **Per vendor:** discovery first (`discovery.js`, at most 3 planned searches across MATERIAL_RISK, LIVENESS, CUSTOMER_REALITY, COMPANY_TRUST, IDENTITY and HISTORICAL_CONTEXT, skipping categories that are already resolved). Then the SaaSLens flags are verified behind the sufficiency gate (`sufficiency.js`: ACCEPT_EXISTING_EVIDENCE, SEARCH_TARGETED_CONTRADICTION, SEARCH_INDEPENDENT_CONFIRMATION, RESOLVE_TEMPORAL_SCOPE, RESOLVE_ENTITY or ABSTAIN). Then the materiality decision.
-- **Global budget:** one controller (`budget.js`) for the whole batch: searches, fetches, LLM calls, deadline (15 s safety margin) and a shared promise cache that also deduplicates in-flight requests.
-- **Deadline:** each vendor gets a fair share of the remaining time. Under 20 s left, a vendor gets an explained "not assessed before the deadline" Yellow row, so every input still appears exactly once.
-- **Checkpoint:** one JSONL line per finished vendor. `--resume` skips those vendors.
-- **Validation** (`validate.js`, exit code 3 on problems): every input exactly once, valid labels, URL unchanged, no secrets, no stack traces, no injected text, every cited URL backed by verified evidence, no Red without a red flag, CSV round-trip intact.
-- **Leakage guard:** the batch reads only `id` and `url` by default. The dataset's `product`/`vendor` columns contain reviewer knowledge (for example "owned by KKR"). `--keep-input-fields` exists only for an official input that provides them.
-- **Assumption:** the blind submission format equals the 9-column dataset format. If the official format differs, adapt `toCsv` in `export.js`.
+- **Configuration** (`config.js`, shared by batch, benchmark and demo): `--researcher auto|saaslens|collect|fetch|fixture|cache`, `--provider auto|tavily|fixture|none`, `--judge auto|openai|none`. `auto` picks what the keys allow and prints the resolved mode. A component that is *requested* but unavailable (for example `--judge openai` without `OPENAI_API_KEY`) stops the run with exit code 2 before any work. Nothing is silently downgraded.
+- **Per vendor:** discovery first (`discovery.js`, at most 3 planned searches), then verification of the research flags behind the sufficiency gate, then the materiality decision.
+- **Cancellation:** each vendor gets an `AbortController` with its fair time share. The signal reaches `server/live.js research()`, every public fetch, Tavily and the judge (`bindSignal` in `providers.js`). After the share or after the vendor finishes, no new request starts and in-flight requests are cancelled. `Promise.race` remains only as an outer guard.
+- **Global budget:** one controller (`budget.js`) for searches, fetches, LLM calls and the deadline (15 s safety margin), with a promise cache that deduplicates in-flight requests.
+- **Checkpoint:** every JSONL record carries a configuration fingerprint. `--resume` reuses a record only if the fingerprint matches, its id still maps to the same URL, and its status is `ok`. Deadline, error and aborted rows are re-run. Stale records are counted and reported.
+- **Row status** (in the audit file): `ok`, `research_failed`, `deadline`, `aborted`, `error`. Non-`ok` rows are always Yellow, with "Insufficient evidence" in the reasoning.
+- **Validation** (`validate.js`, exit code 3): every input exactly once, valid labels, URL unchanged, no secrets, stack traces or injected text, no Red without a red flag, CSV round-trip intact, and the **reason-level audit**. Every URL in a flag column must belong to the ledger entry of that exact reason, with a verified, entity-matched quote. A verified URL moved next to an unrelated reason fails.
+- **Evidence ledger** (`row._ledger`, written to `--audit`, never to the CSV): per reason it records reason_id, column, exact text, claim, narrowed statement, class, status, materiality, contribution (decisive or supporting), and per evidence item the id, URL, quote, quote_verified, entity_match, source_type, independent, retrieval, published date and entailment (`judge:*` or `lexical:*`).
+- **Leakage guard:** only `id` and `url` are read from the input. Reference labels are read only in `score()`, after predictions exist. Cached and collected research never contains labels.
+
+## Phase 3: real-data results (no API keys)
+
+All numbers below come from runs on 2026-11-27 with this code. **The 40 dataset rows are development data:** they were inspected while fixing the bugs listed in the experiment log (#14–#17), so these are not blind estimates. Sampling margin with n=40 is about ±15 pp.
+
+**A. Keyless pipeline on all 40 labelled URLs** (`npm run veritas:dataset -- --researcher fetch|collect`; files: `bench/dataset-keyless-*.json`)
+
+| Variant | Acc. (40/40 covered) | Macro-F1 | Critical false Green (Red→Green) | False Red | Runtime |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| All-Yellow floor | 0.400 | 0.190 | 0 | 0 | – |
+| Fetch submitted page only | 0.400 | 0.190 | 0 | 0 | 20 s |
+| Keyless collector, first version | 0.375 | 0.227 | 0 | **3** | 49 s |
+| Keyless collector, self-referential retirement (#16) | **0.425** | **0.255** | 0 | 0 | ~50 s |
+
+The collector finds the one discontinuation that a vendor states on its own site (row 7: "Die Softwareentwicklung wird nach 2026 eingestellt"). It cannot reach Green: a Green needs independent evidence, and without search the material-risk question stays open (`materialGaps`). That is intended. Keyless mode is a fallback, not a competitor to the research pipelines.
+
+**B. Reason-level citation audit of teammates' real outputs** (`node veritas/replay.js --refetch`; file: `bench/replay-report.json`). The inputs are read-only copies of `origin/shuhan-miao:agent/examples/dry_run_verdicts.json` (5 unseen vendors) and `origin/claude/clever-brown-q5y2bs:stackgini-agent/reports/examples/{avast-red,notepad-plus-plus-yellow}.json`. Every cited page was re-fetched (33 pages, 2 failed).
+
+| Tool | Vendors | Reasons | Quote found verbatim | Not found | Source unreachable |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| agent.py (shuhan-miao) | 5 | 12 | 9 | 2 | 1 |
+| stackgini-agent (clever-brown) | 2 | 14 | 9 | 5 | 0 |
+| **Total** | 7 | 26 | 18 (**0.72** of checkable) | 7 | 1 |
+
+- The three agent.py problems VERITAS flags automatically are exactly the three that `agent/RESULTS.md` found by manual spot-check: the SQLite YouTube citation, one Bruno excerpt and the LastPass blog post. The automatic audit reproduces the manual one.
+- Several stackgini-agent "excerpts" are URL slugs (for example "ftc finalizes order avast banning it selling …") or page headings, not quotes.
+- **Bug found by this replay (#14):** VERITAS dropped the unverifiable FTC reason and graded Avast (dataset row 40, label **Red**) **Green**, a critical false Green. Fixes: an unverifiable *material red* concern now blocks Green as an open question (#14), and slug-like excerpts are aligned to the passage of the cited page that contains ≥60 % of their words (#15). Avast is now Red, with the FTC press release as verified evidence. A fabricated excerpt still does not verify (regression test).
+- **Standalone vs. guard:** standalone, VERITAS downgrades Notion and SQLite from Green to Yellow, because their positives are first-party only. In **guard mode** (`replay.js guard()`), the teammate verdict stands unless VERITAS has a verified reason against it. Guard mode changed 0 of 7 verdicts and still removed the 7 unverifiable citations. Of the 7 vendors, two have dataset labels (Avast Red, Notepad++ Yellow), and both are correct under guard mode.
+
+**C. Synthetic regression** (`npm run bench:veritas`): fresh set unchanged at 0.9 accuracy and 2.3 searches/claim after all Phase 3 changes. Dev and held-out are at 1.0 (both contaminated, regression only).
+
+**Not run (BLOCKED, no keys):** A0–A3 with live SaaSLens research, Tavily discovery and the LLM judge, and the counterfactual challenger. The challenger is deliberately not implemented: it only acts through search, so its effect cannot be measured without a key, and Phase 3 allows no unmeasured features.
 
 ## Integration dependencies (for the team merge)
 
-- `veritas/adapters.js` `saasLensToFlags` / `assessVendor` implement the **SaaSLens v2** contract from `origin/main` `server/live.js` (read-only inspection on 2026-11-27: `productAliases`, `vendor`, `flags[{kind, material, topic, evidence[{sourceId, quote, relation, vendorAuthored, author}]}]`, `checks`, `documents`, `coverage`, `incomplete`). This branch still contains the v1 `live.js`. The adapter accepts both. The v2 test uses a synthetic fixture of that shape (`tests/fixtures/saaslens-v2.js`), not real output.
-- Teammate polarity and materiality are proposals. They raise search priority but never set a verdict. Evidence with an unknown `sourceId` is rejected and counted in the limitations.
-- After main is merged by the team: run `npm run test:veritas` and `npm test`, then one `veritas:batch --limit`-style dry run against real SaaSLens output.
+See [HANDOFF.md](HANDOFF.md) for the entry points, schemas and a minimal example.
+
+- `adapters.js` `saasLensToFlags` / `assessVendor` implement the **SaaSLens v2** contract of `origin/main` `server/live.js` (read-only inspection). The adapter also accepts v1. The v2 test uses a synthetic fixture.
+- `cache.js` imports the two Python agents' outputs (`importAgentAudit`, `importReport`). Imported documents have **no page text**, so nothing counts as verified until `replay.js --refetch` re-fetches the cited page.
+- Teammate polarity and materiality are proposals. They raise search priority but never set a verdict. Evidence with an unknown `sourceId` is rejected.
 
 ## Environment variables
 
 | Name | Used by | Required |
 | --- | --- | --- |
 | `TAVILY_API_KEY` | `tavilyProvider()`: discovery and claim search | for live search |
-| `OPENAI_API_KEY`, `OPENAI_MODEL` | SaaSLens research (`server/live.js`); optional VERITAS judge (`judge.js`) | for the real pipeline |
+| `OPENAI_API_KEY`, `OPENAI_MODEL` | SaaSLens research (`server/live.js`); optional VERITAS judge (`judge.js`) | for the full pipeline |
 
-Secrets are never printed. Error messages written to rows pass through a redaction step (`sk-…` and `tvly-…` become `[redacted]`), and the validator rejects secret-like strings.
+Secrets are never printed. Row error messages are redacted (`sk-…` and `tvly-…` become `[redacted]`), and the validator rejects secret-like strings.
 
 ## Status
 
-- **IMPLEMENTED:** everything from Phase 1, plus the Phase 2 additions:
-  - provenance fix: raw page text wins over a snippet, and a snippet never verifies a quote;
-  - shared budget controller with deadline and in-flight deduplication;
-  - sufficiency gate and early stop;
-  - materiality-aware decision;
-  - atom combination without losing support;
-  - SaaSLens v2 adapter;
-  - planner and bounded risk discovery;
-  - selective LLM judge (CiteGuard-style fields, cannot override locks);
-  - batch runner with deadline share, checkpoint/resume and single-URL mode;
-  - submission validator, CSV reader, dataset scoring harness.
-- **TESTED:** `npm run test:veritas` → 65/65. The team's `npm test` passes 24/24 on this branch. One run showed 22/24 while the benchmark ran in parallel; three reruns passed 24/24 (flaky, not caused by VERITAS).
-- **LIVE-VERIFIED:** only the fetch path. 40 real dataset URLs were fetched through `server/fetch.js` in the batch dry run. No search provider or LLM was live-verified.
-- **BENCHMARKED:** synthetic only (tables above), plus the trivial all-Yellow floor on the real labels.
-- **NOT VERIFIED:** Tavily request and response shape, the OpenAI judge call (`judge.js`), and real-world accuracy and runtime with research enabled. Discovery signal patterns and planner priorities are hand-set and not calibrated.
-- **BLOCKED:** no `OPENAI_API_KEY` or `TAVILY_API_KEY` in this environment, so A0–A3 on the real dataset cannot run.
-- **REMAINING WORK:**
-  1. With keys: `npm run veritas:dataset -- --limit 10`, inspect the failures, then run all 40.
-  2. Calibrate the materiality rules on those real results (never per vendor).
-  3. Verify the Tavily shape with one call.
-  4. Merge with main (team-coordinated).
+- **IMPLEMENTED:** Phase 1 and Phase 2 work, plus Phase 3:
+  - abort-signal cancellation through research, fetch, search and judge;
+  - shared configuration with explicit failure when a requested component is missing;
+  - fingerprinted checkpoints with stale-record detection;
+  - reason-level evidence ledger and validator;
+  - material-gap rule;
+  - unverifiable material red blocks Green;
+  - quote alignment;
+  - vendor-event and customer-relation filters in discovery;
+  - research cache format with validation and teammate importers;
+  - replay audit with guard mode;
+  - keyless collector (robots-aware, at most 6 pages, optional public GitHub metadata);
+  - integrity-checked `score()` with coverage, per-class precision and recall, critical false Green and stratified subsets.
+- **TESTED:** `npm run test:veritas` gives 81/81. The team's `npm test` gave 24/24 in 8 of 8 runs, 3 of them under concurrent load. The earlier 22/24 did not reproduce. No team test imports `veritas/` (checked with grep), so VERITAS code is not loaded there. `tests/api.test.js` uses network, ports and timers and is the likely source of the earlier flake (INFERRED, not reproduced).
+- **LIVE-VERIFIED:** the public fetch path (40 dataset URLs, 33 teammate-cited pages) and the keyless collector, including robots.txt and the GitHub API path, on 40 real URLs.
+- **CACHED-VERIFIED:** replay of 7 real teammate outputs (table B above).
+- **BENCHMARKED:** keyless pipeline on all 40 labelled rows (table A); synthetic sets (table C).
+- **NOT VERIFIED:** Tavily response shape, the OpenAI judge call, SaaSLens research with abort signals under real load, and accuracy of the full keyed pipeline.
+- **BLOCKED:** no `OPENAI_API_KEY` or `TAVILY_API_KEY`, so variants A0–A3 and the challenger cannot run. To run them, a teammate with keys exports research into the cache format (see HANDOFF.md), and `--cache-only` then needs no keys.
 
 ## Known limitations
 
-- Stance detection is lexical. Paraphrases are missed (they end INSUFFICIENT, never as a false SUPPORTED) unless the judge is enabled.
+- Stance detection is lexical. Paraphrases end as INSUFFICIENT, never as a false SUPPORTED, unless the judge is enabled.
 - Absence claims ("no imprint named") cannot be confirmed by search. They become UNKNOWN and are not written as reasons.
-- Discovery finds only signals that a single sentence states explicitly (fines, incidents, discontinuation, acquisitions). It cannot judge visual impressions such as an outdated design, which the dataset reviewers sometimes cite.
+- Discovery and the collector find only signals that one sentence states explicitly. Visual impressions (for example an outdated design) are out of scope.
+- The retirement and vendor-event patterns were corrected on dev-set failures (#16, #17). They generalise by rule (self-reference, subject position), not by vendor name, but they have not been measured on unseen vendors.
 - Claim-type classification misses some phrasings (`fr-06`: "offers an offline mode").
 
 ## Experiment log
@@ -201,11 +240,16 @@ Secrets are never printed. Error messages written to rows pass through a redacti
 | 3 | A claimed figure or year must appear in the passage | Neutralise support without the figure/year | dev-01 false SUPPORTED → INSUFFICIENT | keep |
 | 4 | Founding-year passages are on-topic without word overlap | Skip the relevance gate for founding cues | dev-21 → REFUTED; dev C 0.957 → 1.0 | keep |
 | 5 | (held-out failure) "preview" ≠ roadmap; "2,000" ≠ year | Move preview to beta; years only bare 4-digit | held-out C 0.833 → 1.0 (contaminated) | keep (bug fixes) |
-| 6 | (test failure) "$1 million" ≠ "57 million people" | Unit-aware number comparison (currency, unit groups) | false REFUTED → SELF_REPORTED | keep |
-| 7 | (Phase 2 review) a snippet could be used while labelled as raw content | Choose raw_content before content and record provenance from the text actually used | new regression test; before the fix, the snippet "supports SCIM" verified | keep |
+| 6 | (test failure) "$1 million" ≠ "57 million people" | Unit-aware number comparison | false REFUTED → SELF_REPORTED | keep |
+| 7 | A snippet could be used while labelled as raw content | Provenance from the text actually used | regression test | keep |
 | 8 | Searches are spent on already-supported claims | Sufficiency gate before round 1 | fresh: 3.8 → 2.3 searches/claim at equal accuracy 0.9 | keep |
-| 9 | Flag counts misgrade vendors | Materiality classes and decision (`materiality.js`) | regression tests for incomplete→never Green, minor unknowns→Green, minor contradicted→not Red | keep |
-| 10 | Teammate evidence exhausted the budget before discovery | Run discovery before re-verification | discontinuation found and Red (integration test) | keep |
-| 11 | A claim saying "discontinued" was refuted by a page saying "discontinued" | Ignore qualifiers that the claim itself asserts | discovery finding REFUTED → SUPPORTED | keep (bug fix) |
-| 12 | `options.now: undefined` crashed the engine | Default `now` when it is not a Date | crash → OK | keep (bug fix) |
-| 13 | The dataset's product/vendor columns leak reviewer knowledge | The batch reads only id and url by default | test asserts empty product/vendor | keep |
+| 9 | Flag counts misgrade vendors | Materiality classes and decision | regression tests | keep |
+| 10 | Teammate evidence exhausted the budget before discovery | Discovery before re-verification | discontinuation found and Red | keep |
+| 11 | A claim saying "discontinued" was refuted by a page saying "discontinued" | Ignore qualifiers the claim asserts | REFUTED → SUPPORTED | keep (bug fix) |
+| 12 | `options.now: undefined` crashed the engine | Default `now` | crash → OK | keep (bug fix) |
+| 13 | Dataset product/vendor columns leak reviewer knowledge | Batch reads only id and url | test | keep |
+| 14 | (replay) An unverifiable FTC reason vanished: Avast, labelled Red, became Green | Unverifiable material red concern blocks Green as an open question | Avast Green → Yellow | keep |
+| 15 | (replay) Teammate excerpts are URL slugs or paraphrases of the cited page | Align to the page passage containing ≥60 % of the excerpt's words; fabricated excerpts stay unverified | Avast Yellow → Red (FTC verified); fabricated fixture still INSUFFICIENT | keep |
+| 16 | (keyless run) Bare retirement keywords cause false Reds: sibling product (Qlik), German "eingestellt" = configured (Schneespur), third party (Microsoft on opsi) | Retirement must be self-referential (our/this product, German Software/Entwicklung … wird eingestellt, or the URL's product token) | keyless 0.375 / 3 false Red → 0.425 / 0 false Red (dev, contaminated) | keep |
+| 17 | (review) "helps prevent data breaches" was a breach signal | Vendor-event filter: subject position, no preventive or hypothetical framing, not "unlike X" | regression tests | keep |
+| 18 | Incomplete research made strong evidence useless or, per the code, still allowed Green | `materialGaps`: only an open material question blocks Green | regression tests | keep |

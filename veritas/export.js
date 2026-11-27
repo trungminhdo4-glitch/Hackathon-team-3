@@ -87,7 +87,7 @@ export function toStackginiRow(vendor, flagged, context = {}) {
   return { id: vendor.id, url: vendor.url, product: vendor.product ?? '', vendor: vendor.vendor ?? '', overall: result.overall,
     green_flags: join(buckets.green), yellow_flags: join(buckets.yellow), red_flags: join(buckets.red), reasoning,
     _ledger: ledger,
-    _findings: result.findings.map(f => ({ class: f.class, polarity: f.polarity, status: f.status, statement: f.statement,
+    _findings: result.findings.map(f => ({ class: f.class, polarity: f.polarity, material: f.material, status: f.status, statement: f.statement,
       evidence: f.evidence.map(e => ({ url: e.url, quote: e.quote })) })) };
 }
 

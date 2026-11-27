@@ -52,13 +52,36 @@ export function auditEntry(url, entry) {
   });
 }
 
+const norm = l => l ? l[0].toUpperCase() + l.slice(1).toLowerCase() : null;
+
+/**
+ * Guard mode (recommended integration): the teammate verdict stands unless VERITAS has a
+ * verified reason against it. VERITAS alone is conservative (Green needs independent
+ * evidence), which turned first-party-only Greens into Yellow on the replay set; as a guard
+ * it only intervenes on evidence:
+ *  - VERITAS establishes a material negative            → Red
+ *  - teammate Green, VERITAS has a material open issue  → Yellow
+ *  - teammate Red, but no red reason survives the audit → Yellow (unsupported Red is withdrawn)
+ */
+export function guard(teammate, row, findings = []) {
+  const t = norm(teammate);
+  const has = c => findings.some(f => f.class === c);
+  const materialOpen = findings.some(f => f.class === 'AMBIGUOUS' && (f.material ?? f.polarity === 'red'));
+  if (row.overall === 'Red' && has('MATERIAL_NEGATIVE')) return { overall: 'Red', rule: 'established material negative' };
+  if (t === 'Green' && (materialOpen || has('MATERIAL_CAVEAT'))) return { overall: 'Yellow', rule: 'material issue open against a Green' };
+  if (t === 'Red' && !has('MATERIAL_NEGATIVE')) return { overall: 'Yellow', rule: 'no red reason survived the citation audit' };
+  return { overall: t ?? row.overall, rule: 'teammate verdict kept' };
+}
+
 export async function replay(entries, { fetcher = null, now } = {}) {
   const controller = createController({ maxSearches: 0, maxFetches: 0 });
   const vendors = [];
   for (const [url, entry] of Object.entries(entries)) {
     const reasons = auditEntry(url, entry);
     const res = await assessVendor(url, entry, { provider: null, fetcher, controller, discovery: false, now });
-    vendors.push({ url, teammate_overall: entry.imported?.overall ?? null, veritas_overall: res.row.overall, veritas_reasoning: res.row.reasoning, reasons });
+    const g = guard(entry.imported?.overall, res.row, res.row._findings ?? []);
+    vendors.push({ url, teammate_overall: entry.imported?.overall ?? null, veritas_overall: res.row.overall, guard_overall: g.overall, guard_rule: g.rule,
+      veritas_reasoning: res.row.reasoning, reasons });
   }
   const all = vendors.flatMap(v => v.reasons);
   const count = s => all.filter(r => r.status === s).length;
@@ -67,6 +90,7 @@ export async function replay(entries, { fetcher = null, now } = {}) {
     quote_verified: count('quote_verified'), quote_not_found: count('quote_not_found'), no_quote: count('no_quote'),
     source_unreachable: count('source_unreachable'), not_checked: count('not_checked'),
     citation_precision_on_checkable: checkable ? +(count('quote_verified') / checkable).toFixed(3) : null,
+    guard_changes: vendors.filter(v => v.teammate_overall && v.guard_overall !== norm(v.teammate_overall)).length,
     verdict_changes: vendors.filter(v => v.teammate_overall && v.veritas_overall.toLowerCase() !== String(v.teammate_overall).toLowerCase()).length } };
 }
 
@@ -87,5 +111,5 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   writeFileSync(outPath, JSON.stringify(out, null, 2));
   if (a.includes('--cache-out')) writeFileSync(a[a.indexOf('--cache-out') + 1], JSON.stringify(makeCache(entries, { source: 'import', mode: 'imported' })));
   console.log(JSON.stringify(out.summary, null, 2));
-  for (const v of out.vendors) console.log(`${v.url}  teammate=${v.teammate_overall} veritas=${v.veritas_overall}  ` + v.reasons.map(r => `${r.reason_id}:${r.status}`).join(' '));
+  for (const v of out.vendors) console.log(`${v.url}  teammate=${v.teammate_overall} veritas=${v.veritas_overall} guard=${v.guard_overall}  ` + v.reasons.map(r => `${r.reason_id}:${r.status}`).join(' '));
 }

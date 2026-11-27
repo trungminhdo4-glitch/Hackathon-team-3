@@ -1,0 +1,352 @@
+{
+  "vendors": [
+    {
+      "url": "https://www.notion.com/",
+      "teammate_overall": "Green",
+      "veritas_overall": "Yellow",
+      "guard_overall": "Green",
+      "guard_rule": "teammate verdict kept",
+      "veritas_reasoning": "Research was incomplete on a material question (material-risk search not available); a positive decision is not established. 2 claim(s) could not be verified and were not used. Imported from a teammate audit; page text was not stored.",
+      "reasons": [
+        {
+          "reason_id": "r1",
+          "severity": "green",
+          "claim": "The product has recent active releases (e.g., October 2026 updates) showing ongoing development.",
+          "url": "https://www.notion.com/releases",
+          "quote": "October 19, 2026 Agents, rebuilt to do more for less",
+          "status": "quote_verified",
+          "names_product": true,
+          "teammate_verification": "yes"
+        },
+        {
+          "reason_id": "r2",
+          "severity": "green",
+          "claim": "Source reports: “annual, industry standard audits including SOC 2, ISO 27001, ISMAP, BSI C5, and more!”",
+          "url": "https://www.notion.com/security",
+          "quote": "annual, industry standard audits including SOC 2, ISO 27001, ISMAP, BSI C5, and more!",
+          "status": "quote_verified",
+          "names_product": true,
+          "teammate_verification": "partial"
+        },
+        {
+          "reason_id": "r3",
+          "severity": "yellow",
+          "claim": "A recent security incident involving a third‑party AI vendor (Fireworks) was disclosed and mitigated; buyers should verify any residual risk for the AI‑agent features.",
+          "url": "https://www.notion.com/security/advisories/security-incident-involving-a-third-party-ai-vendor",
+          "quote": "Out of an abundance of caution, on November 4, Notion deleted all its data in the Fireworks system.",
+          "status": "quote_verified",
+          "names_product": true,
+          "teammate_verification": "yes"
+        }
+      ]
+    },
+    {
+      "url": "https://www.sqlite.org/",
+      "teammate_overall": "Green",
+      "veritas_overall": "Yellow",
+      "guard_overall": "Green",
+      "guard_rule": "teammate verdict kept",
+      "veritas_reasoning": "Research was incomplete on a material question (material-risk search not available); a positive decision is not established. 1 claim(s) could not be verified and were not used. Imported from a teammate audit; page text was not stored.",
+      "reasons": [
+        {
+          "reason_id": "r1",
+          "severity": "green",
+          "claim": "Source reports: “2026-10-16 3.54”",
+          "url": "https://www.sqlite.org/chronology.html",
+          "quote": "2026-10-16 3.54",
+          "status": "quote_verified",
+          "names_product": true,
+          "teammate_verification": "partial"
+        },
+        {
+          "reason_id": "r2",
+          "severity": "green",
+          "claim": "SQLite is widely deployed (trillions of installations) and offers professional support options, indicating real‑world adoption and vendor commitment.",
+          "url": "https://www.youtube.com/watch?v=ZP7ef4eVnac",
+          "quote": "Estimated to have more than 1 trillion deployments.",
+          "status": "source_unreachable",
+          "names_product": null,
+          "teammate_verification": "yes"
+        }
+      ]
+    },
+    {
+      "url": "https://www.usebruno.com/",
+      "teammate_overall": "Yellow",
+      "veritas_overall": "Yellow",
+      "guard_overall": "Yellow",
+      "guard_rule": "teammate verdict kept",
+      "veritas_reasoning": "Research was incomplete on a material question (material-risk search not available); a positive decision is not established. 1 claim(s) could not be verified and were not used. Imported from a teammate audit; page text was not stored.",
+      "reasons": [
+        {
+          "reason_id": "r1",
+          "severity": "green",
+          "claim": "Source reports: “Jul 14, 2026 I can confirm that version 3.5.1 doesn't have this bug anymore.”",
+          "url": "https://www.usebruno.com/",
+          "quote": "Jul 14, 2026 I can confirm that version 3.5.1 doesn't have this bug anymore.",
+          "status": "quote_verified",
+          "names_product": true,
+          "teammate_verification": "partial"
+        },
+        {
+          "reason_id": "r2",
+          "severity": "yellow",
+          "claim": "Traction claims and customer logos are ambiguous; displayed partners may not represent paying customers, making adoption evidence unverified.",
+          "url": "https://www.usebruno.com/",
+          "quote": "The badges do not establish paid customer use.",
+          "status": "quote_not_found",
+          "names_product": true,
+          "teammate_verification": "yes"
+        }
+      ]
+    },
+    {
+      "url": "https://www.lastpass.com/",
+      "teammate_overall": "Yellow",
+      "veritas_overall": "Yellow",
+      "guard_overall": "Yellow",
+      "guard_rule": "teammate verdict kept",
+      "veritas_reasoning": "Research was incomplete on a material question (material-risk search not available); a positive decision is not established. 1 claim(s) could not be verified and were not used. Imported from a teammate audit; page text was not stored.",
+      "reasons": [
+        {
+          "reason_id": "r1",
+          "severity": "yellow",
+          "claim": "Password manager maker LastPass says hackers stole customer support case data during Klue breach | TechCrunch",
+          "url": "https://techcrunch.com/2026/06/23/password-manager-maker-lastpass-says-hackers-stole-customer-support-case-data-during-klue-breach",
+          "quote": "Password manager maker LastPass says hackers stole customer support case data during Klue breach",
+          "status": "quote_verified",
+          "names_product": true,
+          "teammate_verification": "yes"
+        },
+        {
+          "reason_id": "r2",
+          "severity": "yellow",
+          "claim": "A 2022 security incident involving a compromised developer account was disclosed and remediated; buyers should verify that remediation measures remain effective.",
+          "url": "https://blog.lastpass.com/posts/notice-of-recent-security-incident",
+          "quote": "12-22-2022: Notice of Security Incident — We have determined that an unauthorized party gained access to portions of the LastPass development environment through a single compromised developer account",
+          "status": "quote_not_found",
+          "names_product": true,
+          "teammate_verification": "yes"
+        },
+        {
+          "reason_id": "r3",
+          "severity": "green",
+          "claim": "Source reports: “v1.7.4 - January 26th 2026”",
+          "url": "https://lastpass.com/releasenotes.php",
+          "quote": "v1.7.4 - January 26th 2026",
+          "status": "quote_verified",
+          "names_product": true,
+          "teammate_verification": "partial"
+        }
+      ]
+    },
+    {
+      "url": "https://www.freepdfconvert.com/",
+      "teammate_overall": "Yellow",
+      "veritas_overall": "Yellow",
+      "guard_overall": "Yellow",
+      "guard_rule": "teammate verdict kept",
+      "veritas_reasoning": "Research was incomplete on a material question (material-risk search not available); a positive decision is not established. Imported from a teammate audit; page text was not stored.",
+      "reasons": [
+        {
+          "reason_id": "r1",
+          "severity": "yellow",
+          "claim": "Source reports: “You need the PRO version to use the full functionality of the PDF Converter.”",
+          "url": "https://www.freepdfconvert.com",
+          "quote": "You need the PRO version to use the full functionality of the PDF Converter.",
+          "status": "quote_verified",
+          "names_product": true,
+          "teammate_verification": "partial"
+        },
+        {
+          "reason_id": "r2",
+          "severity": "green",
+          "claim": "The service is actively maintained; the Terms page shows a last‑updated date of September 8 2026, indicating recent operational activity.",
+          "url": "https://www.freepdfconvert.com/terms",
+          "quote": "Last updated: September 8, 2026",
+          "status": "quote_verified",
+          "names_product": true,
+          "teammate_verification": "yes"
+        }
+      ]
+    },
+    {
+      "url": "https://www.avast.com/de-de/index",
+      "teammate_overall": "RED",
+      "veritas_overall": "Red",
+      "guard_overall": "Red",
+      "guard_rule": "established material negative",
+      "veritas_reasoning": "Evidence establishes a material concern. Decisive: A final FTC order (June 2024) found Avast and Jumpshot sold re-identifiable browsing data of Avast users to third parties from 2014 to 2020. The FTC also found this contradicted privacy claims. Avast paid $16.5M and is banned from selling browsing data for advertising. This is the vendor's own misconduct against the core promise of a privacy and security product. (source: https://www.ftc.gov/news-events/news/press-releases/2024/06/ftc-finalizes-order-avast-banning-it-selling-or-licensing-web-browsing-data-advertising-requiring-it) 4 claim(s) could not be verified and were not used. Imported from a teammate report; page text was not stored.",
+      "reasons": [
+        {
+          "reason_id": "r1",
+          "severity": "red",
+          "claim": "A final FTC order (June 2024) found Avast and Jumpshot sold re-identifiable browsing data of Avast users to third parties from 2014 to 2020. The FTC also found this contradicted privacy claims. Avast paid $16.5M and is banned from selling browsing data for advertising. This is the vendor's own misconduct against the core promise of a privacy and security product.",
+          "url": "https://www.ftc.gov/news-events/news/press-releases/2024/06/ftc-finalizes-order-avast-banning-it-selling-or-licensing-web-browsing-data-advertising-requiring-it",
+          "quote": "ftc finalizes order avast banning it selling or licensing web browsing data advertising requiring it",
+          "status": "quote_not_found",
+          "names_product": true,
+          "teammate_verification": null
+        },
+        {
+          "reason_id": "r2",
+          "severity": "red",
+          "claim": "The Czech DPA's final and binding decision (April 2024) fined Avast Software s.r.o. CZK 351M for GDPR violations. The regulator found the data transferred to Jumpshot was not anonymised, contrary to what Avast told users. This is a first-hand GDPR finding relevant to a German and EU buyer.",
+          "url": "https://uoou.gov.cz/en/news/business-communication/czech-dpa-imposed-fine-of-351-million-czk-for-gdpr-infringement",
+          "quote": "Czech DPA imposed fine of 351 million CZK for GDPR infringement",
+          "status": "quote_verified",
+          "names_product": true,
+          "teammate_verification": null
+        },
+        {
+          "reason_id": "r3",
+          "severity": "yellow",
+          "claim": "Follow-on litigation continues. The Dutch CUIC mass claim and a UK class claim are still referenced, while the US wiretap suit was dismissed on appeal in Oct 2025.",
+          "url": "https://law360.com/articles/2404328",
+          "quote": "9th Circ. Won't Revive Avast Extension Users' Wiretap Suit",
+          "status": "quote_verified",
+          "names_product": true,
+          "teammate_verification": null
+        },
+        {
+          "reason_id": "r4",
+          "severity": "yellow",
+          "claim": "There is a steady flow of local privilege-escalation and parser CVEs in Avast products during 2025-2026. These were patched via updates. This is normal for a mature AV product, and no breach was found.",
+          "url": "https://www.zerodayinitiative.com/advisories/ZDI-26-271/",
+          "quote": "Advisory Details",
+          "status": "quote_not_found",
+          "names_product": true,
+          "teammate_verification": null
+        },
+        {
+          "reason_id": "r5",
+          "severity": "green",
+          "claim": "The product is real, widely deployed and independently tested. AV-TEST certifications and awards are recent.",
+          "url": "https://av-test.org/en/news/av-test-awards-2025-for-avast/",
+          "quote": "AV-TEST Awards 2025 for Avast",
+          "status": "quote_verified",
+          "names_product": true,
+          "teammate_verification": null
+        },
+        {
+          "reason_id": "r6",
+          "severity": "green",
+          "claim": "The parent Gen Digital is highly profitable, with about $5B FY26 revenue.",
+          "url": "https://newsroom.gendigital.com/2026-05-07-Gen-Crosses-5B-in-FY26-Revenue-with-Growth-Accelerating-to-Double-Digits",
+          "quote": "Gen Crosses $5B in FY26 Revenue with Growth Accelerating to Double-Digits",
+          "status": "quote_verified",
+          "names_product": true,
+          "teammate_verification": null
+        },
+        {
+          "reason_id": "r7",
+          "severity": "info",
+          "claim": "Avast has been part of Gen Digital since 2022. Gen runs several overlapping brands (Norton, Avast, AVG, Avira), so consolidation of SKUs is possible. Avast One was relaunched in 2026 and Pro was reportedly folded in.",
+          "url": "https://thepaypers.com/digital-identity-security-online-fraud/nortonlifelock-avast-merge-into-gen-digital--1259072",
+          "quote": "NortonLifeLock and Avast merge into Gen Digital",
+          "status": "quote_not_found",
+          "names_product": true,
+          "teammate_verification": null
+        },
+        {
+          "reason_id": "r8",
+          "severity": "yellow",
+          "claim": "SKU overlap (Free, One, Premium, Business) and recent packaging changes make it unclear which product is being licensed. No end-of-life notice was found for the main products.",
+          "url": "https://community.avast.com/t/importan-notice-unsupported-operating-systems/908468",
+          "quote": "Importan Notice - Unsupported Operating Systems",
+          "status": "quote_verified",
+          "names_product": true,
+          "teammate_verification": null
+        }
+      ]
+    },
+    {
+      "url": "https://notepad-plus-plus.org/",
+      "teammate_overall": "YELLOW",
+      "veritas_overall": "Yellow",
+      "guard_overall": "Yellow",
+      "guard_rule": "teammate verdict kept",
+      "veritas_reasoning": "Research was incomplete on a material question (material-risk search not available); a positive decision is not established. 6 claim(s) could not be verified and were not used. Imported from a teammate report; page text was not stored.",
+      "reasons": [
+        {
+          "reason_id": "r1",
+          "severity": "yellow",
+          "claim": "The update channel was hijacked via a hosting-provider compromise from about June to Dec 2025, with targeted malware delivery, and was later hardened. In 2026 there were many further CVEs, including code-execution and installer issues in 8.9.x, and the repository has no SECURITY.md. The disclosure and fixes were reasonably transparent and fast, but the incident is recent and the patch cadence is high [E1, E2, E5, E7].",
+          "url": "https://csa.gov.sg/alerts-and-advisories/alerts/al-2026-044",
+          "quote": "Vulnerability in Notepad++",
+          "status": "quote_verified",
+          "names_product": true,
+          "teammate_verification": null
+        },
+        {
+          "reason_id": "r2",
+          "severity": "yellow",
+          "claim": "The project depends on one lead maintainer, Don Ho, with community contributors. It has run since 2003 with continuous releases, but the bus factor and single point of failure remain, now combined with a recent supply-chain compromise [E3, E4].",
+          "url": "https://github.com/notepad-plus-plus/notepad-plus-plus/releases",
+          "quote": "Notepad++ release 8.9.8 ... @donho donho released this 23 Aug",
+          "status": "quote_not_found",
+          "names_product": true,
+          "teammate_verification": null
+        },
+        {
+          "reason_id": "r3",
+          "severity": "yellow",
+          "claim": "There is no corporate legal entity or contractual vendor. Lookalike and impersonation sites are common, so downloads must come only from the official domain or GitHub [E10].",
+          "url": "https://www.bleepingcomputer.com/news/security/notepad-plus-plus-wants-your-help-in-parasite-website-shutdown/",
+          "quote": "notepad plus plus wants your help in parasite website shutdown",
+          "status": "quote_not_found",
+          "names_product": true,
+          "teammate_verification": null
+        },
+        {
+          "reason_id": "r4",
+          "severity": "yellow",
+          "claim": "There is no SLA, vendor support or formal certification. Code-signing lapsed in 2025 before being restored in 8.8.7. Enterprises should pin versions, deploy through managed channels, and manage the auto-updater [E6, E8].",
+          "url": "https://www.notepad-plus-plus.org/news/v883-self-signed-certificate",
+          "quote": "Notepad++ v8.8.3 - Self-signed Certificate: Certified by Code, Not Corporations",
+          "status": "quote_verified",
+          "names_product": true,
+          "teammate_verification": null
+        },
+        {
+          "reason_id": "r5",
+          "severity": "info",
+          "claim": "No regulatory action or lawsuit against the project was found. The only item is a May 2026 trademark dispute over an unofficial macOS port, which ended in a rename [E9].",
+          "url": "https://www.macrumors.com/2026/05/13/notepad-plus-plus-mac-nextpad-dispute-settlement/",
+          "quote": "Notepad++ Mac Port Renamed Nextpad++ After Trademark Row",
+          "status": "quote_verified",
+          "names_product": true,
+          "teammate_verification": null
+        },
+        {
+          "reason_id": "r6",
+          "severity": "yellow",
+          "claim": "A single maintainer combined with a supply-chain compromise that ended less than a year ago is a bus-factor and single-point-of-failure risk, even though it was well handled.",
+          "url": "https://www.helpnetsecurity.com/2026/02/02/2025-notepad-supply-chain-compromise/",
+          "quote": "How state-sponsored attackers hijacked Notepad++ updates",
+          "status": "quote_verified",
+          "names_product": true,
+          "teammate_verification": null
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "vendors": 7,
+    "reasons": 26,
+    "quote_verified": 18,
+    "quote_not_found": 7,
+    "no_quote": 0,
+    "source_unreachable": 1,
+    "not_checked": 0,
+    "citation_precision_on_checkable": 0.72,
+    "guard_changes": 0,
+    "verdict_changes": 2,
+    "mode": "imported + keyless refetch",
+    "fetches": {
+      "pages": 33,
+      "failed": 2
+    },
+    "runtime_ms": 6343
+  }
+}
