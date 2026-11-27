@@ -49,7 +49,7 @@ export function fromSaasLens(inputUrl, raw, { vendorId = siteOf(inputUrl) } = {}
 // SaaSLens v2 contract (origin/main server/live.js research(), read-only
 // inspection 2026-11-27). Shape consumed here:
 //   { productName, productAliases[{name,sourceId}], vendor{name,text,evidence[]}|null,
-//     answer{text,evidence[]}, checks[{id,status,material,text,evidence[]}],
+//     answer{text,evidence[]}, claims[{criterion,significance,decisionScope,claim,text,evidence[]}], checks[{id,status,material,text,evidence[]}],
 //     flags[{kind,material,topic,text,evidence[]}], testimony[{text,evidence[]}],
 //     documents[{id,url,title,text,origin}], coverage{}, incomplete, limitations[] }
 //   evidence item = { sourceId, quote, relation, vendorAuthored, author }
@@ -90,6 +90,21 @@ export function saasLensToFlags(inputUrl, raw) {
     flags.push({ polarity: check.status === 'contradicted' ? 'red' : 'green', material: check.status === 'contradicted' || check.material === true,
       topic: CHECK_TOPIC[check.id], text: CHECK_CLAIMS[check.id]({ product, host }), source: `check:${check.id}`, evidence,
       claim_type: TYPE[check.id], qualifiers: { match_terms: MATCH[check.id]({ product, host }), refute_terms: REFUTE } });
+  }
+  for (const [i, claim] of (raw.claims ?? []).entries()) {
+    const evidence = toEvidence(claim.evidence, docs, rejected);
+    // A paraphrase may combine all cited passages; partial provenance cannot back it.
+    if (!evidence.length || evidence.length !== (claim.evidence ?? []).length) continue;
+    const text = (claim.claim || claim.text || '').trim();
+    if (!text) continue;
+    // These are proposals, not verified findings. Contradicted/unverified model
+    // labels cannot establish a negative proposition or reverse its meaning.
+    if (claim.status === 'contradicted' || claim.status === 'unverified') continue;
+    const negative = claim.significance === 'limitation';
+    const material = negative && ['caveat', 'disqualifying'].includes(claim.impact) &&
+      ['ordinary_use', 'unclear'].includes(claim.decisionScope);
+    flags.push({ polarity: negative ? (claim.impact === 'disqualifying' ? 'red' : 'yellow') : 'green', material, topic: claim.criterion,
+      text, source: `claim:${i + 1}`, evidence, atomic: true });
   }
   for (const [i, f] of (raw.flags ?? []).entries()) {
     const evidence = toEvidence(f.evidence, docs, rejected);

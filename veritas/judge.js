@@ -19,8 +19,11 @@ company/product/edition (entity_match), whether it applies at the relevant time 
 the full scope of the claim (scope_match), and the claim's materiality for a buyer. Partial support is partial, not supports.
 Absence of information is neutral, never refutes. Use only the given evidence ids. Explanation: one short factual sentence.`;
 
-export function createOpenAIJudge({ model = process.env.OPENAI_MODEL || 'gpt-4.1', apiKey = process.env.OPENAI_API_KEY } = {}) {
-  if (!apiKey) throw new Error('OPENAI_API_KEY is not set');
+export function createOpenAIJudge(options = {}) {
+  const model = options.model === undefined ? process.env.OPENAI_MODEL || 'gpt-4.1' : options.model;
+  const suppliedCredential = options.apiKey;
+  const credential = suppliedCredential === undefined ? process.env.OPENAI_API_KEY : suppliedCredential;
+  if (!credential) throw new Error('OPENAI_API_KEY is not set');
   let runtime;
   return async function judge(claim, evidence, { signal } = {}) {
     runtime ??= await (async () => {

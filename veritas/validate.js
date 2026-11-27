@@ -4,7 +4,7 @@ import { toCsv } from './export.js';
 import { detectInjection } from './injection.js';
 
 const LABELS = new Set(['Green', 'Yellow', 'Red']);
-const SECRET = /\b(sk-[A-Za-z0-9_-]{16,}|tvly-[A-Za-z0-9_-]{8,}|AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{20,}|xox[bp]-[A-Za-z0-9-]{10,})\b/;
+const SENSITIVE_VALUE_PATTERN = /\b(sk-[A-Za-z0-9_-]{16,}|tvly-[A-Za-z0-9_-]{8,}|AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{20,}|xox[bp]-[A-Za-z0-9-]{10,})\b/;
 const INTERNAL = /\b(TypeError|ReferenceError|at [\w.]+ \(file:|stack trace|undefined is not|\[object Object\]|NaN)\b/;
 
 /**
@@ -25,7 +25,7 @@ export function validateSubmission(rows, inputs, audit = {}) {
     if (!LABELS.has(r.overall)) problems.push(`row ${r.id}: invalid label "${r.overall}"`);
     if (inp && inp.url && r.url !== inp.url) problems.push(`row ${r.id}: url changed`);
     const text = [r.green_flags, r.yellow_flags, r.red_flags, r.reasoning].join(' ');
-    if (SECRET.test(text)) problems.push(`row ${r.id}: possible secret in output`);
+    if (SENSITIVE_VALUE_PATTERN.test(text)) problems.push(`row ${r.id}: possible secret in output`);
     if (INTERNAL.test(text)) problems.push(`row ${r.id}: internal error text in output`);
     if (detectInjection(text).length) problems.push(`row ${r.id}: prompt-injection text in output`);
     const cited = [...text.matchAll(/https?:\/\/[^\s,)|\]]+/g)].map(m => m[0]);

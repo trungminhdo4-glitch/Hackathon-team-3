@@ -1,7 +1,0 @@
-{
-  "prompt_version": "phase6-evidence-judge-v1",
-  "sha256": "f78f4d01a410c8dd36fc2a139acc0183bc2cd90153ab08ba4f4b1ff1fa09fed2",
-  "created_at": "2026-11-27T17:22:28.482Z",
-  "status": "diagnostic only: both research arms exceeded frozen fetch budget",
-  "packets": 8
-}

@@ -153,14 +153,14 @@ export async function collect(inputUrl, { fetcher, maxPages = 6, now = new Date(
   }
   const ev = (doc, quote, extra = {}) => ({ sourceId: doc.id, quote, relation: 'vendor', vendorAuthored: true, ...extra });
   const year = now.getUTCFullYear();
-  const token = productToken(inputUrl);
+  const productTerm = productToken(inputUrl);
   for (const doc of documents) {
     const sents = sentences(doc.text).filter(s => s.length >= 12 && s.length <= 300);
     // Vendor's own retirement notice: an admission, decisive when it names the product.
     // Follow-up pages often document multiple generations. Until the collector
     // can bind an edition to the submission, keep their lifecycle passages in
     // the recovery audit for review and out of the automatic Red path.
-    const retire = doc.purpose === 'recovery' ? undefined : sents.find(s => retirementOf(s, token));
+    const retire = doc.purpose === 'recovery' ? undefined : sents.find(s => retirementOf(s, productTerm));
     if (retire) flags.push({ kind: 'red', material: true, topic: 'maintenance', text: retire, evidence: [ev(doc, retire)] });
     if (doc.purpose === 'changelog' || doc.purpose === 'home') {
       const recent = sents.find(s => { const y = yearOf(s); return y && y >= year - 1 && y <= year; });

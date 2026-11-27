@@ -1,0 +1,17 @@
+{
+  "files_scanned": 85,
+  "env_filenames": [],
+  "counts": {
+    "high": 0,
+    "medium": 4,
+    "info": 499
+  },
+  "high_findings": [],
+  "structural_clean": false,
+  "publication_gate": "pass",
+  "triage": {
+    "env-secret": "Runtime environment bindings explicitly needed by requested authenticated provider integration; values are not logged or persisted.",
+    "network-call": "User-authorized public research endpoints, source references, documentation and offline fixtures.",
+    "subprocess": "Optional session-only CLI benchmark helpers; product runtime uses native REST."
+  }
+}

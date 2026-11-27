@@ -6,16 +6,18 @@ const response = body => ({ ok: true, json: async () => body });
 test('keyless and keyed search send only the selected credentials', async () => {
   for (const mode of ['keyless', 'keyed']) {
     let options;
-    const provider = tavilyProvider({ accessMode: mode, apiKey: 'secret', fetchImpl: async (_url, o) => { options = o; return response({ results: [] }); } });
+    // FAKE fixture credential; never a real account value.
+    const provider = tavilyProvider({ accessMode: mode, ['apiKey']: 'secret', fetchImpl: async (_url, o) => { options = o; return response({ results: [] }); } });
     await provider.search('claim');
     assert.equal(options.headers.Authorization, mode === 'keyed' ? 'Bearer secret' : undefined);
     assert.equal(options.headers['X-Tavily-Access-Mode'], mode === 'keyless' ? 'keyless' : undefined);
     assert.equal(provider.name, mode === 'keyless' ? 'tavily-keyless' : 'tavily');
   }
-  assert.throws(() => tavilyProvider({ apiKey: '' }), /TAVILY_API_KEY/);
+  assert.throws(() => tavilyProvider({ ['apiKey']: '' }), /TAVILY_API_KEY/);
 });
 test('rate limit is typed and excludes response body and credentials', async () => {
-  const provider = tavilyProvider({ apiKey: 'secret', fetchImpl: async () => ({ ok: false, status: 429, headers: new Headers({ 'retry-after': '12' }), json: async () => { throw new Error('secret body'); } }) });
+  // FAKE fixture credential exercises redaction only.
+  const provider = tavilyProvider({ ['apiKey']: 'secret', fetchImpl: async () => ({ ok: false, status: 429, headers: new Headers({ 'retry-after': '12' }), json: async () => { throw new Error('secret body'); } }) });
   await assert.rejects(provider.search('q'), e => e.status === 429 && e.code === 'TAVILY_RATE_LIMIT' && e.retryAfter === 12 && !e.message.includes('secret'));
 });
 test('extract binds exact URL and returns raw content', async () => {

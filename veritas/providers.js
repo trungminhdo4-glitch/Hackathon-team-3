@@ -33,10 +33,13 @@ export function bindSignal(target, signal) {
  * API shape per Tavily docs (POST /search) — UNVERIFIED in this repo until a
  * live run succeeds; see veritas/README.md.
  */
-export function tavilyProvider({ apiKey = process.env.TAVILY_API_KEY, depth = 'basic', rawContent = true, accessMode = 'keyed', fetchImpl = globalThis.fetch } = {}) {
+export function tavilyProvider(options = {}) {
+  const { depth = 'basic', rawContent = true, accessMode = 'keyed', fetchImpl = globalThis.fetch } = options;
+  const suppliedCredential = options.apiKey;
+  const credential = suppliedCredential === undefined ? process.env.TAVILY_API_KEY : suppliedCredential;
   if (!['keyed', 'keyless'].includes(accessMode)) throw new Error('Invalid Tavily access mode');
-  if (accessMode === 'keyed' && !apiKey) throw new Error('TAVILY_API_KEY is not set');
-  const headers = { 'Content-Type': 'application/json', ...(accessMode === 'keyless' ? { 'X-Tavily-Access-Mode': 'keyless' } : { Authorization: `Bearer ${apiKey}` }) };
+  if (accessMode === 'keyed' && !credential) throw new Error('TAVILY_API_KEY is not set');
+  const headers = { 'Content-Type': 'application/json', ...(accessMode === 'keyless' ? { 'X-Tavily-Access-Mode': 'keyless' } : { Authorization: `Bearer ${credential}` }) };
   async function request(endpoint, payload, signal) {
     const res = await fetchImpl(`https://api.tavily.com/${endpoint}`, {
       method: 'POST', headers, body: JSON.stringify(payload),

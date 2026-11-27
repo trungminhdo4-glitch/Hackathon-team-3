@@ -1,6 +1,0 @@
-{
-  "created_at": "2026-11-27T18:10:26.407Z",
-  "sha256": "56b676070b72eeb6537749581908de73247e4b8a328f481eb6d7782196204e95",
-  "rubric_sha256": "54eee4db4e70bdf542ce83d527737362c5de21f503dbaf51394e8580a94c4b96",
-  "design": "Baseline prior focused evidence; Tavily-only replacement; baseline plus Tavily augmentation. Same6selecteddevelopmentinputs; different retrieval budget, not holdout."
-}
