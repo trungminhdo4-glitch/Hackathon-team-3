@@ -22,6 +22,7 @@ test('product text survives long menus while legal text and navigation leads rem
   assert.ok(result.text.includes('Business accounts include chat.'));
   assert.ok(result.text.includes('We use this edition for team support.'));
   assert.ok(result.text.includes('Example Software Ltd operates the service.'));
+  assert.ok(result.text.includes('Business accounts include chat.\nWe use this edition'));
   assert.ok(!result.text.includes('Other edition'));
   assert.deepEqual(result.links, ['https://1.1.1.1/sibling']);
   assert.deepEqual(result.linkContexts, []);

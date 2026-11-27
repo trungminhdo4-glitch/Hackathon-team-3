@@ -110,15 +110,21 @@ export async function fetchPublicText(value, { signal } = {}) {
     // Navigation links are useful discovery leads, but menus can exhaust
     // the text budget before the product description or customer's account.
     $('nav,[role="navigation"]').remove();
-    $('br,p,div,h1,h2,h3,h4,h5,h6,li,tr,section,article,span,a,blockquote,cite,figcaption').append(' ');
+    // Use an explicit separator so whitespace from formatted HTML does not
+    // split an inline sentence or weld a FAQ heading onto a different answer.
+    const boundary = '\u2029';
+    $('span,a,cite,td,th').append(' ');
+    $('p,div,h1,h2,h3,h4,h5,h6,li,tr,section,article,blockquote,figcaption').prepend(boundary).append(boundary);
+    $('br').replaceWith(boundary);
     const main = $('main,[role="main"]').first();
-    const primary = compact(main.text());
+    const primary = main.text();
     main.remove();
     const footer = $('footer,[role="contentinfo"]');
-    const legal = compact(footer.text()).slice(0, 2000);
+    const legal = footer.text().split(boundary).map(compact).filter(Boolean).join('\n').slice(0, 2000);
     footer.remove();
-    const body = compact([title, description, primary, $('body').text()].join(' '));
-    const text = compact(body.slice(0, 39999 - legal.length) + ' ' + legal);
+    const body = [title, description, primary, $('body').text()].join(boundary)
+      .split(boundary).map(compact).filter(Boolean).join('\n');
+    const text = [body.slice(0, 39999 - legal.length), legal].filter(Boolean).join('\n');
     return { url: url.href, title, text, links: [...links], linkContexts };
   }
   throw new Error('Page exceeded the redirect limit.');
