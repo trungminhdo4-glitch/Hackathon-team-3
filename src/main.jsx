@@ -20,7 +20,7 @@ function Workspace() {
   const [catalog, setCatalog] = useState(null)
   const [catalogError, setCatalogError] = useState(false)
   const [catalogAttempt, setCatalogAttempt] = useState(0)
-  const [model, setModel] = useState(active?.report.model || '')
+  const [model, setModel] = useState('')
 
   useEffect(() => {
     const controller = new AbortController()
@@ -52,7 +52,6 @@ function Workspace() {
   function openReport(entry) {
     setSubject(entry.report.subject ?? entry.report.inputUrl)
     setQuestion(entry.report.question ?? '')
-    if (catalog?.models.some(option => option.available && option.id === entry.report.model)) setModel(entry.report.model)
     setActive(entry)
     setError('')
   }
@@ -121,6 +120,7 @@ function Workspace() {
           </select>
           <div id="model-details">
             {selected?.description && <p className="model-label">{selected.description}</p>}
+            {selected?.helperModel && <p className="model-label">{selected.label} assesses the evidence. {catalog.models.find(option => option.id === selected.helperModel)?.label || selected.helperModel} can search for missing sources.</p>}
             {selected?.provider === 'Meta' && <p className="model-label">OpenAI web search · {selected.searchModel}. Meta assesses the retrieved passages via Groq.</p>}
             {catalog?.models.filter(option => !option.available && option.reason).map(option =>
               <p key={option.id} className="model-label">{option.label} · {option.reason}</p>)}

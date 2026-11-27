@@ -124,11 +124,13 @@ test('session history restores original reports and citations without another in
   }
   await page.reload();
   await expect(page.locator('.report .badge')).toHaveText(verdictLabels.red);
-  await expect(select).toHaveValue('gpt-4.1-mini');
+  await expect(select).toHaveValue('gpt-6.2-sol');
+  await expect(page.locator('.report').getByText('Assessment model · gpt-4.1-mini')).toBeVisible();
+  await select.selectOption('gpt-6.2-astra');
   await page.getByText('Session history').click();
   await page.getByRole('button', { name: /Does Orbit Desk require a commercial license/i }).click();
   await expect(page.locator('.report .badge')).toHaveText(verdictLabels.green);
-  await expect(select).toHaveValue(meta);
+  await expect(select).toHaveValue('gpt-6.2-astra');
   await expect(page.locator('.report').getByText('OpenAI web search · gpt-4.1')).toBeVisible();
   await expect(page.getByRole('textbox', { name: 'Product question', exact: true })).toHaveValue(question);
   await expect(page.getByLabel('Product, company, or URL')).toHaveValue('Orbit Desk');
@@ -165,19 +167,23 @@ test('recovers from a model-list failure and explains unavailable options', asyn
 
 test('compares account models and shows search progress before and after the report arrives', async ({page}) => {
   await page.goto('/');
+  await expect(page.getByLabel('Assessment model')).toHaveValue('gpt-6.2-sol');
+  await expect(page.getByText('GPT-6.2 Sol assesses the evidence. GPT-6 Luna can search for missing sources.')).toBeVisible();
   await page.getByText('Compare models and see account access').click();
   await page.getByText(/OpenAI account model IDs/).click();
   await expect(page.getByText('text-embedding-3-small')).toBeVisible();
   await expect(page.getByRole('combobox', {name: 'Assessment model'}).locator('option', {hasText: 'embedding'})).toHaveCount(0);
   await page.getByLabel('Product, company, or URL').fill('Activity sample');
   await page.getByRole('button', {name: 'Investigate', exact: true}).click();
-  await expect(page.getByRole('status')).toHaveText('Searching for the partner integration guide');
+  await expect(page.getByRole('status')).toHaveText('gpt-6-luna · Searching for the partner integration guide');
   await expect(page.getByRole('button', {name: 'Investigating…'})).toBeDisabled();
   await expect(page.locator('.report .badge')).toHaveText(verdictLabels.green);
   await page.reload();
+  await expect(page.locator('.report').getByText('Follow-up search · gpt-6-luna')).toBeVisible();
   await page.getByText(/Research activity \(2\)/).click();
   await expect(page.locator('.research-activity li')).toHaveCount(2);
   await expect(page.locator('.research-activity li').first()).toContainText('Searching for the partner integration guide');
+  await expect(page.locator('.research-activity li').first()).toContainText('gpt-6-luna');
   await expect(page.locator('.research-activity a')).toHaveAttribute('href', 'https://orbit.example/');
 });
 
@@ -236,6 +242,7 @@ test('views and downloads the same eight dataset fields and keeps original notes
   }
   await page.reload();
   await expect(page.getByText('Assessment model · ' + model, {exact: true})).toBeVisible();
+  await expect(page.locator('.report').getByText(/Follow-up search/)).toHaveCount(0);
   await openExport.click();
   await expect(page.getByLabel(/Original reviewer notes/)).toHaveValue(notes);
 });

@@ -8,13 +8,13 @@ Open **View or download dataset report** on any saved investigation to preview i
 
 Use Node.js 22.12 or later. Set `OPENAI_API_KEY` in your server environment or ignored `.env.local` file. Run `npm ci` and `npm run dev`, then open [SaaSLens](http://127.0.0.1:4173).
 
-**GPT-6.2 Astra** is the default for weighing conflicting sources. Choose **GPT-6.2 Sol** for everyday research, **GPT-6.1 Terra** for document summaries, or **GPT-6 Luna** for focused, lower-cost checks. GPT-4.1 and GPT-4.1 mini are available for comparison. The picker shows which options your API project can use and lets you inspect its full OpenAI model inventory. [OpenAI model selection](https://developers.openai.com/api/docs/guides/model-selection)
+**GPT-6.2 Sol** leads demo investigations and writes the assessment. If independent evidence is thin and the account has access, Sol delegates one focused search to **GPT-6 Luna**. You can also select **GPT-6.2 Astra** for difficult comparisons, **GPT-6.1 Terra** for document summaries, **Luna** for a lower-cost standalone check, or either GPT-4.1 baseline. The picker includes guidance and your OpenAI project’s model inventory. [OpenAI model selection](https://developers.openai.com/api/docs/guides/model-selection)
 
 `OPENAI_MODEL` sets the preferred OpenAI model. To enable **Meta Llama 3.3 70B**, add `GROQ_API_KEY` to the server environment and restart. For that option, OpenAI searches and Groq receives the question and retrieved passages for assessment by Llama. Reports record both model IDs.
 
 ## How it works
 
-One OpenAI Agents SDK researcher runs official and independent searches in parallel. Depending on the product, it looks for first-party terms, customer deployments, reviews, partner documentation, and regulator records. When the independent pages yield little evidence of actual use, it can run a targeted follow-up. The activity view shows reported queries, pages read, retrieval failures and evidence checks as they happen. You can reopen it with the saved report.
+The main OpenAI Agents SDK researcher runs official and independent searches in parallel. Depending on the product, it looks for first-party terms, customer deployments, reviews, partner documentation, and regulator records. When the independent pages yield little evidence of actual use, the researcher can run a targeted follow-up. The activity view identifies the participating models, reported queries, pages read, retrieval failures and evidence checks. You can reopen it with the saved report.
 
 The model proposes findings from numbered source passages. The server checks quotations and derives the verdict from accepted findings. Cited benefits, limitations and material risks appear in the eight-column export. When evidence is insufficient, the report explains which check remains open.
 

@@ -142,6 +142,7 @@ export function Report({report, simulated, retry, notes, onNotesChange}) {
         {!simulated && <p className="model-label">Assessment model · {report.model || 'Not recorded'}</p>}
         {!simulated && report.searchModel && report.searchModel !== report.model &&
           <p className="model-label">OpenAI web search · {report.searchModel}</p>}
+        {!simulated && report.helperModel && <p className="model-label">Follow-up search · {report.helperModel}</p>}
         {report.vendor && report.vendorEvidence?.length > 0 && <details className="operator-source">
           <summary>Operator source</summary><Evidence items={report.vendorEvidence} sources={sources}/>
         </details>}
