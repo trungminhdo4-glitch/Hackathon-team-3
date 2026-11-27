@@ -71,6 +71,56 @@ test('a verified secondary benefit is cited even if the core task is unresolved'
   assert.ok(report.interpretation.includes(quote));
 });
 
+test('a separately attested short trademark identifies a product without changing its quoted text or dropping an edition', () => {
+  const url = 'https://marketsoftware.example/products/novalux';
+  const purpose = 'Market® Novalux™ is a spreadsheet data import service.';
+  const account = 'We deployed Novalux to import monthly sales spreadsheets.';
+  const raw = {productName:'Market Novalux', documents:[
+    {id:'S1',origin:'submitted',url,title:'Market® Novalux™',text:purpose + ' Novalux supports most spreadsheet formats.'},
+    {id:'S2',origin:'web_search',url:'https://buyers.example/rollout',title:'Our sales platform',text:account},
+  ], claims:[{criterion:'capability',claim:purpose,reason:account,consequence:'The buyer imports its sales records.',
+    significance:'benefit', decisionScope:'ordinary_use', status:'supported',impact:'routine',evidence:[cite('S2',account,'customer')]}]};
+  const report = assess(url,raw);
+  assert.equal(report.verdict,'green');
+  assert.equal(check(report,'capability').evidence[0].quote,account);
+  // A name alone cannot link a different edition, a lookalike, or a forged/harmonized quotation.
+  for (const variant of ['edition','lookalike','forged']) {
+    const other = structuredClone(raw);
+    if (variant === 'edition') {
+      other.productName += ' Enterprise';
+      other.documents[0].title += ' Enterprise';
+    } else if (variant === 'lookalike') {
+      other.documents[1].text = other.claims[0].evidence[0].quote = account.replace('Novalux','Novaluxx');
+    } else {
+      other.documents[1].text = account.replace('Novalux','Novalux®');
+    }
+    assert.equal(assess(url,other).verdict,'insufficient',variant);
+  }
+});
+
+test('a repaired past issue or an optional component stays scoped, while an affected requested use can decide', () => {
+  for (const [scope,criterion,quote] of [
+    ['remediated','security','Orbit Desk fixed a privacy issue in the optional transfer module in the June release.'],
+    ['limited_use','licensing','Orbit Desk offers an optional archive viewer through a limited availability program.'],
+  ]) {
+    const raw = fixture();
+    raw.documents[0].text += ' ' + quote;
+    const proposal = {criterion,claim:quote,reason:quote,consequence:'Check the deployed configuration before relying on the archive viewer.',
+      significance:'limitation',decisionScope:scope,status:'supported',impact:'caveat',evidence:[cite('S1',quote)]};
+    raw.claims.push(proposal);
+    const report = assess(url,raw);
+    assert.equal(report.verdict,'green',scope);
+    assert.equal(check(report,criterion).impact,'routine');
+    assert.deepEqual(check(report,criterion).evidenceIds,['S1']);
+    if (scope === 'limited_use') {
+      proposal.decisionScope = 'requested_use';
+      assert.equal(assess(url,raw).verdict,'green');
+      raw.question = 'Can our archive team obtain the archive viewer?';
+      assert.equal(assess(url,raw).verdict,'yellow');
+    }
+  }
+});
+
 test('one documented customer limitation stays visible without controlling the overall decision', () => {
   const raw = fixture();
   const quote = 'We encountered a delay importing the first ticket into Orbit Desk.';

@@ -45,9 +45,11 @@ function tiesToHost(doc, quote, host, productName) {
       (clean(link.text).includes(quote) || quote.includes(clean(link.text))));
 }
 
-function namesEntity(text, name) {
-  return name.length > 0 && new RegExp('(?<![\\p{L}\\p{N}])' + escapeRegex(name) +
-    '(?![\\p{L}\\p{N}])', name.length === 1 ? 'u' : 'iu').test(clean(text));
+const plainName = text => clean(text).replace(/[®™℠]/gu, '');
+export function namesEntity(text, name) {
+  const target = plainName(name);
+  return target.length > 0 && new RegExp('(?<![\\p{L}\\p{N}])' + escapeRegex(target) +
+    '(?![\\p{L}\\p{N}])', target.length === 1 ? 'u' : 'iu').test(plainName(text));
 }
 
 function namesProduct(doc, quote, name, aliases = []) {
@@ -66,6 +68,8 @@ function groundedNames(raw, documents, submitted, host) {
     qualifiers.every(token => namesEntity(submitted.text, token));
   const name = primary ? proposed : groundedBase ? gloss[1] : '';
   const aliases = new Set();
+  const base = plainName(name);
+  const officialUsage = base ? plainName(submitted?.text).replace(new RegExp(escapeRegex(base), 'giu'), ' ') : '';
   for (const alternate of raw.productAliases ?? []) {
     const alias = clean(alternate.name);
     const source = documents.get(alternate.sourceId);
@@ -75,17 +79,25 @@ function groundedNames(raw, documents, submitted, host) {
     // A documented short form may drop a publisher/portfolio prefix but
     // must retain the trailing edition. Require distinct official usage.
     const trailingEdition = name.toLowerCase().endsWith(' ' + alias.toLowerCase()) && alias.split(/\s+/).length >= 2;
-    const otherMentions = clean(submitted.text).replace(new RegExp(escapeRegex(name), 'giu'), '');
     if (explicitAlias.test(clean(submitted.text)) ||
-        (trailingEdition && site(hostOf(source.url)) === site(host) && namesEntity(otherMentions, alias))) aliases.add(alias);
+        (trailingEdition && site(hostOf(source.url)) === site(host) && namesEntity(officialUsage, alias))) aliases.add(alias);
   }
   // A publisher may prefix its own brand. Remove only the exact publisher
   // label, retaining the edition in the remainder (e.g. "Desk Enterprise").
   const publisher = site(host).split('.')[0];
-  const short = name.replace(new RegExp('^' + escapeRegex(publisher) + '\\s+', 'iu'), '');
-  if (short !== name && short.length > 2 && attested(short, submitted)) {
-    const independentOccurrence = clean(submitted.text).replace(new RegExp(escapeRegex(name), 'giu'), '');
-    if (namesEntity(independentOccurrence, short)) aliases.add(short);
+  const short = base.replace(new RegExp('^' + escapeRegex(publisher) + '\\s+', 'iu'), '');
+  if (short !== base && short.length > 2 && namesEntity(officialUsage, short)) aliases.add(short);
+  // A compound corporate domain need not equal its portfolio prefix. For a one-word short form require
+  // independent usage, a separate official mention, and an exact branded path on the submitted product page.
+  if (submitted && base.split(/\s+/u).length === 2) {
+    const candidate = base.split(/\s+/u)[1];
+    const slug = new URL(submitted.url).pathname.split('/').filter(Boolean).at(-1);
+    const generic = /^(?:app|chat|cloud|core|database|desk|desktop|enterprise|home|mail|mobile|personal|platform|plus|premium|pro|server|standard|studio|suite|tools?|workspace)$/i;
+    if (candidate.length >= 4 && slug?.toLowerCase() === candidate.toLowerCase() && !generic.test(candidate) &&
+        namesEntity(officialUsage,candidate) && [...documents.values()].some(doc =>
+          site(hostOf(doc.url)) !== site(host) && namesEntity(plainName(doc.text).replace(new RegExp(escapeRegex(base),'giu'),' '), candidate))) {
+      aliases.add(candidate);
+    }
   }
   return { name, aliases: [...aliases] };
 }
@@ -258,7 +270,7 @@ const metricKinds = [
 const quantities = /\d+(?:[.,]\d+)?\s*(?:%|×|x\b|percent\b|milliseconds?\b|seconds?\b|minutes?\b)/gi;
 const normalizedQuantities = text => [...text.matchAll(quantities)].map(m =>
   m[0].toLowerCase().replace(/\s+/g, '').replace('percent','%').replace('×','x'));
-const licensingTerms = /\b(?:licen[cs]\w*|subscriptions?|plans?|tiers?|eligible|entitle\w*|add[- ]?on|accounts?|pay\w*|paid|free|cost|pric\w*|fees?|per (?:seat|user)|available (?:to|with|only)|permitted|commercial use|data access|access to|unlimited|(?:standard|basic|premium|enterprise|professional) edition)\b/i;
+const licensingTerms = /\b(?:licen[cs]\w*|subscriptions?|plans?|tiers?|eligible|entitle\w*|add[- ]?on|accounts?|pay\w*|paid|free|cost|pric\w*|fees?|per (?:seat|user)|available (?:to|with|only)|limited availability program|permitted|commercial use|data access|access to|unlimited|(?:standard|basic|premium|enterprise|professional) edition)\b/i;
 const maintenanceTerms = /\b(?:maintain\w*|maintenance|release[ds]?|changelogs?|roadmaps?|patch(?:es|ed)?|updates?|supported (?:until|through|on|version|platform)|no longer supported|supports? (?:windows|android|ios|linux|macos)|support (?:window|period|ends?|ended|contract|team|channel|hours|contact|agreement)|discontinu\w*|end[- ]of[- ](?:life|sale|support)|retire\w*|migrat\w*|compatib\w*)\b/i;
 const securityTerms = /\b(?:secur\w*|privacy|personal data|protect\w*|encrypt\w*|compliance|compliant|certif\w*|audit\w*|incident|breach|vulnerab\w*|risk|remediat\w*|SOC\s?2|GDPR|ISO)\b/i;
 const credibilityTerms = /\b(?:customer\w*|partner\w*|certif\w*|regulat\w*|registry|registered|foundation|nonprofit|owner\w*|operat\w*|mislead\w*|claim\w*|order|decept\w*|fals\w*|endorse\w*|represent\w*|named|backed|member\w*)\b/i;
@@ -309,6 +321,8 @@ function unknown(criterion, reason) {
 
 function assessClaim(proposal, context) {
   const { criterion } = proposal;
+  const outsideDecision = ['limited_use', 'remediated', 'unclear'].includes(proposal.decisionScope) ||
+    (proposal.decisionScope === 'requested_use' && !context.question);
   if (!statuses.has(proposal.status)) return unknown(criterion);
   // The issuer's final restriction is itself a separately checkable claim.
   // A rejected companion excerpt (including a preliminary order) cannot
@@ -335,7 +349,7 @@ function assessClaim(proposal, context) {
         .filter(e => e.sourceType === 'Vendor publication' && licensingTerms.test(e.quote));
       if (terms.length) {
         const limitsAccess = terms.some(e => /\b(?:requires? a (?:separate|paid|premium)|additional (?:license|licence|subscription)|only (?:available|included)|when you add (?:a|an) .{0,60}licen[cs]e|limited to (?:eligible|paid)|available only)\b/i.test(e.quote));
-        return { id: criterion, label: criteria[criterion][0], status: 'supported', impact: limitsAccess ? 'caveat' : 'routine',
+        return { id: criterion, label: criteria[criterion][0], status: 'supported', impact: limitsAccess && !outsideDecision ? 'caveat' : 'routine',
           claim: terms[0].quote, explanation: 'The publisher documents this entitlement for the named edition.',
           consequence: limitsAccess ? 'Verify that the intended account includes this entitlement before relying on the feature.' :
             criteria[criterion][1], evidence: terms, evidenceIds: idsOf(terms) };
@@ -383,6 +397,9 @@ function assessClaim(proposal, context) {
     return unknown(criterion, 'The sources did not establish a serious contradiction or disqualifying risk for the intended use.');
   }
   if (criterion === 'capability' && status === 'contradicted') impact = decisive ? 'disqualifying' : 'caveat';
+  // Keep the observation and its citations even if the affected feature, version or configuration is
+  // outside the intended use. A restriction on an advertised core entitlement can still decide the verdict.
+  if (impact === 'caveat' && outsideDecision) impact = 'routine';
   // An isolated review can describe one user. Its opinion alone cannot
   // establish a material issue affecting the product overall.
   if (impact === 'caveat' && evidence.every(e => reportedExperience.test(e.sourceType))) {
@@ -391,7 +408,7 @@ function assessClaim(proposal, context) {
   }
   // Direction describes a cited finding. Materiality decides whether it affects the overall verdict.
   const flag = status === 'unverified' ? 'context' : impact === 'disqualifying' ? 'red' :
-    impact === 'caveat' || status === 'contradicted' || proposal.significance === 'limitation' ? 'yellow' :
+    impact === 'caveat' || status === 'contradicted' || (proposal.significance === 'limitation' && proposal.decisionScope !== 'remediated') ? 'yellow' :
     status === 'supported' && (proposal.significance === 'benefit' || criterion === 'capability') ? 'green' : 'context';
   return { id: criterion, label: criteria[criterion][0], claim, status, impact, flag, explanation,
     consequence: status === 'unverified' ? criteria[criterion][1] : consequence, evidence, evidenceIds: idsOf(evidence) };
@@ -547,7 +564,7 @@ export function assess(inputUrl, raw) {
   if (placeholder) return placeholder;
   const { name: productName, aliases } = groundedNames(raw, documents, submitted, host);
   const vendorDocs = [...documents.values()].filter(doc => site(hostOf(doc.url)) === site(host));
-  const context = { productName, aliases, host, documents, vendorDocs };
+  const context = { productName, aliases, host, documents, vendorDocs, question: clean(raw.question) };
   const vendorEvidence = collectEvidence(raw.vendor, context, 'vendor');
   context.vendor = vendorEvidence.length ? clean(raw.vendor.name) : null;
   const checks = Object.keys(criteria).flatMap(id => {

@@ -2,7 +2,7 @@ import { Agent, Runner, webSearchTool } from '@openai/agents';
 import { z } from 'zod';
 import { getDomain } from 'tldts';
 import { fetchPublicText, lookupPublic, validatePublicUrl } from './fetch.js';
-import { assess } from './assessment.js';
+import { assess, namesEntity } from './assessment.js';
 import { getResearchModel, isDemoModel, META_MODEL } from './models.js';
 import { assessWithLlama } from './groq.js';
 export { getResearchModel } from './models.js';
@@ -16,6 +16,7 @@ const evidence = z.object({
 const claimFields = {
   criterion: z.enum(['capability', 'experience', 'licensing', 'maintenance', 'security', 'credibility']),
   significance: z.enum(['benefit', 'limitation', 'context']),
+  decisionScope: z.enum(['ordinary_use','requested_use','limited_use','remediated','unclear']),
   claim: z.string(), status: z.enum(['supported', 'partly_supported', 'contradicted', 'unverified']),
   impact: z.enum(['routine', 'caveat', 'disqualifying']), reason: z.string(), consequence: z.string(),
 };
@@ -66,6 +67,14 @@ Classify its significance to a user as benefit (specific demonstrated advantage)
 drawback or condition), or context (neutral, uncertain, or routine information). A finding can matter to an individual
 without deciding the whole verdict. Give the source's concrete fact in the reason. Prefer the single best passage;
 cite a second source when it establishes an additional necessary fact. Avoid weak extra references to adjacent products.
+For decisionScope, ordinary_use requires evidence that the finding applies to the core task and ordinary users of
+the requested product or company. Name that affected task and audience in the reason. A company homepage covers
+the business or portfolio; a condition for one optional add-on does not apply to all its products. Use requested_use
+only when the user explicitly asked about the affected feature, edition, version or configuration. Use limited_use
+for optional add-ons or nondefault configurations, remediated for historical issues with a documented fix and no
+evidence of ongoing impact in the evaluated use, and unclear when the scope cannot be established. Keep scope-specific
+facts even if they do not determine the verdict. Quote-based pricing, a normal subscription or a limited trial alone are
+routine commercial context. A paid upgrade that changes access to the advertised core task can be material.
 Make the claim specific to the product or edition and intended user. State the proposition under evaluation, e.g. "The standard
 plan includes export"; if contradicted, the cited evidence must positively establish the opposite. The reason states what the
 passages establish; consequence explains the practical implication for that user in one sentence. Use short plain language.
@@ -540,9 +549,7 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
     const doc = passage && documents.find(doc => doc.id === passage.sourceId);
     const name = candidate.name.trim();
     if (!doc || !name || name.length > 160) continue;
-    const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const literal = new RegExp('(?<![\\p{L}\\p{N}])' + escaped + '(?![\\p{L}\\p{N}])', name.length === 1 ? 'u' : 'iu');
-    if ((literal.test(passage.quote) || literal.test(doc.title)) && !proposedNames.some(alias => alias.name === name)) {
+    if ((namesEntity(passage.quote,name) || namesEntity(doc.title,name)) && !proposedNames.some(alias => alias.name === name)) {
       proposedNames.push({ name, sourceId: doc.id });
     }
   }

@@ -127,7 +127,7 @@ test('bounded searches ground rubric claims, answers and customer testimony in r
     const official = { passageId: officialId, relation: 'vendor', author: null, vendorAuthored: true };
     const reviewer = { passageId: reviewId, relation: 'review', author: 'Taylor', vendorAuthored: false };
     const bogus = { ...reviewer, passageId: 'S999.2' };
-    const license = { criterion:'licensing',claim:'Business use requires a license.',status:'supported',impact:'caveat',significance:'limitation',
+    const license = { criterion:'licensing',claim:'Business use requires a license.',status:'supported',impact:'caveat',significance:'limitation',decisionScope:'ordinary_use',
       reason:'The vendor specifies a business license.',consequence:'Business users need this license.',evidence:[official] };
     return { finalOutput: { productNames: [{name: 'Orbit Desk Enterprise', passageId: officialId}], vendor: null, answer: {evidence:[bogus,official]},
       testimony: [{evidence:[reviewer,bogus]}],
@@ -225,7 +225,7 @@ test('the source-attested edition in the original URL wins over its paid compara
     const cite = text => ({passageId:passages.find(p => p.text === text).id, relation:'vendor',vendorAuthored:true,author:null});
     return {finalOutput:{productNames:[{name:paid,passageId:cite(condition).passageId}],vendor:null,
       answer:{evidence:[cite(base),cite(condition)]},testimony:[],claims:[{
-        criterion:'licensing',significance:'limitation',claim:'Incorrect paraphrase that a fake citation would support.',reason:'Invented',consequence:'Invented',
+        criterion:'licensing',significance:'limitation',decisionScope:'ordinary_use',claim:'Incorrect paraphrase that a fake citation would support.',reason:'Invented',consequence:'Invented',
         status:'supported',impact:'caveat',evidence:[cite(base),{...cite(condition),passageId:'S9.99'}],
       }] }};
   }}};
@@ -307,7 +307,7 @@ test('one tool-free repair restores a missing core claim; a failed repair leaves
       if (task.lane) return resultFor([]);
       const passages = task.documents[0].passages;
       const reference = text => ({passageId:passages.find(p => p.text === text).id,relation:'vendor',vendorAuthored:true,author:null});
-      const claim = (criterion,text) => ({criterion,claim:text,status:'supported',impact:'routine',significance:'benefit',
+      const claim = (criterion,text) => ({criterion,claim:text,status:'supported',impact:'routine',significance:'benefit',decisionScope:'ordinary_use',
         reason:'A specific source documents this.',consequence:'The user can use this documented capability.',evidence:[reference(text)]});
       const capability = claim('capability',core);
       if (task.stage === 'repair_claims') {
