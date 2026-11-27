@@ -201,3 +201,136 @@ test('a final authority action about the exact product can override positive poi
   raw.documents[3].text = raw.flags[0].evidence[0].quote = unrelated;
   assert.equal(assess(url, raw).verdict, 'green');
 });
+
+function addReview(raw, quote, { local = false, author = 'Casey Lee', byline = 'By Casey Lee: ' } = {}) {
+  const sourceId = 'R' + raw.documents.length;
+  raw.documents.push({ id: sourceId, origin: 'web_search', title: 'Review of Orbit Desk',
+    url: local ? url + 'testimonials' : 'https://buyer-forum.example/experiences', text: byline + quote });
+  const item = { sourceId, quote, relation: 'review', vendorAuthored: false, author };
+  raw.testimony ??= [];
+  raw.testimony.push({ text: quote, evidence: [item] });
+  return item;
+}
+
+test('a signed independent account can confirm observed use at the exact domain', () => {
+  const raw = fixture('credible');
+  const quote = 'We deployed Orbit Desk at orbit-fixture.example to route tickets to our support team.';
+  raw.checks[1].evidence = [addReview(raw, quote)];
+  const report = assess(url, raw);
+  assert.equal(report.checks[1].points, 30);
+  assert.match(report.checks[1].explanation, /firsthand use/);
+  const [review] = report.testimony;
+  assert.equal(review.evidence[0].attribution, 'Casey Lee · buyer-forum.example');
+  assert.equal(review.evidence[0].sourceType, 'User review');
+  assert.match(review.explanation, /contributes to the independent identity check/);
+});
+
+test('vendor-hosted testimonials and reviews without a domain link remain contextual', () => {
+  for (const local of [true, false]) {
+    const raw = fixture('credible');
+    const quote = 'I use Orbit Desk daily to manage tickets for our support team.';
+    raw.checks[1].evidence = [addReview(raw, quote, { local, author: 'Someone Else' })];
+    const report = assess(url, raw);
+    assert.equal(report.verdict, 'yellow');
+    assert.equal(report.checks[1].points, 0);
+    assert.equal(report.testimony.length, 1);
+    assert.equal(report.testimony[0].evidence[0].sourceType, local ? 'Vendor-hosted testimonial' : 'User review');
+    assert.match(report.testimony[0].explanation, /contributes no points/);
+    assert.ok(!JSON.stringify(report).includes('Someone Else'));
+    assert.match(report.checks[1].diagnostics.join(' '), local ? /independent publisher/ : /exact submitted domain/);
+  }
+});
+
+test('sentiment, wrong-edition testimony and an unverified reviewer accusation never change the verdict', () => {
+  for (const quote of ['Orbit Desk Enterprise at orbit-fixture.example is the best service ever!',
+    'We deployed Orbit Desk Home at orbit-fixture.example to manage tickets.']) {
+    const raw = fixture('credible');
+    raw.productName = 'Orbit Desk Enterprise';
+    const review = addReview(raw, quote);
+    raw.checks[1].evidence = [review];
+    raw.flags = ['red', 'green'].map(kind => ({ kind, evidence: [review] }));
+    const result = assess(url, raw);
+    assert.equal(result.checks[1].points, 0);
+    assert.equal(result.flags.length + result.testimony.length, 0);
+    assert.equal(result.verdict, 'yellow');
+  }
+});
+
+test('a verified product-specific support cutoff can override a complete positive score with yellow', () => {
+  const raw = fixture('credible');
+  const quote = 'Orbit Desk is no longer supported for enterprise deployments.';
+  raw.documents[0].text += ' ' + quote;
+  raw.flags = [{ kind: 'yellow', topic: 'maintenance', material: true, evidence: [
+    { sourceId: 'S1', quote, relation: 'vendor', vendorAuthored: true },
+  ] }];
+  const result = assess(url, raw);
+  assert.equal(result.score, 100);
+  assert.equal(result.verdict, 'yellow');
+  assert.equal(result.flags[0].material, true);
+  assert.match(result.interpretation, /support window/);
+  raw.documents[0].text = 'It is false that ' + quote;
+  assert.equal(assess(url, raw).flags[0].material, false);
+});
+
+test('an ordinary commercial license caveat remains visible with a green verdict', () => {
+  const raw = fixture('credible');
+  const quote = 'Orbit Desk requires a commercial license for business use.';
+  raw.documents[0].text += ' ' + quote;
+  raw.flags = [{ kind: 'yellow', topic: 'licensing', material: true, evidence: [
+    { sourceId: 'S1', quote, relation: 'vendor', vendorAuthored: true },
+  ] }];
+  const report = assess(url, raw);
+  assert.equal(report.verdict, 'green');
+  assert.equal(report.flags[0].material, false);
+  assert.match(report.flags[0].explanation, /entitlement/);
+});
+
+test('unverified checks explain missing sources, rejected quotations, and the next evidence needed', () => {
+  const report = assess(url, fixture('fabricated'));
+  assert.match(report.checks[1].diagnostics.join(' '), /no readable source/);
+  assert.match(report.checks[2].diagnostics.join(' '), /could not be matched/);
+  assert.match(report.checks[3].explanation, /setup steps/);
+  for (const check of report.checks) assert.ok(check.explanation.length > 10);
+});
+
+test('a supplied page can ground a display name and its publisher-prefixed short form for a scoped FAQ answer', () => {
+  const raw = fixture('credible');
+  raw.productName = 'Orbit Desk Enterprise (business, web edition)';
+  const product = 'Orbit Desk Enterprise';
+  const q = 'Q: Which plans include Desk Enterprise?';
+  const first = 'Desk Enterprise is included with eligible business licenses.';
+  const second = 'When you add a Premium license, Desk Enterprise includes organizational search.';
+  const other = 'Other Desk is included only with a campus subscription.';
+  raw.documents[0].url = 'https://orbit.example/desk/enterprise';
+  raw.documents[0].title = product;
+  raw.documents[0].text = product + ' provides a web application for business teams. Open Desk Enterprise for your work account.';
+  raw.documents[2] = { ...raw.documents[2], url: 'https://orbit.example/faq', title: 'Licensing FAQ',
+    text: [q, first, second, 'Q: Who can use Other Desk?', other].join(' ') };
+  raw.answer = { evidence: [{ sourceId: 'S3', quote: q, relation: 'vendor', vendorAuthored: true }] };
+  const report = assess(raw.documents[0].url, raw);
+  assert.equal(report.productName, product);
+  assert.equal(report.answer.text, first + ' ' + second);
+  assert.deepEqual(report.answer.evidence.map(e => e.quote), [first, second]);
+  raw.productName = 'Orbit Desk Enterprise (unreleased gold edition)';
+  assert.equal(assess(raw.documents[0].url, raw).answer, null);
+});
+
+test('question headings and truncated comparison tables alone cannot become a product answer', () => {
+  const raw = fixture('credible');
+  const heading = 'Which plans include Orbit Desk?';
+  const table = 'Price table Basic license Team license Pro license Custom license ' + 'Yes Yes No '.repeat(33);
+  raw.documents[0].text += ' ' + heading + ' ' + table;
+  raw.answer = { evidence: [heading, table.trim()].map(quote => ({ sourceId: 'S1', quote, relation: 'vendor' })) };
+  assert.equal(assess(url, raw).answer, null);
+});
+
+test('verdict sources are drawn only from the checks or flags that decided the result', () => {
+  assert.deepEqual(assess(url, fixture('credible')).verdictEvidenceIds, ['S1', 'S2']);
+  assert.deepEqual(assess(url, fixture('contradiction')).verdictEvidenceIds, ['S2']);
+  assert.deepEqual(assess(url, fixture('timeout')).verdictEvidenceIds, []);
+  const raw = fixture('credible');
+  raw.coverage = { independent: { searched: true, discovered: 1, retrieved: 1 } };
+  const out = assess(url, raw);
+  assert.equal(out.verdict, 'green');
+  assert.match(out.limitations.join(' '), /no validated firsthand account/);
+});
