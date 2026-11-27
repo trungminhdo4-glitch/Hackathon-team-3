@@ -23,16 +23,19 @@ const catalog = {
     { id: 'llama-3.3-70b-versatile', label: 'Llama 3.3 70B', provider: 'Meta', searchModel: 'gpt-4.1' },
   ].map(option => ({ ...option, available: true, reason: null })),
 };
-const api = createApi(async (subject, { question, model, onActivity }) => {
-  const scenario = examples.get(subject);
+const api = createApi(async (subject, { question, model, onActivity, guidance, onFindings }) => {
+  const scenario = guidance && subject === 'https://partial.example/' ? 'credible' : examples.get(subject);
   const helperModel = subject === 'Activity sample' ? catalog.models.find(option => option.id === model)?.helperModel : null;
-  onActivity({ stage: 'search', detail: 'Searching for the partner integration guide', model: helperModel || model });
+  onActivity({ stage: 'search', detail: 'Searching for the partner integration guide', model: helperModel || model,
+    role: helperModel ? 'specialist' : 'researcher' });
   if (!scenario) throw new Error('Simulated provider failure');
   const url = subject.startsWith('https://') ? subject : 'https://orbit.example/';
   const { searchModel } = catalog.models.find(option => option.id === model);
   if (subject === 'Activity sample') await new Promise(resolve => setTimeout(resolve, 1200));
-  onActivity({ stage: 'read', detail: 'Retrieved submitted page', url });
-  return { ...assess(url, fixtureResearch(url, scenario, question)), subject, question, model, searchModel, helperModel };
+  onActivity({ stage: 'read', detail: 'Retrieved submitted page', url, model, role:'researcher' });
+  const findings = fixtureResearch(url, scenario, question);
+  onFindings?.(findings);
+  return { ...assess(url, findings), subject, question, model, searchModel, helperModel };
 }, () => catalog);
 
 await preview({

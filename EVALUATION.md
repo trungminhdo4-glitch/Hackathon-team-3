@@ -24,9 +24,10 @@ For each material claim, record **supported**, **partly supported**, **contradic
 | Outcome | Decision rule |
 | --- | --- |
 | Green | Credible evidence supports the core promise for the intended use. Remaining caveats are unlikely to change that user's decision. |
-| Yellow | A verified condition could change the decision, or credible sources disagree on a material claim. Name the condition, who it affects, and what would resolve it. |
+| Yellow | Name the material condition or conflict, who it affects, and what would resolve it. When sources cannot establish the core claim, invite human guidance. If the user finishes or a guided search still leaves the question unresolved, explain the evidence gap and identify the missing proof. |
 | Red | Reliable evidence contradicts a core promise or establishes a serious risk that makes the product unsuitable for the stated use. Identify the decisive evidence and its scope. |
-| Insufficient evidence | Accessible sources cannot establish the core claim. State what is missing. Keep this distinct from an observed product problem. |
+
+An investigation that fails before obtaining usable material yields a retryable failure. The historical calibration below recorded abstentions as “Insufficient evidence.” New final reports record these as Yellow with `verdictBasis: "evidence_gap"`. Compare evidence coverage as well as color when reading later calibration runs.
 
 Judge materiality in context. A commercial-use license can be routine for an image viewer and decisive for a buyer who needs free workplace use. A privacy violation can directly defeat the promise of a privacy product. Several small positives cannot cancel such a contradiction. Use no fixed point weights or numeric quality score in this rubric.
 

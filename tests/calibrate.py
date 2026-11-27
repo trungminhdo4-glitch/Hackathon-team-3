@@ -48,6 +48,7 @@ def main():
         sources = {source["id"]: source["url"] for source in report["sources"]}
         return {**record, "product": report["productName"], "model": report["model"],
             "seconds": round(monotonic() - started, 1), "actual": report["verdict"],
+            "verdictBasis": report.get("verdictBasis"), "evidenceGap": report.get("verdictBasis") == "evidence_gap",
             "labelMatch": row["overall"].lower() == report["verdict"],
             "appReason": report["interpretation"], "sourceCount": len(sources),
             "activity": report.get("activity", []),

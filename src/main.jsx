@@ -5,7 +5,7 @@ import '@fontsource/spectral/latin-700.css'
 import { Brand, Icon } from './icons.jsx'
 import { Report } from './Report.jsx'
 import { ResearchActivity } from './ResearchActivity.jsx'
-import { requestAssessment } from './research.js'
+import { requestAssessment, respondToReview } from './research.js'
 import { readHistory, saveHistory, SessionHistory } from './SessionHistory.jsx'
 import './style.css'
 
@@ -56,12 +56,29 @@ function Workspace() {
     setError('')
   }
 
-  function saveNotes(notes) {
-    const updatedEntry = { ...active, reviewerNotes: notes }
+  function updateActive(changes) {
+    const updatedEntry = { ...active, ...changes }
     const updated = entries.map(entry => entry.id === active.id ? updatedEntry : entry)
     saveHistory(updated)
     setEntries(updated)
     setActive(updatedEntry)
+  }
+
+  async function review(action) {
+    if (busy || !active?.report.review) return
+    const guidance = (active.guidance || '').trim()
+    if (action === 'research' && !guidance) return
+    setError('')
+    setBusy(true)
+    setActivity(active.report.activity || [])
+    try {
+      const report = await respondToReview(active.report.review.id, action, guidance,
+        event => setActivity(previous => [...previous, event]))
+      updateActive({ report, savedAt: Date.now(), guidance: undefined, expired: undefined })
+    } catch (cause) {
+      if (cause.status === 410) updateActive({ expired: true })
+      setError(cause.name === 'TimeoutError' ? 'The review request timed out. Reopen this review to check its status.' : cause.message)
+    } finally { setBusy(false) }
   }
 
   async function investigate(event) {
@@ -145,12 +162,13 @@ function Workspace() {
         </div>
       </form>
       <SessionHistory entries={entries} current={active?.id} busy={busy} onOpen={openReport}/>
-      {(busy || error) && <ResearchActivity running={busy} events={activity}/>}
+      {(busy || (error && !active)) && <ResearchActivity running={busy} events={activity}/>}
       {error && <section className="feedback error" role="alert"><div><strong>Investigation incomplete</strong><p>{error}</p></div>
-        <button className="retry" disabled={!canInvestigate} onClick={investigate}>Retry</button></section>}
-      {active && <><span className="sr-only" role="status">Assessment ready</span>
+        {!active?.report.review && <button className="retry" disabled={!canInvestigate} onClick={investigate}>Retry</button>}</section>}
+      {active && !busy && <><span className="sr-only" role="status">{active.report.review ? 'Research paused for your input' : 'Assessment ready'}</span>
         <Report key={active.id} report={active.report} simulated={Boolean(active.scenario)} retry={canInvestigate ? investigate : null}
-          notes={active.reviewerNotes ?? active.report.reviewer_notes_original ?? ''} onNotesChange={saveNotes}/></>}
+          onReview={review} expired={active.expired} guidance={active.guidance || ''} onGuidanceChange={guidance => updateActive({guidance})}
+          notes={active.reviewerNotes ?? active.report.reviewer_notes_original ?? ''} onNotesChange={notes => updateActive({reviewerNotes:notes})}/></>}
     </main>
   </div>
 }

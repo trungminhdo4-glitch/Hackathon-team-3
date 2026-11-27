@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Icon } from './icons.jsx'
 import { DatasetReport } from './DatasetReport.jsx'
 import { ResearchActivity } from './ResearchActivity.jsx'
@@ -123,7 +123,36 @@ function RubricFindings({checks, sources}) {
   </section>
 }
 
-export function Report({report, simulated, retry, notes, onNotesChange}) {
+function ReviewQuestion({report, expired, guidance, onGuidanceChange, onReview, retry}) {
+  const {review} = report
+  const end = new Date(review.expiresAt).getTime()
+  const [timedOut, setTimedOut] = useState(() => end <= Date.now())
+  useEffect(() => {
+    if (!Number.isFinite(end)) return
+    const timer = setTimeout(() => setTimedOut(true), Math.max(0, end - Date.now()))
+    return () => clearTimeout(timer)
+  }, [end])
+  return <section className="review-question" aria-labelledby="review-heading">
+    <h3 id="review-heading">{timedOut || expired ? 'Review expired' : 'Your input can guide the research'}</h3>
+    {timedOut || expired ? <>
+      <p>The saved findings are available below. Start a new investigation to continue researching this product.</p>
+      <button className="retry" type="button" onClick={retry} disabled={!retry}>Restart investigation</button>
+    </> : <>
+      <p className="model-label">{review.mode === 'sdk' ? (report.searchModel || report.model) + ' requests your input' : 'Evidence check'}</p>
+      <p>{review.prompt}</p>
+      <label htmlFor="research-guidance">Research task or public source</label>
+      <textarea id="research-guidance" rows={2} maxLength={1000} value={guidance}
+        placeholder="Suggest a product edition, customer deployment or public guide to check."
+        onChange={event => onGuidanceChange(event.target.value)}/>
+      <div className="review-actions">
+        <button className="submit" type="button" disabled={!guidance.trim()} onClick={() => onReview('research')}>Research my lead</button>
+        <button className="retry" type="button" onClick={() => onReview('finalize')}>Finish with current evidence</button>
+      </div>
+    </>}
+  </section>
+}
+
+export function Report({report, simulated, retry, notes, onNotesChange, onReview, guidance, onGuidanceChange, expired}) {
   const title = useRef(null)
   useEffect(() => { title.current?.focus() }, [report])
   const sources = new Map(report.sources.map(source => [source.id, source]))
@@ -149,16 +178,19 @@ export function Report({report, simulated, retry, notes, onNotesChange}) {
       </div>
       {historical && typeof report.score === 'number' && <div className="score"><span className="section-label">Previous rubric score</span><strong>{report.score}<small> / 100</small></strong></div>}
     </div>
-    {!historical && <h3 className="overall-verdict report-heading">Overall verdict</h3>}
-    <div className={'badge ' + (report.verdict || 'insufficient')}><Icon name={report.verdict === 'green' ? 'check' : 'alert'}/>{verdictLabel(report)}</div>
+    {report.review ? <ReviewQuestion {...{report, expired, guidance, onGuidanceChange, onReview, retry}}/> : <>
+      {!historical && <h3 className="overall-verdict report-heading">Overall verdict</h3>}
+      <div className={'badge ' + (report.verdict || 'insufficient')}><Icon name={report.verdict === 'green' ? 'check' : 'alert'}/>{verdictLabel(report)}</div>
+    </>}
     <p className="interpretation">{report.interpretation}</p>
     {verdictSources.length > 0 && <div className="verdict-sources citation-source">
-      <strong>Verdict sources</strong>
+      <strong>{report.review ? 'Sources checked so far' : 'Verdict sources'}</strong>
       {verdictSources.map(source => <a key={source.id} href={source.url} target="_blank" rel="noopener noreferrer">
         {source.title || sourceUrl(source).hostname}<Icon name="external"/>
       </a>)}
     </div>}
-    <DatasetReport report={report} notes={notes} onNotesChange={onNotesChange} simulated={simulated}/>
+    {report.reviewOutcome?.guidance && <p className="human-guidance"><strong>Your research lead</strong> {report.reviewOutcome.guidance}</p>}
+    {!report.review && <DatasetReport report={report} notes={notes} onNotesChange={onNotesChange} simulated={simulated}/>}
     <ResearchActivity events={report.activity}/>
     {!historical && <Highlights checks={findings} sources={sources}/>}
     {historical && <div className="historical-notice"><p>This saved report used the previous points-based rubric.</p>
@@ -185,6 +217,6 @@ export function Report({report, simulated, retry, notes, onNotesChange}) {
     {report.limitations.length > 0 && <details className="unknowns">
       <summary>Unknowns and limitations ({report.limitations.length})</summary>
       <ul>{report.limitations.map((item,i) => <li key={i}>{item}</li>)}</ul></details>}
-    {!historical && report.verdict === null && <button className="retry" disabled={!retry} onClick={retry}>Retry</button>}
+    {!historical && !report.review && report.verdict === null && <button className="retry" disabled={!retry} onClick={retry}>Retry</button>}
   </section>
 }

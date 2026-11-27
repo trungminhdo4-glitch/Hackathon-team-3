@@ -18,9 +18,13 @@ The main OpenAI Agents SDK researcher runs official and independent searches in 
 
 The model proposes findings from numbered source passages. The server checks quotations and derives the verdict from accepted findings. Cited benefits, limitations and material risks appear in the eight-column export. When evidence is insufficient, the report explains which check remains open.
 
-The [evaluation rubric](EVALUATION.md) covers capability, customer experience, licensing, maintenance, security and privacy, and the credibility of vendor claims. **Green** means the core promise is supported. **Yellow** identifies a condition or conflict material to the decision. **Red** requires evidence of a core contradiction or serious disqualifying risk. **Insufficient evidence** means the core claim could not be established. Each report explains which evidence mattered.
+The [evaluation rubric](EVALUATION.md) covers capability, customer experience, licensing, maintenance, security and privacy, and vendor claims. **Green** means evidence supports the core promise. **Red** requires a verified core contradiction or serious risk. **Yellow** names a material caveat, conflicting evidence, or a specific unresolved evidence gap. A failed investigation has no verdict.
+
+If the core claim remains open, the app pauses and asks for help. Suggest a public source, an edition, or a specific task for one more search, or finish with the evidence collected. The researcher checks your lead alongside the earlier findings. The final report and CSV explain the color and cite the evidence that determined it. The browser keeps reports in the current tab. A pending review can be resumed on the same running server for up to 30 minutes.
 
 The Node API accepts `POST /api/investigate` with `{"url":"https://product.example/"}` or a `subject`. You can include a `question` and a `model` ID from `GET /api/model`. The [40 sample reviews](hackathon_40_solutions_commented%20%281%29.csv) are for calibration. Live investigations use public sources.
+
+API clients can opt into the pause with `"review": true`. If the response contains `review.id`, POST the ID to `/api/investigate/review` with `action: "research"` and a `guidance` string, or `action: "finalize"`. Both routes support the same activity stream. A finalized Yellow based on missing evidence carries `verdictBasis: "evidence_gap"`.
 
 ## Tests
 

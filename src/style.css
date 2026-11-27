@@ -114,6 +114,18 @@ summary { padding: 8px 0; font-weight: 600 }
 .research-activity li { padding: 3px 0 }
 .step-stage { text-transform: capitalize; font-weight: 650; margin-right: .5em }
 .research-activity a, .dataset-report td a { color: var(--forest); text-underline-offset: 2px }
+.activity-agents { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 8px; margin: 8px 0 }
+.actor-work { padding: 8px 10px; display: grid; gap: 2px; align-content: start; text-align: left; background: white; border: 1px solid var(--soft-rule); border-radius: 4px; overflow-wrap: anywhere }
+.actor-work[aria-pressed=true] { border-color: var(--forest) }
+.actor-work small { color: var(--muted) }
+.reset-activity { font-size: 13px; color: var(--forest); border: 0; background: transparent; text-decoration: underline; padding: 6px 0 }
+.review-question { background: #fff9ea; border: 1px solid #d6c488; border-radius: 5px; padding: 16px; margin: 16px 0 }
+.review-question p { margin-block: 6px }
+.review-question label { display: block; font-weight: 600; margin: 12px 0 4px }
+.review-question textarea { width: 100% }
+.review-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px }
+.report .review-actions .retry { margin: 0 }
+.human-guidance { margin: 10px 0; overflow-wrap: anywhere }
 .highlights li + li { margin-top: 6px }
 .finding h4 { margin: 0; font-size: 16px }
 .findings { margin-top: 12px; border-block: 1px solid var(--soft-rule) }

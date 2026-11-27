@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
 
-const verdictLabels = { green: 'Core promise supported', red: 'Material risk', yellow: 'Material caveat', insufficient: 'Insufficient evidence' };
+const verdictLabels = { green: 'Green · Core promise supported', red: 'Red · Material risk', yellow: 'Yellow · Material caveat', gap: 'Yellow · Evidence gap' };
 const statusLabels = { supported: 'Supported', partly_supported: 'Partly supported', contradicted: 'Contradicted', unverified: 'Unverified' };
 
 for (const [scenario, subject, verdict] of [
   ['credible', 'Orbit Desk', 'green'], ['contradiction', 'https://contradicted.example/', 'red'],
-  ['tier', 'https://tier.example/', 'yellow'], ['timeout', 'https://partial.example/', 'insufficient'],
-  ['fabricated', 'https://uncited.example/', 'insufficient'],
+  ['tier', 'https://tier.example/', 'yellow'], ['timeout', 'https://partial.example/', 'gap'],
+  ['fabricated', 'https://uncited.example/', 'gap'],
 ]) {
   test(`renders the ${scenario} investigation returned by the API`, async ({ page }) => {
     if (scenario === 'timeout') await page.setViewportSize({ width: 375, height: 780 });
@@ -25,8 +25,20 @@ for (const [scenario, subject, verdict] of [
       finally { release(); }
     }
     const records = (await (await response).text()).trim().split('\n').map(line => JSON.parse(line));
-    const report = records.at(-1).report;
-    expect(report.verdict).toBe(verdict);
+    let report = records.at(-1).report;
+    if (verdict === 'gap') {
+      expect(report.verdict).toBeNull();
+      expect(report.review.id).toBeTruthy();
+      await expect(page.getByText('View or download dataset report')).toHaveCount(0);
+      await expect(page.getByRole('heading', {name: 'Your input can guide the research'})).toBeVisible();
+      const finalResponse = page.waitForResponse(r => r.url().endsWith('/api/investigate/review'));
+      await page.getByRole('button', {name: 'Finish with current evidence'}).click();
+      const lines = (await (await finalResponse).text()).trim().split('\n');
+      report = JSON.parse(lines.at(-1)).report;
+      expect(report.verdictBasis).toBe('evidence_gap');
+      expect(report.reviewOutcome.action).toBe('finalize');
+    }
+    expect(report.verdict).toBe(verdict === 'gap' ? 'yellow' : verdict);
     expect(report.rubricVersion).toBe(2);
     expect(report).not.toHaveProperty('score');
     await expect(page.locator('.report .badge')).toHaveText(verdictLabels[verdict]);
@@ -180,11 +192,52 @@ test('compares account models and shows search progress before and after the rep
   await expect(page.locator('.report .badge')).toHaveText(verdictLabels.green);
   await page.reload();
   await expect(page.locator('.report').getByText('Follow-up search · gpt-6-luna')).toBeVisible();
-  await page.getByText(/Research activity \(2\)/).click();
+  await page.getByRole('button', { name:'Show activity for gpt-6-luna' }).click();
+  await expect(page.getByRole('list', { name:'Activity for gpt-6-luna' }).getByRole('listitem')).toHaveCount(1);
+  await expect(page.getByRole('list', { name:'Activity for gpt-6-luna' })).toContainText('Searching for the partner integration guide');
+  await page.getByRole('button', { name:'Show all activity' }).click();
   await expect(page.locator('.research-activity li')).toHaveCount(2);
   await expect(page.locator('.research-activity li').first()).toContainText('Searching for the partner integration guide');
   await expect(page.locator('.research-activity li').first()).toContainText('gpt-6-luna');
   await expect(page.locator('.research-activity a')).toHaveAttribute('href', 'https://orbit.example/');
+});
+
+test('continues a saved draft with a human lead and exports the final verdict', async ({page}) => {
+  await page.goto('/');
+  await page.getByLabel('Product, company, or URL').fill('https://partial.example/');
+  await page.getByRole('button', {name:'Investigate', exact:true}).click();
+  const send = page.getByRole('button', {name:'Research my lead'});
+  await expect(send).toBeDisabled();
+  const lead = 'Check how the partner deployed the support queue.';
+  await page.getByLabel('Research task or public source').fill(lead);
+  await page.reload();
+  await expect(page.getByLabel('Research task or public source')).toHaveValue(lead);
+  const request = page.waitForRequest(r => r.url().endsWith('/api/investigate/review'));
+  await send.click();
+  const decision = (await request).postDataJSON();
+  expect(decision).toMatchObject({action:'research',guidance:lead});
+  await expect(page.locator('.report .badge')).toHaveText(verdictLabels.green);
+  await expect(page.locator('.human-guidance')).toContainText(lead);
+  await expect(page.getByRole('button', {name:'Research my lead'})).toHaveCount(0);
+  await page.getByText('View or download dataset report', {exact:true}).click();
+  await expect(page.getByRole('table').getByRole('cell').nth(2)).toHaveText('Green');
+  await expect(page.getByRole('button', {name:'Download CSV'})).toBeVisible();
+  await page.getByText('Session history').click();
+  await expect(page.locator('.session-history li')).toHaveCount(1);
+});
+
+test('a server-expired draft keeps its findings and offers a fresh investigation', async ({page}) => {
+  await page.goto('/');
+  await page.getByLabel('Product, company, or URL').fill('https://uncited.example/');
+  await page.getByRole('button', {name:'Investigate', exact:true}).click();
+  await page.route('**/api/investigate/review', route => route.fulfill({
+    status:410, json:{error:'This review has expired. Start a new investigation to continue.'},
+  }));
+  await page.getByRole('button', {name:'Finish with current evidence'}).click();
+  await expect(page.getByRole('heading', {name:'Review expired'})).toBeVisible();
+  await expect(page.getByRole('region', {name:'Evaluation criteria'})).toBeVisible();
+  await page.getByRole('button', {name:'Restart investigation'}).click();
+  await expect(page.getByRole('heading', {name:'Your input can guide the research'})).toBeVisible();
 });
 
 test('rechecking an earlier report saves a new assessment alongside the original', async ({ page }) => {

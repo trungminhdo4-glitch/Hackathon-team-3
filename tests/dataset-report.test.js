@@ -13,6 +13,15 @@ test('an insufficient report exports its verdict, verified flags, and human note
   assert.equal(row.reviewer_notes_original, '')
 })
 
+test('a finalized evidence gap exports Yellow with the specific reason and separate reviewer notes', () => {
+  const row = datasetRow({ rubricVersion: 2, verdict: 'yellow', verdictBasis: 'evidence_gap', productName: 'Acme',
+    sources: [], checks: [], interpretation: 'No deployment guide identifies the advertised edition.' }, 'Recheck next month.')
+  assert.equal(row.overall, 'Yellow')
+  assert.match(row.reasoning, /unresolved evidence gap.*No deployment guide/)
+  assert.equal(row.reviewer_notes_original, 'Recheck next month.')
+  assert.match(csvReport(row), /"Yellow"/)
+})
+
 test('flags explain the particular benefit or caution and preserve scoped observations with their citations', () => {
   const finding = { id: 'licensing', label: 'Licensing and access', status: 'supported', impact: 'routine',
     flag: 'green', claim: 'The team plan includes single sign-on.', explanation: 'The plan guide lists the entitlement.',

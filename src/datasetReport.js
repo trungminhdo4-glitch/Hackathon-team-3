@@ -52,7 +52,8 @@ export function datasetRow(report, notes = '', simulated = false) {
     return [...new Set(entries)].join('\n\n') || emptyFlag(kind)
   }
   const labels = { green: 'Green', yellow: 'Yellow', red: 'Red', insufficient: 'Insufficient evidence' }
-  const provenance = [simulated && 'Simulated report.', earlier && 'Previous points-based rubric.'].filter(Boolean)
+  const provenance = [simulated && 'Simulated report.', earlier && 'Previous points-based rubric.',
+    report.verdictBasis === 'evidence_gap' && 'Yellow reflects an unresolved evidence gap.'].filter(Boolean)
   return {
     product: report.productName || report.inputUrl,
     vendor: report.vendor || 'Unverified',

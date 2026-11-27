@@ -1,7 +1,7 @@
 const currentVerdicts = {
-  green: 'Core promise supported',
-  yellow: 'Material caveat',
-  red: 'Material risk',
+  green: 'Green · Core promise supported',
+  yellow: 'Yellow · Material caveat',
+  red: 'Red · Material risk',
   insufficient: 'Insufficient evidence',
 }
 
@@ -12,6 +12,8 @@ const earlierVerdicts = {
 }
 
 export function verdictLabel(report) {
+  if (report.review) return 'Awaiting your input'
+  if (report.verdict === 'yellow' && report.verdictBasis === 'evidence_gap') return 'Yellow · Evidence gap'
   const labels = isEarlierReport(report) ? earlierVerdicts : currentVerdicts
   return labels[report.verdict] || 'Investigation incomplete'
 }
@@ -20,11 +22,19 @@ export function isEarlierReport(report) {
   return report.rubricVersion !== 2
 }
 
-export async function requestAssessment(subject, question, model, onActivity) {
-  const response = await fetch('/api/investigate', {
+export function requestAssessment(subject, question, model, onActivity) {
+  return requestReport('/api/investigate', { subject, question: question || undefined, model, review: true }, onActivity)
+}
+
+export function respondToReview(id, action, guidance, onActivity) {
+  return requestReport('/api/investigate/review', { id, action, guidance: action === 'research' ? guidance : undefined }, onActivity)
+}
+
+async function requestReport(path, input, onActivity) {
+  const response = await fetch(path, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/x-ndjson, application/json' },
-    body: JSON.stringify({ subject, question: question || undefined, model }),
+    body: JSON.stringify(input),
     signal: AbortSignal.timeout(250_000),
   })
   if (response.ok && response.headers.get('content-type')?.includes('application/x-ndjson')) {
@@ -68,6 +78,10 @@ export async function requestAssessment(subject, question, model, onActivity) {
     throw new Error('The research server is unavailable. Try again in a moment.')
   }
   const report = await response.json()
-  if (!response.ok) throw new Error(report.error || 'The investigation could not finish.')
+  if (!response.ok) {
+    const error = new Error(report.error || 'The investigation could not finish.')
+    error.status = response.status
+    throw error
+  }
   return report
 }
