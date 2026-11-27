@@ -1,3 +1,4 @@
 # Preserve the exact frozen packet bytes and their recorded SHA-256 on Windows.
 test-results/phase6-20261127/** -text whitespace=cr-at-eol
 test-results/phase6-questions-20261127/** -text whitespace=cr-at-eol
+test-results/tavily-auth-20261127*/** -text whitespace=cr-at-eol

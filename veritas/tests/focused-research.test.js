@@ -29,3 +29,20 @@ test('expired research returns an unassessed record without starting requests',a
   const result=await researchQuestion({id:'1',url:'https://vendor.example/',question:'Support?'},{signal:ac.signal,provider:{search:async()=>{calls++;return[];}}});
   assert.equal(result.status,'aborted');assert.equal(result.failed,true);assert.equal(calls,0);assert.deepEqual(result.documents,[]);
 });
+
+test('explicit vendor intents restrict evidence to the submitted domain and its subdomains',async()=>{
+  const extracted=[];let query;
+  const provider={search:async q=>{query=q;return [{url:'https://unrelated.example/a',raw_content:'Unrelated content'},{url:'https://docs.acme.example/support'}];},extract:async url=>{extracted.push(url);return {url,text:'Vendor support details',retrieval:'extract'};}};
+  const result=await researchQuestion({id:'x',url:'https://www.acme.example',question:'Support lifecycle?',intent:'lifecycle'},{provider});
+  assert.equal(query,'site:acme.example Support lifecycle?');assert.equal(result.leads.length,2);
+  assert.deepEqual(extracted,['https://docs.acme.example/support']);assert.equal(result.documents[0].text,'Vendor support details');
+});
+test('legal and privacy intents select independent sources and reject invalid intents',async()=>{
+  for(const intent of ['legal','privacy']){
+    let query;const fetched=[];
+    const provider={search:async q=>{query=q;return [{url:'https://vendor.example/privacy',raw_content:'Generic policy'},{url:'https://regulator.example/order'}];},extract:async url=>{fetched.push(url);return {url,text:'Independent source',retrieval:'extract'};}};
+    const result=await researchQuestion({id:'x',url:'https://vendor.example',question:'What is documented?',intent},{provider});
+    assert.match(query,/vendor What is documented\? regulatory enforcement official source/);assert.deepEqual(fetched,['https://regulator.example/order']);assert.equal(result.documents[0].text,'Independent source');
+  }
+  await assert.rejects(researchQuestion({id:'x',url:'https://vendor.example',question:'Question?',intent:'other'}),/Invalid intent/);
+});

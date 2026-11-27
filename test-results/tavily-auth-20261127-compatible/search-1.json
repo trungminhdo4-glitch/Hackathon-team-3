@@ -1,0 +1,35 @@
+{
+  "query": "www.omnissa.com Which exact product and edition does the submitted company URL identify, and what does the captured documentation establish about that scope?",
+  "follow_up_questions": null,
+  "answer": null,
+  "images": [],
+  "results": [
+    {
+      "url": "https://tavily.com/knowledge/company/iSire5mQrUX3",
+      "title": "Omnissa",
+      "content": "# Omnissa\nID: iSire5mQrUX3\nWebsite: www.omnissa.com\nLegal name: Omnissa, LLC\nHeadquarters: Mountain View, California, United States\nLinkedIn: www.linkedin.com/company/omnissa · 139,208 followers\nIndustry: Software Development\nCompany type: Privately Held\nBusiness model: B2B\nSaaS: yes",
+      "score": 0.40544873,
+      "raw_content": null,
+      "id": "4cc028-00"
+    },
+    {
+      "url": "https://techzone.omnissa.com/content-gateway-product-documentation",
+      "title": "Omnissa Product Documentation",
+      "score": 0.3572311,
+      "content": "##### Content Type\n\n   - [x] Release Notes   \n   - [x] Product Documentation   \n   - [x] Archived Documentation   \n   - [x] Legacy Documentation   \n\nSave CloseClear All Filters\n\n[](\n\n   [](\n   [](\n   [](\n   [](\n\n© 2025 Omnissa, LLC \n\n 590 E Middlefield Road, \n\n Mountain View CA 94043 \n\n All Rights Reserved.\n\nOfferings\n\n   Omnissa platform\n   Platform services\n   Products\n\nResources\n\n   Blog\n   Partners\n   Security response\n   Trust center\n   User portal\n   Glossary\n   Data rights request [...] Company\n\n   About\n   News\n   Careers\n   Contact us\n\n   Trust center\n   Legal center\n   Privacy notice\n   Terms & conditions\n\nImage 4: Company Logo\n\nCookie Preference Center\n\nOpt-Out Request Honored\n\n   ### General information on cookies \n   ### Strictly Necessary \n   ### Performance \n   ### Functional \n   ### Advertising \n\n#### General information on cookies [...] Omnissa Product Documentation\n\nSkip to main contentSkip to search\n\nPowered by Zoomin Software. For more details please contactZoomin\n\nImage 1: Omnissa Product DocumentationImage 2: Omnissa Product Documentation",
+      "raw_content": null,
+      "id": "d9a6e3-01"
+    },
+    {
+      "url": "https://docs.omnissa.com/search?labelkey=release_notes&page=5",
+      "title": "Search Results",
+      "score": 0.33698532,
+      "content": "Image 3: Omnissa Product Documentation\n   Home\n   Our family sites Omnissa.comCloud ServicesCommunityKnowledge BaseLearningPartner ConnectSupportTech Zone \n   Library\n   Omnissa Developer Portal\n   Omnissa Lifecycle Matrix\n   EnglishEnglishFrançaisDeutschEspañolItaliano日本語한국어NederlandsPortuguês (Brasil)中文 (简体)中文 (繁體, 台灣) \n   [](\n   Login\n\nSearch\n\nFilters 1 selected facets\n\n## Filters\n\n1Clear All Filters\n\n##### Product Families [...] Skip to main contentSkip to search\n\nPowered by Zoomin Software. For more details please contactZoomin\n\nImage 1: Omnissa Product DocumentationImage 2: Omnissa Product Documentation [...] Last Updated Jul 27, 2026\n\n       Publication:Omnissa Workspace ONE Content for iOS Release Notes\n\n    \n\n           Omnissa Workspace ONE Content\n           Release Notes\n\n   ## Omnissa Workspace ONE Send for Android Release Notes\n\nOmnissa Workspace ONE Send for Android Release Notes detail the new features and enhancements in each release. This page contains a summary of the new capabilities, issues that have been resolved, and known issues that have been reported in each version.",
+      "raw_content": null,
+      "id": "0b45fd-02"
+    }
+  ],
+  "response_time": 1.58,
+  "request_id": "d6c03d46-1c43-4e17-a28f-ad6826a79df5",
+  "auth_mode": "keyed"
+}

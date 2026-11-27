@@ -2,6 +2,8 @@
 
 ## Phase 6 freeze — November 27
 
+Update: owner-approved CLI installation and OAuth login succeeded; CLI Search/Extract were live-verified. The [actual six-case Tavily comparison](bench/2026-11-27-tavily-live.md) showed no improvement: baseline 4/6 for each judge; Tavily-only Luna 1/6 / Terra 2/6; augmentation 3/6 / 4/6. Keep the frozen stronger researcher. Optional question `intent` now restricts vendor facts to vendor sources and requests external evidence for legal/privacy questions; this post-run fix is regression-tested, not newly benchmarked. Current tests: 135/135. CLI OAuth does not itself supply the application REST API credential; the CLI is for session research, not product runtime.
+
 An opt-in [Tavily question-recovery path](bench/2026-11-27-tavily.md) is implemented and regression-tested. Keyless live smoke returned HTTP 429; no Tavily accuracy gain or successful content extraction was established. It does not replace the frozen competition researcher. Use `node veritas/focused-research.js --input questions.json --out NEW_DIRECTORY --provider tavily-keyless` for one search and at most one extract per question, or `--provider tavily` with authenticated runtime credentials. It produces evidence/cache artifacts, not final vendor verdicts. Current regression total: 133/133.
 
 The subsequent [six-question controlled test](bench/2026-11-27-phase6-questions.md) improved factual support from 4/6 to 6/6 and complete answers from 0/6 to 3/6; vendor accuracy stayed 4/6 for Terra and fell 4/6 to 3/6 for Luna. No candidate replacement is justified. A source-exact literal-ellipsis rejection was fixed after freezing that experiment; historical packets were not changed. Current tests: 124/124 including the application suite.

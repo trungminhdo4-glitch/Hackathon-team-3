@@ -1,0 +1,83 @@
+{
+  "runs": [
+    {
+      "id": "1",
+      "url": "https://www.omnissa.com/",
+      "searches": 1,
+      "extracts": 1,
+      "started_at": "2026-11-27T18:07:14.829Z",
+      "query": "www.omnissa.com Which exact product and edition does the submitted company URL identify, and what does the captured documentation establish about that scope?",
+      "status": "evidence_captured",
+      "source_url": "https://techzone.omnissa.com/content-gateway-product-documentation",
+      "stored_chars": 115,
+      "completed_at": "2026-11-27T18:07:21.282Z",
+      "elapsed_ms": 6453
+    },
+    {
+      "id": "2",
+      "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+      "searches": 1,
+      "extracts": 1,
+      "started_at": "2026-11-27T18:07:21.283Z",
+      "query": "www.microsoft.com Which capabilities of the submitted Copilot Chat offering are included, and which require additional licensing or metered payment?",
+      "status": "evidence_captured",
+      "source_url": "https://support.microsoft.com/en-us/microsoft-365-copilot/how-copilot-chat-works-with-and-without-a-microsoft-365-copilot-license",
+      "stored_chars": 1690,
+      "completed_at": "2026-11-27T18:07:25.840Z",
+      "elapsed_ms": 4557
+    },
+    {
+      "id": "6",
+      "url": "https://www.postfix.org/",
+      "searches": 1,
+      "extracts": 1,
+      "started_at": "2026-11-27T18:07:25.843Z",
+      "query": "www.postfix.org What dated release or support information establishes whether this exact software is maintained, and what remains unknown?",
+      "status": "evidence_captured",
+      "source_url": "https://www.postfix.org/announcements/postfix-3.11.5.html",
+      "stored_chars": 6509,
+      "completed_at": "2026-11-27T18:07:31.129Z",
+      "elapsed_ms": 5286
+    },
+    {
+      "id": "7",
+      "url": "https://www.nettoeinkommen.de/index.htm",
+      "searches": 1,
+      "extracts": 1,
+      "started_at": "2026-11-27T18:07:31.131Z",
+      "query": "www.nettoeinkommen.de Does the vendor announce an end to development or support for the exact submitted software, and with what timing and scope?",
+      "status": "evidence_captured",
+      "source_url": "https://nista.io/energy-management-software-in-2026-a-vendor-agnostic-comparison",
+      "stored_chars": 19901,
+      "completed_at": "2026-11-27T18:07:35.925Z",
+      "elapsed_ms": 4794
+    },
+    {
+      "id": "32",
+      "url": "https://donotpay.com/",
+      "searches": 1,
+      "extracts": 1,
+      "started_at": "2026-11-27T18:07:35.928Z",
+      "query": "donotpay.com What regulatory action concerning this exact service is documented, what is allegation versus final action, and what current implications remain unknown?",
+      "status": "evidence_captured",
+      "source_url": "https://www.ftc.gov/news-events/news/press-releases/2025/02/ftc-finalizes-order-donotpay-prohibits-deceptive-ai-lawyer-claims-imposes-monetary-relief-requires",
+      "stored_chars": 1792,
+      "completed_at": "2026-11-27T18:07:40.701Z",
+      "elapsed_ms": 4773
+    },
+    {
+      "id": "40",
+      "url": "https://www.avast.com/de-de/index#pc",
+      "searches": 1,
+      "extracts": 1,
+      "started_at": "2026-11-27T18:07:40.703Z",
+      "query": "www.avast.com What product-relevant privacy conduct and remedy are documented, with what date and scope, and is current conduct established?",
+      "status": "evidence_captured",
+      "source_url": "https://www.avast.com/en-us/privacy-policy",
+      "stored_chars": 3836,
+      "completed_at": "2026-11-27T18:07:45.749Z",
+      "elapsed_ms": 5046
+    }
+  ],
+  "actual_monetary_cost": null
+}

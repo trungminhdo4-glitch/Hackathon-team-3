@@ -1,0 +1,110 @@
+[
+  {
+    "packet_id": "T1",
+    "id": "2",
+    "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+    "condition": "tavily-only"
+  },
+  {
+    "packet_id": "T2",
+    "id": "32",
+    "url": "https://donotpay.com/",
+    "condition": "augmented"
+  },
+  {
+    "packet_id": "T3",
+    "id": "2",
+    "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+    "condition": "augmented"
+  },
+  {
+    "packet_id": "T4",
+    "id": "1",
+    "url": "https://www.omnissa.com/",
+    "condition": "baseline"
+  },
+  {
+    "packet_id": "T5",
+    "id": "2",
+    "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+    "condition": "baseline"
+  },
+  {
+    "packet_id": "T6",
+    "id": "1",
+    "url": "https://www.omnissa.com/",
+    "condition": "augmented"
+  },
+  {
+    "packet_id": "T7",
+    "id": "40",
+    "url": "https://www.avast.com/de-de/index#pc",
+    "condition": "tavily-only"
+  },
+  {
+    "packet_id": "T8",
+    "id": "6",
+    "url": "https://www.postfix.org/",
+    "condition": "baseline"
+  },
+  {
+    "packet_id": "T9",
+    "id": "7",
+    "url": "https://www.nettoeinkommen.de/index.htm",
+    "condition": "augmented"
+  },
+  {
+    "packet_id": "T10",
+    "id": "6",
+    "url": "https://www.postfix.org/",
+    "condition": "tavily-only"
+  },
+  {
+    "packet_id": "T11",
+    "id": "32",
+    "url": "https://donotpay.com/",
+    "condition": "tavily-only"
+  },
+  {
+    "packet_id": "T12",
+    "id": "40",
+    "url": "https://www.avast.com/de-de/index#pc",
+    "condition": "augmented"
+  },
+  {
+    "packet_id": "T13",
+    "id": "32",
+    "url": "https://donotpay.com/",
+    "condition": "baseline"
+  },
+  {
+    "packet_id": "T14",
+    "id": "1",
+    "url": "https://www.omnissa.com/",
+    "condition": "tavily-only"
+  },
+  {
+    "packet_id": "T15",
+    "id": "7",
+    "url": "https://www.nettoeinkommen.de/index.htm",
+    "condition": "tavily-only"
+  },
+  {
+    "packet_id": "T16",
+    "id": "6",
+    "url": "https://www.postfix.org/",
+    "condition": "augmented"
+  },
+  {
+    "packet_id": "T17",
+    "id": "40",
+    "url": "https://www.avast.com/de-de/index#pc",
+    "condition": "baseline"
+  },
+  {
+    "packet_id": "T18",
+    "id": "7",
+    "url": "https://www.nettoeinkommen.de/index.htm",
+    "condition": "baseline"
+  }
+]

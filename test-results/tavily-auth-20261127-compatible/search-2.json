@@ -1,0 +1,35 @@
+{
+  "query": "www.microsoft.com Which capabilities of the submitted Copilot Chat offering are included, and which require additional licensing or metered payment?",
+  "follow_up_questions": null,
+  "answer": null,
+  "images": [],
+  "results": [
+    {
+      "url": "https://support.microsoft.com/en-us/microsoft-365-copilot/how-copilot-chat-works-with-and-without-a-microsoft-365-copilot-license",
+      "title": "How Copilot Chat works with and without a Microsoft Copilot license | Microsoft Support",
+      "content": "Note\n\nTo use Copilot Chat you need to sign in with your Microsoft 365 account and have a qualifying Microsoft 365 business or enterprise subscription.\n\n## Copilot Chat with or without an add-on license\n\nFeature Without a Microsoft Copilot license\n\n(Copilot Chat only) With a Microsoft Copilot license\n\nWeb data reasoningYesYes\n\nWork data reasoning (Work IQ)Limited (uploaded files)Full (meetings, emails, chats, files, and more) [...] Access to agentsLimited (no advanced agents)Extensive use (including advanced agents like Researcher, Analyst, and custom agents)\n\nSecurityEnterprise gradeEnterprise grade\n\nCopilot studio accessPay-as-you-goIncluded\n\nPriorityStandard (may be limited during peak times)Priority (faster, more reliable)\n\nCopilot in OutlookIncludedIncluded\n\nCopilot in Microsoft 365 appsDepends on your labelIncluded [...] Note\n\nHome, the new starting point in Copilot where Chat and Cowork come together, is still rolling out, so what you see in the Copilot app might be different from what this article describes.\n\nCopilot Chat is available to Microsoft business users. The features you can use depend on whether your admin has assigned you a Microsoft Copilot add-on license.\n\nNote",
+      "score": 0.6221151,
+      "raw_content": null,
+      "id": "3ff687-00"
+    },
+    {
+      "url": "https://finance.yahoo.com/news/microsoft-introduces-copilot-chat-businesses-114325456.html",
+      "title": "Microsoft introduces Copilot Chat for businesses",
+      "content": "Copilot Chat also integrates essential components of the Copilot Control System, ensuring enterprise-level data protection and security. It allows organisations to manage the access, usage, and lifecycle of both Copilot and its agents, with built-in measurement and reporting features.\n\nHowever, features including summarising and transcribing Teams calls and creating PowerPoint slides require a $30 monthly Microsoft 365 Copilot subscription. [...] This initiative is part of Microsoft's strategy to boost AI adoption using a pay-as-you-go model.\n\nThe service, integrated into Microsoft 365, aids various workforce segments, from customer service representatives to marketing leads and frontline technicians, to utilise AI agents.\n\nThe service includes free, secure AI chat powered by GPT-4, agents accessible directly in the chat, and IT controls for enterprise data protection and agent management. [...] The free Copilot Chat service enables users to create AI agents using natural languages such as English and Mandarin.\n\nThese agents can perform tasks such as market research, writing strategy documents, and meeting preparation.\n\nIt supports file uploads, enabling users to request tasks such as summarising Word documents, analysing Excel data, or improving PowerPoint presentations.",
+      "score": 0.620909,
+      "raw_content": null,
+      "id": "d428bb-01"
+    },
+    {
+      "url": "https://finance.yahoo.com/news/microsofts-newest-copilot-plan-business-140000662.html",
+      "title": "Microsoft's newest Copilot plan for business is pay-as-you-go",
+      "content": "The new plan, Copilot Chat -- not to be confused with Microsoft's Copilot Business Chat or GitHub Copilot Chat -- is underpinned by OpenAI's GPT-4o AI model and lets users ask business-related questions, build workflow automations, generate images, and more.\n\nAll of these capabilities were a part of Microsoft 365 Copilot, Microsoft's sprawling enterprise AI add-on for Microsoft 365. But pricing for Microsoft 365 Copilot is more rigid. A license costs $30 per user per month. [...] The Copilot Chat plan lacks many of the features in Microsoft 365 Copilot, including prebuilt agents and AI-powered capabilities for Microsoft Teams, Outlook, Word, Excel, and PowerPoint. Copilot Chat users also don't get the personalization options available to Microsoft 365 Copilot subscribers, nor do they get Microsoft's recently introduced Copilot Analytics tool to measure company-wide AI usage. [...] It seems fairly clear that Copilot Chat is Microsoft's attempt to convince holdouts to pull the trigger on Microsoft 365 Copilot by dangling metered agentic features, while at the same time extracting incremental revenue from customers with less complex AI requirements.",
+      "score": 0.6142783,
+      "raw_content": null,
+      "id": "6b09bf-02"
+    }
+  ],
+  "response_time": 1.63,
+  "request_id": "63e9954d-3810-4fb4-bb6c-ab40448407cd",
+  "auth_mode": "keyed"
+}

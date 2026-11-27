@@ -1,0 +1,57 @@
+{
+  "runs": [
+    {
+      "id": "1",
+      "url": "https://www.omnissa.com/",
+      "searches": 1,
+      "extracts": 0,
+      "started_at": "2026-11-27T18:05:33.174Z",
+      "query": "www.omnissa.com Which exact product and edition does the submitted company URL identify, and what does the captured documentation establish about that scope?",
+      "status": "provider_or_transport_failed",
+      "error": "CLI request failed; response not treated as vendor evidence",
+      "completed_at": "2026-11-27T18:05:34.743Z",
+      "elapsed_ms": 1569
+    },
+    {
+      "id": "2",
+      "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+      "searches": 0,
+      "extracts": 0,
+      "started_at": "2026-11-27T18:05:34.774Z",
+      "status": "not_started_provider_unavailable"
+    },
+    {
+      "id": "6",
+      "url": "https://www.postfix.org/",
+      "searches": 0,
+      "extracts": 0,
+      "started_at": "2026-11-27T18:05:34.774Z",
+      "status": "not_started_provider_unavailable"
+    },
+    {
+      "id": "7",
+      "url": "https://www.nettoeinkommen.de/index.htm",
+      "searches": 0,
+      "extracts": 0,
+      "started_at": "2026-11-27T18:05:34.774Z",
+      "status": "not_started_provider_unavailable"
+    },
+    {
+      "id": "32",
+      "url": "https://donotpay.com/",
+      "searches": 0,
+      "extracts": 0,
+      "started_at": "2026-11-27T18:05:34.774Z",
+      "status": "not_started_provider_unavailable"
+    },
+    {
+      "id": "40",
+      "url": "https://www.avast.com/de-de/index#pc",
+      "searches": 0,
+      "extracts": 0,
+      "started_at": "2026-11-27T18:05:34.774Z",
+      "status": "not_started_provider_unavailable"
+    }
+  ],
+  "actual_monetary_cost": null
+}

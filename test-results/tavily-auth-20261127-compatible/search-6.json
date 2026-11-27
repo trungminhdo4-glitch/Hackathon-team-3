@@ -1,0 +1,35 @@
+{
+  "query": "www.postfix.org What dated release or support information establishes whether this exact software is maintained, and what remains unknown?",
+  "follow_up_questions": null,
+  "answer": null,
+  "images": [],
+  "results": [
+    {
+      "url": "https://www.postfix.org/announcements/postfix-3.11.5.html",
+      "title": "Postfix stable release 3.11.5 and legacy releases 3.10.12, 3.9.13, 3.8.19, 3.7.21, 3.6.19, 3.5.26",
+      "content": "In addition to updated releases for the supported Postfix versions 3.8-3.11, releases will also be available for the out-of-support Postfix versions 3.5-3.7. NOTE: these do not include the patches for out-of-support Postfix versions that have been issued for \"large SMTP inputs (June 2026)\", \"TLSA parsing (June 2026)\", and \"SMTP smuggling fixes\". Those patches still need to be applied. [...] \\[An on-line version of this announcement will be available at \n\nThis release addresses medium-impact problems that need to be fixed as some enable remote DOS, or local memory corruption.\n\nThe fixes below, and more, are also released in the unstable version postfix-3.12-20260706. [...] reported by Qualys, assisted by Claude Mythos Preview.",
+      "score": 0.31237,
+      "raw_content": null,
+      "id": "e1f229-00"
+    },
+    {
+      "url": "https://www.postfix.org/announcements/postfix-3.10.0.html",
+      "title": "Postfix stable release 3.10.0",
+      "content": "Support for the RFC 8689 \"TLS-Required: no\" message header to request delivery of messages (such as TLSRPT summaries) even if the preferred TLS security policy cannot be enforced. This limits the Postfix SMTP client to \"smtp\\_tls\\_security\\_level = may\" which does not authenticate server certificates and which allows falling back to plaintext. [...] # Postfix stable release 3.10.0\n\n[An updated version of this announcement will be available at ]\n\nPostfix stable release 3.10.0 is available. Postfix 3.6 - 3.9 were updated earlier this week; after that, Postfix 3.6 will no longer be updated.\n\nThe main changes are below. See the RELEASE\\_NOTES file for further details.\n\nChanges that need a restart: [...] Support for RFC 2047 encoding of non-ASCII \"full name\" information in Postfix-generated From: message headers. Encoding non-ASCII full names can avoid the need to use SMTPUTF8, and therefore can avoid incompatibility with sites that do not support SMTPUTF8. See the full\\_name\\_encoding\\_charset parameter description for details.",
+      "score": 0.22439517,
+      "raw_content": null,
+      "id": "39840b-01"
+    },
+    {
+      "url": "https://www.postfix.org/announcements/postfix-3.11.4.html",
+      "title": "Postfix stable release 3.11.4 and legacy releases 3.10.11, 3.9.12, 3.8.18",
+      "content": "On systems that deliver fewer than one message per minute, an SMTP client crash can result in a delay of up to one minute for email delivery to other destination domains. [...] which are several minutes by default). [...] \\[An on-line version of this announcement will be available at \n\nThis release addresses five low-impact problems that need to be addressed as they can reduce safety margins.\n\nIn addition to updated releases for the supported Postfix versions 3.8-3.11, patches will also be available at the Postfix source mirror sites for the out-of-support Postfix versions 2.9-3.7:\n\nThese patches come with the same PGP, GPG1 and GPG2 signatures as Postfix release tarballs and patches.\n\nFixed in Postfix 3.8-3.11:",
+      "score": 0.21452682,
+      "raw_content": null,
+      "id": "b9f98a-02"
+    }
+  ],
+  "response_time": 1.82,
+  "request_id": "6a7ee7b3-b715-412c-9a19-6edfe461eee7",
+  "auth_mode": "keyed"
+}

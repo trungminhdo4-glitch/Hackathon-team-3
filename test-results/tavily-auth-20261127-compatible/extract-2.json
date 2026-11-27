@@ -1,0 +1,14 @@
+{
+  "results": [
+    {
+      "url": "https://support.microsoft.com/en-us/microsoft-365-copilot/how-copilot-chat-works-with-and-without-a-microsoft-365-copilot-license",
+      "title": "How Copilot Chat works with and without a Microsoft Copilot license | Microsoft Support",
+      "raw_content": "Note\nHome, the new starting point in Copilot where Chat and Cowork come together, is still rolling out, so what you see in the Copilot app might be different from what this article describes.\nCopilot Chat is available to Microsoft business users. The features you can use depend on whether your admin has assigned you a Microsoft Copilot add-on license.\nNote\nTo use Copilot Chat you need to sign in with your Microsoft 365 account and have a qualifying Microsoft 365 business or enterprise subscription.\nCopilot Chat with or without an add-on license\nFeature Without a Microsoft Copilot license\n(Copilot Chat only) With a Microsoft Copilot license\nWeb data reasoningYesYes\nWork data reasoning (Work IQ)Limited (uploaded files)Full (meetings, emails, chats, files, and more)\nAccess to agentsLimited (no advanced agents)Extensive use (including advanced agents like Researcher, Analyst, and custom agents)\nSecurityEnterprise gradeEnterprise grade\nCopilot studio accessPay-as-you-goIncluded\nPriorityStandard (may be limited during peak times)Priority (faster, more reliable)\nCopilot in OutlookIncludedIncluded\nCopilot in Microsoft 365 appsDepends on your labelIncluded\nFor additional information about what you have access to with Copilot sign into copilot.cloud.microsoft check what label is assigned to you.\nA label of Copilot Chat (Basic), M365 Copilot (Basic), or M365 Copilot (Premium) appears under your name.\nThis label indicates where you can access Copilot directly. Learn more about labels and what they mean in What Copilot license do I have.\nCopilot help for IT admins\nIf you're an admin and want to learn more about setting up Copilot Chat in your organization, see the following:",
+      "images": []
+    }
+  ],
+  "failed_results": [],
+  "response_time": 0.02,
+  "request_id": "3dd6249f-92c6-4b65-9709-4f82060592f4",
+  "auth_mode": "keyed"
+}

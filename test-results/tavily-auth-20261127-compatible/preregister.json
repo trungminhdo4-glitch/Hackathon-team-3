@@ -1,0 +1,53 @@
+{
+  "created_at": "2026-11-27T18:07:14.827Z",
+  "inputs": [
+    {
+      "id": "1",
+      "url": "https://www.omnissa.com/",
+      "category": "identity",
+      "question": "Which exact product and edition does the submitted company URL identify, and what does the captured documentation establish about that scope?",
+      "candidate_product": "Omnissa Workspace ONE / digital workspace platform"
+    },
+    {
+      "id": "2",
+      "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+      "category": "commercial",
+      "question": "Which capabilities of the submitted Copilot Chat offering are included, and which require additional licensing or metered payment?",
+      "candidate_product": "Microsoft 365 Copilot Chat"
+    },
+    {
+      "id": "6",
+      "url": "https://www.postfix.org/",
+      "category": "maintenance",
+      "question": "What dated release or support information establishes whether this exact software is maintained, and what remains unknown?",
+      "candidate_product": "Postfix mail transfer agent"
+    },
+    {
+      "id": "7",
+      "url": "https://www.nettoeinkommen.de/index.htm",
+      "category": "lifecycle",
+      "question": "Does the vendor announce an end to development or support for the exact submitted software, and with what timing and scope?",
+      "candidate_product": "HS Nettoeinkommen salary/tax calculator and software"
+    },
+    {
+      "id": "32",
+      "url": "https://donotpay.com/",
+      "category": "legal",
+      "question": "What regulatory action concerning this exact service is documented, what is allegation versus final action, and what current implications remain unknown?",
+      "candidate_product": "DoNotPay online subscription and AI legal-services product"
+    },
+    {
+      "id": "40",
+      "url": "https://www.avast.com/de-de/index#pc",
+      "category": "privacy",
+      "question": "What product-relevant privacy conduct and remedy are documented, with what date and scope, and is current conduct established?",
+      "candidate_product": "Avast consumer antivirus software"
+    }
+  ],
+  "max_searches_per_case": 1,
+  "max_extracts_per_case": 1,
+  "selection": "Same six intentionally selected development questions; no blind inputs.",
+  "ranking": "Government domains first for legal/privacy questions; vendor domains first otherwise; provider order breaks ties.",
+  "baseline": "Previously frozen focused packets, without new retrieval; live evidence adds budget and changes sources.",
+  "rubric_sha256": "54eee4db4e70bdf542ce83d527737362c5de21f503dbaf51394e8580a94c4b96"
+}

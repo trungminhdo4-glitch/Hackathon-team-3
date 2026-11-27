@@ -7,16 +7,32 @@ import { createController } from './budget.js';
 import { captureDocument } from './evidence-packet.js';
 import { makeCache } from './cache.js';
 
-export async function researchQuestion(input, {provider,controller,signal} = {}) {
+const intents=new Set(['general','identity','commercial','maintenance','lifecycle','legal','privacy']);
+const vendorIntents=new Set(['identity','commercial','maintenance','lifecycle']);
+const hostOf=url=>new URL(url).hostname.toLowerCase().replace(/^www\./,'');
+const belongsTo=(url,host)=>{const candidate=hostOf(url);return candidate===host||candidate.endsWith('.'+host);};
+
+export function planFocusedQuery(input) {
   const url=validatePublicUrl(input.url).href;
   if(!String(input.id??'').trim()||typeof input.question!=='string'||!input.question.trim())throw Error('id, public url and question required');
+  const intent=input.intent===undefined?'general':input.intent;
+  if(!intents.has(intent))throw Error('Invalid intent');
+  const host=hostOf(url);
+  if(vendorIntents.has(intent))return `site:${host} ${input.question}`.slice(0,380);
+  if(intent==='legal'||intent==='privacy')return `${host.split('.')[0]} ${input.question} regulatory enforcement official source`.slice(0,380);
+  return `${new URL(url).hostname} ${input.question}`.slice(0,380);
+}
+
+export async function researchQuestion(input, {provider,controller,signal} = {}) {
+  const query=planFocusedQuery(input);
+  const url=validatePublicUrl(input.url).href;
+  const host=hostOf(url), intent=input.intent??'general';
   const entry={productName:'',documents:[],flags:[],checks:[],incomplete:true,
     limitations:['Focused one-question evidence gathering; no complete vendor assessment or overall verdict.'],
     question:input.question,queries:[],leads:[]};
   const ctl=controller??createController({maxSearches:1,maxFetches:1,maxLlm:0});
   if(signal?.aborted)return {...entry,failed:true,status:'aborted'};
   if(!ctl.take('search'))return {...entry,failed:true,status:'budget_exhausted'};
-  const query=`${new URL(url).hostname} ${input.question}`.slice(0,380);
   entry.queries.push(query);
   try {
     const hits=await provider.search(query,{maxResults:3,signal});
@@ -24,6 +40,8 @@ export async function researchQuestion(input, {provider,controller,signal} = {})
       try { validatePublicUrl(hit.url); } catch { continue; }
       entry.leads.push({url:hit.url,title:hit.title??'',provenance:'search_discovery',verified:false});
       if(entry.documents.length)continue;
+      if(vendorIntents.has(intent)&&!belongsTo(hit.url,host))continue;
+      if((intent==='legal'||intent==='privacy')&&belongsTo(hit.url,host))continue;
       let doc;
       if(typeof hit.raw_content==='string'&&hit.raw_content.trim()){
         doc={url:hit.url,text:hit.raw_content,title:hit.title??'',retrieval:'tavily_search_raw_content'};
@@ -47,9 +65,9 @@ if(process.argv[1]===fileURLToPath(import.meta.url)){
   const args=process.argv.slice(2),arg=(key,fallback)=>{const i=args.indexOf('--'+key);return i<0?fallback:args[i+1];};
   const inputPath=arg('input'),out=arg('out'),mode=arg('provider','tavily-keyless');
   if(!inputPath||!out||!['tavily','tavily-keyless'].includes(mode))throw Error('Usage: --input questions.json --out NEW_DIRECTORY --provider tavily|tavily-keyless [--deadline ISO]');
-  const inputs=JSON.parse(readFileSync(inputPath,'utf8')).map(({id,url,question})=>({id:String(id??''),url,question}));
+  const inputs=JSON.parse(readFileSync(inputPath,'utf8')).map(({id,url,question,intent})=>({id:String(id??''),url,question,intent}));
   if(!inputs.length||new Set(inputs.map(i=>i.id)).size!==inputs.length||new Set(inputs.map(i=>i.url)).size!==inputs.length)throw Error('Unique nonempty inputs required');
-  for(const i of inputs){validatePublicUrl(i.url);if(!i.id.trim()||!i.question?.trim())throw Error('Invalid question input');}
+  for(const i of inputs)planFocusedQuery(i);
   const provider=tavilyProvider({accessMode:mode==='tavily-keyless'?'keyless':'keyed'});
   const deadline=arg('deadline',new Date(Date.now()+120000).toISOString());
   if(!Number.isFinite(Date.parse(deadline)))throw Error('Invalid deadline');
