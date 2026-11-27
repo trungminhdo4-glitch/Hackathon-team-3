@@ -1,6 +1,6 @@
 import { InputError, investigateProduct } from './investigate.js';
 import { validatePublicUrl } from './fetch.js';
-import { getResearchModel } from './live.js';
+import { listModels } from './models.js';
 
 function json(res, status, body) {
   res.writeHead(status, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
@@ -22,21 +22,24 @@ async function readInput(req) {
     throw new InputError('Send a JSON object containing a product, company, or URL.');
   }
   if (!input || typeof input !== 'object' || Array.isArray(input) ||
-      Object.keys(input).some(key => !['subject', 'url', 'question'].includes(key)) ||
+      Object.keys(input).some(key => !['subject', 'url', 'question', 'model'].includes(key)) ||
       Object.hasOwn(input, 'subject') === Object.hasOwn(input, 'url')) {
     throw new InputError('Supply one subject or URL and an optional question.');
   }
   const question = input.question === undefined ? '' : input.question;
   if (typeof question !== 'string' || question.length > 1000) throw new InputError('Use a question of up to 1,000 characters.');
+  if (input.model !== undefined && (typeof input.model !== 'string' || !input.model || input.model.length > 128)) {
+    throw new InputError('Choose a model from the demo list.');
+  }
   const subject = Object.hasOwn(input, 'url') ? validatePublicUrl(input.url).href : input.subject;
-  return { subject, question: question.trim() };
+  return { subject, question: question.trim(), model: input.model };
 }
 
-async function handle(req, res, investigate) {
+async function handle(req, res, investigate, catalog) {
   if (req.url === '/api/model') {
     if (req.method !== 'GET') return json(res, 405, { error: 'Use GET to read the research model.' });
     try {
-      return json(res, 200, { model: getResearchModel() });
+      return json(res, 200, await catalog());
     } catch {
       return json(res, 503, { error: 'Research model unavailable.' });
     }
@@ -50,8 +53,12 @@ async function handle(req, res, investigate) {
     return json(res, 415, { error: 'Send the product and optional question as JSON.' });
   }
   try {
-    const { subject, question } = await readInput(req);
-    const report = await investigate(subject, { question });
+    const { subject, question, model } = await readInput(req);
+    const options = await catalog();
+    const selected = options.models.find(entry => entry.id === (model ?? options.model));
+    if (!selected) throw new InputError('Choose a model from the demo list.');
+    if (!selected.available) return json(res, 503, { error: selected.reason || 'Selected model unavailable.' });
+    const report = await investigate(subject, { question, model: selected.id });
     return json(res, 200, report);
   } catch (err) {
     if (err instanceof InputError || err.code === 'UNSAFE_URL') return json(res, 400, { error: err.message });
@@ -62,8 +69,8 @@ async function handle(req, res, investigate) {
   }
 }
 
-export function createApi(investigate = investigateProduct) {
-  return (req, res) => handle(req, res, investigate);
+export function createApi(investigate = investigateProduct, catalog = listModels) {
+  return (req, res) => handle(req, res, investigate, catalog);
 }
 
 export const api = createApi();

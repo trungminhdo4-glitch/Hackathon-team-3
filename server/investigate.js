@@ -22,15 +22,15 @@ export function parseSubject(value) {
   return { subject, url: null };
 }
 
-export async function investigateProduct(value, { question = '' } = {}) {
+export async function investigateProduct(value, { question = '', model } = {}) {
   const { subject, url } = parseSubject(value);
   if (!process.env.OPENAI_API_KEY?.trim()) throw new Error('Server API key unavailable.');
   const signal = AbortSignal.timeout(120_000);
-  const session = createResearchSession();
+  const session = createResearchSession(model);
   const inputUrl = url ?? await resolveProductUrl(subject, question, session, signal);
   if (!inputUrl) {
     throw new InputError('Could not identify one official product page. Enter its public URL or specify the company and edition.');
   }
   const findings = await research(inputUrl, { subject, question, session, signal });
-  return { ...assess(inputUrl, findings), subject, question, model: session.agent.model };
+  return { ...assess(inputUrl, findings), subject, question, model: session.model, searchModel: session.searchModel };
 }

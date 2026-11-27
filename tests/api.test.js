@@ -4,12 +4,16 @@ import { once } from 'node:events';
 import http from 'node:http';
 import { createApi } from '../server/api.js';
 import { parseSubject } from '../server/investigate.js';
-import { createResearchSession } from '../server/live.js';
+import { META_MODEL, listModels } from '../server/models.js';
 
-const server = http.createServer(createApi((value, { question }) => {
+const catalog = () => ({ model: 'gpt-4.1', models: [
+  { id: 'gpt-4.1', available: true }, { id: 'gpt-4.1-mini', available: true },
+  { id: META_MODEL, available: false, reason: 'Missing Groq key.' },
+] });
+const server = http.createServer(createApi((value, { question, model }) => {
   const { subject, url } = parseSubject(value);
-  return { subject, inputUrl: url, question };
-}));
+  return { subject, inputUrl: url, question, model };
+}, catalog));
 let endpoint;
 before(async () => {
   server.listen(0, '127.0.0.1');
@@ -28,34 +32,53 @@ test('API accepts one subject with an optional bounded question and rejects malf
   for (const input of [{}, { url: 'file:///private' }, { url: 'https://127.0.0.1' },
     { url: 'https://me:secret@site.example/' }, { url: 'https://site.example', vendor: 'unexpected' },
     { subject: 'X', url: 'https://site.example' }, { subject: 500 }, { subject: '' },
-    { subject: 'Product', question: null }, { subject: 'Product', question: 'X'.repeat(1001) }]) {
+    { subject: 'Product', question: null }, { subject: 'Product', question: 'X'.repeat(1001) },
+    { subject: 'Product', model: null }, { subject: 'Product', model: 'some-other-provider' }]) {
     assert.equal((await post(input)).status, 400);
   }
 });
 
 test('the API passes names, URLs and questions through one investigation workflow', async () => {
-  const named = await post({ subject: 'Acme Workspace', question: ' Who licenses the Plus edition? ' });
-  assert.deepEqual(await named.json(), { subject: 'Acme Workspace', inputUrl: null, question: 'Who licenses the Plus edition?' });
+  const named = await post({ subject: 'Acme Workspace', question: ' Who licenses the Plus edition? ', model: 'gpt-4.1-mini' });
+  assert.deepEqual(await named.json(), { subject: 'Acme Workspace', inputUrl: null, question: 'Who licenses the Plus edition?', model: 'gpt-4.1-mini' });
   const legacy = await post({ url: 'https://product.example/' });
-  assert.deepEqual(await legacy.json(), { subject: 'https://product.example/', inputUrl: 'https://product.example/', question: '' });
+  assert.deepEqual(await legacy.json(), { subject: 'https://product.example/', inputUrl: 'https://product.example/', question: '', model: 'gpt-4.1' });
   assert.equal((await post({ url: 'https://product.example/' }, 'credible')).status, 400);
 });
 
-test('model metadata matches the server researcher and rejects misplaced credentials', async t => {
-  const before = process.env.OPENAI_MODEL;
-  t.after(() => {
-    if (before === undefined) delete process.env.OPENAI_MODEL;
-    else process.env.OPENAI_MODEL = before;
+test('the API returns the model catalog and rejects an unavailable selection without substitution', async () => {
+  const response = await fetch(new URL('/api/model', endpoint));
+  assert.deepEqual(await response.json(), catalog());
+  const disabled = await post({ subject: 'Product', model: META_MODEL });
+  assert.equal(disabled.status, 503);
+  assert.deepEqual(await disabled.json(), { error: 'Missing Groq key.' });
+});
+
+test('only supported models listed for the configured accounts become selectable', async t => {
+  const keys = ['OPENAI_MODEL', 'OPENAI_API_KEY', 'GROQ_API_KEY'];
+  const previous = keys.map(key => process.env[key]);
+  t.after(() => keys.forEach((key, i) => {
+    if (previous[i] === undefined) delete process.env[key];
+    else process.env[key] = previous[i];
+  }));
+  process.env.OPENAI_MODEL = 'gpt-4.1';
+  process.env.OPENAI_API_KEY = 'test-openai';
+  process.env.GROQ_API_KEY = 'test-groq';
+  const lookup = t.mock.method(globalThis, 'fetch', async (url, init) => {
+    const groq = new URL(url).hostname === 'api.groq.com';
+    assert.equal(init.headers.Authorization, 'Bearer ' + (groq ? 'test-groq' : 'test-openai'));
+    const ids = groq ? [META_MODEL, 'different-family'] : ['gpt-4.1', 'image-model'];
+    return Response.json({ data: ids.map(id => ({ id })) });
   });
-  const url = new URL('/api/model', endpoint);
-  for (const configured of ['', 'test-model-snapshot']) {
-    process.env.OPENAI_MODEL = configured;
-    const response = await fetch(url);
-    assert.equal(response.status, 200);
-    assert.deepEqual(await response.json(), { model: createResearchSession().agent.model });
-  }
+  const result = await listModels();
+  assert.deepEqual(result.models.map(m => [m.id, m.available]), [
+    ['gpt-4.1', true], ['gpt-4.1-mini', false], [META_MODEL, true],
+  ]);
+  assert.equal(result.models[2].searchModel, 'gpt-4.1');
+  assert.equal(lookup.mock.callCount(), 2);
+  process.env.GROQ_API_KEY = 'test-openai';
+  assert.equal((await listModels()).models[2].available, false);
+  assert.equal(lookup.mock.callCount(), 2);
   process.env.OPENAI_MODEL = 'sk-test-value';
-  const invalid = await fetch(url);
-  assert.equal(invalid.status, 503);
-  assert.deepEqual(await invalid.json(), { error: 'Research model unavailable.' });
+  await assert.rejects(listModels(), /OPENAI_MODEL must be/);
 });

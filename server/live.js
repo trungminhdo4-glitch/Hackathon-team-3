@@ -3,6 +3,9 @@ import { z } from 'zod';
 import { getDomain } from 'tldts';
 import { fetchPublicText, lookupPublic, validatePublicUrl } from './fetch.js';
 import { assess } from './assessment.js';
+import { getResearchModel, isDemoModel, META_MODEL } from './models.js';
+import { assessWithLlama } from './groq.js';
+export { getResearchModel } from './models.js';
 
 const evidence = z.object({
   passageId: z.string(),
@@ -251,24 +254,33 @@ export async function research(value, { signal, subject, question, session } = {
   }
 }
 
-export function getResearchModel() {
-  const model = process.env.OPENAI_MODEL?.trim() || 'gpt-4.1';
-  if (!/^[\w.:-]+$/u.test(model) || /^sk-/i.test(model) || model === process.env.OPENAI_API_KEY) {
-    throw new Error('Invalid research model configuration.');
-  }
-  return model;
-}
-
-export function createResearchSession() {
+export function createResearchSession(model = getResearchModel()) {
+  if (!isDemoModel(model)) throw new Error('Select a supported demo model.');
+  const searchModel = model === META_MODEL ? getResearchModel() : model;
   const agent = new Agent({
     name: 'SaaSLens researcher', instructions,
-    model: getResearchModel(),
+    model: searchModel,
     tools: [webSearchTool()],
     modelSettings: { store: false, maxTokens: 2500, toolChoice: 'required',
       providerData: { include: ['web_search_call.action.sources'], max_tool_calls: 4 } },
   });
   const runner = new Runner({ tracingDisabled: true });
-  return { agent, runner };
+  return { agent, runner, model, searchModel };
+}
+
+async function runAssessment(session, task, outputSchema, name, maxTokens, signal) {
+  // Reuse one passage-ID enum across citation fields to fit structured-output limits.
+  const { $schema, ...schema } = z.toJSONSchema(outputSchema, { reused: 'ref' });
+  const input = JSON.stringify(task);
+  if (session.model === META_MODEL) {
+    return assessWithLlama({ instructions, input, schema, maxTokens, signal });
+  }
+  const { agent, runner } = session;
+  agent.tools = [];
+  agent.outputType = { type: 'json_schema', name, strict: true, schema };
+  agent.modelSettings = { toolChoice: 'none', store: false, maxTokens };
+  const result = await runner.run(agent, input, { signal, maxTurns: 1 });
+  return result.finalOutput;
 }
 
 const segmenter = new Intl.Segmenter('en', { granularity: 'sentence' });
@@ -455,16 +467,11 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
   if (!lookup.size) return { productName:'', question:topic.question || '', claims:[], documents, coverage, incomplete:true,
     limitations:[...limitations,'No self-contained passage was available for assessment.'] };
   const constrainedReport = reportSchema(z.enum([...lookup.keys()]));
-  // Share one enum definition across all citation fields to stay within structured-output limits on long inputs.
-  const { $schema, ...schema } = z.toJSONSchema(constrainedReport, {reused:'ref'});
-  agent.tools = [];
-  agent.outputType = {type:'json_schema', name:'product_assessment', strict:true, schema};
-  agent.modelSettings = { toolChoice: 'none', store: false, maxTokens: 4500 };
-  const assessment = await runner.run(agent, JSON.stringify({
+  const assessment = await runAssessment(session, {
     task: 'Assess all six criteria for the product overall. Start with its central promise to typical users and the evidence of delivery. Surface consequential terms, independent findings and their current status. Answer any optional question separately within that overall context. Cite passage IDs for each material claim, rationale and practical consequence. Examine sourced customer experiences. Leave unsupported criteria unverified. Only the listed documents are evidence.',
     inputUrl, ...topic, documents: pages, coverage,
-  }), { signal: deadline, maxTurns: 1 });
-  const findings = report.parse(assessment.finalOutput);
+  }, constrainedReport, 'product_assessment', 4500, deadline);
+  const findings = report.parse(assessment);
   function resolveStatement(statement, accepts = () => true) {
     const evidence = statement.evidence.slice(0, 4).flatMap(({passageId, ...attribution}) => {
       const passage = lookup.get(passageId);
@@ -525,15 +532,13 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
     // The same researcher can reconsider incomplete claims once, using only IDs permitted by this run's schema.
     // Existing verified findings survive another timeout, refusal, or malformed result.
     const repairSchema = constrainedReport.pick({claims:true});
-    agent.outputType = repairSchema;
-    agent.modelSettings = {toolChoice:'none', store:false, maxTokens:1800};
     try {
-      const retry = await runner.run(agent, JSON.stringify({
+      const retry = await runAssessment(session, {
         stage:'repair_claims', inputUrl, ...topic, productName:productAliases[0]?.name,
         criteria:[...repairCriteria], documents:pages,
         task:'Re-evaluate these missing or unverified findings from scratch. For the central task select an actual deployment, concrete setup workflow or measured test. A second high-level product description cannot demonstrate delivery. Focus on that task and the most serious documented decision-changing issue. Cite one to four exact supplied passage IDs per claim. Compare the advertised purpose and actual outcome; for a regulatory issue cite both the underlying promise and the scope and disposition of the final decision. Omit broad secondary claims and unsupported findings.',
-      }), {maxTurns:1, signal:AbortSignal.any([deadline,AbortSignal.timeout(22_000)])});
-      const repair = repairSchema.parse(retry.finalOutput);
+      }, repairSchema, 'repaired_claims', 1800, AbortSignal.any([deadline,AbortSignal.timeout(22_000)]));
+      const repair = repairSchema.parse(retry);
       for (const candidate of repair.claims) {
         if (candidate.status === 'unverified' || (!repairCriteria.has(candidate.criterion) && candidate.impact === 'routine')) continue;
         const resolved = resolveStatement(candidate);
