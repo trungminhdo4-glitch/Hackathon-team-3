@@ -11,7 +11,7 @@ const citedStatement = z.object({ text: z.string(), evidence: z.array(evidence) 
 const report = z.object({
   productName: z.string(),
   vendor: z.object({ name: z.string(), evidence: z.array(evidence) }).nullable(),
-  answer: citedStatement.nullable(),
+  answerPassages: z.array(z.string()),
   flags: z.array(citedStatement.extend({ kind: z.enum(['green', 'yellow', 'red']) })),
   checks: z.array(z.object({
     id: z.enum(['identity', 'independent', 'operator', 'substance']),
@@ -41,7 +41,7 @@ support continuity, recent releases, and documented regulatory actions. Distingu
 Prioritize sources that answer the question; do not force every topic into the report.
 For assessment, use only the numbered retrieved documents. Supply one finding per check. Each confirmed or contradicted
 finding must include its document ID, the publisher's relationship to the vendor, and a short, single contiguous
-excerpt copied from the document's text field. Preserve punctuation, case and word order. Never join fragments,
+excerpt copied from one supplied passage's text field. Preserve punctuation, case and word order. Never join fragments,
 insert ellipses or use the URL, metadata or link context as the quoted passage. Include the product name and exact
 domain when the passage contains them. Quote a full sentence for any proposed contradiction.
 An unrelated footer or link and a matching name alone cannot establish a relationship. An independent document must
@@ -60,9 +60,9 @@ Mark material only for an authoritative source explicitly establishing a materia
 such as verified impersonation or a domain reserved for examples. Mark ambiguous findings unverified. Treat a source ID
 only as a reference. Use no Markdown, links, scores or verdict in assessment prose.
 For vendor, give the named operator with a passage establishing its role or legal identity; return null if unavailable.
-For answer, select up to two short complete source sentences that directly answer the product question, or explain
-what the product does if no question was asked. Use those exact sentences as text and evidence quotes, including material
-qualifiers. For flags, select up to two concrete, relevant observations per category. Green means a supported strength,
+For answerPassages, select up to two existing passage IDs that together directly answer the product question, or explain
+what the product does if no question was asked. Preserve material qualifiers. Return an empty list if unavailable.
+For flags, select up to two concrete, relevant observations per category. Green means a supported strength,
 yellow means a documented tradeoff or ambiguity, and red requires a material contradiction or final authoritative
 enforcement action with a direct connection to the product. Use a source sentence verbatim as each flag's text
 and quote. Keep vendor context distinct from product-specific evidence. Omit findings or answers lacking support.`;
@@ -145,6 +145,23 @@ export function createResearchSession() {
   return { agent, runner };
 }
 
+function preparePassages(documents) {
+  const lookup = new Map();
+  const sentences = new Intl.Segmenter('en', { granularity: 'sentence' });
+  const pages = documents.map(doc => {
+    const passages = [];
+    for (const { segment } of sentences.segment(doc.text.slice(0, 14000))) {
+      const text = segment.trim();
+      if (!text) continue;
+      const id = doc.id + '.' + (passages.length + 1);
+      passages.push({ id, text });
+      lookup.set(id, { sourceId: doc.id, quote: text });
+    }
+    return { id: doc.id, title: doc.title, url: doc.url, passages };
+  });
+  return { pages, lookup };
+}
+
 async function collectFindings(inputUrl, documents, limitations, deadline, topic, session = createResearchSession()) {
   const { agent, runner } = session;
   const discovery = await runner.run(agent, JSON.stringify({
@@ -171,14 +188,15 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
   // Reuse this investigation's agent to interpret the retrieved text with further tool calls disabled.
   agent.outputType = report;
   agent.modelSettings = { toolChoice: 'none', store: false, maxTokens: 6000 };
+  const { pages, lookup } = preparePassages(documents);
   const assessment = await runner.run(agent, JSON.stringify({
     task: 'Assessment: answer the product question, present documented strengths and cautions, and apply the four scoring criteria using only these documents. Determine whether the specified product exists at the exact target. For a non-product, report what the source establishes. Copy each quote verbatim from one contiguous span of retrieved text.',
-    inputUrl, ...topic, documents: documents.map(({ id, title, url, text, linkContexts }) => ({
-      id, title, url, text: text.slice(0, 14000),
-      submittedHostLinks: linkContexts.filter(link => new URL(link.url).hostname === new URL(inputUrl).hostname).slice(0, 4),
+    inputUrl, ...topic, documents: pages.map((page, i) => ({
+      ...page, submittedHostLinks: documents[i].linkContexts.filter(link => new URL(link.url).hostname === new URL(inputUrl).hostname).slice(0, 4),
     })),
   }), { signal: deadline, maxTurns: 1 });
   const findings = report.parse(assessment.finalOutput);
-  return { ...findings, documents, incomplete: limitations.length > 0,
+  const answer = { evidence: findings.answerPassages.slice(0, 2).map(id => lookup.get(id)).filter(Boolean) };
+  return { ...findings, answer, documents, incomplete: limitations.length > 0,
     limitations: [...limitations, ...findings.limitations] };
 }

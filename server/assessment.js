@@ -58,8 +58,8 @@ function placeholderNotice(text) {
 }
 
 function namesEntity(text, name) {
-  return name.length > 1 && new RegExp('(?<![\\p{L}\\p{N}])' + escapeRegex(name) +
-    '(?![\\p{L}\\p{N}])', 'iu').test(clean(text));
+  return name.length > 0 && new RegExp('(?<![\\p{L}\\p{N}])' + escapeRegex(name) +
+    '(?![\\p{L}\\p{N}])', name.length === 1 ? 'u' : 'iu').test(clean(text));
 }
 
 function namesProduct(doc, quote, name) {
@@ -195,7 +195,8 @@ function citedDetails(raw, documents, context, used) {
     if (!evidence.length) return null;
     // Render retrieved excerpts to preserve qualifiers even if the proposed
     // summary overstated the evidence. Multiple sources can answer a comparison.
-    const text = [...new Set(evidence.map(item => item.quote))].join(' ');
+    const excerpts = [...new Set(evidence.map(item => item.quote))];
+    const text = excerpts.filter(quote => !excerpts.some(longer => longer !== quote && longer.includes(quote))).join(' ');
     return { text, evidence, evidenceIds: [...new Set(evidence.map(item => item.sourceId))] };
   }
   const answer = statement(raw.answer, 'answer');

@@ -73,3 +73,20 @@ test('a discovery timeout before any text was retrieved fails the investigation'
   t.mock.method(Runner.prototype, 'run', async () => { throw new DOMException('Time limit', 'TimeoutError'); });
   await assert.rejects(research('https://1.1.1.1/'), { name: 'TimeoutError' });
 });
+
+test('product answers use the retrieved passage selected by ID and discard invented IDs', async t => {
+  const quote = 'Orbit Desk business use requires a license.';
+  serveOnce(t, 200, { 'content-type': 'text/plain' }, quote);
+  t.mock.method(Runner.prototype, 'run', async (_agent, input) => {
+    const task = JSON.parse(input);
+    if (!task.documents) return { rawResponses: [{ providerData: { output: [
+      { type: 'web_search_call', status: 'completed', action: { sources: [] } },
+    ] } }] };
+    assert.equal(task.question, 'What license is needed?');
+    const passage = task.documents[0].passages.find(p => p.text === quote);
+    return { finalOutput: { productName: 'Orbit Desk', vendor: null, answerPassages: ['made-up', passage.id],
+      flags: [], checks: [], limitations: [] } };
+  });
+  const raw = await research('https://1.1.1.1/', { question: 'What license is needed?' });
+  assert.deepEqual(raw.answer.evidence, [{ sourceId: 'S1', quote }]);
+});
