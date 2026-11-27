@@ -133,6 +133,21 @@ blockquote { font-size: 14px; border-left: 2px solid var(--soft-rule); margin-to
 .citation a svg { width: 13px; height: 13px }
 .unknowns { margin-top: 16px }
 .unknowns ul { margin: 5px 0 0; padding-left: 20px }
+.dataset-report { margin: 16px 0; padding: 0 14px; border: 1px solid var(--soft-rule); border-radius: 5px }
+.dataset-report[open] { padding-bottom: 14px }
+.dataset-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 6px 0 12px }
+.dataset-actions .retry { margin: 0; padding: 6px 10px; font-size: 14px }
+.dataset-toggle { background: transparent; color: var(--forest); border: 0; text-decoration: underline; padding: 6px }
+.dataset-toggle[aria-pressed=true] { font-weight: 700 }
+.dataset-scroll, .dataset-markdown { overflow: auto; max-height: 24rem; border: 1px solid var(--soft-rule) }
+.dataset-scroll table { border-collapse: collapse; font-size: 14px; line-height: 1.5 }
+.dataset-scroll :is(th, td) { min-width: 12rem; max-width: 28rem; padding: 8px 12px; text-align: left; vertical-align: top; border-right: 1px solid var(--soft-rule) }
+.dataset-scroll th { position: sticky; top: 0; background: var(--paper); font-size: 13px }
+.dataset-scroll td { white-space: pre-wrap }
+.dataset-markdown { padding: 12px; font-size: 13px; white-space: pre-wrap; background: var(--paper) }
+.dataset-report label { display: block; margin: 14px 0 4px; font-size: 14px; font-weight: 600 }
+.dataset-report label span { font-weight: 400; color: var(--muted) }
+.dataset-report textarea { width: 100% }
 .report .retry { margin-top: 14px }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap }
 @media (max-width: 600px) {

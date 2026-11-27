@@ -2,6 +2,8 @@
 
 Enter a software product, company, or public URL. Add a question if you want to evaluate a specific use or edition. SaaSLens checks whether the product delivers its main promise, shows the passages behind each finding, and keeps reports in the current tab’s session history.
 
+Open **View or download dataset report** on any saved investigation to preview its eight columns and download CSV or Markdown. Optional reviewer notes are stored with that report in this tab.
+
 ## Run locally
 
 Use Node.js 22.12 or later. Set `OPENAI_API_KEY` in your server environment or an ignored `.env.local` file. Run `npm ci` and `npm run dev`, then open [SaaSLens](http://127.0.0.1:4173). The default model is `gpt-4.1`. Set `OPENAI_MODEL` to select a model supporting hosted web search and structured output.

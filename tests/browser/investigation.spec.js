@@ -139,3 +139,43 @@ test('rechecking an earlier report saves a new assessment alongside the original
   await expect(page.getByText('Earlier assessment.', { exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Evaluate with current rubric' })).toBeVisible();
 });
+
+test('views and downloads the same eight dataset fields and keeps original notes in the tab', async ({page}) => {
+  const {readFile} = await import('node:fs/promises');
+  const headers = ['product', 'vendor', 'overall', 'green_flags', 'yellow_flags', 'red_flags', 'reasoning', 'reviewer_notes_original'];
+  await page.setViewportSize({width: 390, height: 800});
+  await page.goto('/');
+  await page.getByLabel('Product, company, or URL').fill('Orbit Desk');
+  await page.getByRole('button', {name: 'Investigate', exact: true}).click();
+  const openExport = page.getByText('View or download dataset report', {exact: true});
+  await openExport.click();
+  const table = page.getByRole('table');
+  await expect(table.getByRole('columnheader')).toHaveText(headers);
+  const notes = 'I checked "tier A", separately.\nUse A | B.';
+  await page.getByLabel(/Original reviewer notes/).fill(notes);
+  const cells = await table.getByRole('cell').allTextContents();
+  expect(cells).toHaveLength(8);
+  expect(cells[0]).toBe('Orbit Desk');
+  expect(cells[2]).toBe('Green');
+  expect(cells[3]).toContain('https://');
+  expect(cells[7]).toBe(notes);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  for (const [format, extension] of [['CSV', 'csv'], ['Markdown', 'md']]) {
+    const waiting = page.waitForEvent('download');
+    await page.getByRole('button', {name: 'Download ' + format}).click();
+    const file = await waiting;
+    expect(file.suggestedFilename()).toBe('SaaSLens-Orbit-Desk.' + extension);
+    const contents = await readFile(await file.path(), 'utf8');
+    if (format === 'CSV') {
+      expect(contents.slice(1)).toBe(headers.join(',') + '\r\n' +
+        cells.map(text => '"' + text.replaceAll('"', '""') + '"').join(',') + '\r\n');
+    } else {
+      await page.getByRole('button', {name: 'Markdown source'}).click();
+      await expect(page.locator('pre.dataset-markdown')).toHaveText(contents, {useInnerText: false});
+      expect(contents).toContain('A &#124; B.');
+    }
+  }
+  await page.reload();
+  await openExport.click();
+  await expect(page.getByLabel(/Original reviewer notes/)).toHaveValue(notes);
+});

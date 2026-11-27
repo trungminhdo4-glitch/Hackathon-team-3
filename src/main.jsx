@@ -23,6 +23,14 @@ function Workspace() {
     setError('')
   }
 
+  function saveNotes(notes) {
+    const updatedEntry = { ...active, reviewerNotes: notes }
+    const updated = entries.map(entry => entry.id === active.id ? updatedEntry : entry)
+    saveHistory(updated)
+    setEntries(updated)
+    setActive(updatedEntry)
+  }
+
   async function investigate(event) {
     event.preventDefault()
     if (busy || !subject.trim()) return
@@ -70,7 +78,8 @@ function Workspace() {
       {error && <section className="feedback error" role="alert"><div><strong>Investigation incomplete</strong><p>{error}</p></div>
         <button className="retry" onClick={investigate}>Retry</button></section>}
       {active && <><span className="sr-only" role="status">Assessment ready</span>
-        <Report key={active.id} report={active.report} simulated={Boolean(active.scenario)} retry={investigate}/></>}
+        <Report key={active.id} report={active.report} simulated={Boolean(active.scenario)} retry={investigate}
+          notes={active.reviewerNotes ?? active.report.reviewer_notes_original ?? ''} onNotesChange={saveNotes}/></>}
     </main>
   </div>
 }

@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { Icon } from './icons.jsx'
+import { DatasetReport } from './DatasetReport.jsx'
+import { groupHighlights } from './datasetReport.js'
 import { isEarlierReport, verdictLabel } from './research.js'
 
 const claimStatuses = {
@@ -83,22 +85,7 @@ function EarlierBreakdown({report, sources}) {
 }
 
 function Highlights({checks}) {
-  const supportedCapabilities = checks.filter(c => c.id === 'capability' && c.status === 'supported' &&
-    c.impact === 'routine' && c.evidence.length)
-  const coreEvidence = supportedCapabilities.flatMap(c => c.evidence)
-  const groups = { green: [], yellow: [], red: [] }
-  for (const check of checks) {
-    if (!check.evidence.length || check.status === 'unverified') continue
-    if (check.impact === 'disqualifying') groups.red.push(check)
-    else if (check.impact === 'caveat') groups.yellow.push(check)
-    else if (supportedCapabilities.includes(check)) groups.green.push(check)
-    else if (check.id === 'experience' && check.status === 'supported') {
-      // A firsthand account becomes a strength when its passage demonstrates the core capability.
-      const corroboratesUse = check.evidence.some(account => coreEvidence.some(e =>
-        e.sourceId === account.sourceId && e.quote === account.quote))
-      if (corroboratesUse) groups.green.push(check)
-    }
-  }
+  const groups = groupHighlights(checks)
   return Object.entries(groups).map(([kind, findings]) => findings.length > 0 && <section className="highlights"
     key={kind} aria-label={flagLabels[kind]}>
     <h3><span className={'marker ' + kind} aria-hidden="true"/>{flagLabels[kind]}</h3>
@@ -129,7 +116,7 @@ function RubricFindings({checks, sources}) {
   </section>
 }
 
-export function Report({report, simulated, retry}) {
+export function Report({report, simulated, retry, notes, onNotesChange}) {
   const title = useRef(null)
   useEffect(() => { title.current?.focus() }, [report])
   const sources = new Map(report.sources.map(source => [source.id, source]))
@@ -160,6 +147,7 @@ export function Report({report, simulated, retry}) {
         {source.title || sourceUrl(source).hostname}<Icon name="external"/>
       </a>)}
     </div>}
+    <DatasetReport report={report} notes={notes} onNotesChange={onNotesChange} simulated={simulated}/>
     {!historical && <Highlights checks={findings}/>}
     {historical && <div className="historical-notice"><p>This saved report used the previous points-based rubric.</p>
       <button type="button" className="retry" onClick={retry}>Evaluate with current rubric</button></div>}
