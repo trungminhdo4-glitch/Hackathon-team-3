@@ -49,3 +49,31 @@ test('live failure offers retry and never displays a scored report', async ({ pa
   await page.getByRole('button', { name: 'Retry' }).click();
   expect((await (await response).json()).score).toBeNull();
 });
+
+test('session history restores original reports and citations without another investigation', async ({ page, context }) => {
+  let requests = 0;
+  page.on('request', request => { if (request.url().endsWith('/api/investigate')) requests++; });
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Fixture mode' }).click();
+  for (const [scenario, url, verdict] of [
+    ['credible', 'https://first.example/', 'Credible based on available evidence'],
+    ['contradiction', 'https://second.example/', 'Material red flags found'],
+  ]) {
+    await page.getByLabel('Fixture scenario').selectOption(scenario);
+    await page.getByLabel('Product URL').fill(url);
+    await page.getByRole('button', { name: 'Investigate', exact: true }).click();
+    await expect(page.getByText(verdict, { exact: true })).toBeVisible();
+  }
+  await page.reload();
+  await expect(page.getByText('Material red flags found', { exact: true })).toBeVisible();
+  await page.getByText('Session history').click();
+  await page.getByRole('button', { name: /first\.example/ }).click();
+  await expect(page.getByText('Credible based on available evidence', { exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Synthetic partner integration guide' })).toBeVisible();
+  await expect(page.getByLabel('Fixture scenario')).toHaveValue('credible');
+  expect(requests).toBe(2);
+  const anotherTab = await context.newPage();
+  await anotherTab.goto('/');
+  await anotherTab.getByText('Session history').click();
+  await expect(anotherTab.getByText('Completed reports will appear here for this tab.')).toBeVisible();
+});

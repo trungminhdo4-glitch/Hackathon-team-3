@@ -5,6 +5,7 @@ import '@fontsource/spectral/latin-700.css'
 import { Brand, Icon } from './icons.jsx'
 import { Report } from './Report.jsx'
 import { requestAssessment } from './research.js'
+import { readHistory, saveHistory, SessionHistory } from './SessionHistory.jsx'
 import './style.css'
 
 const framework = [
@@ -20,20 +21,34 @@ function Framework() {
   </section>
 }
 function Workspace() {
-  const [url,setUrl] = useState('')
-  const [fixture,setFixture] = useState(false)
-  const [scenario,setScenario] = useState('credible')
+  const [entries,setEntries] = useState(readHistory)
+  const [active,setActive] = useState(entries[0] ?? null)
+  const [url,setUrl] = useState(active?.report.inputUrl ?? '')
+  const [fixture,setFixture] = useState(Boolean(active?.scenario))
+  const [scenario,setScenario] = useState(active?.scenario ?? 'credible')
   const [busy,setBusy] = useState(false)
   const [error,setError] = useState('')
-  const [report,setReport] = useState(null)
-  const reset = () => { setReport(null); setError('') }
+  const report = active?.report
+  const reset = () => { setActive(null); setError('') }
+  function openReport(entry) {
+    setUrl(entry.report.inputUrl)
+    setFixture(Boolean(entry.scenario))
+    setScenario(entry.scenario ?? 'credible')
+    setActive(entry)
+    setError('')
+  }
   async function investigate(event) {
     event?.preventDefault()
     if (busy) return
     reset()
     setBusy(true)
     try {
-      setReport(await requestAssessment(url.trim(), fixture ? scenario : null))
+      const report = await requestAssessment(url.trim(), fixture ? scenario : null)
+      const entry = { id: crypto.randomUUID(), savedAt: Date.now(), scenario: fixture ? scenario : null, report }
+      const updated = [entry, ...entries]
+      saveHistory(updated)
+      setEntries(updated)
+      setActive(entry)
     } catch (cause) {
       setError(cause.name === 'TimeoutError' ? 'The investigation timed out. Retry to start a new search.' : cause.message)
     } finally { setBusy(false) }
@@ -63,6 +78,7 @@ function Workspace() {
           <button className="submit" disabled={busy}>{busy ? 'Investigating…' : 'Investigate'}{busy ? <span className="spinner"/> : <Icon name="arrow"/>}</button>
         </div>
       </form>
+      <SessionHistory entries={entries} current={active?.id} busy={busy} onOpen={openReport}/>
       {busy && <div className="feedback" role="status"><span className="spinner"/> {fixture ? 'Checking fixture evidence…' : 'Researching the submitted domain and checking citations…'}</div>}
       {error && <section className="feedback error" role="alert"><div><strong>Investigation incomplete</strong><p>{error}</p></div><button className="retry" onClick={investigate}>Retry</button></section>}
       {report ? <><span className="sr-only" role="status">Assessment ready</span><Report report={report} fixture={fixture} retry={investigate}/></> : <Framework/>}
