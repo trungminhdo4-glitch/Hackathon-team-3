@@ -162,14 +162,14 @@ export function csvReport(row) {
 
 export function markdownReport(row, report) {
   // Escape Markdown and HTML from source passages and reviewer notes before inserting table line breaks.
-  const cell = value => value.replace(/[&<>|\\`*_\[\]~!]/g, ch => '&#' + ch.codePointAt(0) + ';')
+  const cell = value => value.replace(/[&<>|\\`*_\[\]~!#]/g, ch => '&#' + ch.codePointAt(0) + ';')
     .replace(/\r\n?|\n/g, '<br>')
   const line = values => '| ' + values.join(' | ') + ' |\n'
   const table = line(columns) + line(columns.map(() => '---')) + line(columns.map(key => cell(row[key])))
   if (!report?.dossier) return table
 
   // Retrieved prose stays literal. Hyperlinks are composed only from checked HTTP(S) source addresses.
-  const prose = value => cell(String(value || '').replace(/\s+/gu, ' ').trim()).replace(/[#]/g, '&#35;')
+  const prose = value => cell(String(value || '').replace(/\s+/gu, ' ').trim())
   const link = (url, title) => {
     const address = sourceAddress(url)
     return address ? '[' + prose(title || address.hostname) + '](<' + address.href + '>)' : ''

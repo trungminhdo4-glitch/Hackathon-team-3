@@ -104,6 +104,8 @@ test('context from a product page survives absent flags without turning the vend
   const markdown = markdownReport(row,report)
   assert.match(markdown,/## What the sources say/)
   assert.ok(markdown.includes('> ' + quote))
+  const punctuation = {...report, dossier: {...report.dossier, observations: [{...report.dossier.observations[0], quote: 'Plans #1 & #2!'}]}}
+  assert.ok(markdownReport(row, punctuation).includes('> Plans &#35;1 &#38; &#35;2&#33;'))
   assert.match(markdown,/## Pages checked/)
   assert.ok(markdown.includes('[Workspace pricing](<' + url + '>)'))
   const batch = csvReports([row,{...row,product:'Other'}])
