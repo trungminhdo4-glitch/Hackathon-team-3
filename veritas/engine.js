@@ -83,6 +83,7 @@ export async function verifyClaims(claims, existingEvidence = [], searchProvider
     const strategiesUsed = [];
     let searchesThisClaim = 0, fetchesThisClaim = 0;
     const security = [];
+    const judged = new Set(); // evidence ids already sent to the judge
 
     async function addEvidence(raw, origin, strategy) {
       const canon = canonicalUrl(raw.url);
@@ -162,18 +163,31 @@ export async function verifyClaims(claims, existingEvidence = [], searchProvider
         if (e.quality.parts.relevance < 25 && e.stance !== 'refutes') e.stance = 'neutral';
       }
       if (opts.judge) {
-        const candidates = pool.filter(e => e.quote_verified && e.entity_match);
+        // Only hard or material cases go to the (paid) judge: lexical stance unsure, or high-impact claim.
+        const high = claim.qualifiers?.materiality === 'high' || ['legal_regulatory', 'customer', 'compliance'].includes(claim.claim_type);
+        const HARD_NOTE = /lower figure|founding|different entity|lookalike|unit/;
+        const candidates = pool.filter(e => e.quote_verified && e.entity_match && !judged.has(e.id) &&
+          (high || e.stance === 'partial' || e.stance === 'neutral'));
         if (candidates.length && ctl.take('llm')) {
           stats.judgeCalls++;
+          for (const e of candidates) judged.add(e.id);
           try {
-            const out = await withTimeout(opts.judge(claim, candidates.map(({ id, url, quote, source_type }) => ({ id, url, quote, source_type }))), B.timeoutMs, 'judge');
+            const out = await withTimeout(opts.judge(claim, candidates.map(({ id, url, quote, quote_context, source_type, stance, notes }) =>
+              ({ id, url, quote, context: quote_context, source_type, deterministic: { stance, notes } }))), B.timeoutMs, 'judge');
             for (const j of Array.isArray(out) ? out : []) {
               const parsed = JudgementSchema.safeParse(j);
               const target = parsed.success && candidates.find(e => e.id === parsed.data.evidence_id);
               if (!target) { stats.judgeRejected++; continue; }
-              target.stance = parsed.data.stance;
-              if (!parsed.data.entity_match) target.entity_match = false;
-              if (parsed.data.rationale) target.notes = [...(target.notes ?? []), parsed.data.rationale];
+              // Deterministic numeric/date/entity findings are not overridable by the judge.
+              const locked = (target.notes ?? []).some(n => HARD_NOTE.test(n));
+              if (!locked) target.stance = parsed.data.stance;
+              if (parsed.data.entailment === 'partial' && target.stance === 'supports') target.stance = 'partial';
+              if (!parsed.data.entity_match || parsed.data.scope_match === false && target.stance === 'supports') {
+                if (!parsed.data.entity_match) target.entity_match = false; else target.stance = 'partial';
+              }
+              const why = parsed.data.explanation || parsed.data.rationale;
+              if (why) target.notes = [...(target.notes ?? []), `judge: ${why}`];
+              target.judge = { entailment: parsed.data.entailment, temporal_match: parsed.data.temporal_match, scope_match: parsed.data.scope_match };
             }
           } catch { stats.judgeRejected++; }
         }

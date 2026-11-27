@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-27T15:19:36.429Z",
+  "generated_at": "2026-11-27T15:24:02.759Z",
   "budget": {
     "maxSearchesPerClaim": 3,
     "maxRounds": 2,
@@ -8,18 +8,18 @@
   },
   "note": "Synthetic fixtures; offline; no LLM. Labels hand-assigned before runs.",
   "sets": {
-    "dev": {
+    "fresh": {
       "A_naive_retrieval": {
         "metrics": {
-          "n": 23,
-          "accuracy": 0.391,
-          "supported_precision": 0.278,
+          "n": 10,
+          "accuracy": 0.6,
+          "supported_precision": 0.556,
           "supported_recall": 1,
-          "false_support_rate": 0.722,
+          "false_support_rate": 0.8,
           "false_refute_rate": 0,
           "contradiction_detection": 0,
           "missing_as_refuted": 0,
-          "abstention_rate": 0.217,
+          "abstention_rate": 0.1,
           "citation_validity": "not measured (variant does not validate)",
           "injection_quote_leaks": 0,
           "searches_per_claim": 1,
@@ -27,88 +27,8 @@
         },
         "failures": [
           {
-            "id": "dev-01",
-            "category": "fabricated_citation",
-            "expected": "INSUFFICIENT_EVIDENCE",
-            "pred": "SUPPORTED",
-            "searches": 1,
-            "citations": 2,
-            "verifiedCitations": null,
-            "injectedQuoteLeak": false
-          },
-          {
-            "id": "dev-03",
-            "category": "copied_press_release",
-            "expected": "SELF_REPORTED",
-            "pred": "SUPPORTED",
-            "searches": 1,
-            "citations": 4,
-            "verifiedCitations": null,
-            "injectedQuoteLeak": false
-          },
-          {
-            "id": "dev-04",
-            "category": "outdated_documentation",
-            "expected": "REFUTED",
-            "pred": "SUPPORTED",
-            "searches": 1,
-            "citations": 2,
-            "verifiedCitations": null,
-            "injectedQuoteLeak": false
-          },
-          {
-            "id": "dev-05",
-            "category": "similar_vendor_names",
-            "expected": "INSUFFICIENT_EVIDENCE",
-            "pred": "SUPPORTED",
-            "searches": 1,
-            "citations": 1,
-            "verifiedCitations": null,
-            "injectedQuoteLeak": false
-          },
-          {
-            "id": "dev-07",
-            "category": "marketing_exaggeration",
-            "expected": "NOT_APPLICABLE",
-            "pred": "SUPPORTED",
-            "searches": 1,
-            "citations": 1,
-            "verifiedCitations": null,
-            "injectedQuoteLeak": false
-          },
-          {
-            "id": "dev-08",
-            "category": "contradictory_customer_references",
-            "expected": "CONFLICTING",
-            "pred": "SUPPORTED",
-            "searches": 1,
-            "citations": 2,
-            "verifiedCitations": null,
-            "injectedQuoteLeak": false
-          },
-          {
-            "id": "dev-09",
-            "category": "roadmap_as_available",
-            "expected": "REFUTED",
-            "pred": "SUPPORTED",
-            "searches": 1,
-            "citations": 1,
-            "verifiedCitations": null,
-            "injectedQuoteLeak": false
-          },
-          {
-            "id": "dev-10",
-            "category": "pricing_tier_restriction",
-            "expected": "PARTIALLY_SUPPORTED",
-            "pred": "SUPPORTED",
-            "searches": 1,
-            "citations": 1,
-            "verifiedCitations": null,
-            "injectedQuoteLeak": false
-          },
-          {
-            "id": "dev-11",
-            "category": "unsupported_numerical_claim",
+            "id": "fr-04",
+            "category": "self_reported_users",
             "expected": "SELF_REPORTED",
             "pred": "SUPPORTED",
             "searches": 1,
@@ -117,200 +37,32 @@
             "injectedQuoteLeak": false
           },
           {
-            "id": "dev-13",
-            "category": "network_failure",
-            "expected": "INSUFFICIENT_EVIDENCE",
-            "pred": "SUPPORTED",
-            "searches": 1,
-            "citations": 1,
-            "verifiedCitations": null,
-            "injectedQuoteLeak": false
-          },
-          {
-            "id": "dev-16",
-            "category": "partial_evidence_stronger_claim",
+            "id": "fr-06",
+            "category": "beta_capability",
             "expected": "PARTIALLY_SUPPORTED",
             "pred": "SUPPORTED",
             "searches": 1,
-            "citations": 1,
+            "citations": 2,
             "verifiedCitations": null,
             "injectedQuoteLeak": false
           },
           {
-            "id": "dev-20",
-            "category": "logo_is_programme_badge",
-            "expected": "PARTIALLY_SUPPORTED",
-            "pred": "SUPPORTED",
-            "searches": 1,
-            "citations": 1,
-            "verifiedCitations": null,
-            "injectedQuoteLeak": false
-          },
-          {
-            "id": "dev-21",
-            "category": "founding_year_contradicted",
-            "expected": "REFUTED",
-            "pred": "INSUFFICIENT_EVIDENCE",
-            "searches": 1,
-            "citations": 1,
-            "verifiedCitations": null,
-            "injectedQuoteLeak": false
-          },
-          {
-            "id": "dev-22",
-            "category": "compliance_in_progress",
+            "id": "fr-07",
+            "category": "certification_in_progress",
             "expected": "REFUTED",
             "pred": "SUPPORTED",
             "searches": 1,
-            "citations": 1,
+            "citations": 2,
             "verifiedCitations": null,
             "injectedQuoteLeak": false
-          }
-        ]
-      },
-      "B_retrieval_plus_citation_check": {
-        "metrics": {
-          "n": 23,
-          "accuracy": 0.957,
-          "supported_precision": 0.833,
-          "supported_recall": 1,
-          "false_support_rate": 0.056,
-          "false_refute_rate": 0,
-          "contradiction_detection": 1,
-          "missing_as_refuted": 0,
-          "abstention_rate": 0.304,
-          "citation_validity": 1,
-          "injection_quote_leaks": 0,
-          "searches_per_claim": 0.96,
-          "runtime_ms": 25
-        },
-        "failures": [
+          },
           {
-            "id": "dev-03",
-            "category": "copied_press_release",
+            "id": "fr-08",
+            "category": "syndicated_marketing_metric",
             "expected": "SELF_REPORTED",
             "pred": "SUPPORTED",
             "searches": 1,
             "citations": 3,
-            "verifiedCitations": 3,
-            "injectedQuoteLeak": false
-          }
-        ]
-      },
-      "C_veritas_full": {
-        "metrics": {
-          "n": 23,
-          "accuracy": 1,
-          "supported_precision": 1,
-          "supported_recall": 1,
-          "false_support_rate": 0,
-          "false_refute_rate": 0,
-          "contradiction_detection": 1,
-          "missing_as_refuted": 0,
-          "abstention_rate": 0.304,
-          "citation_validity": 1,
-          "injection_quote_leaks": 0,
-          "searches_per_claim": 4,
-          "runtime_ms": 14
-        },
-        "failures": []
-      }
-    },
-    "heldout": {
-      "A_naive_retrieval": {
-        "metrics": {
-          "n": 12,
-          "accuracy": 0.333,
-          "supported_precision": 0.273,
-          "supported_recall": 1,
-          "false_support_rate": 0.889,
-          "false_refute_rate": 0,
-          "contradiction_detection": 0,
-          "missing_as_refuted": 0,
-          "abstention_rate": 0.083,
-          "citation_validity": "not measured (variant does not validate)",
-          "injection_quote_leaks": 0,
-          "searches_per_claim": 1,
-          "runtime_ms": 0
-        },
-        "failures": [
-          {
-            "id": "ho-01",
-            "category": "fabricated_citation",
-            "expected": "INSUFFICIENT_EVIDENCE",
-            "pred": "SUPPORTED",
-            "searches": 1,
-            "citations": 2,
-            "verifiedCitations": null,
-            "injectedQuoteLeak": false
-          },
-          {
-            "id": "ho-02",
-            "category": "copied_press_release",
-            "expected": "SELF_REPORTED",
-            "pred": "SUPPORTED",
-            "searches": 1,
-            "citations": 2,
-            "verifiedCitations": null,
-            "injectedQuoteLeak": false
-          },
-          {
-            "id": "ho-03",
-            "category": "beta_feature",
-            "expected": "PARTIALLY_SUPPORTED",
-            "pred": "SUPPORTED",
-            "searches": 1,
-            "citations": 1,
-            "verifiedCitations": null,
-            "injectedQuoteLeak": false
-          },
-          {
-            "id": "ho-04",
-            "category": "independent_lower_figure",
-            "expected": "REFUTED",
-            "pred": "SUPPORTED",
-            "searches": 1,
-            "citations": 1,
-            "verifiedCitations": null,
-            "injectedQuoteLeak": false
-          },
-          {
-            "id": "ho-05",
-            "category": "lookalike_domain",
-            "expected": "INSUFFICIENT_EVIDENCE",
-            "pred": "SUPPORTED",
-            "searches": 1,
-            "citations": 1,
-            "verifiedCitations": null,
-            "injectedQuoteLeak": false
-          },
-          {
-            "id": "ho-09",
-            "category": "logo_is_partner_badge",
-            "expected": "PARTIALLY_SUPPORTED",
-            "pred": "SUPPORTED",
-            "searches": 1,
-            "citations": 1,
-            "verifiedCitations": null,
-            "injectedQuoteLeak": false
-          },
-          {
-            "id": "ho-11",
-            "category": "deprecated_feature",
-            "expected": "REFUTED",
-            "pred": "SUPPORTED",
-            "searches": 1,
-            "citations": 1,
-            "verifiedCitations": null,
-            "injectedQuoteLeak": false
-          },
-          {
-            "id": "ho-12",
-            "category": "snippet_only_evidence",
-            "expected": "INSUFFICIENT_EVIDENCE",
-            "pred": "SUPPORTED",
-            "searches": 1,
-            "citations": 1,
             "verifiedCitations": null,
             "injectedQuoteLeak": false
           }
@@ -318,50 +70,100 @@
       },
       "B_retrieval_plus_citation_check": {
         "metrics": {
-          "n": 12,
-          "accuracy": 0.917,
-          "supported_precision": 0.75,
+          "n": 10,
+          "accuracy": 0.8,
+          "supported_precision": 0.833,
           "supported_recall": 1,
-          "false_support_rate": 0.111,
+          "false_support_rate": 0.2,
           "false_refute_rate": 0,
           "contradiction_detection": 1,
           "missing_as_refuted": 0,
-          "abstention_rate": 0.333,
+          "abstention_rate": 0.1,
           "citation_validity": 1,
           "injection_quote_leaks": 0,
-          "searches_per_claim": 1,
-          "runtime_ms": 4
+          "searches_per_claim": 0.3,
+          "runtime_ms": 22
         },
         "failures": [
           {
-            "id": "ho-02",
-            "category": "copied_press_release",
+            "id": "fr-06",
+            "category": "beta_capability",
+            "expected": "PARTIALLY_SUPPORTED",
+            "pred": "SELF_REPORTED",
+            "searches": 0,
+            "citations": 1,
+            "verifiedCitations": 1,
+            "injectedQuoteLeak": false
+          },
+          {
+            "id": "fr-08",
+            "category": "syndicated_marketing_metric",
             "expected": "SELF_REPORTED",
             "pred": "SUPPORTED",
-            "searches": 1,
-            "citations": 2,
-            "verifiedCitations": 2,
+            "searches": 0,
+            "citations": 1,
+            "verifiedCitations": 1,
             "injectedQuoteLeak": false
           }
         ]
       },
-      "C_veritas_full": {
+      "C_veritas_fixed_search": {
         "metrics": {
-          "n": 12,
-          "accuracy": 1,
+          "n": 10,
+          "accuracy": 0.9,
           "supported_precision": 1,
           "supported_recall": 1,
           "false_support_rate": 0,
           "false_refute_rate": 0,
           "contradiction_detection": 1,
           "missing_as_refuted": 0,
-          "abstention_rate": 0.333,
+          "abstention_rate": 0.1,
           "citation_validity": 1,
           "injection_quote_leaks": 0,
-          "searches_per_claim": 4.17,
+          "searches_per_claim": 3.8,
+          "runtime_ms": 8
+        },
+        "failures": [
+          {
+            "id": "fr-06",
+            "category": "beta_capability",
+            "expected": "PARTIALLY_SUPPORTED",
+            "pred": "SELF_REPORTED",
+            "searches": 5,
+            "citations": 1,
+            "verifiedCitations": 1,
+            "injectedQuoteLeak": false
+          }
+        ]
+      },
+      "C_veritas_full": {
+        "metrics": {
+          "n": 10,
+          "accuracy": 0.9,
+          "supported_precision": 1,
+          "supported_recall": 1,
+          "false_support_rate": 0,
+          "false_refute_rate": 0,
+          "contradiction_detection": 1,
+          "missing_as_refuted": 0,
+          "abstention_rate": 0.1,
+          "citation_validity": 1,
+          "injection_quote_leaks": 0,
+          "searches_per_claim": 2.3,
           "runtime_ms": 5
         },
-        "failures": []
+        "failures": [
+          {
+            "id": "fr-06",
+            "category": "beta_capability",
+            "expected": "PARTIALLY_SUPPORTED",
+            "pred": "SELF_REPORTED",
+            "searches": 3,
+            "citations": 1,
+            "verifiedCitations": 1,
+            "injectedQuoteLeak": false
+          }
+        ]
       }
     }
   }

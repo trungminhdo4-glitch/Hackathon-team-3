@@ -125,6 +125,28 @@ test('low follower count is not proof that customer logos are fake', async () =>
   assert.doesNotMatch(row.red_flags, /fabricated/);
 });
 
+test('judge is skipped for clear low-impact support and cannot override a locked numeric refutation', async () => {
+  let calls = 0;
+  const judge = async (c, ev) => { calls++; return ev.map(e => ({ evidence_id: e.id, stance: 'supports', entity_match: true, entailment: 'direct' })); };
+  const doc = 'Acme Cloud supports SCIM provisioning. Create a token under Settings.';
+  await verifyClaims(claim('Acme Cloud supports SCIM provisioning.'), [{ url: 'https://docs.acmecloud.example/scim', quote: 'Acme Cloud supports SCIM provisioning.', content: doc }], null, {}, { judge, now: NOW });
+  assert.equal(calls, 0);
+  const news = 'After the layoffs, Acme Cloud has about 450 employees, according to filings.';
+  const [v] = await verifyClaims(claim('Acme Cloud has more than 2,000 employees.'), [{ url: 'https://www.reuters.com/x', quote: news, content: news, publication_date: '2026-10-01' }],
+    null, {}, { judge: async (c, ev) => ev.map(e => ({ evidence_id: e.id, stance: 'supports', entity_match: true })), now: NOW });
+  assert.equal(v.status, 'REFUTED');
+});
+
+test('judge partial entailment narrows support instead of confirming the full claim', async () => {
+  const doc = 'Acme Cloud supports SAML login for enterprise workspaces.';
+  const team = [{ url: 'https://news.example/acme-sso', quote: doc, content: doc }];
+  const judge = async (c, ev) => ev.map(e => ({ evidence_id: e.id, stance: 'supports', entity_match: true, entailment: 'partial', scope_match: false, explanation: 'only enterprise workspaces' }));
+  const [v] = await verifyClaims(extractClaims([{ statement: 'Trusted by Globex.', ...V }]).map(c => ({ ...c, text: 'Globex is a customer of Acme Cloud.' })), [], null, {}, { judge, now: NOW });
+  assert.equal(v.status, 'INSUFFICIENT_EVIDENCE');
+  const [w] = await verifyClaims([{ ...claim('Acme Cloud supports SAML login.')[0], qualifiers: { materiality: 'high' } }], team, null, {}, { judge, now: NOW });
+  assert.equal(w.status, 'PARTIALLY_SUPPORTED');
+});
+
 test('growth from an older lower figure is not a refutation', async () => {
   const corpus = [
     { url: 'https://acmecloud.example/', title: 'Acme', content: 'Acme Cloud is used by over 57 million people worldwide.' },

@@ -66,6 +66,12 @@ export const JudgementSchema = z.object({
   stance: z.enum(STANCES),
   entity_match: z.boolean(),
   rationale: z.string().max(600).default(''),
+  // Optional Phase-2 fields (CiteGuard-style semantic citation check).
+  entailment: z.enum(['direct', 'partial', 'none']).optional(),
+  temporal_match: z.boolean().optional(),
+  scope_match: z.boolean().optional(),
+  materiality: z.enum(['high', 'normal', 'low']).optional(),
+  explanation: z.string().max(600).optional(),
 });
 
 export function parseClaims(list) {

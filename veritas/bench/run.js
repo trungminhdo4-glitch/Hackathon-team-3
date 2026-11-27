@@ -8,6 +8,7 @@ import { extractClaims } from '../extract.js';
 import { fixtureProvider, fixtureFetcher } from '../providers.js';
 import { cases as dev } from './cases.dev.js';
 import { cases as heldout } from './cases.heldout.js';
+import { cases as fresh } from './cases.fresh.js';
 import { tokens } from '../text.js';
 
 const BUDGET = { maxSearchesPerClaim: 3, maxRounds: 2, maxTotalSearches: 500, timeoutMs: 3000 };
@@ -47,6 +48,7 @@ async function variantEngine(c, flags) {
 const VARIANTS = {
   A_naive_retrieval: variantA,
   B_retrieval_plus_citation_check: c => variantEngine(c, { adversarial: false, iterative: false, independence: false }),
+  C_veritas_fixed_search: c => variantEngine(c, { adaptive: false }),
   C_veritas_full: c => variantEngine(c, {}),
 };
 
@@ -75,8 +77,8 @@ function metrics(rows) {
 }
 
 export async function runBenchmark(set = 'all') {
-  const sets = { dev, heldout };
-  const chosen = set === 'all' ? ['dev', 'heldout'] : [set];
+  const sets = { dev, heldout, fresh };
+  const chosen = set === 'all' ? ['dev', 'heldout', 'fresh'] : [set];
   const report = { generated_at: new Date().toISOString(), budget: BUDGET, note: 'Synthetic fixtures; offline; no LLM. Labels hand-assigned before runs.', sets: {} };
   for (const name of chosen) {
     report.sets[name] = {};
