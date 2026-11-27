@@ -496,14 +496,15 @@ class AgentTests(unittest.TestCase):
 
 
 class HollowGuardTests(unittest.TestCase):
-    def verdict(self, source):
-        return {"overall": "Red", "confidence": 0.8, "reasoning": "",
-                "reasons": [{"severity": "Red", "claim": "No legal entity.", "source_url": source}]}
+    def verdict(self, collection):
+        return validate({"overall": "Red", "confidence": 0.8,
+                         "reasons": [{"severity": "Red", "claim": "No legal entity.", "evidence_id": 1}]},
+                        collection.evidence, collection)
 
     def test_entity_gap_alone_is_not_red(self):
         source = "https://example.org/about"
         collection = Collection([Evidence("legal entity gap", "No company name found.", source)])
-        result = hollow_guard(self.verdict(source), collection)
+        result = hollow_guard(self.verdict(collection), collection)
         self.assertEqual(result["overall"], "Yellow")
         self.assertEqual(result["reasons"][0]["severity"], "Yellow")
 
@@ -511,7 +512,31 @@ class HollowGuardTests(unittest.TestCase):
         source = "https://example.org/about"
         collection = Collection([Evidence("legal entity gap", "No company name found.", source),
                                  Evidence("traction claim", "Page text: “57M+ users”", "https://example.org/")])
-        self.assertEqual(hollow_guard(self.verdict(source), collection)["overall"], "Red")
+        self.assertEqual(hollow_guard(self.verdict(collection), collection)["overall"], "Red")
+
+    @patch.dict("os.environ", {"LLM_API_KEY": "test-key"}, clear=True)
+    @patch("judge.model_request")
+    def test_lifecycle_reason_sharing_entity_gap_page_stays_red(self, request):
+        source = "https://example.org/end-of-life"
+        gap = Evidence("legal entity gap", "No company name found.", source)
+        lifecycle = Evidence("lifecycle notice", "The product is no longer supported.", source)
+
+        def respond(_key, payload, *_args, **kwargs):
+            if "system" in kwargs:
+                self.assertEqual([r["severity"] for r in json.loads(payload)], ["Yellow", "Red"])
+                return {"checks": [{"id": 1, "status": "yes", "quote": gap.claim},
+                                   {"id": 2, "status": "yes", "quote": lifecycle.claim}]}
+            return {"overall": "Red", "reasons": [
+                {"severity": "Red", "claim": gap.claim, "evidence_id": 1},
+                {"severity": "Red", "claim": lifecycle.claim, "evidence_id": 2},
+            ]}
+
+        request.side_effect = respond
+        result, mode, _ = judge(source, Collection([gap, lifecycle]))
+        self.assertEqual((mode, result["overall"]), ("llm", "Red"))
+        self.assertEqual([(r["severity"], r["claim"]) for r in result["reasons"]],
+                         [("Yellow", gap.claim), ("Red", lifecycle.claim)])
+        self.assertTrue(all("_legal_entity_gap" not in r for r in result["claim_verification"]))
 
 
 if __name__ == "__main__":

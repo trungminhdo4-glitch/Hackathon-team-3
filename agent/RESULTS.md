@@ -97,6 +97,8 @@ All three had zero Red → Green and zero Green → Red errors. In the saved-run
 
 **Anthropic pilot.** Claude Sonnet 5.5 (`claude-sonnet-5-5`) used **one vote plus claim verification** to stay under the **$3** API cap, versus GPT-OSS's three votes plus verification. The GPT-OSS replay hit all 160 model cache entries and returned the identical verdicts, votes and reasons, confirming the same judge inputs. Sonnet scored **27/40 (67.5%)** with **34 model / 6 rules rows** and **0 Red ↔ Green errors**. Its median and p95 judging times were **7.74 s / 8.93 s** per product (64.00 s wall with five workers, excluding collection). Anthropic reported 691,020 input and 38,810 output tokens: **$1.77** at $2/$10 per million tokens. No new Tavily credits or Nebius calls were used. Combining the saved Sonnet and GPT-OSS verdicts with decisive-wins or a Sonnet Red veto left GPT-OSS at **31/40** with no changes; requiring the two active models to agree dropped to **26/40**. This tested Sonnet as a judge on existing evidence, not as a web research agent.
 
+The legal-entity guard fix moved the holdout from **14/20 to 15/20** in a saved-evidence replay (Adobe Flash Player); the development score stayed **31/40**.
+
 ## Cost and reproduction
 
 - **Locked, 40 rows:** 0 new Tavily credits (375 cache hits); 120 new Nebius requests (40 cached), 761,124 input and 76,824 output tokens, approximately **$0.16** at list pricing.

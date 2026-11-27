@@ -229,7 +229,11 @@ def validate(data, evidence, collection):
         if (type(index) is int and 1 <= index <= len(evidence) and severity in LABELS
                 and claim and per_color[severity] < 3 and (index, claim) not in seen
                 and ("source_url" not in row or row["source_url"] == evidence[index-1].source_url)):
-            reasons.append(flag(severity, claim, evidence[index-1]))
+            item = evidence[index-1]
+            reason = flag(severity, claim, item)
+            if item.kind == "legal entity gap":
+                reason["_legal_entity_gap"] = True
+            reasons.append(reason)
             seen.add((index, claim))
             per_color[severity] += 1
     label = data["overall"]
@@ -622,13 +626,13 @@ HOLLOW_SIGNALS = {"traction claim", "reported adoption count", "different adopti
 
 def hollow_guard(verdict, collection):
     """A missing legal entity is Red only alongside self-reported traction or customer-logo claims."""
-    gaps = {item.source_url for item in collection.evidence if item.kind == "legal entity gap"}
-    if verdict["overall"] != "Red" or not gaps or any(item.kind in HOLLOW_SIGNALS for item in collection.evidence):
-        return verdict
-    reasons = [dict(reason, severity="Yellow") if reason["severity"] == "Red" and reason["source_url"] in gaps
-               else reason for reason in verdict["reasons"]]
-    verdict["reasons"] = reasons
-    if not any(reason["severity"] == "Red" for reason in reasons):
+    downgrade = verdict["overall"] == "Red" and not any(item.kind in HOLLOW_SIGNALS for item in collection.evidence)
+    downgraded = False
+    for reason in verdict["reasons"]:
+        if reason.pop("_legal_entity_gap", False) and downgrade and reason["severity"] == "Red":
+            reason["severity"] = "Yellow"
+            downgraded = True
+    if downgraded and not any(reason["severity"] == "Red" for reason in verdict["reasons"]):
         verdict.update(overall="Yellow", confidence=min(0.6, verdict["confidence"]),
                        reasoning="No contracting entity was found on the sampled pages, but the site makes no "
                                  "unconfirmed traction or customer claims. Verify the legal entity before purchase.")
