@@ -44,21 +44,21 @@ test('bulk finalizes independently, keeps input order, and reuses equivalent URL
   assert.doesNotMatch(JSON.stringify(results), /password|private transport details/);
 });
 
-test('a full ten-URL stream emits per-item progress, reports, and one terminal event', async t => {
+test('a full 50-URL stream emits per-item progress, reports, and one terminal event', async t => {
   const {post,peak} = await start(t);
-  const urls = Array.from({length:10}, (_,i) => 'https://product.example/' + i);
+  const urls = Array.from({length:50}, (_,i) => 'https://product.example/' + 'x'.repeat(780) + i);
   const [one,two] = await Promise.all([post({urls},'application/x-ndjson'),post({urls:urls.slice(0,2)})]);
   const events = (await one.text()).trim().split('\n').map(line => JSON.parse(line));
   assert.equal(events[0].type,'progress');
-  assert.deepEqual(events.at(-1),{type:'done',total:10});
-  assert.equal(new Set(events.filter(e => e.type === 'item').map(e => e.index)).size,10);
+  assert.deepEqual(events.at(-1),{type:'done',total:50});
+  assert.equal(new Set(events.filter(e => e.type === 'item').map(e => e.index)).size,50);
   assert.equal((await two.json()).results.length,2);
   assert.equal(peak(),2);
 });
 
 test('bulk validates payload and selected model before starting any research', async t => {
   const {post,calls} = await start(t);
-  for (const data of [{urls:[]}, {urls:[4]}, {urls:Array(11).fill('https://sentry.io/')}, {urls:['a'], review:true}, {urls:['a'],model:'unknown'}]) {
+  for (const data of [{urls:[]}, {urls:[4]}, {urls:Array(51).fill('https://sentry.io/')}, {urls:['a'], review:true}, {urls:['a'],model:'unknown'}]) {
     assert.equal((await post(data)).status, 400);
   }
   assert.equal((await post({urls:['https://sentry.io/'],model:'disabled'})).status,503);

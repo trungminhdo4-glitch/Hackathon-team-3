@@ -7,6 +7,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from time import monotonic
 from urllib.error import URLError
+from urllib.parse import urldefrag
 from urllib.request import Request, urlopen
 
 
@@ -18,17 +19,20 @@ def main():
     parser.add_argument("--output", type=Path, help="Write one JSON record per case to a new file")
     parser.add_argument("--port", type=int, default=4173, help="Port of the local SaaSLens server")
     parser.add_argument("--bulk", action="store_true", help="Send this group in one streaming bulk request")
+    parser.add_argument("--all-rows", action="store_true", help="Evaluate every dataset URL")
     parser.add_argument("--report-dir", type=Path, help="Save full API reports in a new directory")
     args = parser.parse_args()
     dataset = Path(__file__).resolve().parents[1] / "hackathon_40_solutions_commented (1).csv"
     with dataset.open(encoding="utf-8-sig", newline="") as source:
         rows = {row["id"]: row for row in csv.DictReader(source)}
-    selected = list(dict.fromkeys(args.rows)) or list(rows)[:10]
+    if args.all_rows and args.rows:
+        parser.error("Choose individual row IDs or --all-rows.")
+    selected = list(rows) if args.all_rows else list(dict.fromkeys(args.rows)) or list(rows)[:10]
     missing = [row_id for row_id in selected if row_id not in rows]
     if missing:
         parser.error("Unknown dataset IDs: " + ", ".join(missing))
-    if args.bulk and len(selected) > 10:
-        parser.error("A bulk investigation accepts up to ten URLs.")
+    if args.bulk and len(selected) > 50:
+        parser.error("A bulk investigation accepts up to 50 URLs.")
     endpoint = f"http://127.0.0.1:{args.port}/api/investigate"
     if args.report_dir:
         args.report_dir.mkdir(parents=True, exist_ok=False)
@@ -81,21 +85,27 @@ def main():
 
     def evaluate_batch():
         seen = set()
+        done = False
         urls = [rows[row_id]["url"] for row_id in selected]
         with call("/bulk", {"urls": urls}, "application/x-ndjson") as response:
             for line in response:
                 event = json.loads(line)
                 if event["type"] == "error":
                     raise RuntimeError(event["error"])
+                if event["type"] == "done":
+                    done = event["total"] == len(selected)
+                    break
                 if event["type"] != "item":
                     continue
                 index = event["index"]
                 item = event["item"]
-                if not isinstance(index, int) or not 0 <= index < len(urls) or index in seen or item["inputUrl"].rstrip("/") != urls[index].rstrip("/"):
+                if not isinstance(index, int) or not 0 <= index < len(urls) or index in seen:
+                    raise RuntimeError("Unexpected result index in the bulk response.")
+                if item["inputUrl"].rstrip("/") != urldefrag(urls[index]).url.rstrip("/"):
                     raise RuntimeError("Unexpected result identity in the bulk response.")
                 seen.add(index)
                 yield comparison(selected[index], item.get("report"), error=item.get("error"))
-        if len(seen) != len(selected):
+        if not done or len(seen) != len(selected):
             raise RuntimeError("Bulk response ended before returning every result.")
 
     output = args.output.open("x", encoding="utf-8") if args.output else None

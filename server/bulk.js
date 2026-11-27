@@ -2,7 +2,8 @@ import { InputError } from './investigate.js';
 import { validatePublicUrl } from './fetch.js';
 import { json, readBody, recordActivity } from './http.js';
 
-export const MAX_BULK_URLS = 10;
+import { MAX_BULK_URLS } from '../shared/bulkLimits.js';
+export { MAX_BULK_URLS };
 
 export function createBulkHandler(workflow, catalog) {
   // All bulk requests share two research slots. Do not start queued work after a client disconnects.
@@ -22,11 +23,12 @@ export function createBulkHandler(workflow, catalog) {
     if (req.method !== 'POST') return json(res, 405, {error: 'Use POST to investigate a list of URLs.'});
     if (req.headers['content-type']?.split(';')[0] !== 'application/json') return json(res, 415, {error: 'Send the URL list as JSON.'});
     try {
-      const body = await readBody(req, 32 * 1024);
+      // Also allow JSON clients that escape non-ASCII characters in long URLs.
+      const body = await readBody(req, 640 * 1024);
       if (Object.keys(body).some(key => !['urls', 'model'].includes(key)) ||
           !Array.isArray(body.urls) || !body.urls.length || body.urls.length > MAX_BULK_URLS ||
           body.urls.some(url => typeof url !== 'string')) {
-        throw new InputError('Provide between 1 and 10 public product URLs.');
+        throw new InputError('Provide between 1 and ' + MAX_BULK_URLS + ' public product URLs.');
       }
       if (body.model !== undefined && (typeof body.model !== 'string' || !body.model || body.model.length > 128)) {
         throw new InputError('Choose a model from the demo list.');
