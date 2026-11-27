@@ -1,0 +1,30 @@
+{
+  "_meta": {
+    "format": "veritas-research-cache",
+    "version": 1,
+    "source": "tavily-keyless",
+    "mode": "live",
+    "created_at": "2026-11-27T17:57:00.287Z"
+  },
+  "entries": {
+    "https://www.tavily.com/": {
+      "productName": "",
+      "documents": [],
+      "flags": [],
+      "checks": [],
+      "incomplete": true,
+      "limitations": [
+        "Focused one-question evidence gathering; no complete vendor assessment or overall verdict.",
+        "Provider request failed; this establishes no fact about the vendor."
+      ],
+      "question": "Tavily Search API documentation",
+      "queries": [
+        "www.tavily.com Tavily Search API documentation"
+      ],
+      "leads": [],
+      "failed": true,
+      "status": "provider_rate_limited",
+      "error_code": "TAVILY_RATE_LIMIT"
+    }
+  }
+}

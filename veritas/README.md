@@ -1,6 +1,6 @@
 # VERITAS — adversarial evidence verification
 
-Phase 6: [measured evidence-first experiments and frozen selection](bench/2026-11-27-phase6.md). The [controlled six-question follow-up](bench/2026-11-27-phase6-questions.md) improves factual extraction but demonstrates no label-accuracy gain. Native source artifacts and an opt-in report-only audit are available; keep the strongest existing researcher. Current regression total: 100 VERITAS + 24 application tests.
+Phase 6: [measured evidence-first experiments and frozen selection](bench/2026-11-27-phase6.md). The [controlled six-question follow-up](bench/2026-11-27-phase6-questions.md) improves factual extraction but demonstrates no label-accuracy gain. An [opt-in Tavily question-recovery adapter](bench/2026-11-27-tavily.md) is implemented; live keyless access is rate-limited and has no measured quality result. Keep the strongest existing researcher. Current regression total: 109 VERITAS + 24 application tests.
 
 VERITAS checks the team's research before it goes into the submission. It does not do the research itself. It splits each vendor statement or research flag into atomic claims. For each claim it searches for support and for counter-evidence, checks that every quote really appears in the retrieved text, merges copied sources into one evidence family, and returns an explained verdict.
 

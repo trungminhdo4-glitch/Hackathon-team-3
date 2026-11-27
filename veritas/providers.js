@@ -1,7 +1,7 @@
 // Search + fetch providers. All network access for retrieval goes through the
 // team's SSRF-guarded fetcher (server/fetch.js): public HTTP(S) only, DNS-pinned,
 // size/redirect/time bounded.
-import { fetchPublicText } from '../server/fetch.js';
+import { fetchPublicText, validatePublicUrl } from '../server/fetch.js';
 import { tokens } from './text.js';
 
 /** Safe default fetcher (reuses the team's existing hardened implementation). */
@@ -24,6 +24,7 @@ export function bindSignal(target, signal) {
   const out = { name: target.name };
   if (target.fetch) out.fetch = async (url, o = {}) => { guard(); return target.fetch(url, { ...o, signal: o.signal ? AbortSignal.any([o.signal, signal]) : signal }); };
   if (target.search) out.search = async (q, o = {}) => { guard(); return target.search(q, { ...o, signal: o.signal ? AbortSignal.any([o.signal, signal]) : signal }); };
+  if (target.extract) out.extract = async (url, o = {}) => { guard(); return target.extract(url, { ...o, signal: o.signal ? AbortSignal.any([o.signal, signal]) : signal }); };
   return out;
 }
 
@@ -32,24 +33,45 @@ export function bindSignal(target, signal) {
  * API shape per Tavily docs (POST /search) — UNVERIFIED in this repo until a
  * live run succeeds; see veritas/README.md.
  */
-export function tavilyProvider({ apiKey = process.env.TAVILY_API_KEY, depth = 'basic', rawContent = true } = {}) {
-  if (!apiKey) throw new Error('TAVILY_API_KEY is not set');
+export function tavilyProvider({ apiKey = process.env.TAVILY_API_KEY, depth = 'basic', rawContent = true, accessMode = 'keyed', fetchImpl = globalThis.fetch } = {}) {
+  if (!['keyed', 'keyless'].includes(accessMode)) throw new Error('Invalid Tavily access mode');
+  if (accessMode === 'keyed' && !apiKey) throw new Error('TAVILY_API_KEY is not set');
+  const headers = { 'Content-Type': 'application/json', ...(accessMode === 'keyless' ? { 'X-Tavily-Access-Mode': 'keyless' } : { Authorization: `Bearer ${apiKey}` }) };
+  async function request(endpoint, payload, signal) {
+    const res = await fetchImpl(`https://api.tavily.com/${endpoint}`, {
+      method: 'POST', headers, body: JSON.stringify(payload),
+      signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(20000)]) : AbortSignal.timeout(20000),
+    });
+    if (!res.ok) {
+      const error = new Error(`Tavily HTTP ${res.status}`);
+      error.status = res.status;
+      if (res.status === 429) {
+        error.code = 'TAVILY_RATE_LIMIT';
+        const retry = res.headers?.get('retry-after');
+        if (retry != null && /^\d+(?:\.\d+)?$/.test(retry.trim())) error.retryAfter = Number(retry);
+      }
+      throw error;
+    }
+    return res.json();
+  }
   return {
-    name: 'tavily',
+    name: accessMode === 'keyless' ? 'tavily-keyless' : 'tavily',
     async search(query, { maxResults = 5, signal } = {}) {
-      const res = await fetch('https://api.tavily.com/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-        body: JSON.stringify({ query: query.slice(0, 380), max_results: maxResults, search_depth: depth, include_raw_content: rawContent }),
-        signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(20000)]) : AbortSignal.timeout(20000),
-      });
-      if (!res.ok) throw new Error(`Tavily HTTP ${res.status}`);
-      const body = await res.json();
+      const body = await request('search', { query: query.slice(0, 380), max_results: maxResults, search_depth: depth, include_raw_content: rawContent }, signal);
       return (body.results ?? []).map(r => ({
         url: r.url, title: r.title ?? '', content: r.content ?? '',
         raw_content: typeof r.raw_content === 'string' ? r.raw_content.slice(0, 60000) : undefined,
         published_date: r.published_date,
       }));
+    },
+    async extract(url, { signal } = {}) {
+      const requestedUrl = validatePublicUrl(url).href;
+      const body = await request('extract', { urls: [requestedUrl], extract_depth: 'basic', format: 'text', include_usage: true }, signal);
+      const result = (body.results ?? []).find(r => {
+        try { return validatePublicUrl(r.url).href === requestedUrl; } catch { return false; }
+      });
+      if (!result || typeof result.raw_content !== 'string' || !result.raw_content.trim()) throw new Error('Tavily extract unavailable for requested URL');
+      return { url: requestedUrl, requestedUrl, text: result.raw_content.slice(0, 60000), title: '', retrieval: 'tavily_extract', retrieved_at: new Date().toISOString(), final_url: null };
     },
   };
 }

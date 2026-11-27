@@ -2,6 +2,8 @@
 
 ## Phase 6 freeze — November 27
 
+An opt-in [Tavily question-recovery path](bench/2026-11-27-tavily.md) is implemented and regression-tested. Keyless live smoke returned HTTP 429; no Tavily accuracy gain or successful content extraction was established. It does not replace the frozen competition researcher. Use `node veritas/focused-research.js --input questions.json --out NEW_DIRECTORY --provider tavily-keyless` for one search and at most one extract per question, or `--provider tavily` with authenticated runtime credentials. It produces evidence/cache artifacts, not final vendor verdicts. Current regression total: 133/133.
+
 The subsequent [six-question controlled test](bench/2026-11-27-phase6-questions.md) improved factual support from 4/6 to 6/6 and complete answers from 0/6 to 3/6; vendor accuracy stayed 4/6 for Terra and fell 4/6 to 3/6 for Luna. No candidate replacement is justified. A source-exact literal-ellipsis rejection was fixed after freezing that experiment; historical packets were not changed. Current tests: 124/124 including the application suite.
 
 Read [the Phase 6 results](bench/2026-11-27-phase6.md) before selecting a configuration. The new clean research prompt did not demonstrate a robust gain; no new judge or stricter Guard is recommended as a replacement. Keep the existing stronger team researcher. Shuhan's historical 27/40 is not a clean rerun, and the original judge's case-derived examples must not enter an evidence-only comparison. The locally reproduced external-worker candidate remains the Phase-5 Luna→Terra workflow at 21/40; its end-to-end autonomous execution is unverified. Unchanged keyless `collect` is the working conservative fallback.

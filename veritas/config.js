@@ -21,6 +21,7 @@ export async function resolveConfig(want = {}, env = process.env) {
   if (providerKind === 'auto') providerKind = hasTavily ? 'tavily' : 'none';
   let provider = null, fetcher = publicFetcher;
   if (providerKind === 'tavily') { if (hasTavily) provider = tavilyProvider(); else errors.push('provider=tavily requested but TAVILY_API_KEY is not set'); }
+  if (providerKind === 'tavily-keyless') provider = tavilyProvider({ accessMode:'keyless' });
   if (providerKind === 'fixture') {
     if (!want.corpus) errors.push('provider=fixture needs --corpus');
     else { const c = JSON.parse(readFileSync(want.corpus, 'utf8')); provider = fixtureProvider(c); fetcher = fixtureFetcher(c); }
