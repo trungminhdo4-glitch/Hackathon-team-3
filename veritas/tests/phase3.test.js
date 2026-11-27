@@ -17,6 +17,16 @@ import { score, stratifiedIds } from '../bench/dataset.js';
 
 const NOW = new Date('2026-11-27');
 const dir = mkdtempSync(join(tmpdir(), 'veritas-p3-'));
+
+test('a literal pipe in a cited passage does not split its verified ledger entry', () => {
+  const url = 'https://example.test/legal';
+  const text = 'Legal | Company registration (source: ' + url + ')';
+  const row = { id: '1', url, overall: 'Yellow', yellow_flags: text, reasoning: text };
+  const audit = { '1': { citedUrls: [url], ledger: [{ column: 'yellow', text,
+    evidence: [{ url, quote_verified: true, entity_match: true }] }] } };
+  assert.deepEqual(validateSubmission([row], [row], audit), []);
+  assert.ok(validateSubmission([{ ...row, yellow_flags: 'Unrelated claim (source: ' + url + ')' }], [row], audit).length);
+});
 const S = { incident: { kind: 'incident', re: /\b(data breach|security (?:incident|breach))\b/i }, regulatory: { kind: 'regulatory', re: /\b(fined|penalt(?:y|ies))\b/i } };
 
 test('discovery: marketing, hypotheticals and third-party events are not vendor events', () => {

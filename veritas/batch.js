@@ -2,7 +2,7 @@
 // Deadline-aware blind batch runner.
 //   node veritas/batch.js --url https://product.example/      (single-product demo)
 //   node veritas/batch.js --input blind.csv --output submission.csv [--deadline 2026-11-27T19:30:00+01:00]
-//     [--researcher auto|saaslens|collect|fetch|fixture|cache] [--research-fixture file.json] [--research-cache cache.json]
+//     [--researcher auto|saaslens|collect|recover|fetch|fixture|cache] [--research-fixture file.json] [--research-cache cache.json]
 //     [--provider auto|tavily|fixture|none] [--corpus corpus.json] [--judge auto|openai|none]
 //     [--concurrency 4] [--checkpoint run.jsonl] [--resume] [--audit audit.json]
 //     [--max-searches 300] [--per-vendor-ms 150000] [--keep-input-fields]
@@ -55,7 +55,8 @@ export async function makeResearcher(kind, opts) {
     const { entries } = loadResearchCache(opts.researchCache);
     return async url => { if (!entries[url]) throw new Error('url not in research cache'); return entries[url]; };
   }
-  if (kind === 'collect') return (url, { fetcher, signal } = {}) => collect(url, { fetcher: fetcher ?? opts.fetcher, signal, now: opts.now });
+  if (kind === 'collect' || kind === 'recover') return (url, { fetcher, signal } = {}) =>
+    collect(url, { fetcher: fetcher ?? opts.fetcher, signal, now: opts.now, recovery: kind === 'recover' });
   // 'fetch': submitted page only; VERITAS discovery does the rest.
   return async (url, { fetcher } = {}) => {
     const doc = await (fetcher ?? opts.fetcher).fetch(url);
@@ -110,7 +111,8 @@ export async function runBatch(o) {
         const { _ledger = [], _findings, ...clean } = res.row;
         const row = { ...clean, id: inp.id, url: inp.url, product: inp.product || clean.product, vendor: inp.vendor || clean.vendor };
         const cited = res.flags.flatMap(f => (f.verdict.evidence ?? []).filter(e => e.quote_verified).map(e => e.url));
-        rec = { row, cited, ledger: _ledger, status: raw.failed ? 'research_failed' : 'ok', tasks: res.tasks?.map(t => t.category) };
+        rec = { row, cited, ledger: _ledger, status: raw.failed ? 'research_failed' : 'ok', tasks: res.tasks?.map(t => t.category),
+          ...(raw.recoveryLog ? { recovery: raw.recoveryLog } : {}) };
       } catch (e) {
         rec = { row: fallbackRow(inp, `assessment error (${scrub(e.message)}).`), cited: [], status: ac.signal.aborted ? 'aborted' : 'error' };
       } finally {
@@ -125,7 +127,8 @@ export async function runBatch(o) {
     return rec;
   })));
   const rows = results.map(r => r.row);
-  const audit = Object.fromEntries(results.map(r => [r.row.id, { citedUrls: r.cited ?? [], ledger: r.ledger, status: r.status, resumed: r.resumed === true }]));
+  const audit = Object.fromEntries(results.map(r => [r.row.id, { citedUrls: r.cited ?? [], ledger: r.ledger, status: r.status, resumed: r.resumed === true,
+    ...(r.recovery ? { recovery: r.recovery } : {}) }]));
   const problems = validateSubmission(rows, inputs, audit);
   const statuses = results.map(r => r.status);
   const counts = statuses.reduce((m, s) => ({ ...m, [s]: (m[s] ?? 0) + 1 }), {});

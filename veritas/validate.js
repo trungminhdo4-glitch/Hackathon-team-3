@@ -36,7 +36,11 @@ export function validateSubmission(rows, inputs, audit = {}) {
     if (ledger) {
       const urlsIn = s => [...s.matchAll(/https?:\/\/[^\s,)|\]]+/g)].map(m => m[0]);
       for (const col of ['green', 'yellow', 'red']) {
-        for (const seg of String(r[`${col}_flags`] ?? '').split(' | ')) {
+        const field = String(r[`${col}_flags`] ?? '');
+        const entries = ledger.filter(l => l.column === col).map(l => l.text);
+        // Source prose can itself contain the display separator.
+        const segments = entries.join(' | ') === field ? entries : field.split(' | ');
+        for (const seg of segments) {
           const urls = urlsIn(seg);
           if (!urls.length) continue;
           const entry = ledger.find(l => l.column === col && l.text === seg);

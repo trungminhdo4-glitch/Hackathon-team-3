@@ -76,24 +76,50 @@ const norm = l => l ? l[0].toUpperCase() + l.slice(1).toLowerCase() : null;
  *  - teammate Green, VERITAS has a material open issue  → Yellow
  *  - teammate Red, but no red reason survives the audit → Yellow (unsupported Red is withdrawn)
  */
-export function guard(teammate, row, findings = []) {
+export function guard(teammate, row, findings = [], { policy = 'default', ledger = row?._ledger ?? [] } = {}) {
   const t = norm(teammate);
   const has = c => findings.some(f => f.class === c);
   const materialOpen = findings.some(f => f.class === 'AMBIGUOUS' && (f.material ?? f.polarity === 'red'));
+  if (policy === 'evidence-sufficiency') {
+    const verified = l => (l.evidence ?? []).some(e => e.quote_verified === true && e.entity_match === true && e.quote?.trim() && e.url);
+    const sources = [...ledger, ...findings].filter(verified);
+    const negative = sources.some(l => l.class === 'MATERIAL_NEGATIVE');
+    const caveat = sources.some(l => l.class === 'MATERIAL_CAVEAT');
+    const target = negative ? 'Red' : t === 'Green' && (materialOpen || caveat) ? 'Yellow' : t ?? row.overall;
+    const classes = target === 'Green' ? ['STRONG_POSITIVE'] : target === 'Red' ? ['MATERIAL_NEGATIVE'] : ['MATERIAL_CAVEAT'];
+    const matching = sources.filter(l => classes.includes(l.class));
+    const candidates = t === 'Green'
+      ? ledger.filter(l => ['WEAK_POSITIVE', 'STRONG_POSITIVE'].includes(l.class))
+      : t === 'Red' ? ledger.filter(l => ['MATERIAL_NEGATIVE', 'AMBIGUOUS'].includes(l.class)) : [];
+    const partial = candidates.filter(verified);
+    const state = matching.length ? 'corroborated' : partial.length ? 'partial' : 'insufficient_evidence';
+    const recovery = state === 'corroborated' ? null : {
+      action: 'verify_material_support',
+      reason_ids: candidates.map(l => l.reason_id).filter(Boolean),
+      instruction: 'Fetch the cited source and verify an entity-matched passage for the material claim; a URL alone is not evidence.',
+    };
+    const insufficientPositive = target === 'Green' && state !== 'corroborated';
+    const unsupportedRed = target === 'Red' && !matching.length;
+    const base = { overall: insufficientPositive || unsupportedRed ? 'Yellow' : target,
+      rule: negative ? 'established material negative' : target !== t ? 'material issue open against a Green' :
+        insufficientPositive ? 'Green lacks corroborated material support' : unsupportedRed ? 'no red reason survived the citation audit' : 'teammate verdict kept' };
+    return { ...base, evidence_assessment: { state, supported_reasons: matching.map(l => l.reason_id).filter(Boolean), recovery } };
+  }
   if (row.overall === 'Red' && has('MATERIAL_NEGATIVE')) return { overall: 'Red', rule: 'established material negative' };
   if (t === 'Green' && (materialOpen || has('MATERIAL_CAVEAT'))) return { overall: 'Yellow', rule: 'material issue open against a Green' };
   if (t === 'Red' && !has('MATERIAL_NEGATIVE')) return { overall: 'Yellow', rule: 'no red reason survived the citation audit' };
   return { overall: t ?? row.overall, rule: 'teammate verdict kept' };
 }
 
-export async function replay(entries, { fetcher = null, now } = {}) {
+export async function replay(entries, { fetcher = null, now, guardPolicy = 'default' } = {}) {
   const controller = createController({ maxSearches: 0, maxFetches: 0 });
   const vendors = [];
   for (const [url, entry] of Object.entries(entries)) {
     const reasons = auditEntry(url, entry);
     const res = await assessVendor(url, entry, { provider: null, fetcher, controller, discovery: false, now });
-    const g = guard(entry.imported?.overall, res.row, res.row._findings ?? []);
+    const g = guard(entry.imported?.overall, res.row, res.row._findings ?? [], { policy: guardPolicy, ledger: res.row._ledger });
     vendors.push({ url, teammate_overall: entry.imported?.overall ?? null, veritas_overall: res.row.overall, guard_overall: g.overall, guard_rule: g.rule,
+      ...(g.evidence_assessment ? { guard_evidence_assessment: g.evidence_assessment } : {}),
       veritas_reasoning: res.row.reasoning, reasons });
   }
   const all = vendors.flatMap(v => v.reasons);
@@ -114,9 +140,12 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   for (const p of all('agent-audit')) Object.assign(entries, importAgentAudit(JSON.parse(readFileSync(p, 'utf8'))));
   for (const p of all('report')) Object.assign(entries, importReport(JSON.parse(readFileSync(p, 'utf8'))));
   if (!Object.keys(entries).length) { console.error('nothing to replay: pass --agent-audit <file> and/or --report <file>'); process.exit(2); }
+  const policyArg = a.indexOf('--guard-policy');
+  const guardPolicy = policyArg >= 0 ? a[policyArg + 1] : 'default';
+  if (!['default', 'evidence-sufficiency'].includes(guardPolicy)) { console.error('invalid --guard-policy (use default or evidence-sufficiency)'); process.exit(2); }
   const t0 = Date.now();
   const fetched = a.includes('--refetch') ? await refetchDocuments(entries, publicFetcher) : null;
-  const out = await replay(entries);
+  const out = await replay(entries, { guardPolicy });
   out.summary.mode = fetched ? 'imported + keyless refetch' : 'imported only (no page text, quotes not checkable)';
   out.summary.fetches = fetched ? { pages: fetched.size, failed: [...fetched.values()].filter(r => !r.ok).length } : null;
   out.summary.runtime_ms = Date.now() - t0;

@@ -52,7 +52,7 @@ function yearOf(s) { const m = s.match(DATED); return m ? Number(m[1] ?? m[4] ??
 /**
  * collect(url, { fetcher, maxPages=6, now, signal, github=true }) → SaaSLens-v2-shaped research.
  */
-export async function collect(inputUrl, { fetcher, maxPages = 6, now = new Date(), github = true, githubFetch = globalThis.fetch, signal } = {}) {
+export async function collect(inputUrl, { fetcher, maxPages = 6, now = new Date(), github = true, githubFetch = globalThis.fetch, signal, recovery = false } = {}) {
   const limitations = [], documents = [], flags = [];
   const origin = new URL(inputUrl).origin;
   const site = siteOf(inputUrl);
@@ -75,7 +75,76 @@ export async function collect(inputUrl, { fetcher, maxPages = 6, now = new Date(
     if (p && !chosen.has(p.id)) chosen.set(p.id, u.href.split('#')[0]);
   }
   let n = 1;
-  for (const [purpose, url] of [...chosen].slice(0, maxPages - 1)) {
+  const recoveryLog = recovery ? { gaps: [], actions: [], budget: { limit: Math.max(1, maxPages), consumed: 1 }, recovered: [] } : null;
+  if (recovery) {
+    // A gap is a missing kind of decision-relevant statement, not a conclusion.
+    const topics = [
+      { id: 'edition', evidence: /\b(?:edition|version)\b.{0,60}\b(?:discontinued|retired|end.of.life|no longer supported)\b/i, link: /edition|version|product|feature|plan|pricing|compare/i },
+      { id: 'lifecycle', evidence: /\b(?:discontinued|retired|sunset|end.of.life|no longer (?:supported|maintained|sold))\b/i, link: /support|lifecycle|release|changelog|end.of.life|docs|help/i },
+      { id: 'licensing', evidence: /\b(?:licen[cs]e|licensing)\b.{0,90}\b(?:requires?|restricted|only|changed|replaced|discontinued|no longer|prohibited)\b|\b(?:requires?|restricted|only|changed|replaced|discontinued|no longer|prohibited)\b.{0,90}\b(?:licen[cs]e|licensing)\b/i, link: /licen[cs]|pricing|terms|subscription|docs|faq/i },
+    ];
+    const product = productToken(inputUrl);
+    const bound = s => product && new RegExp(`\\b${product}\\b`, 'i').test(s);
+    const gaps = topics.filter(t => !sentences(home.text).some(s => bound(s) && t.evidence.test(s)));
+    recoveryLog.gaps = gaps.map(t => t.id);
+    const queue = [], seen = new Set([new URL(home.url).href.split('#')[0]]);
+    const enqueue = (page, depth) => {
+      for (const href of page.links ?? []) {
+        let u; try { u = new URL(href, page.url); } catch { continue; }
+        u.hash = '';
+        if (!['http:', 'https:'].includes(u.protocol) || siteOf(u.href) !== site || seen.has(u.href)) continue;
+        const matched = gaps.filter(t => t.link.test(u.pathname + u.search)).map(t => t.id);
+        if (!matched.length) continue;
+        seen.add(u.href); queue.push({ url: u.href, depth, topics: matched });
+      }
+    };
+    // Preserve baseline-purpose coverage while reserving up to two page attempts
+    // for decision-driven follow-up within the same total page budget.
+    const baseline = [...chosen].slice(0, Math.max(0, recoveryLog.budget.limit - 3));
+    for (const [purpose, url] of baseline) {
+      seen.add(url);
+      if (!robotsAllows(robots, new URL(url).pathname)) { recoveryLog.actions.push({ url, purpose, result: 'disallowed by robots.txt' }); continue; }
+      recoveryLog.budget.consumed++;
+      try {
+        const d = await fetcher.fetch(url, { signal });
+        if (!d?.text || !d.url || siteOf(d.url) !== site || !robotsAllows(robots, new URL(d.url).pathname)) { recoveryLog.actions.push({ url, purpose, result: 'unreadable or outside allowed site' }); continue; }
+        documents.push({ id: `S${++n}`, origin: 'vendor-page', url: d.url, title: d.title, text: d.text, purpose });
+        recoveryLog.actions.push({ url, purpose, result: 'baseline page retrieved' });
+        enqueue(d, 2);
+      } catch { recoveryLog.actions.push({ url, purpose, result: 'fetch failed' }); }
+    }
+    enqueue(home, 1);
+    while (queue.length && recoveryLog.budget.consumed < recoveryLog.budget.limit) {
+      const candidate = queue.shift();
+      if (!robotsAllows(robots, new URL(candidate.url).pathname)) {
+        recoveryLog.actions.push({ ...candidate, result: 'disallowed by robots.txt' }); continue;
+      }
+      recoveryLog.budget.consumed++;
+      try {
+        const d = await fetcher.fetch(candidate.url, { signal });
+        if (!d?.text || !d.url || siteOf(d.url) !== site || !robotsAllows(robots, new URL(d.url).pathname)) {
+          recoveryLog.actions.push({ ...candidate, result: 'unreadable or outside allowed site' }); continue;
+        }
+        const doc = { id: `S${++n}`, origin: 'vendor-page', url: d.url, title: d.title, text: d.text, purpose: 'recovery' };
+        documents.push(doc);
+        const found = [];
+        for (const topic of gaps) {
+          const quote = sentences(d.text).find(s => s.length >= 12 && s.length <= 300 && bound(s) && topic.evidence.test(s));
+          if (quote) { found.push(topic.id); recoveryLog.recovered.push({ gap: topic.id, sourceId: doc.id, url: doc.url, quote }); }
+        }
+        recoveryLog.actions.push({ ...candidate, result: found.length ? 'evidence found' : 'no matching statement', found });
+        if (candidate.depth === 1) enqueue(d, 2);
+        // Stop when every initial gap has at least one cited statement.
+        if (gaps.every(t => recoveryLog.recovered.some(r => r.gap === t.id))) break;
+      } catch {
+        recoveryLog.actions.push({ ...candidate, result: 'fetch failed' });
+      }
+    }
+    recoveryLog.reason = gaps.length === 0 ? 'No missing topic detected on the submitted page.' :
+      gaps.every(t => recoveryLog.recovered.some(r => r.gap === t.id)) ? 'All detected topics have cited statements.' :
+      recoveryLog.budget.consumed >= recoveryLog.budget.limit ? 'Page attempt budget exhausted.' : 'No further suitable same-site links.';
+  }
+  for (const [purpose, url] of recovery ? [] : [...chosen].slice(0, maxPages - 1)) {
     if (!robotsAllows(robots, new URL(url).pathname)) { limitations.push(`robots.txt disallows ${new URL(url).pathname}; not fetched.`); continue; }
     try {
       const d = await fetcher.fetch(url, { signal });
@@ -88,7 +157,10 @@ export async function collect(inputUrl, { fetcher, maxPages = 6, now = new Date(
   for (const doc of documents) {
     const sents = sentences(doc.text).filter(s => s.length >= 12 && s.length <= 300);
     // Vendor's own retirement notice: an admission, decisive when it names the product.
-    const retire = sents.find(s => retirementOf(s, token));
+    // Follow-up pages often document multiple generations. Until the collector
+    // can bind an edition to the submission, keep their lifecycle passages in
+    // the recovery audit for review and out of the automatic Red path.
+    const retire = doc.purpose === 'recovery' ? undefined : sents.find(s => retirementOf(s, token));
     if (retire) flags.push({ kind: 'red', material: true, topic: 'maintenance', text: retire, evidence: [ev(doc, retire)] });
     if (doc.purpose === 'changelog' || doc.purpose === 'home') {
       const recent = sents.find(s => { const y = yearOf(s); return y && y >= year - 1 && y <= year; });
@@ -98,6 +170,13 @@ export async function collect(inputUrl, { fetcher, maxPages = 6, now = new Date(
       const ent = sents.find(s => ENTITY.test(s));
       if (ent && !flags.some(f => f.topic === 'identity')) flags.push({ kind: 'green', material: false, topic: 'identity', text: ent, evidence: [ev(doc, ent)] });
     }
+  }
+  if (recovery) {
+    for (const item of recoveryLog.recovered.filter(r => r.gap === 'licensing')) {
+      const doc = documents.find(d => d.id === item.sourceId);
+      flags.push({ kind: 'yellow', material: true, topic: 'licensing', text: item.quote, evidence: [ev(doc, item.quote)] });
+    }
+    recoveryLog.telemetry = { gaps: recoveryLog.gaps.length, attempts: recoveryLog.budget.consumed, retrieved: documents.length, citations: recoveryLog.recovered.length, failures: recoveryLog.actions.filter(a => a.result === 'fetch failed' || a.result === 'unreadable or outside allowed site').length };
   }
   if (github && repo && githubFetch) {
     try {
@@ -114,5 +193,5 @@ export async function collect(inputUrl, { fetcher, maxPages = 6, now = new Date(
     } catch { limitations.push('GitHub repository metadata could not be retrieved.'); }
   }
   limitations.push(`Keyless collection: ${documents.length} page(s), no independent web search.`);
-  return { productName: '', documents, checks: [], flags, incomplete: true, limitations, coverage: { pages: documents.map(d => d.purpose) } };
+  return { productName: '', documents, checks: [], flags, incomplete: true, limitations, coverage: { pages: documents.map(d => d.purpose) }, ...(recovery ? { recoveryLog } : {}) };
 }
