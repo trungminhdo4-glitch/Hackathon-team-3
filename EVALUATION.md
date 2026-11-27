@@ -37,3 +37,15 @@ Judge materiality in context. A commercial-use license can be routine for an ima
 - **accessiBe accessWidget, row 36, Red.** The reviewer points to a regulatory finding about the central compliance promise and paid reviews. A new report must retrieve the underlying record, verify its scope and date, and explain its relevance before reaching that conclusion.
 
 These examples describe reviewer judgments. The dataset is a calibration benchmark. Generate a fresh report without giving the researcher the expected label. Compare the predicted verdict, the decisive reason, and whether the citations support it. Record when changed facts, unavailable text, or visual-only evidence explain a difference. Report evidence coverage separately from product quality.
+
+### Small MVP check, 27 November 2026
+
+The API received only the original URL for each of these three development examples. The optional question was blank. The most recent live search for each product produced the following results.
+
+| Dataset row | Reviewer | Live verdict | What decided the report |
+| --- | --- | --- | --- |
+| 2 · Microsoft 365 Copilot Chat | Yellow | Insufficient evidence | The report verified eligibility for the included chat and found information on data protection. It did not validate the paid-tier comparison as a decisive licensing finding. [Microsoft product page](https://www.microsoft.com/en-us/copilot/features/chat) |
+| 6 · Postfix | Green | Green | A published benchmark exercised receiving and delivering mail. The report also found release and maintenance evidence. [Postfix](https://www.postfix.org/) · [Benchmark](https://github.com/stalwartlabs/benchmarks) |
+| 32 · DoNotPay | Red | Red | The FTC’s final order restricted deceptive claims about what the chatbot could do. This directly concerns the advertised legal capability. [FTC case record](https://www.ftc.gov/legal-library/browse/cases-proceedings/donotpay) |
+
+Replaying a separate collection of live passages through the same verdict rules matched all three reviewer labels. The Copilot collection included an explicit comparison between the base entitlement and the additional license. A fresh search can return a different set of readable sources. These three examples were used during development; the other 37 have not been evaluated. [Microsoft licensing FAQ](https://www.microsoft.com/licensing/faqs/2)

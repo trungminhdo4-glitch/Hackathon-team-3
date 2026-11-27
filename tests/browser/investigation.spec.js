@@ -29,9 +29,26 @@ for (const [scenario, subject, verdict] of [
     expect(report.rubricVersion).toBe(2);
     expect(report).not.toHaveProperty('score');
     await expect(page.locator('.report .badge')).toHaveText(verdictLabels[verdict]);
+    await expect(page.getByRole('heading', { name: 'Overall verdict' })).toBeVisible();
+    await expect(page.getByRole('region', { name: 'Your product question' })).toHaveCount(0);
     const criteria = page.getByRole('region', { name: 'Evaluation criteria' });
     await expect(criteria.getByRole('article')).toHaveCount(6);
     await expect(page.locator('.report .score, .report .points')).toHaveCount(0);
+    const highlights = { credible: ['Strengths'], tier: ['Strengths', 'Cautions'], contradiction: ['Red flags'] };
+    for (const name of ['Strengths', 'Cautions', 'Red flags']) {
+      const group = page.getByRole('region', { name, exact: true });
+      if (!(highlights[scenario] || []).includes(name)) {
+        await expect(group).toHaveCount(0);
+        continue;
+      }
+      const link = group.getByRole('link').first();
+      await expect(link).toBeVisible();
+      const target = await link.getAttribute('href');
+      expect(target).toMatch(/^#finding-\d+$/);
+      await link.click();
+      await expect(criteria.locator(target)).toBeFocused();
+      await expect(criteria.locator(target).getByRole('link').first()).toBeVisible();
+    }
     for (const check of report.checks) {
       const row = criteria.getByRole('article').filter({ has: page.getByRole('heading', { name: check.label, exact: true }) });
       await expect(row.getByText(statusLabels[check.status], { exact: true }).first()).toBeVisible();
@@ -84,7 +101,7 @@ test('session history restores original reports and citations without another in
     ['https://contradicted.example/', '', verdictLabels.red],
   ]) {
     await page.getByLabel('Product, company, or URL').fill(subject);
-    await page.getByLabel('Product question').fill(focus);
+    await page.getByRole('textbox', { name: 'Product question', exact: true }).fill(focus);
     await page.getByRole('button', { name: 'Investigate', exact: true }).click();
     await expect(page.locator('.report .badge')).toHaveText(verdict);
   }
@@ -93,9 +110,12 @@ test('session history restores original reports and citations without another in
   await page.getByText('Session history').click();
   await page.getByRole('button', { name: /Does Orbit Desk require a commercial license/i }).click();
   await expect(page.locator('.report .badge')).toHaveText(verdictLabels.green);
-  await expect(page.getByLabel('Product question')).toHaveValue(question);
+  await expect(page.getByRole('textbox', { name: 'Product question', exact: true })).toHaveValue(question);
   await expect(page.getByLabel('Product, company, or URL')).toHaveValue('Orbit Desk');
-  await expect(page.getByText('Orbit Desk requires a commercial license for business use.', { exact: true }).first()).toBeVisible();
+  const answer = page.getByRole('region', { name: 'Your product question' });
+  await expect(answer.getByText(question, { exact: true })).toBeVisible();
+  await expect(answer.getByText('Orbit Desk requires a commercial license for business use.', { exact: true })).toBeVisible();
+  await expect(page.locator('.report h3').first()).toHaveText('Overall verdict');
   await expect(page.getByRole('link', { name: /Orbit Desk deployment review/ }).first()).toBeVisible();
   expect(requests).toBe(2);
   const anotherTab = await context.newPage();

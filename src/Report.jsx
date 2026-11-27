@@ -82,6 +82,32 @@ function EarlierBreakdown({report, sources}) {
   </section>
 }
 
+function Highlights({checks}) {
+  const supportedCapabilities = checks.filter(c => c.id === 'capability' && c.status === 'supported' &&
+    c.impact === 'routine' && c.evidence.length)
+  const coreEvidence = supportedCapabilities.flatMap(c => c.evidence)
+  const groups = { green: [], yellow: [], red: [] }
+  for (const check of checks) {
+    if (!check.evidence.length || check.status === 'unverified') continue
+    if (check.impact === 'disqualifying') groups.red.push(check)
+    else if (check.impact === 'caveat') groups.yellow.push(check)
+    else if (supportedCapabilities.includes(check)) groups.green.push(check)
+    else if (check.id === 'experience' && check.status === 'supported') {
+      // A firsthand account becomes a strength when its passage demonstrates the core capability.
+      const corroboratesUse = check.evidence.some(account => coreEvidence.some(e =>
+        e.sourceId === account.sourceId && e.quote === account.quote))
+      if (corroboratesUse) groups.green.push(check)
+    }
+  }
+  return Object.entries(groups).map(([kind, findings]) => findings.length > 0 && <section className="highlights"
+    key={kind} aria-label={flagLabels[kind]}>
+    <h3><span className={'marker ' + kind} aria-hidden="true"/>{flagLabels[kind]}</h3>
+    <ul>{findings.map(finding => <li key={finding.anchor}>
+      <a href={'#' + finding.anchor}>{kind === 'green' ? finding.claim : finding.consequence}</a>
+    </li>)}</ul>
+  </section>)
+}
+
 function RubricFindings({checks, sources}) {
   const criteria = Map.groupBy(checks, check => check.id)
   const covered = [...criteria.values()].filter(claims => claims.some(claim => claim.evidence?.length)).length
@@ -91,7 +117,7 @@ function RubricFindings({checks, sources}) {
     <div className="findings">{[...criteria].map(([id, claims]) =>
       <article className="finding" key={id}>
         <h4>{claims[0].label}</h4>
-        {claims.map((finding, i) => <div className="claim-finding" key={i}>
+        {claims.map(finding => <div className="claim-finding" key={finding.anchor} id={finding.anchor} tabIndex="-1">
           <span className={'status ' + finding.status}>{claimStatuses[finding.status]}</span>
           {finding.claim && <p className="claim">{finding.claim}</p>}
           {finding.explanation !== finding.claim && <p>{finding.explanation}</p>}
@@ -109,6 +135,9 @@ export function Report({report, simulated, retry}) {
   const sources = new Map(report.sources.map(source => [source.id, source]))
   const verdictSources = (report.verdictEvidenceIds ?? []).map(id => sources.get(id)).filter(sourceUrl)
   const historical = isEarlierReport(report)
+  const findings = historical ? [] : report.checks.map((check, i) => ({ ...check, anchor: 'finding-' + (i + 1) }))
+  const answer = report.answer ? <CitedFinding finding={report.answer} sources={sources}/> :
+    <p>The retrieved sources did not establish an answer to this question.</p>
   return <section className="report" aria-labelledby="report-title">
     <div className="report-top">
       <div>
@@ -122,6 +151,7 @@ export function Report({report, simulated, retry}) {
       </div>
       {historical && typeof report.score === 'number' && <div className="score"><span className="section-label">Previous rubric score</span><strong>{report.score}<small> / 100</small></strong></div>}
     </div>
+    {!historical && <h3 className="overall-verdict report-heading">Overall verdict</h3>}
     <div className={'badge ' + (report.verdict || 'insufficient')}><Icon name={report.verdict === 'green' ? 'check' : 'alert'}/>{verdictLabel(report)}</div>
     <p className="interpretation">{report.interpretation}</p>
     {verdictSources.length > 0 && <div className="verdict-sources citation-source">
@@ -130,11 +160,11 @@ export function Report({report, simulated, retry}) {
         {source.title || sourceUrl(source).hostname}<Icon name="external"/>
       </a>)}
     </div>}
+    {!historical && <Highlights checks={findings}/>}
     {historical && <div className="historical-notice"><p>This saved report used the previous points-based rubric.</p>
       <button type="button" className="retry" onClick={retry}>Evaluate with current rubric</button></div>}
-    {(report.question || report.answer) && <section className="answer"><h3>{report.question || 'Product overview'}</h3>
-      {report.answer ? <CitedFinding finding={report.answer} sources={sources}/> :
-        <p>The retrieved sources did not establish an answer to this question.</p>}
+    {historical && (report.question || report.answer) && <section className="answer"><h3>{report.question || 'Product overview'}</h3>
+      {answer}
     </section>}
     {historical && report.flags?.length > 0 && <div className="signals">
       {Object.entries(flagLabels).map(([kind, label]) => {
@@ -146,8 +176,12 @@ export function Report({report, simulated, retry}) {
       })}
     </div>}
     {historical ? <EarlierBreakdown report={report} sources={sources}/> :
-      report.checks.length > 0 && <RubricFindings checks={report.checks} sources={sources}/>}
+      findings.length > 0 && <RubricFindings checks={findings} sources={sources}/>}
     <CustomerTestimony accounts={report.testimony} sources={sources}/>
+    {!historical && report.question && <section className="answer" aria-labelledby="question-title">
+      <h3 id="question-title">Your product question</h3><p className="question-text">{report.question}</p>
+      {answer}
+    </section>}
     {report.limitations.length > 0 && <details className="unknowns">
       <summary>Unknowns and limitations ({report.limitations.length})</summary>
       <ul>{report.limitations.map((item,i) => <li key={i}>{item}</li>)}</ul></details>}

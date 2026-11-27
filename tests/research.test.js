@@ -4,6 +4,7 @@ import { Readable } from 'node:stream';
 import { EventEmitter } from 'node:events';
 import https from 'node:https';
 import { Runner } from '@openai/agents';
+import { z } from 'zod';
 import { fetchPublicText, lookupPublic, validatePublicUrl } from '../server/fetch.js';
 import { research, searchSources } from '../server/live.js';
 
@@ -164,6 +165,66 @@ test('blocked independent publishers trigger bounded fallback retrieval without 
   assert.equal(requests.length, 7); // submitted page + six bounded candidate reads
 });
 
+test('a procedure deep in a long guide retains its task, literal setting, command and observed result', async t => {
+  const news = Array.from({length:80}, (_,i) => '<p>Archive Desk release ' + i +
+    ' includes Archive Desk community news, subscription updates, and partner announcements.</p>').join('');
+  const workflow = [
+    'To create a recovery archive, prepare a folder of sample documents.',
+    'archive_mode = incremental',
+    'arcctl export --profile daily',
+    'The records team processed 325 files and recovered the original documents from the archive.',
+  ];
+  serveOnce(t,200,{'content-type':'text/html'}, '<title>Archive Desk handbook</title><main>' + news +
+    workflow.map(line => '<p>' + line + '</p>').join('') + '</main>');
+  let observed;
+  const session = {agent:{},runner:{async run(_agent,input) {
+    const task = JSON.parse(input);
+    if (task.lane) return resultFor([]);
+    observed = task.documents[0].passages;
+    return {finalOutput:{productNames:[],vendor:null,claims:[],testimony:[],answer:{evidence:[]}}};
+  }}};
+  await research('https://1.1.1.1/archive-desk', {session});
+  assert.deepEqual(observed.filter(p => workflow.includes(p.text)).map(p => p.text),workflow);
+  assert.equal(new Set(observed.map(p => p.id)).size, observed.length);
+  assert.ok(observed.length <= 22);
+  assert.ok(observed.reduce((sum,p) => sum + p.text.length,0) <= 4300);
+});
+
+test('the source-attested edition in the original URL wins over its paid comparator and licensing evidence survives a broken citation', async t => {
+  const edition = 'Aster 360 Desk Chat';
+  const paid = 'Aster 360 Desk';
+  const base = edition + ' includes a public web assistant for staff.';
+  const condition = 'When you add an Aster 360 Desk license, Desk Chat can use the organization directory (https://directory.example/records ) to find staff.';
+  const body = '<title>Business chat overview</title><main><p>' + base + '</p><p>' + condition + '</p></main>';
+  serveOnce(t, 200, {'content-type':'text/html'}, body);
+  const session = { agent:{}, runner:{async run(_agent,input) {
+    const task = JSON.parse(input);
+    if (task.lane) return resultFor([]);
+    const passages = task.documents[0].passages;
+    const cite = text => ({passageId:passages.find(p => p.text === text).id, relation:'vendor',vendorAuthored:true,author:null});
+    return {finalOutput:{productNames:[{name:paid,passageId:cite(condition).passageId}],vendor:null,
+      answer:{evidence:[cite(base),cite(condition)]},testimony:[],claims:[{
+        criterion:'licensing',claim:'Incorrect paraphrase that a fake citation would support.',reason:'Invented',consequence:'Invented',
+        status:'supported',impact:'caveat',evidence:[cite(base),{...cite(condition),passageId:'S9.99'}],
+      }] }};
+  }}};
+  const raw = await research('https://1.1.1.1/en-us/aster-360-desk/chat', {session,question:'Which license unlocks directory access?'});
+  assert.equal(raw.productName, edition);
+  assert.ok(raw.productAliases.some(alias => alias.name === 'Desk Chat'));
+  assert.ok(!raw.productAliases.some(alias => alias.name === paid));
+  assert.equal(raw.claims.length, 1);
+  const [finding] = raw.claims;
+  assert.equal(finding.impact,'routine');
+  assert.match(finding.claim,/Desk Chat can use the organization directory/);
+  assert.doesNotMatch(finding.claim,/https:|fake citation/);
+  assert.equal(finding.evidence[0].quote,condition);
+  assert.equal(finding.evidence[0].sourceId,'S1');
+  for (const question of ['', 'Does this support offline viewing?']) {
+    const routine = await research('https://1.1.1.1/en-us/aster-360-desk/chat', {session, question});
+    assert.equal(routine.claims[0].impact,'routine');
+  }
+});
+
 test('title-only and access-denial pages trigger one alternate-publisher search and cannot supply evidence', async t => {
   const base = 'Aster Chat includes public web search with an eligible subscription.';
   const extra = 'Access to internal documents requires a separate license.';
@@ -211,4 +272,61 @@ test('title-only and access-denial pages trigger one alternate-publisher search 
   assert.deepEqual(raw.productAliases,[{name:'Aster Chat',sourceId:'S1'}]);
   assert.deepEqual(raw.answer.evidence.map(e=>e.quote),[base, extra]);
   assert.ok(!raw.limitations.some(text=>text.includes('allegation')));
+});
+
+test('one tool-free repair restores a missing core claim; a failed repair leaves earlier findings intact', async t => {
+  const core = 'We deployed Parcel Mail to deliver signed messages between our two offices.';
+  const terms = 'The Parcel Mail Standard plan includes support for ten users.';
+  const promise = 'Parcel Mail is a tool for delivering signed messages.';
+  serveOnce(t, 200, {'content-type':'text/html'}, '<title>Parcel Mail</title><main><p>' + core + '</p><p>' + terms + '</p><p>' + promise + '</p></main>');
+  for (const outcome of ['valid','description only','invented','timeout']) {
+    let repairs = 0;
+    const session = {agent:{}, runner:{async run(agent,input,options) {
+      const task = JSON.parse(input);
+      if (task.lane) return resultFor([]);
+      const passages = task.documents[0].passages;
+      const reference = text => ({passageId:passages.find(p => p.text === text).id,relation:'vendor',vendorAuthored:true,author:null});
+      const claim = (criterion,text) => ({criterion,claim:text,status:'supported',impact:'routine',
+        reason:'A specific source documents this.',consequence:'The user can use this documented capability.',evidence:[reference(text)]});
+      const capability = claim('capability',core);
+      if (task.stage === 'repair_claims') {
+        repairs++;
+        assert.equal(agent,session.agent);
+        assert.deepEqual(agent.tools,[]);
+        assert.equal(agent.modelSettings.toolChoice,'none');
+        assert.equal(options.maxTurns,1);
+        assert.ok(options.signal instanceof AbortSignal);
+        assert.deepEqual(task.criteria,['capability']);
+        assert.ok(!input.includes('Original invented prose.'));
+        if (outcome === 'timeout') throw new DOMException('Time limit','TimeoutError');
+        if (outcome === 'invented') capability.evidence[0].passageId = 'S404.9';
+        return {finalOutput:{claims:[capability]}};
+      }
+      const first = {productNames:[{name:'Parcel Mail',passageId:reference(terms).passageId}],vendor:null,
+        answer:{evidence:[reference(core)]},testimony:[],claims:[
+          claim('licensing',terms), outcome === 'description only' ? claim('capability',promise) :
+            {...capability,claim:'Original invented prose.',evidence:[{...reference(core),passageId:'S99.99'}]},
+        ]};
+      // Validate the actual provider-facing schema for each place the first response can cite a passage.
+      const validator = z.fromJSONSchema(agent.outputType.schema);
+      const valid = {...first,vendor:{name:'Parcel',evidence:[reference(terms)]},testimony:[{evidence:[reference(core)]}],claims:[capability]};
+      assert.ok(validator.safeParse(valid).success);
+      const mutations = [
+        sample => sample.productNames[0], sample => sample.vendor.evidence[0], sample => sample.answer.evidence[0],
+        sample => sample.testimony[0].evidence[0], sample => sample.claims[0].evidence[0],
+      ];
+      for (const target of mutations) {
+        const sample = structuredClone(valid);
+        target(sample).passageId = 'S404.99';
+        assert.equal(validator.safeParse(sample).success,false);
+      }
+      return {finalOutput:first};
+    }}};
+    const raw = await research('https://1.1.1.1/parcel-mail', {session});
+    assert.equal(repairs,1);
+    assert.equal(raw.claims.find(c => c.criterion === 'licensing').text,terms);
+    const coreClaims = raw.claims.filter(c => c.criterion === 'capability');
+    assert.deepEqual(coreClaims.map(c => c.text), ['valid','description only'].includes(outcome) ? [core] : []);
+    assert.ok(!raw.claims.some(c => c.claim === 'Original invented prose.'));
+  }
 });

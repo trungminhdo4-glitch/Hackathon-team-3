@@ -283,3 +283,98 @@ test('a source-attested prefix abbreviation retains the edition in a multi-produ
   raw.documents[2].title = 'Orbit 365 Desk Home';
   assert.equal(assess(url,raw).testimony.length,0);
 });
+
+test('a binding order limiting an advertised capability outweighs minor caveats and preliminary material', () => {
+  const raw = fixture('tier');
+  const final = 'In April the commission finalized an order requiring Orbit Desk to stop making deceptive claims about the capabilities of its routing engine.';
+  const draft = 'The proposed order would prohibit the company from making unsupported claims about its automation.';
+  raw.documents.push({id:'R1',url:'https://commission.example/orders/desk',origin:'web_search',title:'Orbit Desk final record',text:final});
+  raw.documents.push({id:'R2',url:'https://commission.example/consultations',origin:'web_search',title:'Open consultations',text:draft});
+  raw.claims.push({criterion:'credibility',status:'supported',impact:'routine',
+    claim:'There is an order.',reason:'A restriction was discussed.',consequence:'Check the regulator record.',
+    evidence:[cite('R1',final,'authority'),cite('R2',draft,'authority')]});
+  const report = assess(url,raw);
+  assert.equal(report.verdict,'red');
+  assert.deepEqual(report.verdictEvidenceIds,['R1']);
+  assert.match(report.interpretation,/finalized an order/);
+  assert.ok(!report.interpretation.includes('proposed'));
+  for (const unsupported of ['The commission proposed a final order requiring Orbit Desk to stop making deceptive claims about its routing capabilities.',
+    'The commission never finalized an order requiring Orbit Desk to stop making deceptive claims about its capabilities.',
+    'The commission finalized an order requiring Other Desk to stop making deceptive claims about its abilities after impersonating Orbit Desk.',
+    'The commission finalized an order requiring Orbit Desk to stop making deceptive claims about parking reimbursements.']) {
+    raw.documents.at(-2).text = raw.claims.at(-1).evidence[0].quote = unsupported;
+    assert.notEqual(assess(url,raw).verdict,'red',unsupported);
+  }
+});
+
+test('a comparative implementation test can establish only the exercised core task', () => {
+  const raw = fixture();
+  const purpose = 'Orbit Desk is a queue for processing incoming support tickets.';
+  const testRun = 'Our comparison runs routed tickets with Orbit Desk in all 3 tests, alongside the connector.';
+  raw.documents[0].text += ' ' + purpose;
+  raw.documents.push({id:'B1',origin:'web_search',url:'https://engineering.example/comparison',title:'Comparing queue software',text:testRun});
+  raw.claims = [{criterion:'capability',status:'supported',impact:'routine',claim:purpose,
+    reason:'The publisher calls this ticket software.',consequence:'Verify the observed use.',evidence:[cite('S1',purpose)]}];
+  raw.testimony = [{evidence:[cite('B1',testRun,'other')]}];
+  const report = assess(url,raw);
+  assert.equal(report.verdict,'green');
+  assert.deepEqual(report.verdictEvidenceIds,['S1','B1']);
+  assert.match(report.interpretation,/in that setting/);
+  assert.equal(report.testimony.length,0);
+  for (const inadequate of ['Orbit Desk is extremely popular with customers worldwide.',
+    'We tested our calendar benchmarks in production using Orbit Desk.', 'We plan to deploy Orbit Desk to route tickets in production.']) {
+    raw.documents.at(-1).text = raw.testimony[0].evidence[0].quote = inadequate;
+    assert.equal(assess(url,raw).verdict,'insufficient',inadequate);
+  }
+});
+
+test('routine security controls are not evidence of maintenance or support continuity', () => {
+  const raw = fixture();
+  const quote = 'Orbit Desk inherits the organizational security and compliance controls from the parent suite.';
+  raw.documents[0].text += ' ' + quote;
+  raw.claims.push({criterion:'maintenance',status:'supported',impact:'routine',claim:'Support is continuing.',
+    reason:'The product inherits controls.',consequence:'Updates are available.',evidence:[cite('S1',quote)]});
+  assert.equal(check(assess(url,raw),'maintenance').status,'unverified');
+});
+
+test('a separately scoped official entitlement survives rejection of a companion passage without reusing model prose', () => {
+  const raw = fixture('tier');
+  const unrelated = 'A subscription to the unrelated suite includes free phone calls.';
+  raw.documents.push({id:'F1',origin:'web_search',url:url+'other',title:'Different software plan',text:unrelated});
+  const proposal = raw.claims.at(-1);
+  proposal.evidence.push(cite('F1',unrelated));
+  proposal.reason = 'Calling is included for this product.';
+  const report = assess(url,raw);
+  assert.equal(report.verdict,'yellow');
+  assert.deepEqual(check(report,'licensing').evidenceIds,['S1']);
+  assert.ok(!JSON.stringify(report).includes('Calling is included'));
+});
+
+test('a material edition contrast is established by two actual first-party passages without a question', () => {
+  const raw = fixture();
+  const base = 'Orbit Desk is available at no additional cost for accounts with an eligible standard subscription.';
+  const upgrade = 'When you add a Warehouse license, Orbit Desk gains the ability to export records into production systems.';
+  raw.documents[0].text += '\n' + base;
+  raw.documents.push({id:'F1',origin:'web_search',title:'Purchasing FAQ',url:url+'licensing',text:upgrade});
+  const report = assess(url,raw);
+  assert.equal(report.verdict,'yellow');
+  const license = check(report,'licensing');
+  assert.deepEqual(license.evidence.map(e => e.quote),[base,upgrade]);
+  assert.deepEqual(report.verdictEvidenceIds,['S1','F1']);
+  assert.match(report.interpretation,/production systems/);
+  for (const unrelated of [
+    'Orbit Desk Home requires a paid license to export records into production systems.',
+    'When you add a Warehouse license, Orbit Desk Home gains access to production records.',
+    'Orbit Desk does not require a separate license to export records into production systems.',
+    'Orbit Desk requires a separate license to export cosmetic avatars from profile accounts.',
+    'Other Suite requires a paid subscription to export records, Orbit Desk is available to customers.',
+    'Orbit Desk might require a separate license to export records.',
+    'Would Orbit Desk require a separate license to export records?',
+  ]) {
+    raw.documents.at(-1).text = unrelated;
+    assert.equal(assess(url,raw).verdict,'green',unrelated);
+  }
+  raw.documents.at(-1).text = upgrade;
+  raw.documents[0].text = raw.documents[0].text.replace(base,'Orbit Desk is included with the most expensive enterprise subscription.');
+  assert.equal(assess(url, raw).verdict,'green');
+});

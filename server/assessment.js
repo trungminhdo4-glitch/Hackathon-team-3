@@ -206,7 +206,29 @@ function completeContext(doc, quote) {
     s.index + s.segment.length > index).map(s => s.segment.trim()).join(' ');
 }
 
+function bindingClaimRestriction(evidence, context) {
+  const names = [context.productName, ...context.aliases, context.vendor].filter(Boolean);
+  const targets = names.map(escapeRegex).join('|');
+  if (!targets) return null;
+  const subject = '(?:' + targets + ')(?![\\p{L}\\p{N}])';
+  const finalOrder = /\b(?:final(?:ized|ised)? (?:a |an |the |its )?(?:consent |administrative )?order|final(?:ized|ised)? (?:a |an |the )?settlement|binding (?:order|settlement))\b/i;
+  const namesRespondent = new RegExp('(?:against|with|requires?|requiring|prohibits?|prohibiting|forbids?|bars?|orders?)\\s+' +
+    subject + '|' + subject + '\\s+(?:is (?:required|barred|prohibited)|must|may not|shall|agreed to)', 'iu');
+  const restriction = /\b(?:stop|cease|prohibit\w*|barred|bars|forbid\w*|must not|may not|shall not|bann?ed)\b.{0,180}\b(?:decept\w*|mislead\w*|misrepresent\w*|false\w*|unsubstantiated|unsupported|claim\w*|advertis\w*)\b|\b(?:prohibit\w*|stop|cease)\b.{0,90}\bclaim\w*\b/i;
+  const remedies = evidence.filter(e => e.sourceType === 'Authority publication');
+  for (const item of remedies) {
+    const doc = context.documents.get(item.sourceId);
+    const surrounding = completeContext(doc, item.quote);
+    if (!restriction.test(item.quote) || /\b(?:if approved|proposed|would (?:prohibit|bar|require)|reversed|vacated|overturned|no longer applies|not required|never (?:issued|finalized)|did not (?:issue|finalize)|no final order|not true|false that)\b/i.test(surrounding)) continue;
+    const record = [doc.title, item.quote].join(' ');
+    if (/\b(?:ability|abilities|capabilit\w*|effective\w*|perform\w*|substitute|protect\w*|secur\w*|privacy|diagnos\w*|accurac\w*|function\w*|automat\w*)\b/i.test(item.quote) &&
+        finalOrder.test(record) && namesRespondent.test(record)) return item;
+  }
+  return null;
+}
+
 function hasDecisiveEvidence(evidence, context) {
+  if (bindingClaimRestriction(evidence, context)) return true;
   return evidence.some(e => {
     const doc = context.documents.get(e.sourceId);
     const surrounding = completeContext(doc, e.quote);
@@ -237,6 +259,9 @@ const quantities = /\d+(?:[.,]\d+)?\s*(?:%|×|x\b|percent\b|milliseconds?\b|seco
 const normalizedQuantities = text => [...text.matchAll(quantities)].map(m =>
   m[0].toLowerCase().replace(/\s+/g, '').replace('percent','%').replace('×','x'));
 const licensingTerms = /\b(?:licen[cs]\w*|subscriptions?|plans?|tiers?|eligible|entitle\w*|add[- ]?on|accounts?|pay\w*|paid|free|cost|pric\w*|fees?|per (?:seat|user)|available (?:to|with|only)|permitted|commercial use|data access|access to|unlimited|(?:standard|basic|premium|enterprise|professional) edition)\b/i;
+const maintenanceTerms = /\b(?:maintain\w*|maintenance|release[ds]?|changelogs?|roadmaps?|patch(?:es|ed)?|updates?|supported (?:until|through|on|version|platform)|no longer supported|supports? (?:windows|android|ios|linux|macos)|support (?:window|period|ends?|ended|contract|team|channel|hours|contact|agreement)|discontinu\w*|end[- ]of[- ](?:life|sale|support)|retire\w*|migrat\w*|compatib\w*)\b/i;
+const securityTerms = /\b(?:secur\w*|privacy|personal data|protect\w*|encrypt\w*|compliance|compliant|certif\w*|audit\w*|incident|breach|vulnerab\w*|risk|remediat\w*|SOC\s?2|GDPR|ISO)\b/i;
+const credibilityTerms = /\b(?:customer\w*|partner\w*|certif\w*|regulat\w*|registry|registered|foundation|nonprofit|owner\w*|operat\w*|mislead\w*|claim\w*|order|decept\w*|fals\w*|endorse\w*|represent\w*|named|backed|member\w*)\b/i;
 
 function canDemonstrate(e, claim, context) {
   if (e.sourceType === 'Vendor-hosted testimonial') return false;
@@ -285,8 +310,39 @@ function unknown(criterion, reason) {
 function assessClaim(proposal, context) {
   const { criterion } = proposal;
   if (!statuses.has(proposal.status)) return unknown(criterion);
+  // The issuer's final restriction is itself a separately checkable claim.
+  // A rejected companion excerpt (including a preliminary order) cannot
+  // override that record or supply additional allegations to its rationale.
+  if (['capability','credibility','security'].includes(criterion)) {
+    const authoritative = (proposal.evidence ?? []).filter(e => e.relation === 'authority')
+      .flatMap(item => collectEvidence({ evidence:[item] },context,criterion));
+    const order = bindingClaimRestriction(authoritative, context);
+    if (order) return { id: criterion, label: criteria[criterion][0], claim: order.quote, status: 'supported', impact: 'disqualifying',
+      explanation: 'The issuing authority records a binding restriction on the advertised capability. ' + order.quote,
+      consequence: 'Verify the affected capability against the order before relying on the advertised promise.',
+      evidence: [order], evidenceIds: [order.sourceId] };
+  }
   const evidence = collectEvidence(proposal, context, criterion);
-  if (!evidence.length) return unknown(criterion, 'The proposed evidence could not be verified for this product and criterion.');
+  if (!evidence.length) {
+    // Never inherit prose or materiality from a claim that lost a citation.
+    // A remaining official entitlement can stand alone as a new finding.
+    const validRefs = (proposal.evidence ?? []).every(item => {
+      const doc = context.documents.get(item.sourceId);
+      return doc && matchesPassage(doc, clean(item.quote));
+    });
+    if (criterion === 'licensing' && validRefs) {
+      const terms = proposal.evidence.flatMap(item => collectEvidence({ evidence: [item] }, context, criterion))
+        .filter(e => e.sourceType === 'Vendor publication' && licensingTerms.test(e.quote));
+      if (terms.length) {
+        const limitsAccess = terms.some(e => /\b(?:requires? a (?:separate|paid|premium)|additional (?:license|licence|subscription)|only (?:available|included)|when you add (?:a|an) .{0,60}licen[cs]e|limited to (?:eligible|paid)|available only)\b/i.test(e.quote));
+        return { id: criterion, label: criteria[criterion][0], status: 'supported', impact: limitsAccess ? 'caveat' : 'routine',
+          claim: terms[0].quote, explanation: 'The publisher documents this entitlement for the named edition.',
+          consequence: limitsAccess ? 'Verify that the intended account includes this entitlement before relying on the feature.' :
+            criteria[criterion][1], evidence: terms, evidenceIds: idsOf(terms) };
+      }
+    }
+    return unknown(criterion, 'The proposed evidence could not be verified for this product and criterion.');
+  }
   const claim = textOnly(proposal.claim);
   const reason = textOnly(proposal.reason);
   const consequence = textOnly(proposal.consequence);
@@ -294,6 +350,10 @@ function assessClaim(proposal, context) {
   const passages = evidence.map(e => e.quote).join(' ');
   if (criterion === 'licensing' && !licensingTerms.test(passages)) {
     return unknown(criterion, 'The cited passages do not state a price, entitlement, access condition, or license term for this product.');
+  }
+  const topicTerms = { maintenance: maintenanceTerms, security: securityTerms, credibility: credibilityTerms };
+  if (topicTerms[criterion] && !topicTerms[criterion].test(passages)) {
+    return unknown(criterion, 'The passage does not establish a finding about ' + criteria[criterion][0].toLowerCase() + '.');
   }
   // These assertions require matching facts in the record even if the model
   // has accurately repeated the source IDs. Avoid rendering unsupported
@@ -340,6 +400,97 @@ function answerFrom(raw, context) {
   });
   const evidence = items.flatMap(item => collectEvidence({ evidence: [item] }, context, 'answer'));
   return evidence.length ? { text: [...new Set(evidence.map(e => e.quote))].join(' '), evidence, evidenceIds: idsOf(evidence) } : null;
+}
+
+// A first-party plan comparison can be split across a product page and a
+// licensing FAQ. Require two explicit, edition-scoped statements and retain
+// each in full. A comparison table or the name of an adjacent plan cannot
+// establish that purchasing it changes what this product does.
+function entitlementContrast(context) {
+  const names = [context.productName, ...context.aliases].filter(Boolean).map(escapeRegex);
+  if (!names.length) return null;
+  const target = '(?:' + names.join('|') + ')';
+  const targetSubject = new RegExp('(?:^|[,.:]\\s+)' + target +
+    '\\s+(?:is|can|includes|allows|provides|requires|needs|gains|adds|lets|becomes|users|customers)\\b','iu');
+  const upgradeForTarget = new RegExp('^(?:' + target + '\\s+(?:requires?|needs?|users (?:need|must)|customers (?:need|must))\\b|' +
+    '(?:when|once|after) you (?:purchase|buy|add|upgrade)\\b[^,.;]{1,140},\\s*' + target +
+    '\\s+(?:can|gains|adds|includes|lets|becomes|allows|provides|uses|works)\\b)','iu');
+  const tier = /\b(?:licen[cs]e|subscription|plan|add-on|tier)\b/i;
+  const baseCost = /\b(?:included (?:in|with)|(?:at |for )?no (?:extra|additional) (?:cost|charge)|free (?:with|for)|comes with|part of (?:the |an? )?(?:standard|base|free) plan)\b/i;
+  const upgrade = /\b(?:(?:when|once|after) you (?:purchase|buy|add|upgrade)|requires? (?:an? |the )?(?:additional|separate|paid|premium)|only (?:available|included|accessible) (?:with|on) (?:an? |the )?(?:paid|premium|higher))\b/i;
+  const negated = /\b(?:does not|doesn’t|doesn't|do not|not required|no longer|previously|formerly|used to|untrue|hypothetical|not included|might|may require|would require)\b/i;
+  // Evidence must describe an operational difference (data, interoperability,
+  // deployment or working functionality). An optional visual perk is routine.
+  const functional = /\b(?:access(?:es|ing)?|draw(?:s|ing)? on|search(?:es|ing)?|connect(?:s|ing)?(?: to)?|export(?:s|ing)?|import(?:s|ing)?|process(?:es|ing)?|rout(?:e|es|ing)|sync(?:s|ing)?|retriev(?:e|es|ing)|integrat(?:e|es|ing)|deploy(?:s|ing)?|work(?:s|ing)? directly (?:in|with)|run(?:s|ning)?|stor(?:e|es|ing))\b.{0,90}\b(?:data|documents?|files?|records?|apps?|applications?|systems?|messages?|tickets?|requests?|projects?|queries|datasets?|databases?|production|workloads?|environments?|services?|accounts?|servers?|networks?|repositories|pipelines?|devices?)\b/i;
+  const incidental = /\b(?:wallpapers?|themes?|avatars?|stickers?|profile badges?|cosmetic|swag|priority seating|souvenirs?)\b/i;
+  const base = [], paid = [];
+  for (const doc of context.vendorDocs) {
+    for (const line of doc.text.split(/\r?\n/)) {
+      // Keep full original sentences, including visible URLs, for citation.
+      for (const {segment} of sentences.segment(line)) {
+        const quote = clean(segment);
+        if (quote.length < 20 || quote.length > 650 || quote.includes('?') || negated.test(quote) ||
+            !targetSubject.test(quote) || !tier.test(quote)) continue;
+        const item = () => sourceEvidence(doc, {quote,relation:'vendor',vendorAuthored:true},context);
+        if (baseCost.test(quote) && !upgrade.test(quote) && /\b(?:eligible|standard|baseline|basic|base|no extra|no additional|free)\b/i.test(quote)) base.push(item());
+        if (upgradeForTarget.test(quote) && upgrade.test(quote) && functional.test(quote) && !incidental.test(quote)) paid.push(item());
+      }
+    }
+  }
+  if (!paid.length || !base.length) return null;
+  const added = paid[0];
+  const included = base.find(b => b.sourceId !== added.sourceId) || base[0];
+  const evidence = [included, added];
+  const display = e => e.quote.replace(/\s*\(https?:\/\/[^)]*\)/gu,'').replace(/[\u200b\u2060]/gu,'');
+  return { id:'licensing', label:criteria.licensing[0], status:'supported', impact:'caveat',
+    claim:'The included entitlement and the upgraded entitlement give access to different capabilities.',
+    explanation:'The publisher describes the included entitlement: “' + display(included) +
+      '” It specifies what changes with the additional purchase: “' + display(added) + '”',
+    consequence:'Check which subscription the intended users hold before relying on the additional capability.',
+    evidence, evidenceIds:idsOf(evidence) };
+}
+
+// An independently executed workflow can establish that a core task works
+// even when it was selected as testimony rather than as a capability citation.
+// Reconstruct the narrower finding from verified passages, never from the
+// rejected claim's prose or from popularity/installation counts.
+function observedCapability(raw, context) {
+  const proposals = (raw.claims ?? []).filter(p => p.criterion === 'capability');
+  if (proposals.some(p => p.status === 'contradicted' || p.impact === 'disqualifying' ||
+      normalizedQuantities(clean(p.claim)).length || (p.evidence ?? []).some(e => {
+        const doc = context.documents.get(e.sourceId);
+        return !doc || !matchesPassage(doc,clean(e.quote));
+      }))) return null;
+  const sourceItems = proposals.concat(raw.answer ?? []).flatMap(p => p.evidence ?? []);
+  const descriptions = sourceItems.flatMap(item => collectEvidence({evidence:[item]},context,'capability')).filter(e =>
+    !reportedExperience.test(e.sourceType) && e.quote.length < 600 &&
+    [context.productName,...context.aliases].some(label => namesEntity(e.quote,label)) &&
+    /\b(?:is (?:a|an|the)|provides? (?:a|an|the)|helps? (?:users|teams|customers)|designed (?:for|to)|lets? (?:users|teams))\b/i.test(e.quote));
+  const observations = [...(raw.testimony ?? []), ...(raw.claims ?? []).filter(c => c.criterion === 'experience')]
+    .flatMap(p => p.evidence ?? []).flatMap(item => collectEvidence({evidence:[item]},context,'capability'));
+  const excluded = new Set(('software service application product customer customers commercial official users using provides ' +
+    'system helps teams which their that with this when from based support benchmark tests available source open').split(' '));
+  const terms = text => clean(text).toLowerCase().match(/[\p{L}]{4,}/gu)?.filter(t => !excluded.has(t) &&
+    !namesEntity(context.productName.toLowerCase(),t)) ?? [];
+  for (const description of descriptions) {
+    const purpose = terms(description.quote);
+    for (const observed of observations) {
+      if (['Vendor publication','Vendor-hosted testimonial'].includes(observed.sourceType) ||
+          context.vendorDocs.some(doc => clean(doc.text).includes(observed.quote)) ||
+          site(hostOf(context.documents.get(observed.sourceId).url)) === site(hostOf(context.documents.get(description.sourceId).url))) continue;
+      const concrete = /\b(?:in production|to (?:route|process|run|manage|create|send|receive|monitor|analy[sz]e|deliver)|integrat(?:ed|ion)|deploy(?:ed|ment)|benchmark(?:ed)?|in (?:all |\d+ )*\d* ?tests\b|we (?:tested|measured)|our (?:test|deployment))\b/i.test(observed.quote);
+      if (!concrete || /\b(?:plan to|hope to|could deploy|failed to|could not|unable to|does not work)\b/i.test(observed.quote)) continue;
+      const used = terms(observed.quote);
+      if (!purpose.some(a => used.some(b => a.startsWith(b) || b.startsWith(a)))) continue;
+      const evidence = [description,observed];
+      return {id:'capability', label:criteria.capability[0], status:'supported', impact:'routine', claim:description.quote,
+        explanation: description.attribution + ' describes the core task. ' + observed.attribution +
+          ' reports exercising it: “' + observed.quote + '”',
+        consequence:'This supports the documented use in that setting. Speed, reliability, and suitability for other workloads need their own evidence.',
+        evidence, evidenceIds:idsOf(evidence)};
+    }
+  }
+  return null;
 }
 
 function resultFor(checks, failed) {
@@ -396,6 +547,19 @@ export function assess(inputUrl, raw) {
     const proposals = (raw.claims ?? []).filter(c => c.criterion === id);
     return proposals.length ? proposals.map(c => assessClaim(c, context)) : [unknown(id)];
   });
+  const contrast = entitlementContrast(context);
+  if (contrast) {
+    const pos = checks.findIndex(c => c.id === 'licensing');
+    const existing = checks[pos];
+    if (existing.status === 'unverified' || existing.evidence.every(e => contrast.evidence.some(c => c.quote === e.quote))) {
+      checks[pos] = contrast;
+    } else checks.splice(pos,0,contrast);
+  }
+  const core = checks.filter(c => c.id === 'capability');
+  if (core.length === 1 && core[0].status === 'unverified') {
+    const observed = observedCapability(raw,context);
+    if (observed) checks[checks.indexOf(core[0])] = observed;
+  }
   const decision = resultFor(checks, raw.failed || !documents.size);
   const answer = answerFrom(raw, context);
   const accounts = [...(raw.testimony ?? []).flatMap(t => collectEvidence(t, context, 'experience')),

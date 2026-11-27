@@ -89,6 +89,9 @@ summary { padding: 8px 0; font-weight: 600 }
 .marker { width: 8px; height: 8px; border-radius: 50%; background: currentColor }
 .report-section { border-top: 1px solid var(--soft-rule); margin-top: 22px; padding-top: 16px }
 .report-heading { font: 600 clamp(21px, 2.5vw, 26px)/1.2 var(--serif); letter-spacing: -.035em; margin-bottom: 6px }
+.overall-verdict { margin-top: 20px }
+.overall-verdict + .badge { margin-top: 2px }
+.answer .question-text { font-weight: 600; margin-bottom: 5px }
 .operator-source summary { font-size: 13px; color: var(--muted); padding: 4px 0 }
 .signal-topic { display: block; margin-bottom: 3px; color: var(--ink) }
 .testimony figure { margin: 12px 0 0; padding: 12px 16px; background: var(--paper); border-left: 2px solid var(--rule) }
@@ -114,6 +117,11 @@ summary { padding: 8px 0; font-weight: 600 }
 .source-role { color: var(--body); font-weight: 650 }
 .citation-source a { max-width: 100% }
 .verdict-sources { margin-top: 6px }
+.highlights { margin-top: 12px }
+.highlights h3 { display: flex; align-items: center; gap: 8px }
+.highlights ul { margin: 3px 0 0; padding-left: 21px; max-width: 80ch }
+.highlights a { color: var(--body); text-decoration-color: var(--rule); text-underline-offset: 3px }
+.claim-finding { scroll-margin-top: 1rem }
 .verdict-sources a { display: inline-flex; align-items: center; gap: 2px; color: var(--forest); text-underline-offset: 3px }
 .verdict-sources a svg { width: 13px; height: 13px }
 .historical-notice { margin-top: 14px; padding: 10px 12px; background: var(--paper); font-size: 14px; color: var(--body) }

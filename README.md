@@ -19,3 +19,5 @@ The Node API accepts `POST /api/investigate` with `{"url":"https://product.examp
 Run `npm test` for server tests, then `npm run build` and `npm run test:ui` for API-backed browser tests. These use synthetic evidence and require no credentials. Playwright uses Edge on Windows where available or Chromium installed with `npx playwright install chromium`.
 
 With the key configured, `node --env-file-if-exists=.env.local tests/live-smoke.js` runs billable live investigations of Sentry and example.com. To test a particular case, append its quoted URL and optional quoted question.
+
+With the app running, `python tests/calibrate.py 2 6 32` compares three dataset rows against fresh overall verdicts. It sends only each row’s URL to the API and prints the reviewer’s reason beside the app’s reason and sources. Each row runs a billable search.
