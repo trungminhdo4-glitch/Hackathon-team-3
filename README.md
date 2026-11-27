@@ -2,7 +2,7 @@
 
 Enter a software product, company, or public URL. Add a question if you want to evaluate a specific use or edition. SaaSLens checks whether the product delivers its main promise, shows the passages behind each finding, and keeps reports in the current tab’s session history.
 
-Open **View or download dataset report** on any saved investigation to preview its eight columns and download CSV or Markdown. Optional reviewer notes are stored with that report in this tab.
+Each product briefing shows its verdict, reasons and numbered citations beside the research stages and sources. Use **Copy briefing** or **PDF** to share it. Open **View or download dataset report** to preview its eight columns and download CSV or Markdown. Optional reviewer notes stay with the report in this tab.
 
 Choose **Bulk URLs** to paste or import up to 50 public URLs. TXT accepts one per line. CSV accepts a URL column, including the repository dataset. Only the URLs and selected model go to research. Open a result for its full report or download the batch as one CSV. **Session history** reopens individual reports, pending reviews and batches saved in this browser tab.
 
@@ -18,7 +18,7 @@ Use Node.js 22.12 or later. Set `OPENAI_API_KEY` in your server environment or i
 
 The main OpenAI Agents SDK researcher runs official and independent searches in parallel. Depending on the product, it looks for first-party terms, customer deployments, reviews, partner documentation, and regulator records. When the independent pages yield little evidence of actual use, the researcher can run a targeted follow-up. The activity view identifies the participating models, reported queries, pages read, retrieval failures and evidence checks. You can reopen it with the saved report.
 
-With Tavily enabled, each product investigation makes one basic Tavily search alongside OpenAI. A human-directed follow-up can make one more. The query uses the public product identity and a short research topic. Up to two additional URLs enter the existing page-reading budget. **Research activity** shows the queries, and **Pages checked** identifies the provider for each attempted URL. A Tavily failure appears in the report and the investigation continues with the available evidence.
+With Tavily enabled, each product investigation can use **Tavily Search** for independent sources. When the initial reads yield no recognizable publisher documentation, **Tavily Map** can also look for pricing, licensing, releases or support on the official site. Each tool can contribute up to two URLs within its existing page-reading budget. The server reads and validates the original pages. **Research activity** shows the searches, and **Pages checked** identifies how each page was found.
 
 The model proposes findings from numbered source passages. The server checks quotations and derives the verdict from accepted findings. Cited benefits, limitations and material risks appear in the eight-column export. When evidence is insufficient, the report explains which check remains open.
 
@@ -42,4 +42,4 @@ With the key configured, `node --env-file-if-exists=.env.local tests/live-smoke.
 
 With the app running, `python tests/calibrate.py --model gpt-6.2-sol` tests the first ten dataset URLs. Pass row IDs and `--bulk` for a different cohort in one request. Each URL runs a billable investigation. See the [20-product live evaluation](EVALUATION_SOL.md) for results, row IDs and export commands.
 
-For the full dataset with Luna, run `python tests/calibrate.py --all-rows --bulk --model gpt-6-luna --output luna.jsonl --report-dir luna-reports`. Export the saved results with `node tests/export-calibration.js luna.jsonl luna-reports luna-export`. The [40-product comparison](PROCUREMENT_EVALUATION.md) shows accuracy before and after the rubric change and links to every reviewer and agent verdict.
+For the full dataset with Luna, run `python tests/calibrate.py --all-rows --bulk --model gpt-6-luna --output luna.jsonl --report-dir luna-reports`. Export the saved results with `node tests/export-calibration.js luna.jsonl luna-reports luna-export`. The [40-product Tavily Search evaluation](EVALUATION_TAVILY.md) compares the two runs and links to every reviewer and agent verdict.

@@ -16,6 +16,14 @@ test('bulk streams mixed outcomes, opens a detailed report, downloads all rows, 
   await expect(totals.getByText('1',{exact:true})).toHaveCount(4);
   await result.getByRole('button',{name:/View report for/}).first().click();
   await expect(result.getByRole('heading',{name:'Overall verdict'})).toBeVisible();
+  await page.evaluate(() => { window.print = () => {}; });
+  await result.getByRole('button',{name:'Print or save briefing as PDF'}).click();
+  await page.emulateMedia({media:'print'});
+  await expect(result.locator('.brief-print .brief-main')).toBeVisible();
+  await expect(result.locator(':scope > ol > li').nth(1)).toBeHidden();
+  await expect(result.locator('.bulk-item-heading').first()).toBeHidden();
+  await page.evaluate(() => window.dispatchEvent(new Event('afterprint')));
+  await page.emulateMedia({media:'screen'});
   const download = page.waitForEvent('download');
   await result.getByRole('button',{name:'Download batch CSV'}).click();
   const file = await download;

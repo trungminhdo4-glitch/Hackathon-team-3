@@ -17,7 +17,7 @@ export function ResearchActivity({events = [], running = false, savedGap}) {
   const detail = event => savedGap && event.detail?.startsWith('Evidence review found an unresolved core claim.')
     ? [savedGap.summary, savedGap.reason, savedGap.missing].filter(Boolean).join(' ') : event.detail
   const provider = event => {
-    const name = searchProviderLabel(event?.provider)
+    const name = searchProviderLabel(event?.provider,event?.tool)
     return name && 'Search provider · ' + name
   }
   const actor = event => event.model || (event.role === 'human' ? 'Reviewer' : 'SaaSLens')

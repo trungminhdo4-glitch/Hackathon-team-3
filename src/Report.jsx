@@ -6,6 +6,7 @@ import { EvidenceDossier, ReviewBrief } from './EvidenceDossier.jsx'
 import { groupHighlights, operatorGap, savedGapDetail } from './datasetReport.js'
 import { isEarlierReport, verdictLabel } from './research.js'
 import { reportLimitations } from '../shared/retrieval.js'
+import { BriefingActions, BriefingRail, CitationNumbers, numberedSources, ProductHeading } from './Briefing.jsx'
 
 const claimStatuses = {
   supported: 'Supported',
@@ -87,20 +88,18 @@ function EarlierBreakdown({report, sources}) {
   </section>
 }
 
-function Highlights({checks, sources}) {
+function Highlights({checks, sources, interpretation}) {
   const groups = groupHighlights(checks)
   return Object.entries(groups).map(([kind, findings]) => findings.length > 0 && <section className="highlights"
     key={kind} aria-label={flagLabels[kind] || 'Other documented findings'}>
     <h3>{kind !== 'context' && <span className={'marker ' + kind} aria-hidden="true"/>}{flagLabels[kind] || 'Other documented findings'}</h3>
     <ul>{findings.map(finding => <li key={finding.anchor}>
       {finding.status === 'contradicted' && <strong className="dossier-contradiction">Contradicted claim · </strong>}
-      <a href={'#' + finding.anchor}>{finding.claim || finding.consequence}</a>
-      {finding.explanation !== finding.claim && <p className="finding-reason">{finding.explanation}</p>}
-      <div className="citation-source">{(finding.evidenceIds || []).map(id => {
-        const source = sources.get(id)
-        const url = sourceUrl(source)
-        return url && <a key={id} href={url.href} target="_blank" rel="noopener noreferrer">{source.title || url.hostname}</a>
-      })}</div>
+      {finding.status === 'partly_supported' && <strong>Partly supported claim · </strong>}
+      <a href={'#' + finding.anchor}>{finding.claim || finding.consequence}</a>{' '}
+      <CitationNumbers ids={finding.evidenceIds} sources={sources}/>
+      {finding.explanation !== finding.claim && !interpretation?.includes(finding.explanation) &&
+        <p className="finding-reason">{finding.explanation}</p>}
     </li>)}</ul>
   </section>)
 }
@@ -167,9 +166,12 @@ function ReviewQuestion({report, expired, guidance, onGuidanceChange, onReview, 
 export function Report({report, simulated, retry, notes, onNotesChange, onReview, guidance, onGuidanceChange, expired}) {
   const limitations = reportLimitations(report)
   const title = useRef(null)
+  const container = useRef(null)
   useEffect(() => { title.current?.focus() }, [report])
-  const sources = new Map(report.sources.map(source => [source.id, source]))
-  const verdictSources = (report.verdictEvidenceIds ?? []).map(id => sources.get(id)).filter(sourceUrl)
+  const cited = numberedSources(report)
+  const contextSources = cited.filter(source => source.contextOnly)
+  const directCount = cited.length - contextSources.length
+  const sources = new Map(cited.map(source => [source.id, source]))
   const historical = isEarlierReport(report)
   const savedGap = savedGapDetail(report)
   const gap = report.evidenceGap || savedGap
@@ -177,46 +179,52 @@ export function Report({report, simulated, retry, notes, onNotesChange, onReview
   const findings = historical ? [] : report.checks.map((check, i) => ({ ...check, anchor: 'finding-' + (i + 1) }))
   const answer = report.answer ? <CitedFinding finding={report.answer} sources={sources}/> :
     <p>The retrieved sources did not establish an answer to this question.</p>
-  return <section className="report" aria-labelledby="report-title">
-    <div className="report-top">
-      <div>
-        {simulated && <span className="section-label">Saved simulated report</span>}
-        <h2 id="report-title" tabIndex="-1" ref={title}>{report.productName || 'Investigation result'}</h2>
-        {report.vendor !== undefined && <p className="operator">Operator · {report.vendor || 'Unverified'}</p>}
-        {operatorGap(report) && <p className="model-label">{operatorGap(report)}</p>}
-        <span className="report-url">{report.inputUrl}</span>
-        {!simulated && <p className="model-label">Assessment model · {report.model || 'Not recorded'}</p>}
-        {!simulated && report.searchModel && report.searchModel !== report.model &&
-          <p className="model-label">OpenAI web search · {report.searchModel}</p>}
-        {!simulated && report.helperModel && <p className="model-label">Follow-up search · {report.helperModel}</p>}
-        {report.vendor && report.vendorEvidence?.length > 0 && <details className="operator-source">
-          <summary>Operator source</summary><Evidence items={report.vendorEvidence} sources={sources}/>
-        </details>}
-      </div>
-      {historical && typeof report.score === 'number' && <div className="score"><span className="section-label">Previous rubric score</span><strong>{report.score}<small> / 100</small></strong></div>}
+  return <section className="report brief-grid" ref={container} aria-labelledby="report-title">
+    <div className="brief-main">
+    <div className="brief-top">
+      <ProductHeading headingRef={title} name={report.productName || 'Investigation result'}
+        subtitle={(report.review ? 'Draft' : 'Briefing') + ' · ' + directCount + ' cited ' + (directCount === 1 ? 'source' : 'sources') +
+          (contextSources.length ? ' · ' + contextSources.length + ' context only' : '')}/>
+      {!report.review && <BriefingActions report={report} sources={cited} containerRef={container}/>}
     </div>
+    {simulated && <span className="section-label">Saved simulated report</span>}
+    {historical && typeof report.score === 'number' && <div className="score"><span className="section-label">Previous rubric score</span><strong>{report.score}<small> / 100</small></strong></div>}
     {report.review ? <ReviewQuestion {...{report, expired, guidance, onGuidanceChange, onReview, retry}}/> : <>
       {!historical && <h3 className="overall-verdict report-heading">Overall verdict</h3>}
       <div className={'badge ' + (report.verdict || 'insufficient')}><Icon name={report.verdict === 'green' ? 'check' : 'alert'}/>{verdictLabel(report)}</div>
     </>}
-    <p className="interpretation" id="verdict-reason">{report.interpretation}</p>
+    <p className="interpretation" id="verdict-reason"><span>{report.interpretation}</span>{' '}
+      <span className="verdict-sources"><CitationNumbers ids={report.verdictEvidenceIds} sources={sources}/></span></p>
     {savedGap && <p><strong>What the evidence could not verify</strong><br/>
       {[savedGap.summary, savedGap.reason, savedGap.missing].filter(Boolean).join(' ')}</p>}
     {gapSource && <p className="citation-source">Passage behind the open question · <a href={gapSource.href}
       target="_blank" rel="noopener noreferrer">{gap.sourceTitle || gapSource.hostname}<Icon name="external"/></a></p>}
     {!historical && !report.review && !report.dossier && !report.checks.some(c => c.status !== 'unverified' && c.evidence?.length) &&
       <p className="coverage">This saved assessment predates the source dossier. Start a new investigation to collect passages for {report.productName || 'this product'}.</p>}
-    {verdictSources.length > 0 && <div className="verdict-sources citation-source">
-      <strong>{report.review ? 'Sources checked so far' : 'Verdict sources'}</strong>
-      {verdictSources.map(source => <a key={source.id} href={source.url} target="_blank" rel="noopener noreferrer">
-        {source.title || sourceUrl(source).hostname}<Icon name="external"/>
-      </a>)}
-    </div>}
     {report.reviewOutcome?.guidance && <p className="human-guidance"><strong>Your research lead</strong> {report.reviewOutcome.guidance}</p>}
+    {!historical && <Highlights checks={findings} sources={sources} interpretation={report.interpretation}/>}
+    {!report.review && !directCount && contextSources.length > 0 && <section className="brief-context">
+      <h3>What the search found</h3><p>These pages supplied context for the assessment.</p>
+      {contextSources.slice(0,2).map(source => <blockquote key={source.id}>“{source.quote}”{' '}
+        <CitationNumbers ids={[source.id]} sources={sources}/></blockquote>)}
+    </section>}
+    </div>
+    <div className="brief-detail-card">
+    <div className="brief-byline">
+      {report.vendor !== undefined && <p className="operator">Operator · {report.vendor || 'Unverified'}</p>}
+      <span className="report-url">{report.inputUrl}</span>
+      {operatorGap(report) && <p className="model-label">{operatorGap(report)}</p>}
+      {!simulated && <p className="model-label">Assessment model · {report.model || 'Not recorded'}</p>}
+      {!simulated && report.searchModel && report.searchModel !== report.model &&
+        <p className="model-label">OpenAI web search · {report.searchModel}</p>}
+      {!simulated && report.helperModel && <p className="model-label">Follow-up search · {report.helperModel}</p>}
+      {report.vendor && report.vendorEvidence?.length > 0 && <details className="operator-source">
+        <summary>Operator source</summary><Evidence items={report.vendorEvidence} sources={sources}/>
+      </details>}
+    </div>
     {!report.review && <DatasetReport report={report} notes={notes} onNotesChange={onNotesChange} simulated={simulated}/>}
     <ResearchActivity events={report.activity} savedGap={savedGap}/>
     <EvidenceDossier dossier={report.dossier} interpretation={report.interpretation}/>
-    {!historical && <Highlights checks={findings} sources={sources}/>}
     {historical && <div className="historical-notice"><p>This saved report used the previous points-based rubric.</p>
       <button type="button" className="retry" disabled={!retry} onClick={retry}>Evaluate with current rubric</button></div>}
     {historical && (report.question || report.answer) && <section className="answer"><h3>{report.question || 'Product overview'}</h3>
@@ -246,5 +254,6 @@ export function Report({report, simulated, retry, notes, onNotesChange, onReview
         if (log) log.open = true
       }}>See the URLs checked, passages found and next search suggestions</a>}</details>}
     {!historical && !report.review && report.verdict === null && <button className="retry" disabled={!retry} onClick={retry}>Retry</button>}
+    </div><BriefingRail report={report} events={report.activity} sources={cited}/>
   </section>
 }

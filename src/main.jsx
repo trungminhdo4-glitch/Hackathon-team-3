@@ -5,7 +5,7 @@ import '@fontsource/spectral/latin-700.css'
 import { Brand, Icon } from './icons.jsx'
 import { Report } from './Report.jsx'
 import { BulkResearch } from './BulkResearch.jsx'
-import { ResearchActivity } from './ResearchActivity.jsx'
+import { PendingBriefing } from './Briefing.jsx'
 import { requestAssessment, respondToReview } from './research.js'
 import { readHistory, saveHistory, SessionHistory } from './SessionHistory.jsx'
 import './style.css'
@@ -192,7 +192,7 @@ function Workspace() {
           {busy ? <span className="spinner"/> : <Icon name="arrow"/>}</button>
         </div>
       </form>
-      {(busy || (error && !active)) && <ResearchActivity running={busy} events={activity}/>}
+      {(busy || (error && !active)) && <PendingBriefing subject={subject} running={busy} failed={!busy && !!error} events={activity}/>}
       {error && <section className="feedback error" role="alert"><div><strong>Investigation incomplete</strong><p>{error}</p></div>
         {!active?.report.review && <button className="retry" disabled={!canInvestigate} onClick={investigate}>Retry</button>}</section>}
       {active && !busy && <><span className="sr-only" role="status">{active.report.review ? 'Research paused for your input' : 'Assessment ready'}</span>
