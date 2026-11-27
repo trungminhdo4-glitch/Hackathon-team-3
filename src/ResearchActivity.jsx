@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { laneNames } from '../shared/retrieval.js'
+import { laneNames, searchProviderLabel } from '../shared/retrieval.js'
 
 function publicLink(value) {
   try {
@@ -16,12 +16,17 @@ export function ResearchActivity({events = [], running = false, savedGap}) {
   const latest = events.at(-1)
   const detail = event => savedGap && event.detail?.startsWith('Evidence review found an unresolved core claim.')
     ? [savedGap.summary, savedGap.reason, savedGap.missing].filter(Boolean).join(' ') : event.detail
+  const provider = event => {
+    const name = searchProviderLabel(event?.provider)
+    return name && 'Search provider · ' + name
+  }
   const actor = event => event.model || (event.role === 'human' ? 'Reviewer' : 'SaaSLens')
   const actors = Map.groupBy(events, actor)
   const selected = actors.has(filter) ? filter : ''
   const visible = selected ? actors.get(selected) : events
   return <div className="research-activity">
-    {running && <p role="status">{latest?.model && <strong>{latest.model} · </strong>}{latest?.detail || 'Waiting for the research server…'}</p>}
+    {running && <p role="status">{latest?.model && <strong>{latest.model} · </strong>}{latest?.detail || 'Waiting for the research server…'}
+      {provider(latest) && <small> · {provider(latest)}</small>}</p>}
     {events.length > 0 && <>
       <div className="activity-agents" role="group" aria-label="Contributions by participant">
         {[...actors].map(([name, items]) => <button key={name} type="button" className="actor-work"
@@ -41,6 +46,7 @@ export function ResearchActivity({events = [], running = false, savedGap}) {
           <span className="step-stage">{laneNames[event.lane] || event.stage}</span>
           {event.model && <strong>{event.model} · </strong>}
           <span>{detail(event)} {url && <a href={url.href} target="_blank" rel="noopener noreferrer">{url.hostname}</a>}</span>
+          {provider(event) && <small> · {provider(event)}</small>}
         </li>
       })}</ol>
     </details></>}

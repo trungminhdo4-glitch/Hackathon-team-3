@@ -193,6 +193,7 @@ test('recovers from a model-list failure and explains unavailable options', asyn
 
 test('compares account models and shows search progress before and after the report arrives', async ({page}) => {
   await page.goto('/');
+  await expect(page.getByText('Search tools · OpenAI web search and Tavily')).toBeVisible();
   await expect(page.getByLabel('Assessment model')).toHaveValue('gpt-6.2-sol');
   await expect(page.getByText('GPT-6.2 Sol assesses the evidence. GPT-6 Luna can search for missing sources.')).toBeVisible();
   await page.getByText('Compare models and see account access').click();

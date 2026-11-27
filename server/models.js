@@ -85,5 +85,6 @@ export async function listModels() {
     description: 'OpenAI searches the web and Meta Llama evaluates the retrieved passages through Groq.',
     searchModel: preferred, helperModel: null, available: !reason, reason });
   const defaultModel = search.available ? preferred : models.find(option => option.available)?.id ?? preferred;
-  return { model: defaultModel, models, openAIInventory: openAI ? [...openAI].sort() : null };
+  return { model: defaultModel, models, tavilyConfigured: Boolean(process.env.TAVILY_API_KEY?.trim()),
+    openAIInventory: openAI ? [...openAI].sort() : null };
 }

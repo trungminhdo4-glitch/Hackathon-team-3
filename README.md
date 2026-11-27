@@ -8,7 +8,7 @@ Choose **Bulk URLs** to paste or import up to 50 public URLs. TXT accepts one pe
 
 ## Run locally
 
-Use Node.js 22.12 or later. Set `OPENAI_API_KEY` in your server environment or ignored `.env.local` file. Run `npm ci` and `npm run dev`, then open [SaaSLens](http://127.0.0.1:4173).
+Use Node.js 22.12 or later. Set `OPENAI_API_KEY` in your server environment or ignored `.env.local` file. Add `TAVILY_API_KEY` there to enable supplementary Tavily search. Restart the server after changing either key. Run `npm ci` and `npm run dev`, then open [SaaSLens](http://127.0.0.1:4173).
 
 **GPT-6.2 Sol** leads demo investigations and writes the assessment. If independent evidence is thin and the account has access, Sol delegates one focused search to **GPT-6 Luna**. You can also select **GPT-6.2 Astra** for difficult comparisons, **GPT-6.1 Terra** for document summaries, **Luna** for a lower-cost standalone check, or either GPT-4.1 baseline. The picker includes guidance and your OpenAI project’s model inventory. [OpenAI model selection](https://developers.openai.com/api/docs/guides/model-selection)
 
@@ -17,6 +17,8 @@ Use Node.js 22.12 or later. Set `OPENAI_API_KEY` in your server environment or i
 ## How it works
 
 The main OpenAI Agents SDK researcher runs official and independent searches in parallel. Depending on the product, it looks for first-party terms, customer deployments, reviews, partner documentation, and regulator records. When the independent pages yield little evidence of actual use, the researcher can run a targeted follow-up. The activity view identifies the participating models, reported queries, pages read, retrieval failures and evidence checks. You can reopen it with the saved report.
+
+With Tavily enabled, each product investigation makes one basic Tavily search alongside OpenAI. A human-directed follow-up can make one more. The query uses the public product identity and a short research topic. Up to two additional URLs enter the existing page-reading budget. **Research activity** shows the queries, and **Pages checked** identifies the provider for each attempted URL. A Tavily failure appears in the report and the investigation continues with the available evidence.
 
 The model proposes findings from numbered source passages. The server checks quotations and derives the verdict from accepted findings. Cited benefits, limitations and material risks appear in the eight-column export. When evidence is insufficient, the report explains which check remains open.
 

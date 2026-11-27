@@ -55,13 +55,14 @@ test('the API returns the model catalog and rejects an unavailable selection wit
 });
 
 test('only supported models listed for the configured accounts become selectable', async t => {
-  const keys = ['OPENAI_MODEL', 'OPENAI_API_KEY', 'GROQ_API_KEY'];
+  const keys = ['OPENAI_MODEL', 'OPENAI_API_KEY', 'GROQ_API_KEY', 'TAVILY_API_KEY'];
   const previous = keys.map(key => process.env[key]);
   t.after(() => keys.forEach((key, i) => {
     if (previous[i] === undefined) delete process.env[key];
     else process.env[key] = previous[i];
   }));
   delete process.env.OPENAI_MODEL;
+  delete process.env.TAVILY_API_KEY;
   process.env.OPENAI_API_KEY = 'test-openai';
   process.env.GROQ_API_KEY = 'test-groq';
   const snapshot = 'gpt-6.2-sol-2026-11-15';
@@ -73,6 +74,11 @@ test('only supported models listed for the configured accounts become selectable
     return Response.json({ data: ids.map(id => ({ id })) });
   });
   const result = await listModels();
+  assert.equal(result.tavilyConfigured, false);
+  process.env.TAVILY_API_KEY = 'tavily-test-only';
+  const configured = await listModels();
+  assert.equal(configured.tavilyConfigured, true);
+  assert.ok(!JSON.stringify(configured).includes('tavily-test-only'));
   assert.equal(result.model, 'gpt-6.2-sol');
   assert.deepEqual(result.openAIInventory, [...accountIds].sort());
   assert.deepEqual(result.models.filter(m => m.available).map(m => m.id), ['gpt-6.2-sol', 'gpt-6.2-astra', 'gpt-6-luna', 'gpt-4.1', META_MODEL]);

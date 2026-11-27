@@ -1,6 +1,6 @@
 import { isEarlierReport } from './research.js'
 import { describeCapabilityGap } from '../shared/evidenceGap.js'
-import { pageAttempts, reportLimitations } from '../shared/retrieval.js'
+import { pageAttempts, reportLimitations, searchProviderLabel } from '../shared/retrieval.js'
 
 export const columns = ['product', 'vendor', 'overall', 'green_flags', 'yellow_flags', 'red_flags', 'reasoning', 'reviewer_notes_original']
 export const coverageLabels = { cited: 'Cited in the assessment', documented: 'Passage retained', no_usable_passage: 'No usable passage', unavailable: 'Could not retrieve text', excluded_publisher:'Publisher redirect excluded from independent evidence' }
@@ -145,6 +145,7 @@ export function datasetRow(report, notes = '', simulated = false) {
   const labels = { green: 'Green', yellow: 'Yellow', red: 'Red', insufficient: 'Insufficient evidence' }
   const provenance = [simulated && 'Simulated report.', earlier && 'Previous points-based rubric.',
     report.verdictBasis === 'evidence_gap' && 'Yellow reflects an unresolved evidence gap.'].filter(Boolean)
+  const providers = [...new Set((report.activity || []).map(event => searchProviderLabel(event.provider)).filter(Boolean))]
   return {
     product: report.productName || report.inputUrl,
     vendor: report.vendor || (operatorGap(report) ? ['Operator unverified.', operatorGap(report), sourceAddress(report.inputUrl)?.href].filter(Boolean).join('\n') : 'Unverified'),
@@ -153,6 +154,7 @@ export function datasetRow(report, notes = '', simulated = false) {
     yellow_flags: flags('yellow'),
     red_flags: flags('red'),
     reasoning: [withSources([...provenance, report.interpretation].filter(Boolean).join(' '), report.verdictEvidenceIds),
+      providers.length && 'Search providers recorded in activity · ' + providers.join(', '),
       savedGap && [savedGap.summary, savedGap.reason, savedGap.missing].filter(Boolean).join(' '),
       sourceAddress((report.evidenceGap || savedGap)?.sourceUrl)?.href,
       ...(groups?.context ?? []).map(describe),
@@ -161,7 +163,7 @@ export function datasetRow(report, notes = '', simulated = false) {
       ...(report.testimony || []).map(t => withSources(['Customer testimony', t.text, t.explanation].filter(Boolean).join('\n'), t.evidenceIds)),
       report.dossier && reportLimitations(report).join('\n'),
       ...pages.map(page => [coverageLabels[page.status] || page.status, page.title, sourceAddress(page.url)?.href,
-        ...pageAttempts(page).map(attempt => [attempt.lane, attempt.redirected && sourceAddress(attempt.requestedUrl)?.href,
+        ...pageAttempts(page).map(attempt => [attempt.lane, attempt.provider && 'Search provider · ' + attempt.provider, attempt.redirected && sourceAddress(attempt.requestedUrl)?.href,
           attempt.reason || page.reason, attempt.next && 'Next search · ' + attempt.next].filter(Boolean).join('\n'))].filter(Boolean).join('\n'))]
       .filter(Boolean).join('\n\n'),
     reviewer_notes_original: notes,
@@ -223,6 +225,7 @@ export function markdownReport(row, report) {
   for (const page of report.dossier.coverage || []) {
     for (const attempt of pageAttempts(page)) {
       appendix.push('- ' + [link(page.url, page.title), attempt.lane, coverageLabels[page.status] || prose(page.status),
+        attempt.provider && 'Search provider · ' + attempt.provider,
         attempt.redirected && link(attempt.requestedUrl, 'Original URL'), prose(attempt.reason || page.reason),
         attempt.next && 'Next search · ' + prose(attempt.next)].filter(Boolean).join(' · '))
     }

@@ -46,7 +46,7 @@ function Workspace() {
         if (controller.signal.aborted) return
         const models = data.models.filter(option => ['OpenAI', 'Meta'].includes(option.provider))
         const available = models.filter(option => option.available)
-        setCatalog({ models, inventory: data.openAIInventory, defaultId: data.model })
+        setCatalog({ models, inventory: data.openAIInventory, defaultId: data.model, tavilyConfigured: data.tavilyConfigured === true })
         setModel(previous => available.find(option => option.id === previous)?.id ||
           available.find(option => option.id === data.model)?.id || available[0]?.id || '')
       })
@@ -131,6 +131,7 @@ function Workspace() {
     </select>
     <div id="model-details">
       {selected?.description && <p className="model-label">{selected.description}</p>}
+      {selected && catalog.tavilyConfigured && <p className="model-label">Search tools · OpenAI web search and Tavily</p>}
       {selected?.helperModel && <p className="model-label">{selected.label} assesses the evidence. {catalog.models.find(option => option.id === selected.helperModel)?.label || selected.helperModel} can search for missing sources.</p>}
       {selected?.provider === 'Meta' && <p className="model-label">OpenAI web search · {selected.searchModel}. Meta assesses the retrieved passages via Groq.</p>}
       {catalog?.models.filter(option => !option.available && option.reason).map(option =>

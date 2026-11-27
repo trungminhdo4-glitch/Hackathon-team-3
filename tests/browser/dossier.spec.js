@@ -11,7 +11,8 @@ test('an unresolved review shows the cited source, the classification obstacle a
       reason:'This page establishes the advertised feature.'}],
       coverage:[{url,title:'Blue Calendar workspace',origin:'submitted',status:'documented',reason:'Product claim retained.'},
         {url:'https://reviews.example/team',title:'Team deployment',origin:'web_search',status:'unavailable',
-          attempts:[{lane:'independent',requestedUrl:'https://reviews.example/team',outcome:'unavailable',failure:{code:'http',httpStatus:403}}]}]},
+          attempts:[{lane:'independent',provider:'tavily',requestedUrl:'https://reviews.example/team',outcome:'unavailable',failure:{code:'http',httpStatus:403}}]}]},
+    activity:[{stage:'search',detail:'Looked for an independent deployment.',role:'server',provider:'tavily',lane:'independent'}],
     review:{id:'sample',mode:'local',prompt:'Which deployment should we verify?',expiresAt:new Date(Date.now()+600_000).toISOString(),
       brief:{known:'The homepage advertises shared calendar slots.',knownUrl:url,knownTitle:'Calendar page',
         obstacle:'The only independent source described the personal edition.',green:'Verify an actual team deployment.',
@@ -35,7 +36,10 @@ test('an unresolved review shows the cited source, the classification obstacle a
   await page.getByRole('link',{name:/See the URLs checked/}).click()
   await expect(dossier.getByText('Product claim retained.')).toBeVisible()
   const log = dossier.locator('.source-coverage')
-  await expect(log.getByText('Independent search',{exact:true})).toBeVisible()
+  await expect(log.getByText('Independent search · Search provider · Tavily',{exact:true})).toBeVisible()
+  await page.getByRole('button',{name:'Show activity for SaaSLens'}).click()
+  await expect(page.getByRole('list',{name:'Activity for SaaSLens'}).getByText(/Search provider · Tavily/)).toBeVisible()
+  await expect(page.getByRole('button',{name:'Show activity for Tavily'})).toHaveCount(0)
   await expect(log.getByRole('link',{name:'Team deployment'})).toHaveAttribute('href','https://reviews.example/team')
   await expect(log.getByText('https://reviews.example/team',{exact:true})).toBeVisible()
   await expect(log.getByText(/returned HTTP 403/)).toBeVisible()

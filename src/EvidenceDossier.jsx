@@ -35,7 +35,7 @@ export function EvidenceDossier({dossier, interpretation}) {
         <strong>{coverageLabels[page.status] || page.status}</strong>
         {(page.status === 'documented' || page.status === 'cited') && page.reason && <span>{page.reason}</span>}
         {pageAttempts(page).map((attempt, j) => <div key={j}>
-          <span>{attempt.lane}{attempt.redirected && <> · Requested <SourceLink url={attempt.requestedUrl} title={attempt.requestedUrl}/></>}</span>
+          <span>{attempt.lane}{attempt.provider && <> · Search provider · {attempt.provider}</>}{attempt.redirected && <> · Requested <SourceLink url={attempt.requestedUrl} title={attempt.requestedUrl}/></>}</span>
           {attempt.reason && <span>{attempt.reason}</span>}
           {attempt.next && <span><b>Next search</b> · {attempt.next}</span>}
         </div>)}

@@ -13,6 +13,7 @@ const examples = new Map([
   ['https://tier.example/', 'tier'],
 ]);
 const catalog = {
+  tavilyConfigured: true,
   model: 'gpt-6.2-sol',
   openAIInventory: ['gpt-4.1', 'gpt-4.1-mini', 'gpt-6-luna', 'gpt-6.2-astra', 'gpt-6.2-sol', 'text-embedding-3-small'],
   models: [
