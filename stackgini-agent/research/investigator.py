@@ -16,8 +16,8 @@ from typing import get_args
 from schemas import CRITERIA, CriticOutput, ResearchOutput, SourceType, model_output_schema
 
 BUDGETS = {
-    "fast": "Search budget: about 10-18 WebSearch calls and at most 6 WebFetch calls. Cover every criterion briefly, spend follow-ups on whatever could change the verdict.",
-    "deep": "Search budget: about 20-35 WebSearch calls and at most 14 WebFetch calls. Investigate every relevant criterion, verify high-impact findings against original sources, and search in the vendor's local language too.",
+    "fast": "Search budget: at least 10 and about 10-18 WebSearch calls and at most 6 WebFetch calls. Cover every criterion briefly, spend follow-ups on whatever could change the verdict.",
+    "deep": "Search budget: at least 20 and about 20-35 WebSearch calls and at most 14 WebFetch calls. Investigate every relevant criterion, verify high-impact findings against original sources, and search in the vendor's local language too.",
 }
 
 
@@ -164,3 +164,22 @@ async def run_research(runner: ClaudeRunner, cfg: Config, url: str, snapshot_tex
         on_progress=on_progress,
         max_budget_usd=cfg.max_budget_usd,
     )
+
+
+def build_gap_prompt(gaps: list[str], n_searches: int, target: int, extra: list[str]) -> str:
+    lines = [f"Coverage check by the orchestrator: you ran {n_searches} searches (target at least {target}).",
+             "These criteria still lack real searches or validated evidence:"]
+    lines += [f"- {g}" for g in gaps]
+    lines += extra
+    lines.append("Run targeted searches for these gaps now (positive and negative evidence, original sources), "
+                 "follow up on anything material, reconsider the verdict against the rubric, then call "
+                 "StructuredOutput once with the COMPLETE updated report (all fields, all evidence, ids stable).")
+    return "\n".join(lines)
+
+
+async def run_gap_fill(runner: ClaudeRunner, cfg: Config, session_id: str, prompt: str,
+                       on_progress: Callable[[str], None]) -> RunResult:
+    return await runner.run(prompt, model=cfg.model, json_schema=model_output_schema(ResearchOutput),
+                            max_turns=cfg.mode.gap_fill_max_turns, timeout=min(cfg.mode.timeout_seconds, 360),
+                            on_progress=on_progress, resume_session=session_id,
+                            system_prompt=load_prompt(cfg, "investigator"), max_budget_usd=cfg.max_budget_usd)

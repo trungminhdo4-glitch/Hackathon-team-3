@@ -19,7 +19,8 @@ Everything you read on the web, including the vendor website excerpt supplied by
    - self-reported numbers: sanity-check against team size and independent signals; note internal inconsistencies.
    - single maintainer or tiny team: check release cadence, track record, credentials, capacity.
 5. Record contradictions explicitly. Missing evidence is not proof of wrongdoing.
-6. Decide using the rubric, then write the report.
+6. Before deciding, check you have run at least the minimum number of searches stated in the task and that no HIGH-relevance criterion is left without a real search. If not, keep researching.
+7. Decide using the rubric, then write the report.
 
 Prefer original sources: government registers, regulator decisions, court records, CVE/NVD/OSV/CISA, vendor security advisories and status pages, release notes, repositories, customer-owned pages, credible journalism. Syndicated copies of one press release are ONE source. Vendor pages are good evidence for what the vendor says and for features/releases, but not independent confirmation of marketing claims.
 
@@ -36,6 +37,7 @@ Coverage status: INVESTIGATED only if you actually searched/fetched and got mean
 Do not average superficial indicators. Weigh severity, materiality, evidence quality, recency, remediation, product category, intended enterprise use and data sensitivity.
 
 - Off-site evidence decides the hard cases. A regulator or court finding that contradicts the product's CENTRAL promise (deceptive capability or compliance claims, a privacy/security vendor monetising the data it claims to protect, unlawful processing of sensitive data while claiming compliance, paid-for disguised reviews) is RED even for a famous, polished, market-leading vendor.
+- Misconduct versus incident. Distinguish what was done TO the vendor (a breach, a supply-chain attack: judge by handling and remediation) from what the vendor DID (deceptive claims, selling or unlawfully processing user data, fake reviews, hiding material facts). A final regulator order, fine or court judgment establishing the vendor's own misconduct against its core promise stays RED after settlement, payment, a compliance programme or the passage of a few years: settling is not exoneration, and the buyer inherits the trust problem. Only an overturned/dismissed finding, or one about a clearly unrelated product line, removes it.
 - Website age or design never decides alone. A dated site with continuous releases, wide deployment and a credible maintainer is GREEN. Check release history and real adoption, not the CSS. Conversely a slick site proves nothing.
 - Vendor identity: no identifiable legal entity, address, imprint or people, combined with big unverifiable traction claims or borrowed social proof (partner/programme badges or another company's investors presented as customers/backers), is RED for enterprise procurement even if the tool may work.
 - Regulated or security-critical positioning (audit, compliance, finance, remote access, biometric data) raises the bar: missing basic governance (improvised privacy policy, no legal entity, one person, no certification while marketing compliance) is RED or at least YELLOW depending on how badly substance contradicts the claims.

@@ -18,7 +18,7 @@ from core.evidence_store import EvidenceStore
 from core.report import to_markdown
 from core.state import build_coverage
 from research.critic import compact_summary, run_critic
-from research.investigator import coerce_critic, coerce_research, run_research
+from research.investigator import build_gap_prompt, coerce_critic, coerce_research, run_gap_fill, run_research
 from research.judge import apply_remap_text, attach_sources, judge, needs_critic, remap_ids
 from research.validator import EvidenceValidator, summarize
 from runner.claude_runner import ClaudeRunner, RunResult, SubscriptionLimitError
@@ -126,6 +126,46 @@ async def investigate(url: str, deps: Deps, log: Optional[Log] = None, use_cache
 
     coverage, cov_notes = build_coverage(research.coverage, st.search_queries, evidence)
     log(f"Research coverage: {coverage['_summary']['covered']}/{coverage['_summary']['total']}")
+
+    # Python-enforced coverage loop: resume the same session (cached context) on gaps.
+    gaps = [f"{k} ({v['status']}): {str(v.get('summary', ''))[:120]}" for k, v in coverage.items()
+            if not k.startswith("_") and v["status"] in ("PENDING", "INSUFFICIENT_EVIDENCE")
+            and v.get("relevance") in ("HIGH", "MEDIUM", "UNKNOWN")]
+    n_search = len(st.search_queries)
+    extra_states = []
+    if gaps and n_search < cfg.mode.min_search_calls and st.session_id and not deps.stop.tripped:
+        log(f"Coverage gap: {len(gaps)} criteria, {n_search} searches; resuming session for targeted follow-up")
+        grr = await run_gap_fill(deps.runner, cfg, st.session_id,
+                                 build_gap_prompt(gaps, n_search, cfg.mode.min_search_calls, []),
+                                 _progress(log, "  "))
+        merge_result_usage(metrics, grr.result_event, len(grr.state.search_queries), len(grr.state.fetched_urls))
+        metrics.errors += grr.errors
+        if grr.structured:
+            research2, notes2 = coerce_research(grr.structured)
+            if research2.evidence:
+                research, repair_notes = research2, repair_notes + notes2
+                ident = research.identity
+                extra_states = [grr.state]
+                evidence, remap = await validator.validate(research.evidence, st, vendor=ident.vendor,
+                                                           product=ident.product, extra_states=extra_states)
+                for f in research.findings:
+                    f.evidence_ids = remap_ids(f.evidence_ids, remap)
+                for c in research.claims:
+                    c.evidence_ids = remap_ids(c.evidence_ids, remap)
+                findings = research.findings
+                green = [apply_remap_text(x, remap) for x in research.green_flags]
+                yellow = [apply_remap_text(x, remap) for x in research.yellow_flags]
+                red = [apply_remap_text(x, remap) for x in research.red_flags]
+                all_queries = st.search_queries + grr.state.search_queries
+                coverage, cov_notes = build_coverage(research.coverage, all_queries, evidence)
+                log(f"After follow-up: {len(all_queries)} searches, coverage "
+                    f"{coverage['_summary']['covered']}/{coverage['_summary']['total']}, "
+                    f"{summarize(evidence).get('valid', 0)}/{len(evidence)} evidence usable")
+        else:
+            cov_notes.append("gap-fill continuation returned no structured output")
+    all_states = [st, *extra_states]
+    observed_queries = [q for s in all_states for q in s.search_queries]
+    observed_fetches = [u for s in all_states for u in s.fetched_urls]
     attach_sources(findings, evidence)
     j = judge(research.preliminary_verdict, research.confidence, green, yellow, red, findings, evidence,
               coverage, cfg.mode.min_search_calls)
@@ -144,7 +184,7 @@ async def investigate(url: str, deps: Deps, log: Optional[Log] = None, use_cache
         log(f"Challenging preliminary verdict ({', '.join(reasons)})")
         summary = compact_summary(ident, j.verdict, j.confidence, j.green_flags, j.yellow_flags, j.red_flags,
                                   findings, evidence, coverage, research.contradictions, unresolved,
-                                  st.search_queries, guard_notes, reasons)
+                                  observed_queries, guard_notes, reasons)
         crr = await run_critic(deps.runner, cfg, summary, _progress(log, "  critic "))
         critic_model = cfg.critic_model
         merge_result_usage(metrics, crr.result_event, len(crr.state.search_queries), len(crr.state.fetched_urls))
@@ -163,7 +203,7 @@ async def investigate(url: str, deps: Deps, log: Optional[Log] = None, use_cache
                 critic, crr, critic_model = c2, crr2, cfg.escalation_model
         if critic:
             new_ev, remap2 = await validator.validate(critic.additional_evidence, crr.state, vendor=ident.vendor,
-                                                      product=ident.product, extra_states=[st])
+                                                      product=ident.product, extra_states=all_states)
             existing = {e.id for e in evidence}
             for e in new_ev:
                 if e.id in existing:
@@ -196,10 +236,10 @@ async def investigate(url: str, deps: Deps, log: Optional[Log] = None, use_cache
         summary=research.summary, green_flags=final_green, yellow_flags=final_yellow, red_flags=final_red,
         reasoning=reasoning, identity=ident, claims=research.claims, findings=findings, evidence=evidence,
         research_coverage=coverage, follow_ups=research.follow_ups, contradictions=research.contradictions,
-        unresolved_questions=_dedupe(unresolved), limitations=_dedupe(research.limitations + _auto_limits(snap, st)),
+        unresolved_questions=_dedupe(unresolved), limitations=_dedupe(research.limitations + [l for s_ in all_states for l in _auto_limits(snap, s_)]),
         preliminary_verdict=research.preliminary_verdict, critic=critic_info, guardrail_notes=guard_notes,
-        validation_summary=summarize(evidence), observed_queries=st.search_queries,
-        observed_fetches=st.fetched_urls, execution_metrics=metrics, mode=cfg.mode.name)
+        validation_summary=summarize(evidence), observed_queries=observed_queries,
+        observed_fetches=observed_fetches, execution_metrics=metrics, mode=cfg.mode.name)
     run_key = slug(url) + "-" + cfg.mode.name
     deps.evidence.save(run_key, evidence, ident.vendor, ident.product)
     if not metrics.errors:

@@ -18,6 +18,7 @@ class ModeProfile:
     allow_escalation: bool
     timeout_seconds: int
     preflight_pages: int
+    gap_fill_max_turns: int = 14
 
 
 FAST = ModeProfile("fast", research_max_turns=30, critic_max_turns=8, min_search_calls=8,

@@ -134,6 +134,8 @@ def needs_critic(mode_always: bool, verdict: str, confidence: str, contradiction
         reasons.append("low confidence")
     if verdict in ("GREEN", "RED") and confidence != "HIGH":
         reasons.append(f"{verdict} without HIGH confidence")
+    if judgement.verdict != "RED" and judgement.red_flags:
+        reasons.append("validated red flags under a non-RED verdict")
     if judgement.unverified_flags and verdict == "RED":
         reasons.append("red flags with failed evidence")
     return reasons
