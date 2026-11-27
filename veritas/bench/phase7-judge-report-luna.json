@@ -1,0 +1,46 @@
+{
+  "source": "luna",
+  "packet_sha256": "bab755712168bc4a32f3c6b6c2bf37a706fb7c2fad5e2768a8d2be808424d122",
+  "variants": {
+    "ultra": {
+      "model": "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free",
+      "correct": 22,
+      "total": 40,
+      "accuracy": 0.55,
+      "macro_f1": 0.531,
+      "critical_false_green": 0,
+      "false_red": 0,
+      "grounded_decisions": 20,
+      "grounded_correct": 13,
+      "transitions_vs_luna_upstream": {
+        "wrong_to_right": 6,
+        "right_to_wrong": 2
+      },
+      "label_distribution": {
+        "Green": 11,
+        "Yellow": 26,
+        "Red": 3
+      }
+    },
+    "mimo": {
+      "model": "opencode/mimo-v2.6-flash-free",
+      "correct": 20,
+      "total": 40,
+      "accuracy": 0.5,
+      "macro_f1": 0.494,
+      "critical_false_green": 0,
+      "false_red": 0,
+      "grounded_decisions": 24,
+      "grounded_correct": 14,
+      "transitions_vs_luna_upstream": {
+        "wrong_to_right": 6,
+        "right_to_wrong": 4
+      },
+      "label_distribution": {
+        "Green": 13,
+        "Yellow": 24,
+        "Red": 3
+      }
+    }
+  }
+}

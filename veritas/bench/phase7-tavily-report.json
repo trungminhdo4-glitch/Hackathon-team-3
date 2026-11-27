@@ -1,0 +1,279 @@
+{
+  "status": "phase7 autonomous Tavily research + OpenCode judge (development data)",
+  "packet_sha256": "7a5a45ba59923c6eb0fa144b2aedddce30972ce652ed2275fbf5c40ce0fbaba4",
+  "model": "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free",
+  "searches": 86,
+  "judge_batches": 2,
+  "correct": 23,
+  "total": 40,
+  "accuracy": 0.575,
+  "macro_f1": 0.572,
+  "per_class": {
+    "Green": {
+      "precision": 0.5,
+      "recall": 0.929,
+      "f1": 0.65,
+      "support": 14
+    },
+    "Yellow": {
+      "precision": 0.556,
+      "recall": 0.313,
+      "f1": 0.4,
+      "support": 16
+    },
+    "Red": {
+      "precision": 1,
+      "recall": 0.5,
+      "f1": 0.667,
+      "support": 10
+    }
+  },
+  "confusion": {
+    "Green": {
+      "Green": 13,
+      "Yellow": 1,
+      "Red": 0
+    },
+    "Yellow": {
+      "Green": 11,
+      "Yellow": 5,
+      "Red": 0
+    },
+    "Red": {
+      "Green": 2,
+      "Yellow": 3,
+      "Red": 5
+    }
+  },
+  "critical_false_green": 2,
+  "false_red": 0,
+  "grounded_decisions": 35,
+  "grounded_correct": 21,
+  "label_distribution": {
+    "Green": 26,
+    "Yellow": 9,
+    "Red": 5
+  },
+  "transitions": {
+    "shuhan": {
+      "w2r": 8,
+      "r2w": 12
+    },
+    "terra": {
+      "w2r": 10,
+      "r2w": 8
+    },
+    "luna": {
+      "w2r": 10,
+      "r2w": 5
+    }
+  },
+  "predictions": [
+    {
+      "id": "1",
+      "url": "https://www.omnissa.com/",
+      "overall": "Green"
+    },
+    {
+      "id": "2",
+      "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+      "overall": "Green"
+    },
+    {
+      "id": "3",
+      "url": "https://bendingspoons.com/",
+      "overall": "Green"
+    },
+    {
+      "id": "4",
+      "url": "https://pimeyes.com/en",
+      "overall": "Red"
+    },
+    {
+      "id": "5",
+      "url": "https://www.rocketsoftware.com/en-us/products/vertica",
+      "overall": "Green"
+    },
+    {
+      "id": "6",
+      "url": "https://www.postfix.org/",
+      "overall": "Green"
+    },
+    {
+      "id": "7",
+      "url": "https://www.nettoeinkommen.de/index.htm",
+      "overall": "Red"
+    },
+    {
+      "id": "8",
+      "url": "https://www.datto.com/",
+      "overall": "Green"
+    },
+    {
+      "id": "9",
+      "url": "https://www.autodesk.com/products/fusion-360/overview",
+      "overall": "Green"
+    },
+    {
+      "id": "10",
+      "url": "https://www.auditalign.io/",
+      "overall": "Yellow"
+    },
+    {
+      "id": "11",
+      "url": "https://knooing.com/en/plattform",
+      "overall": "Yellow"
+    },
+    {
+      "id": "12",
+      "url": "https://www.qlik.com/us/products/qlikview",
+      "overall": "Yellow"
+    },
+    {
+      "id": "13",
+      "url": "https://www.cogpack.de/USA/frames.htm",
+      "overall": "Green"
+    },
+    {
+      "id": "14",
+      "url": "https://www.flexera.com/products/snow-atlas",
+      "overall": "Green"
+    },
+    {
+      "id": "15",
+      "url": "https://www.redmine.org/",
+      "overall": "Green"
+    },
+    {
+      "id": "16",
+      "url": "https://www.r-project.org/",
+      "overall": "Green"
+    },
+    {
+      "id": "17",
+      "url": "https://www.leanix.net/en/",
+      "overall": "Green"
+    },
+    {
+      "id": "18",
+      "url": "https://www.microsoft.com/en-us/microsoft-365-copilot",
+      "overall": "Green"
+    },
+    {
+      "id": "19",
+      "url": "https://info.planview.com/scf-planview-vantage-project-mgmt-_demo-on-demand_prm_en_reg.html",
+      "overall": "Green"
+    },
+    {
+      "id": "20",
+      "url": "https://anydesk.com/en",
+      "overall": "Green"
+    },
+    {
+      "id": "21",
+      "url": "https://www.tipard.com/pdf-to-word-converter/",
+      "overall": "Green"
+    },
+    {
+      "id": "22",
+      "url": "https://www.tungstenautomation.com/",
+      "overall": "Yellow"
+    },
+    {
+      "id": "23",
+      "url": "https://www.gainsight.com/",
+      "overall": "Yellow"
+    },
+    {
+      "id": "24",
+      "url": "https://keepass.info",
+      "overall": "Green"
+    },
+    {
+      "id": "25",
+      "url": "https://www.optimizely.com/",
+      "overall": "Green"
+    },
+    {
+      "id": "26",
+      "url": "https://www.manageengine.com/",
+      "overall": "Green"
+    },
+    {
+      "id": "27",
+      "url": "https://www.microsoft.com/en-us/microsoft-copilot/for-individuals",
+      "overall": "Yellow"
+    },
+    {
+      "id": "28",
+      "url": "https://www.cadkas.com/index.php",
+      "overall": "Green"
+    },
+    {
+      "id": "29",
+      "url": "https://www.tf7.com/TF7PublicWebSite/TF7/TF7Start.aspx?AspxAutoDetectCookieSupport=1",
+      "overall": "Yellow"
+    },
+    {
+      "id": "30",
+      "url": "https://notepad-plus-plus.org/",
+      "overall": "Green"
+    },
+    {
+      "id": "31",
+      "url": "https://schneespur.de/",
+      "overall": "Green"
+    },
+    {
+      "id": "32",
+      "url": "https://donotpay.com/",
+      "overall": "Red"
+    },
+    {
+      "id": "33",
+      "url": "https://opsi.org/de/",
+      "overall": "Green"
+    },
+    {
+      "id": "34",
+      "url": "https://personal-business-machine.com/en/",
+      "overall": "Yellow"
+    },
+    {
+      "id": "35",
+      "url": "https://prayerplatform.org/",
+      "overall": "Yellow"
+    },
+    {
+      "id": "36",
+      "url": "https://accessibe.com/",
+      "overall": "Red"
+    },
+    {
+      "id": "37",
+      "url": "https://prized.dev/",
+      "overall": "Green"
+    },
+    {
+      "id": "38",
+      "url": "https://www.opentext.com/products/professional-performance-engineering",
+      "overall": "Green"
+    },
+    {
+      "id": "39",
+      "url": "https://www.irfanview.com/",
+      "overall": "Green"
+    },
+    {
+      "id": "40",
+      "url": "https://www.avast.com/de-de/index#pc",
+      "overall": "Red"
+    }
+  ],
+  "limits": [
+    "Development labels only; not a blind holdout.",
+    "Tavily search excerpts are weaker than first-party captured pages.",
+    "Judge support is self-assessment, not human verification.",
+    "Shuhan predictions reconstructed from RESULTS.md error lists, not original files."
+  ]
+}

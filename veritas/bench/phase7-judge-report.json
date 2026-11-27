@@ -1,0 +1,803 @@
+{
+  "status": "phase7 fixed-evidence judge tournament (development data)",
+  "packet_sha256": "77d6eab086422e9b20bd506be8923e9079956c9621eb2fb108210e374c7b4365",
+  "models": {
+    "ultra": "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free",
+    "super": "opencode/nemotron-3.5-super-vl-free",
+    "mimo": "opencode/mimo-v2.6-flash-free"
+  },
+  "variants": {
+    "ultra": {
+      "model": "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free",
+      "invalid_results": 0,
+      "correct": 21,
+      "total": 40,
+      "accuracy": 0.525,
+      "macro_f1": 0.469,
+      "per_class": {
+        "Green": {
+          "precision": 0.75,
+          "recall": 0.214,
+          "f1": 0.333,
+          "support": 14
+        },
+        "Yellow": {
+          "precision": 0.455,
+          "recall": 0.938,
+          "f1": 0.612,
+          "support": 16
+        },
+        "Red": {
+          "precision": 1,
+          "recall": 0.3,
+          "f1": 0.462,
+          "support": 10
+        }
+      },
+      "confusion": {
+        "Green": {
+          "Green": 3,
+          "Yellow": 11,
+          "Red": 0
+        },
+        "Yellow": {
+          "Green": 1,
+          "Yellow": 15,
+          "Red": 0
+        },
+        "Red": {
+          "Green": 0,
+          "Yellow": 7,
+          "Red": 3
+        }
+      },
+      "critical_false_green": 0,
+      "false_red": 0,
+      "grounded_decisions": 10,
+      "grounded_correct": 8,
+      "grounded_accuracy_on_grounded": 0.8,
+      "grounded_full_coverage": 0.2,
+      "transitions_vs_terra_upstream": {
+        "wrong_to_right": 5,
+        "right_to_wrong": 5
+      },
+      "label_distribution": {
+        "Green": 4,
+        "Yellow": 33,
+        "Red": 3
+      },
+      "predictions": [
+        {
+          "id": "1",
+          "url": "https://www.omnissa.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "2",
+          "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+          "overall": "Yellow"
+        },
+        {
+          "id": "3",
+          "url": "https://bendingspoons.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "4",
+          "url": "https://pimeyes.com/en",
+          "overall": "Yellow"
+        },
+        {
+          "id": "5",
+          "url": "https://www.rocketsoftware.com/en-us/products/vertica",
+          "overall": "Yellow"
+        },
+        {
+          "id": "6",
+          "url": "https://www.postfix.org/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "7",
+          "url": "https://www.nettoeinkommen.de/index.htm",
+          "overall": "Yellow"
+        },
+        {
+          "id": "8",
+          "url": "https://www.datto.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "9",
+          "url": "https://www.autodesk.com/products/fusion-360/overview",
+          "overall": "Yellow"
+        },
+        {
+          "id": "10",
+          "url": "https://www.auditalign.io/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "11",
+          "url": "https://knooing.com/en/plattform",
+          "overall": "Yellow"
+        },
+        {
+          "id": "12",
+          "url": "https://www.qlik.com/us/products/qlikview",
+          "overall": "Yellow"
+        },
+        {
+          "id": "13",
+          "url": "https://www.cogpack.de/USA/frames.htm",
+          "overall": "Yellow"
+        },
+        {
+          "id": "14",
+          "url": "https://www.flexera.com/products/snow-atlas",
+          "overall": "Yellow"
+        },
+        {
+          "id": "15",
+          "url": "https://www.redmine.org/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "16",
+          "url": "https://www.r-project.org/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "17",
+          "url": "https://www.leanix.net/en/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "18",
+          "url": "https://www.microsoft.com/en-us/microsoft-365-copilot",
+          "overall": "Yellow"
+        },
+        {
+          "id": "19",
+          "url": "https://info.planview.com/scf-planview-vantage-project-mgmt-_demo-on-demand_prm_en_reg.html",
+          "overall": "Yellow"
+        },
+        {
+          "id": "20",
+          "url": "https://anydesk.com/en",
+          "overall": "Yellow"
+        },
+        {
+          "id": "21",
+          "url": "https://www.tipard.com/pdf-to-word-converter/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "22",
+          "url": "https://www.tungstenautomation.com/",
+          "overall": "Green"
+        },
+        {
+          "id": "23",
+          "url": "https://www.gainsight.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "24",
+          "url": "https://keepass.info",
+          "overall": "Green"
+        },
+        {
+          "id": "25",
+          "url": "https://www.optimizely.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "26",
+          "url": "https://www.manageengine.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "27",
+          "url": "https://www.microsoft.com/en-us/microsoft-copilot/for-individuals",
+          "overall": "Yellow"
+        },
+        {
+          "id": "28",
+          "url": "https://www.cadkas.com/index.php",
+          "overall": "Yellow"
+        },
+        {
+          "id": "29",
+          "url": "https://www.tf7.com/TF7PublicWebSite/TF7/TF7Start.aspx?AspxAutoDetectCookieSupport=1",
+          "overall": "Yellow"
+        },
+        {
+          "id": "30",
+          "url": "https://notepad-plus-plus.org/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "31",
+          "url": "https://schneespur.de/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "32",
+          "url": "https://donotpay.com/",
+          "overall": "Red"
+        },
+        {
+          "id": "33",
+          "url": "https://opsi.org/de/",
+          "overall": "Green"
+        },
+        {
+          "id": "34",
+          "url": "https://personal-business-machine.com/en/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "35",
+          "url": "https://prayerplatform.org/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "36",
+          "url": "https://accessibe.com/",
+          "overall": "Red"
+        },
+        {
+          "id": "37",
+          "url": "https://prized.dev/",
+          "overall": "Green"
+        },
+        {
+          "id": "38",
+          "url": "https://www.opentext.com/products/professional-performance-engineering",
+          "overall": "Yellow"
+        },
+        {
+          "id": "39",
+          "url": "https://www.irfanview.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "40",
+          "url": "https://www.avast.com/de-de/index#pc",
+          "overall": "Red"
+        }
+      ]
+    },
+    "super": {
+      "model": "opencode/nemotron-3.5-super-vl-free",
+      "invalid_results": 0,
+      "correct": 20,
+      "total": 40,
+      "accuracy": 0.5,
+      "macro_f1": 0.454,
+      "per_class": {
+        "Green": {
+          "precision": 0.6,
+          "recall": 0.214,
+          "f1": 0.316,
+          "support": 14
+        },
+        "Yellow": {
+          "precision": 0.438,
+          "recall": 0.875,
+          "f1": 0.583,
+          "support": 16
+        },
+        "Red": {
+          "precision": 1,
+          "recall": 0.3,
+          "f1": 0.462,
+          "support": 10
+        }
+      },
+      "confusion": {
+        "Green": {
+          "Green": 3,
+          "Yellow": 11,
+          "Red": 0
+        },
+        "Yellow": {
+          "Green": 2,
+          "Yellow": 14,
+          "Red": 0
+        },
+        "Red": {
+          "Green": 0,
+          "Yellow": 7,
+          "Red": 3
+        }
+      },
+      "critical_false_green": 0,
+      "false_red": 0,
+      "grounded_decisions": 8,
+      "grounded_correct": 6,
+      "grounded_accuracy_on_grounded": 0.75,
+      "grounded_full_coverage": 0.15,
+      "transitions_vs_terra_upstream": {
+        "wrong_to_right": 5,
+        "right_to_wrong": 6
+      },
+      "label_distribution": {
+        "Green": 5,
+        "Yellow": 32,
+        "Red": 3
+      },
+      "predictions": [
+        {
+          "id": "1",
+          "url": "https://www.omnissa.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "2",
+          "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+          "overall": "Yellow"
+        },
+        {
+          "id": "3",
+          "url": "https://bendingspoons.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "4",
+          "url": "https://pimeyes.com/en",
+          "overall": "Yellow"
+        },
+        {
+          "id": "5",
+          "url": "https://www.rocketsoftware.com/en-us/products/vertica",
+          "overall": "Yellow"
+        },
+        {
+          "id": "6",
+          "url": "https://www.postfix.org/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "7",
+          "url": "https://www.nettoeinkommen.de/index.htm",
+          "overall": "Yellow"
+        },
+        {
+          "id": "8",
+          "url": "https://www.datto.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "9",
+          "url": "https://www.autodesk.com/products/fusion-360/overview",
+          "overall": "Yellow"
+        },
+        {
+          "id": "10",
+          "url": "https://www.auditalign.io/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "11",
+          "url": "https://knooing.com/en/plattform",
+          "overall": "Yellow"
+        },
+        {
+          "id": "12",
+          "url": "https://www.qlik.com/us/products/qlikview",
+          "overall": "Yellow"
+        },
+        {
+          "id": "13",
+          "url": "https://www.cogpack.de/USA/frames.htm",
+          "overall": "Yellow"
+        },
+        {
+          "id": "14",
+          "url": "https://www.flexera.com/products/snow-atlas",
+          "overall": "Yellow"
+        },
+        {
+          "id": "15",
+          "url": "https://www.redmine.org/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "16",
+          "url": "https://www.r-project.org/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "17",
+          "url": "https://www.leanix.net/en/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "18",
+          "url": "https://www.microsoft.com/en-us/microsoft-365-copilot",
+          "overall": "Yellow"
+        },
+        {
+          "id": "19",
+          "url": "https://info.planview.com/scf-planview-vantage-project-mgmt-_demo-on-demand_prm_en_reg.html",
+          "overall": "Yellow"
+        },
+        {
+          "id": "20",
+          "url": "https://anydesk.com/en",
+          "overall": "Yellow"
+        },
+        {
+          "id": "21",
+          "url": "https://www.tipard.com/pdf-to-word-converter/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "22",
+          "url": "https://www.tungstenautomation.com/",
+          "overall": "Green"
+        },
+        {
+          "id": "23",
+          "url": "https://www.gainsight.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "24",
+          "url": "https://keepass.info",
+          "overall": "Green"
+        },
+        {
+          "id": "25",
+          "url": "https://www.optimizely.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "26",
+          "url": "https://www.manageengine.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "27",
+          "url": "https://www.microsoft.com/en-us/microsoft-copilot/for-individuals",
+          "overall": "Yellow"
+        },
+        {
+          "id": "28",
+          "url": "https://www.cadkas.com/index.php",
+          "overall": "Yellow"
+        },
+        {
+          "id": "29",
+          "url": "https://www.tf7.com/TF7PublicWebSite/TF7/TF7Start.aspx?AspxAutoDetectCookieSupport=1",
+          "overall": "Yellow"
+        },
+        {
+          "id": "30",
+          "url": "https://notepad-plus-plus.org/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "31",
+          "url": "https://schneespur.de/",
+          "overall": "Green"
+        },
+        {
+          "id": "32",
+          "url": "https://donotpay.com/",
+          "overall": "Red"
+        },
+        {
+          "id": "33",
+          "url": "https://opsi.org/de/",
+          "overall": "Green"
+        },
+        {
+          "id": "34",
+          "url": "https://personal-business-machine.com/en/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "35",
+          "url": "https://prayerplatform.org/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "36",
+          "url": "https://accessibe.com/",
+          "overall": "Red"
+        },
+        {
+          "id": "37",
+          "url": "https://prized.dev/",
+          "overall": "Green"
+        },
+        {
+          "id": "38",
+          "url": "https://www.opentext.com/products/professional-performance-engineering",
+          "overall": "Yellow"
+        },
+        {
+          "id": "39",
+          "url": "https://www.irfanview.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "40",
+          "url": "https://www.avast.com/de-de/index#pc",
+          "overall": "Red"
+        }
+      ]
+    },
+    "mimo": {
+      "model": "opencode/mimo-v2.6-flash-free",
+      "invalid_results": 0,
+      "correct": 21,
+      "total": 40,
+      "accuracy": 0.525,
+      "macro_f1": 0.469,
+      "per_class": {
+        "Green": {
+          "precision": 0.75,
+          "recall": 0.214,
+          "f1": 0.333,
+          "support": 14
+        },
+        "Yellow": {
+          "precision": 0.455,
+          "recall": 0.938,
+          "f1": 0.612,
+          "support": 16
+        },
+        "Red": {
+          "precision": 1,
+          "recall": 0.3,
+          "f1": 0.462,
+          "support": 10
+        }
+      },
+      "confusion": {
+        "Green": {
+          "Green": 3,
+          "Yellow": 11,
+          "Red": 0
+        },
+        "Yellow": {
+          "Green": 1,
+          "Yellow": 15,
+          "Red": 0
+        },
+        "Red": {
+          "Green": 0,
+          "Yellow": 7,
+          "Red": 3
+        }
+      },
+      "critical_false_green": 0,
+      "false_red": 0,
+      "grounded_decisions": 8,
+      "grounded_correct": 6,
+      "grounded_accuracy_on_grounded": 0.75,
+      "grounded_full_coverage": 0.15,
+      "transitions_vs_terra_upstream": {
+        "wrong_to_right": 5,
+        "right_to_wrong": 5
+      },
+      "label_distribution": {
+        "Green": 4,
+        "Yellow": 33,
+        "Red": 3
+      },
+      "predictions": [
+        {
+          "id": "1",
+          "url": "https://www.omnissa.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "2",
+          "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+          "overall": "Yellow"
+        },
+        {
+          "id": "3",
+          "url": "https://bendingspoons.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "4",
+          "url": "https://pimeyes.com/en",
+          "overall": "Yellow"
+        },
+        {
+          "id": "5",
+          "url": "https://www.rocketsoftware.com/en-us/products/vertica",
+          "overall": "Yellow"
+        },
+        {
+          "id": "6",
+          "url": "https://www.postfix.org/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "7",
+          "url": "https://www.nettoeinkommen.de/index.htm",
+          "overall": "Yellow"
+        },
+        {
+          "id": "8",
+          "url": "https://www.datto.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "9",
+          "url": "https://www.autodesk.com/products/fusion-360/overview",
+          "overall": "Yellow"
+        },
+        {
+          "id": "10",
+          "url": "https://www.auditalign.io/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "11",
+          "url": "https://knooing.com/en/plattform",
+          "overall": "Yellow"
+        },
+        {
+          "id": "12",
+          "url": "https://www.qlik.com/us/products/qlikview",
+          "overall": "Yellow"
+        },
+        {
+          "id": "13",
+          "url": "https://www.cogpack.de/USA/frames.htm",
+          "overall": "Yellow"
+        },
+        {
+          "id": "14",
+          "url": "https://www.flexera.com/products/snow-atlas",
+          "overall": "Yellow"
+        },
+        {
+          "id": "15",
+          "url": "https://www.redmine.org/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "16",
+          "url": "https://www.r-project.org/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "17",
+          "url": "https://www.leanix.net/en/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "18",
+          "url": "https://www.microsoft.com/en-us/microsoft-365-copilot",
+          "overall": "Yellow"
+        },
+        {
+          "id": "19",
+          "url": "https://info.planview.com/scf-planview-vantage-project-mgmt-_demo-on-demand_prm_en_reg.html",
+          "overall": "Yellow"
+        },
+        {
+          "id": "20",
+          "url": "https://anydesk.com/en",
+          "overall": "Yellow"
+        },
+        {
+          "id": "21",
+          "url": "https://www.tipard.com/pdf-to-word-converter/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "22",
+          "url": "https://www.tungstenautomation.com/",
+          "overall": "Green"
+        },
+        {
+          "id": "23",
+          "url": "https://www.gainsight.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "24",
+          "url": "https://keepass.info",
+          "overall": "Green"
+        },
+        {
+          "id": "25",
+          "url": "https://www.optimizely.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "26",
+          "url": "https://www.manageengine.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "27",
+          "url": "https://www.microsoft.com/en-us/microsoft-copilot/for-individuals",
+          "overall": "Yellow"
+        },
+        {
+          "id": "28",
+          "url": "https://www.cadkas.com/index.php",
+          "overall": "Yellow"
+        },
+        {
+          "id": "29",
+          "url": "https://www.tf7.com/TF7PublicWebSite/TF7/TF7Start.aspx?AspxAutoDetectCookieSupport=1",
+          "overall": "Yellow"
+        },
+        {
+          "id": "30",
+          "url": "https://notepad-plus-plus.org/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "31",
+          "url": "https://schneespur.de/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "32",
+          "url": "https://donotpay.com/",
+          "overall": "Red"
+        },
+        {
+          "id": "33",
+          "url": "https://opsi.org/de/",
+          "overall": "Green"
+        },
+        {
+          "id": "34",
+          "url": "https://personal-business-machine.com/en/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "35",
+          "url": "https://prayerplatform.org/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "36",
+          "url": "https://accessibe.com/",
+          "overall": "Red"
+        },
+        {
+          "id": "37",
+          "url": "https://prized.dev/",
+          "overall": "Green"
+        },
+        {
+          "id": "38",
+          "url": "https://www.opentext.com/products/professional-performance-engineering",
+          "overall": "Yellow"
+        },
+        {
+          "id": "39",
+          "url": "https://www.irfanview.com/",
+          "overall": "Yellow"
+        },
+        {
+          "id": "40",
+          "url": "https://www.avast.com/de-de/index#pc",
+          "overall": "Red"
+        }
+      ]
+    }
+  },
+  "limits": [
+    "Shuhan original evidence and 40 individual predictions are not present locally; frozen VERITAS cached packets from phase 5 are used instead.",
+    "Judges saw only the supplied packet and the frozen generic rubric; no web access and no reference labels.",
+    "Grounded accuracy is packet-internal passage grounding, not independent human verification.",
+    "Monetary cost is $0 on the free tiers; rate limits could throttle retries."
+  ]
+}
