@@ -107,8 +107,18 @@ export async function fetchPublicText(value, { signal } = {}) {
       const text = sentence && sentence.length <= 500 && block.find('a').length <= 2 ? sentence : compact(anchor.text()).slice(0, 500);
       if (text) linkContexts.push({ url: href, text });
     });
-    $('br,p,div,h1,h2,h3,h4,li,tr,section,article,span,a').append(' ');
-    const text = compact([title, description, $('body').text()].join(' ')).slice(0, 40000);
+    // Navigation links are useful discovery leads, but menus can exhaust
+    // the text budget before the product description or customer's account.
+    $('nav,[role="navigation"]').remove();
+    $('br,p,div,h1,h2,h3,h4,h5,h6,li,tr,section,article,span,a,blockquote,cite,figcaption').append(' ');
+    const main = $('main,[role="main"]').first();
+    const primary = compact(main.text());
+    main.remove();
+    const footer = $('footer,[role="contentinfo"]');
+    const legal = compact(footer.text()).slice(0, 2000);
+    footer.remove();
+    const body = compact([title, description, primary, $('body').text()].join(' '));
+    const text = compact(body.slice(0, 39999 - legal.length) + ' ' + legal);
     return { url: url.href, title, text, links: [...links], linkContexts };
   }
   throw new Error('Page exceeded the redirect limit.');
