@@ -33,8 +33,9 @@ export function SessionHistory({ entries, current, busy, onOpen }) {
       <ol>{entries.map(entry => <li key={entry.id}>
         <button type="button" aria-current={entry.id === current ? 'true' : undefined}
           disabled={busy} onClick={() => onOpen(entry)}>
-          <span><strong>{entry.report.productName}</strong><small>{entry.report.inputUrl}</small></span>
-          <span className="history-meta">{entry.scenario ? 'Fixture' : 'Live'} · {entry.report.score ?? '—'}/100
+          <span><strong>{entry.report.productName}</strong><small>{entry.report.inputUrl}</small>
+            {entry.report.question && <small>{entry.report.question}</small>}</span>
+          <span className="history-meta">{entry.scenario && 'Simulated · '}{entry.report.score === null ? 'Unscored' : entry.report.score + '/100'}
             <small>{entry.savedAt ? new Date(entry.savedAt).toLocaleString() : 'Earlier this session'}</small>
           </span>
         </button>

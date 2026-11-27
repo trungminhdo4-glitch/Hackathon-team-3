@@ -1,10 +1,8 @@
-export async function requestAssessment(url, fixtureCase) {
-  const headers = { 'Content-Type': 'application/json' }
-  if (fixtureCase) headers['X-Fixture-Case'] = fixtureCase
+export async function requestAssessment(subject, question) {
   const response = await fetch('/api/investigate', {
     method: 'POST',
-    headers,
-    body: JSON.stringify({ url }),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(question ? { subject, question } : { subject }),
     signal: AbortSignal.timeout(180_000),
   })
   if (!response.headers.get('content-type')?.includes('application/json')) {

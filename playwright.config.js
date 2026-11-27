@@ -7,7 +7,7 @@ export default defineConfig({
   testDir: './tests/browser',
   use: { baseURL, launchOptions: existsSync(edgePath) ? { executablePath: edgePath } : {} },
   webServer: {
-    command: 'node server/start.js', url: baseURL, reuseExistingServer: false,
+    command: 'node tests/serve-browser.js', url: baseURL, reuseExistingServer: false,
     env: { PORT: '4197', OPENAI_API_KEY: '' },
   },
 });

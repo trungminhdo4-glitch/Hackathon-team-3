@@ -13,132 +13,102 @@
   --soft-rule: #d4ded4;
   --paper: #f5faf5;
   --serif: Spectral, Georgia, serif;
-  color: var(--ink);
   background: var(--paper);
+  color: var(--ink);
   font: 16px/1.5 Inter, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 * { box-sizing: border-box }
-body { margin: 0 }
-button, input, select { font: inherit; color: inherit }
-button, select { cursor: pointer }
-button:disabled, input:disabled, select:disabled { cursor: wait; opacity: .7 }
-button:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid #218e55; outline-offset: 4px }
-h1, h2, h3, p, blockquote { margin: 0 }
-h1, h2, .brand, .points, .score strong, .framework li strong { font-family: var(--serif) }
-svg { width: 22px; height: 22px; flex: none }
-.shell { max-width: 1440px; width: 92%; margin: auto }
-header, footer, .brand, .mode-switch, .input-row, .url-field, .submit, .framework-heading, .framework li, .report-top, .badge, .finding-title, .fixture-controls, .feedback { display: flex; align-items: center }
-header, footer { justify-content: space-between; padding: 18px 4px; gap: 14px }
-header { border-bottom: 1px solid var(--ink) }
-.brand { font-weight: 700; font-size: clamp(30px,3.15vw,48px); letter-spacing: -.055em; line-height: 1; gap: .3em }
+body, h1, h2, h3, p, blockquote { margin: 0 }
+button, input, textarea { font: inherit; color: inherit }
+button, summary { cursor: pointer }
+button:disabled { cursor: default; opacity: .65 }
+:focus-visible { outline: 3px solid #218e55; outline-offset: 3px }
+svg { width: 20px; height: 20px; flex: none }
+.shell { width: min(94%, 1000px); margin: 0 auto; padding-bottom: 3rem }
+header { padding: 19px 0 15px; border-bottom: 1px solid var(--rule) }
+.brand, h1, h2, .score strong, .points { font-family: var(--serif) }
+.brand { display: inline-flex; align-items: center; gap: .3em; font-weight: 700; font-size: 30px; letter-spacing: -.055em; line-height: 1 }
 .brand img { width: 1.17em; height: 1.17em }
-.mode-switch { border: 1px solid var(--forest); border-radius: 6px; overflow: hidden }
-.mode-switch button { border: 0; background: transparent; padding: .6em 1.5em; font-weight: 550; font-size: clamp(13px,1.15vw,17px) }
-.mode-switch button[aria-pressed="true"], .submit { background: var(--forest); color: white }
-.mode-switch button:focus-visible { outline-offset: -4px }
-.hero { display: grid; grid-template-columns: .95fr 1fr; align-items: center; gap: clamp(24px,4vw,70px); padding: clamp(22px,2.1vw,34px) 2px }
-h1 { font-size: clamp(50px,5.25vw,84px); line-height: .99; letter-spacing: -.052em; font-weight: 600 }
-.hero p { margin-top: clamp(16px,1.8vw,27px); max-width: 34ch; color: var(--body); font-size: clamp(18px,1.77vw,28px); letter-spacing: -.035em; line-height: 1.4 }
-.engraving { display: block; width: 100%; height: auto; aspect-ratio: 2.16; object-fit: cover; border: 1px solid #bacbb8 }
-form, .framework ul, .report { background: #fff; border: 1px solid var(--rule); border-radius: 6px }
-form { padding: clamp(18px,1.7vw,28px) clamp(20px,2vw,32px) }
-label, h3 { font-size: clamp(16px,1.3vw,20px); font-weight: 650; letter-spacing: -.025em }
-.input-row { gap: 16px; margin-top: 9px }
-.url-field { flex: 1; min-width: 0; gap: 13px; border: 1px solid var(--rule); border-radius: 5px; padding-left: 16px; color: var(--forest) }
-.url-field:focus-within { outline: 2px solid var(--forest); outline-offset: 1px }
-input { width: 100%; min-width: 0; background: transparent; border: none; outline: none; height: clamp(48px,3.9vw,62px); font-size: clamp(16px,1.5vw,22px); padding: 0 12px 0 0 }
-input::placeholder { color: #748377 }
-.submit, .retry { justify-content: center; border-radius: 5px; border: 1px solid var(--forest); font-weight: 650 }
-.submit { gap: 18px; padding: 0 clamp(22px,2.2vw,35px); height: clamp(50px,4vw,64px); font-size: clamp(16px,1.4vw,22px) }
-.submit:hover:not(:disabled), .mode-switch button[aria-pressed=true]:hover { background: #0c3920 }
-.retry, select { padding: 8px 15px; background: white; font-size: 15px }
-select { border: 1px solid var(--rule); border-radius: 4px; max-width: 100% }
-.fixture-controls { justify-content: space-between; gap: 16px; padding-bottom: 18px; margin-bottom: 17px; border-bottom: 1px solid var(--soft-rule) }
-.fixture-controls p, .score-note { font-size: 14px; color: var(--muted); margin-top: 3px }
-.framework, .report { margin-top: clamp(28px,2.6vw,44px) }
-.framework-heading { gap: 22px; margin-bottom: 14px }
-h2 { font-weight: 600; font-size: clamp(30px,3.1vw,49px); line-height: 1.15; letter-spacing: -.045em }
-.framework-heading span { border-left: 1px solid var(--rule); padding-left: 22px; color: var(--body); font-size: clamp(14px,1.45vw,22px) }
-.framework ul { padding: 0; margin: 0; list-style: none }
-.framework li { gap: clamp(18px,2.4vw,38px); padding: 10px clamp(20px,2.4vw,38px); font-weight: 600; font-size: clamp(16px,1.55vw,23px); letter-spacing: -.03em; min-height: clamp(50px,3.85vw,62px) }
-.framework li + li, .finding + .finding { border-top: 1px solid var(--rule) }
-.framework li strong, .points { margin-left: auto; font-size: 1.25em; font-weight: 600; line-height: 1.1 }
-.framework li svg { width: 1.45em; height: 1.45em }
-footer { margin-top: clamp(32px,3.3vw,52px); border-top: 1px solid var(--ink); font-size: clamp(13px,1.35vw,20px) }
-footer .brand { font-size: clamp(22px,2vw,32px) }
-.feedback { margin-top: 16px; gap: 12px; padding: 16px 19px; border: 1px solid var(--soft-rule); background: #edf3ed; border-radius: 5px }
-.feedback.error { justify-content: space-between; background: #fcf1e6 }
+.intro { display: grid; grid-template-columns: 1fr minmax(140px, 27%); align-items: center; gap: 25px; padding: 24px 0 }
+h1, h2 { font-weight: 600; letter-spacing: -.045em; line-height: 1.08 }
+h1 { font-size: clamp(38px, 5.5vw, 58px) }
+h2 { font-size: clamp(30px, 4vw, 43px) }
+.intro p { max-width: 52ch; margin-top: 6px; color: var(--body) }
+.engraving { width: 100%; height: 110px; object-fit: cover; border: 1px solid #bdcbbb }
+form, .report { background: white; border: 1px solid var(--rule); border-radius: 6px; padding: clamp(18px, 3vw, 30px) }
+form { display: grid; gap: 16px }
+.field { min-width: 0 }
+label, h3 { font-size: 16px; font-weight: 650; letter-spacing: -.025em }
+.field-label { display: flex; align-items: baseline; gap: 8px }
+.field-label span, .score-note { font-size: 13px; color: var(--muted) }
+input, textarea { display: block; background: white; border: 1px solid var(--rule); border-radius: 4px; padding: 9px 12px; width: 100%; margin-top: 5px }
+input { height: 46px }
+textarea { resize: vertical; min-height: 62px }
+input::placeholder, textarea::placeholder { color: #657569 }
+.submit, .retry { display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid var(--forest); font-size: 15px; font-weight: 600; padding: 9px 17px }
+.submit { justify-self: start; gap: 12px; background: var(--forest); color: white }
+.submit:hover:enabled { background: #0c3920 }
+.retry { background: white }
+.feedback { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: 16px; padding: 14px 18px; border: 1px solid var(--soft-rule); background: #edf3ed; border-radius: 5px }
+.feedback.error { background: #fcf1e6 }
 .spinner { width: 17px; height: 17px; display: inline-block; flex: none; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin 1s linear infinite }
 @keyframes spin { to { transform: rotate(360deg) } }
 @media (prefers-reduced-motion: reduce) { .spinner { animation: none } }
-.report { padding: clamp(22px,3vw,42px); overflow-wrap: anywhere }
-.report-top { justify-content: space-between; gap: 22px; align-items: start }
-.section-label, .status { color: var(--muted); font-size: 12px; font-weight: 650; letter-spacing: .07em; text-transform: uppercase }
-.report h2 { margin: 5px 0 }
+.session-history { margin-top: 10px; border-bottom: 1px solid var(--soft-rule) }
+summary { padding: 8px 0; font-weight: 600 }
+.session-history summary span, .session-history small { color: var(--muted) }
+.session-history p { margin-bottom: 12px; color: var(--muted) }
+.session-history ol { list-style: none; padding: 0; margin: 0 0 8px; max-height: 18rem; overflow-y: auto }
+.session-history button { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px 16px; text-align: left; width: 100%; border: 0; border-top: 1px solid var(--soft-rule); padding: 9px 12px; background: transparent; overflow-wrap: anywhere }
+.session-history button[aria-current=true], .session-history button:hover { background: #e7f0e7 }
+.session-history button:focus-visible { outline-offset: -3px }
+.session-history small, .report-url { display: block; font-size: 13px; color: var(--muted) }
+.history-meta { font-size: 14px }
+.report { margin-top: 20px; overflow-wrap: anywhere }
+.report-top { display: flex; align-items: start; justify-content: space-between; flex-wrap: wrap; gap: 15px }
+.report-top > div:first-child { flex: 1 1 230px; min-width: 0 }
 .report h2:focus { outline: none }
-.report-url { color: var(--muted); font-size: 14px }
-.score { flex: none; text-align: right }
-.score strong { display: block; font-size: clamp(34px,4.2vw,64px); font-weight: 600; line-height: 1.15 }
-.score small { font: 500 15px Inter, sans-serif; color: var(--muted) }
-.badge { width: fit-content; gap: 8px; border-radius: 4px; padding: 5px 11px; margin: 22px 0 12px; font-size: 15px; font-weight: 650 }
-.badge svg { width: 17px; height: 17px }
+.operator { margin: 5px 0 2px; color: var(--body) }
+.score { text-align: right }
+.score strong { display: block; font-size: 34px; font-weight: 600; line-height: 1 }
+.score small { font: 500 13px Inter, sans-serif; color: var(--muted) }
+.section-label, .status { color: var(--muted); font-size: 11px; font-weight: 650; letter-spacing: .06em; text-transform: uppercase }
+.badge { display: inline-flex; align-items: center; gap: 7px; border-radius: 4px; padding: 4px 10px; margin: 16px 0 8px; font-size: 14px; font-weight: 650 }
+.badge svg { width: 16px; height: 16px }
 .green { color: #155737; background: #dfefdf }
 .yellow { color: #67470f; background: #fcf0c8 }
 .red { color: #813428; background: #f9e0d9 }
-.interpretation, .finding p, .unknowns, blockquote { max-width: 78ch; color: var(--body) }
-.findings { margin-top: 25px; border-block: 1px solid var(--rule) }
-.finding { padding: 18px 0 }
-.finding-title { gap: 13px }
-.finding-body { margin: 5px 0 0 35px }
-.finding-body p { margin: 3px 0 }
-.points { white-space: nowrap; font-size: 18px }
-.status { font-size: 11px }
+.interpretation, .signal p, .finding p, .unknowns, blockquote, .answer p { max-width: 80ch; color: var(--body) }
+.answer, .signals { margin-top: 18px }
+.answer { padding: 13px 16px; background: var(--paper); border-left: 2px solid var(--rule) }
+.answer h3, .signals h3 { margin-bottom: 4px }
+.signals section + section, .signal + .signal { margin-top: 12px }
+.signals h3 { display: flex; align-items: center; gap: 9px }
+.marker { width: 8px; height: 8px; border-radius: 50%; background: currentColor }
+.evidence-details { border-top: 1px solid var(--soft-rule); margin-top: 18px; padding-top: 2px }
+.findings { margin-top: 12px; border-block: 1px solid var(--soft-rule) }
+.finding { padding: 13px 0 }
+.finding + .finding { border-top: 1px solid var(--soft-rule) }
+.finding-title { display: flex; align-items: center; gap: 10px }
+.finding-body { margin: 4px 0 0 30px }
+.points { font-size: 18px; margin-left: auto; white-space: nowrap }
 .status.confirmed { color: #146139 }
 .status.contradicted { color: #8b392e }
-.citation { margin: 10px 0 0; border-left: 2px solid #b8cbb8; padding-left: 12px }
-blockquote { font-size: 14px }
-.citation a { display: inline-flex; gap: 2px; align-items: center; color: var(--forest); font-size: 14px; text-underline-offset: 3px; overflow-wrap: anywhere }
-.citation a svg { width: 14px; height: 14px }
-.unknowns { margin: 21px 0 0 }
-.unknowns ul { margin: 6px 0 0; padding-left: 20px }
-.report .retry { margin-top: 16px }
-.session-history { margin: 15px 0; border-bottom: 1px solid var(--soft-rule) }
-.session-history summary { padding: 9px 0; cursor: pointer; font-weight: 600 }
-.session-history summary span, .session-history small { color: var(--muted) }
-.session-history p { margin: 0 0 12px; color: var(--muted) }
-.session-history ol { list-style: none; padding: 0; margin: 0 0 12px; max-height: 18rem; overflow-y: auto }
-.session-history button { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px 16px; text-align: left; width: 100%; background: transparent; border: 0; border-top: 1px solid var(--soft-rule); padding: 10px 12px; overflow-wrap: anywhere }
-.session-history button[aria-current=true], .session-history button:hover { background: #e7f0e7 }
-.session-history button:focus-visible { outline-offset: -3px }
-.session-history small { display: block; font-size: 13px }
-.history-meta { font-size: 14px }
+.citation { margin-top: 5px }
+blockquote { font-size: 14px; border-left: 2px solid var(--soft-rule); margin-top: 4px; padding-left: 9px }
+.citation a { display: inline-flex; align-items: center; gap: 3px; color: var(--forest); font-size: 13px; text-underline-offset: 3px }
+.citation a svg { width: 13px; height: 13px }
+.excerpt summary { padding: 0; font-size: 12px; font-weight: 500; color: var(--muted) }
+.unknowns { margin-top: 16px }
+.unknowns ul { margin: 5px 0 0; padding-left: 20px }
+.report .retry { margin-top: 14px }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap }
-@media (max-width: 700px) {
-  .shell { width: calc(100% - 32px) }
-  header, footer { padding-inline: 0 }
-  header { gap: 8px }
-  .mode-switch button { font-size: 12px; padding: 9px 8px; white-space: nowrap }
-  .brand { font-size: clamp(21px,6.4vw,28px) }
-  .hero { grid-template-columns: 1fr; gap: 20px; padding-block: 28px 18px }
-  h1 { font-size: clamp(46px,8.7vw,60px) }
-  .hero p { font-size: 17px; margin-top: 10px; max-width: 44ch }
-  .engraving { aspect-ratio: 3.1 }
-  .input-row { flex-wrap: wrap; gap: 10px }
-  .url-field, .submit { flex: 1 1 100% }
-  .framework-heading { flex-wrap: wrap; gap: 3px 12px }
-  .framework-heading span { padding-left: 0; border: 0 }
-  .framework li { gap: 14px; padding: 10px 16px }
-  .fixture-controls { align-items: start; flex-direction: column; gap: 8px }
-  .report { padding: 20px 16px }
-  .report-top { flex-wrap: wrap }
+@media (max-width: 600px) {
+  .shell { width: calc(100% - 28px) }
+  .intro { display: block; padding-block: 20px }
+  .engraving { display: none }
+  .submit { justify-self: stretch }
   .score { text-align: left }
   .finding-body { margin-left: 0 }
-}
-@media (max-width: 360px) {
-  header { flex-wrap: wrap; gap: 13px }
-  .mode-switch { width: 100% }
-  .mode-switch button { flex: 1 }
-  h1 { font-size: 40px }
-  h1 br { display: none }
 }

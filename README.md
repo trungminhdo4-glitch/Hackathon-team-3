@@ -1,16 +1,16 @@
 # SaaSLens
 
-Enter one public SaaS product URL. SaaSLens checks the product and its claimed operator against independent sources, then shows a cited verdict, an evidence score, and what still needs verification. The [sample dataset](hackathon_40_solutions_commented%20%281%29.csv) is for later testing.
+Enter a software product, company, or public URL. Add a question to focus the research on a particular product or edition, such as whether it requires a separate commercial license. SaaSLens shows the answer and available evidence, strengths, cautions, red flags, and a verdict. Open **Session history** to revisit reports in the same browser tab.
+
+The [sample reviews](hackathon_40_solutions_commented%20%281%29.csv) illustrate the kinds of issues to investigate, including product renaming, licensing, ownership, maintenance, and documented risks. Each new report uses live sources.
 
 ## Run locally
 
-Use Node.js 22.12 or later. Run `npm ci` and `npm run dev`, then open [SaaSLens](http://127.0.0.1:4173). **Fixture mode** exercises the full interface with synthetic evidence and requires no credentials.
-
-For **Live research**, set `OPENAI_API_KEY` in the server environment or the ignored `.env.local` file and restart. Set `OPENAI_MODEL` to select a model supporting hosted web search and structured output. The default is `gpt-4.1`.
+Use Node.js 22.12 or later and set `OPENAI_API_KEY` in the server environment or the ignored `.env.local` file. Run `npm ci` and `npm run dev`, then open [SaaSLens](http://127.0.0.1:4173). To change the default `gpt-4.1` model, set `OPENAI_MODEL` to a model supporting hosted web search and structured output.
 
 ## How the verdict works
 
-The Node API accepts `POST /api/investigate` with `{"url":"https://product.example/"}`. One OpenAI Agents SDK researcher uses hosted web search. The server checks DNS and redirects, bounds page retrieval, and matches quoted evidence against retrieved text.
+The Node API accepts `POST /api/investigate` with a `subject` and optional `question`. Existing `{"url":"https://product.example/"}` calls also work. A single OpenAI Agents SDK researcher uses hosted search to identify the product and gather sources. The server checks DNS and redirects, bounds page retrieval, and matches quoted evidence against retrieved text.
 
 | Confirmed finding | Points |
 | --- | ---: |
@@ -23,6 +23,6 @@ The Node API accepts `POST /api/investigate` with `{"url":"https://product.examp
 
 ## Tests
 
-Run `npm test` for scoring, citation, fetch, and API tests. Run `npm run build` followed by `npm run test:ui` for the four fixture scenarios and retry flow in a browser. Playwright uses Edge on Windows when available, or Chromium installed with `npx playwright install chromium`.
+Run `npm test` for server tests. Run `npm run build` followed by `npm run test:ui` for browser tests covering reports, citations, retries, and history. Automated tests use synthetic evidence and require no credentials. Playwright uses Edge on Windows when available, or Chromium installed with `npx playwright install chromium`.
 
 With a configured key, `node --env-file-if-exists=.env.local tests/live-smoke.js` runs billable live investigations of Sentry and example.com. Their results depend on the evidence accessible at run time.

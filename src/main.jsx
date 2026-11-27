@@ -8,43 +8,30 @@ import { requestAssessment } from './research.js'
 import { readHistory, saveHistory, SessionHistory } from './SessionHistory.jsx'
 import './style.css'
 
-const framework = [
-  ['identity', 'Identity and domain', 40],
-  ['independent', 'Independent corroboration', 30],
-  ['operator', 'Operator transparency', 20],
-  ['substance', 'Product substance', 10],
-]
-function Framework() {
-  return <section className="framework" aria-labelledby="framework-title">
-    <div className="framework-heading"><h2 id="framework-title">Evidence framework</h2><span>100 points possible</span></div>
-    <ul>{framework.map(([id, title, weight]) => <li key={id}><Icon name={id}/><span>{title}</span><strong>{weight}</strong></li>)}</ul>
-  </section>
-}
 function Workspace() {
-  const [entries,setEntries] = useState(readHistory)
-  const [active,setActive] = useState(entries[0] ?? null)
-  const [url,setUrl] = useState(active?.report.inputUrl ?? '')
-  const [fixture,setFixture] = useState(Boolean(active?.scenario))
-  const [scenario,setScenario] = useState(active?.scenario ?? 'credible')
-  const [busy,setBusy] = useState(false)
-  const [error,setError] = useState('')
-  const report = active?.report
-  const reset = () => { setActive(null); setError('') }
+  const [entries, setEntries] = useState(readHistory)
+  const [active, setActive] = useState(entries[0] ?? null)
+  const [subject, setSubject] = useState(active?.report.subject ?? active?.report.inputUrl ?? '')
+  const [question, setQuestion] = useState(active?.report.question ?? '')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
+
   function openReport(entry) {
-    setUrl(entry.report.inputUrl)
-    setFixture(Boolean(entry.scenario))
-    setScenario(entry.scenario ?? 'credible')
+    setSubject(entry.report.subject ?? entry.report.inputUrl)
+    setQuestion(entry.report.question ?? '')
     setActive(entry)
     setError('')
   }
+
   async function investigate(event) {
-    event?.preventDefault()
-    if (busy) return
-    reset()
+    event.preventDefault()
+    if (busy || !subject.trim()) return
+    setError('')
+    setActive(null)
     setBusy(true)
     try {
-      const report = await requestAssessment(url.trim(), fixture ? scenario : null)
-      const entry = { id: crypto.randomUUID(), savedAt: Date.now(), scenario: fixture ? scenario : null, report }
+      const report = await requestAssessment(subject.trim(), question.trim())
+      const entry = { id: crypto.randomUUID(), savedAt: Date.now(), report }
       const updated = [entry, ...entries]
       saveHistory(updated)
       setEntries(updated)
@@ -53,37 +40,39 @@ function Workspace() {
       setError(cause.name === 'TimeoutError' ? 'The investigation timed out. Retry to start a new search.' : cause.message)
     } finally { setBusy(false) }
   }
+
   return <div className="shell">
-    <header><Brand/><div className="mode-switch" role="group" aria-label="Research mode">
-      {['Live research', 'Fixture mode'].map((name,i) => <button key={name} aria-pressed={fixture === Boolean(i)} disabled={busy}
-        onClick={() => { if (fixture !== Boolean(i)) { reset(); setFixture(Boolean(i)) } }}>{name}</button>)}
-    </div></header>
+    <header><Brand/></header>
     <main>
-      <section className="hero">
-        <div><h1>Investigate a SaaS<br/> product.</h1><p>Trace a product to its operator and see what independent sources confirm.</p></div>
+      <section className="intro">
+        <div><h1>Research a product.</h1>
+          <p>Check who operates it, what independent sources confirm, and what deserves a closer look.</p>
+        </div>
         <img className="engraving" src="/lens.webp" alt="" width="840" height="560"/>
       </section>
       <form onSubmit={investigate} aria-label="Product investigation">
-        {fixture && <div className="fixture-controls">
-          <div><label htmlFor="scenario">Fixture scenario</label><p>Explore synthetic evidence without credentials.</p></div>
-          <select id="scenario" value={scenario} disabled={busy} onChange={event => { reset(); setScenario(event.target.value) }}>
-            <option value="credible">Corroborated product</option><option value="contradiction">Material contradiction</option>
-            <option value="timeout">Retrieval timeout</option><option value="fabricated">Fabricated citation</option>
-          </select>
-        </div>}
-        <label htmlFor="product">Product URL</label>
-        <div className="input-row">
-          <div className="url-field"><Icon name="link"/><input id="product" name="url" type="url" placeholder="https://product.com" maxLength="2048" required autoComplete="url" autoCapitalize="none" spellCheck="false" disabled={busy}
-            value={url} onChange={event => { reset(); setUrl(event.target.value) }}/></div>
-          <button className="submit" disabled={busy}>{busy ? 'Investigating…' : 'Investigate'}{busy ? <span className="spinner"/> : <Icon name="arrow"/>}</button>
+        <div className="field"><label htmlFor="product">Product, company, or URL</label>
+          <input id="product" name="subject" type="text" placeholder="Product name, company name, or website" maxLength={2048}
+            required autoComplete="off" disabled={busy} value={subject}
+            onChange={event => { setSubject(event.target.value); setActive(null); setError('') }}/>
         </div>
+        <div className="field"><div className="field-label"><label htmlFor="question">Product question</label>
+          <span id="question-hint">Optional</span></div>
+          <textarea id="question" name="question" rows={2} maxLength={1000} disabled={busy} aria-describedby="question-hint"
+            placeholder="Which edition includes the features I need?" value={question}
+            onChange={event => { setQuestion(event.target.value); setActive(null); setError('') }}/>
+        </div>
+        <button className="submit" disabled={busy || !subject.trim()}>{busy ? 'Investigating…' : 'Investigate'}
+          {busy ? <span className="spinner"/> : <Icon name="arrow"/>}</button>
       </form>
       <SessionHistory entries={entries} current={active?.id} busy={busy} onOpen={openReport}/>
-      {busy && <div className="feedback" role="status"><span className="spinner"/> {fixture ? 'Checking fixture evidence…' : 'Researching the submitted domain and checking citations…'}</div>}
-      {error && <section className="feedback error" role="alert"><div><strong>Investigation incomplete</strong><p>{error}</p></div><button className="retry" onClick={investigate}>Retry</button></section>}
-      {report ? <><span className="sr-only" role="status">Assessment ready</span><Report report={report} fixture={fixture} retry={investigate}/></> : <Framework/>}
+      {busy && <p className="feedback" role="status">Researching the product and checking citations…</p>}
+      {error && <section className="feedback error" role="alert"><div><strong>Investigation incomplete</strong><p>{error}</p></div>
+        <button className="retry" onClick={investigate}>Retry</button></section>}
+      {active && <><span className="sr-only" role="status">Assessment ready</span>
+        <Report key={active.id} report={active.report} simulated={Boolean(active.scenario)} retry={investigate}/></>}
     </main>
-    <footer><Brand/><span>Evidence score · 0–100</span></footer>
   </div>
 }
+
 createRoot(document.getElementById('root')).render(<Workspace/>)
