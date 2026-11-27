@@ -8,11 +8,13 @@ An agent that checks a software or hardware vendor the way an experienced procur
 |---|---|
 | [`agent/`](agent/) | **The submission agent** (Python). It produces the live verdict CSV. See [`agent/README.md`](agent/README.md), [`agent/BUILD.md`](agent/BUILD.md) and [`agent/RESULTS.md`](agent/RESULTS.md). |
 | `src/`, `server/`, `shared/` | **SaaSLens**, an interactive web app for reviewing one product's evidence (documented below). |
-| `shuhan_verdicts_agent.csv` | Agent output for the 10 live products (`out_of_sample_10.csv`). This is the file we submitted. |
+| [`stackgini_submission_verdicts.csv`](stackgini_submission_verdicts.csv) | **The submitted verdict file** for the 10 live products (`out_of_sample_10.csv`), in the same columns as Stackgini's 40 examples. |
+| `shuhan_verdicts_agent.csv` | Raw agent output for the live run that the submitted file is built from (adds `confidence`). |
 | `shuhan_verdicts_audit.json` | Audit trail for the live run: votes, evidence IDs, quotes and verification status. |
 | `hackathon_40_solutions_commented (1).csv` | Stackgini's 40 labelled development examples. |
+| [`stackgini-agent/`](stackgini-agent/), [`codex-fallback/`](codex-fallback/) | Two alternative agents built by teammates, each with its own README and verdicts for the live products. |
 
-The VERITAS claim-level fact-checker lives on the `feat/adversarial-fact-checking` branch.
+Work that was not merged into `main` is kept as `archive/*` tags. For example, the VERITAS claim-level fact-checker is in the `archive/feat/adversarial-fact-checking` tag.
 
 ## How the agent works: cheap steps first, the model last
 
@@ -96,7 +98,9 @@ With the app running, `python tests/calibrate.py --model gpt-6.2-sol` tests the 
 
 For the full dataset with Luna, run `python tests/calibrate.py --all-rows --bulk --model gpt-6-luna --output luna.jsonl --report-dir luna-reports`. Export the saved results with `node tests/export-calibration.js luna.jsonl luna-reports luna-export`. See the [40-product Luna evaluation](EVALUATION_LUNA.md).
 
-## Submission verdicts (19:00 batch, ids 41–50)
+## Fallback agent verdicts (19:00 batch, ids 41–50)
+
+These come from the independent `codex-fallback/` agent. The verdicts we submitted are in [`stackgini_submission_verdicts.csv`](stackgini_submission_verdicts.csv).
 
 - `stackgini-verdicts.csv` – verdicts for the 10 products. Columns: `id,url,verdict,status,reasons_with_sources`. `verdict` is GREEN/YELLOW/RED; `reasons_with_sources` has one reason per line, each followed by its source URL.
 - `stackgini-verdicts-report.md` – same verdicts with a supporting quote per reason; `stackgini-verdicts.json` – machine-readable version.
