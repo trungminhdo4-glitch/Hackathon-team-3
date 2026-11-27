@@ -52,20 +52,43 @@ async function handle(req, res, investigate, catalog) {
   if (req.headers['content-type']?.split(';')[0] !== 'application/json') {
     return json(res, 415, { error: 'Send the product and optional question as JSON.' });
   }
+  let streaming = false;
+  function sendLine(value) {
+    if (!res.destroyed && !res.writableEnded) res.write(JSON.stringify(value) + '\n');
+  }
   try {
     const { subject, question, model } = await readInput(req);
     const options = await catalog();
     const selected = options.models.find(entry => entry.id === (model ?? options.model));
     if (!selected) throw new InputError('Choose a model from the demo list.');
     if (!selected.available) return json(res, 503, { error: selected.reason || 'Selected model unavailable.' });
-    const report = await investigate(subject, { question, model: selected.id });
-    return json(res, 200, report);
+    streaming = req.headers.accept?.split(',').some(type => type.trim() === 'application/x-ndjson');
+    if (streaming) {
+      res.writeHead(200, { 'Content-Type': 'application/x-ndjson; charset=utf-8', 'Cache-Control': 'no-store', 'X-Accel-Buffering': 'no' });
+      res.flushHeaders();
+    }
+    const activity = [];
+    const onActivity = ({ stage, detail, url }) => {
+      const event = { stage, detail, at: new Date().toISOString() };
+      if (url) {
+        try { event.url = validatePublicUrl(url).href; } catch { /* Keep the event as text. */ }
+      }
+      activity.push(event);
+      if (streaming) sendLine({ type: 'activity', event });
+    };
+    const report = await investigate(subject, { question, model: selected.id, onActivity });
+    if (activity.length) report.activity = activity;
+    if (!streaming) return json(res, 200, report);
+    sendLine({ type: 'result', report });
+    res.end();
   } catch (err) {
-    if (err instanceof InputError || err.code === 'UNSAFE_URL') return json(res, 400, { error: err.message });
-    const error = process.env.OPENAI_API_KEY?.trim()
+    const invalid = err instanceof InputError || err.code === 'UNSAFE_URL';
+    const error = invalid ? err.message : process.env.OPENAI_API_KEY?.trim()
       ? 'Research could not finish. Please retry.'
       : 'Research needs a server-side API key. Configure the key and restart the server.';
-    return json(res, 503, { error });
+    if (!streaming) return json(res, invalid ? 400 : 503, { error });
+    sendLine({ type: 'error', error });
+    res.end();
   }
 }
 
