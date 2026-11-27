@@ -110,7 +110,7 @@ test('separate bounded searches expose only retrieved passage IDs for checks, fl
     const official = { passageId: officialId, relation: 'vendor', author: null, vendorAuthored: true };
     const reviewer = { passageId: reviewId, relation: 'review', author: 'Taylor', vendorAuthored: false };
     const bogus = { ...reviewer, passageId: 'S999.2' };
-    return { finalOutput: { productName: 'Orbit Desk Enterprise', vendor: null, answer: {evidence:[bogus,official]},
+    return { finalOutput: { productNames: [{name: 'Orbit Desk Enterprise', passageId: officialId}], vendor: null, answer: {evidence:[bogus,official]},
       flags: [{kind:'yellow',topic:'licensing',material:false,evidence:[official,bogus]}],
       testimony: [{evidence:[reviewer,bogus]}],
       checks: [{id:'identity',status:'confirmed',material:false,evidence:[official,bogus]}], limitations: [] } };
@@ -140,7 +140,7 @@ test('blocked independent publishers trigger bounded fallback retrieval without 
     queueMicrotask(() => onResponse(response));
     return new EventEmitter();
   });
-  const empty = { productName:'',vendor:null,answer:{evidence:[]},testimony:[],flags:[],checks:[],limitations:[] };
+  const empty = { productNames:[],vendor:null,answer:{evidence:[]},testimony:[],flags:[],checks:[] };
   const session = { agent: {}, runner:{async run(_agent,input){
     const task = JSON.parse(input);
     if (task.documents) return { finalOutput:empty };
@@ -154,4 +154,53 @@ test('blocked independent publishers trigger bounded fallback retrieval without 
   assert.equal(raw.incomplete, true);
   assert.match(raw.limitations.join(' '), /independent search pages could not supply/);
   assert.equal(requests.length, 7); // submitted page + six bounded candidate reads
+});
+
+test('title-only and access-denial pages trigger one alternate-publisher search and cannot supply evidence', async t => {
+  const base = 'Aster Chat includes public web search with an eligible subscription.';
+  const extra = 'Access to internal documents requires a separate license.';
+  const question = 'Which licenses provide Aster Chat?';
+  const customer = 'We deployed Aster Chat last year to help our staff search the web.';
+  const reads = [];
+  t.mock.method(https, 'get', (url, _options, onResponse) => {
+    reads.push(url.href);
+    const html = url.hostname === '1.1.1.1' ? '<title>Aster Chat</title><main><h2>' + question +
+      '</h2><p>' + base + '</p><p>' + extra + '</p></main>' :
+      url.hostname === '8.8.8.8' ? '<title>Community</title><body>Community</body>' :
+      url.hostname === '8.8.4.4' ? '<title>Help desk</title><p>' + customer + '</p>' :
+      '<title>Access denied</title><p>You have been blocked by network security. Please verify that you are human.</p>';
+    const response = Object.assign(Readable.from([Buffer.from(html)]), { statusCode: 200, headers: {'content-type':'text/html'} });
+    queueMicrotask(() => onResponse(response));
+    return new EventEmitter();
+  });
+  let followups = 0;
+  const session = { agent:{}, runner:{async run(_agent,input,options) {
+    const task = JSON.parse(input);
+    if (task.lane === 'official') return resultFor(['https://1.1.1.1/']);
+    if (task.lane === 'independent') return resultFor(['https://8.8.8.8/empty','https://9.9.9.9/challenge']);
+    if (task.lane === 'independent-followup') {
+      followups++;
+      assert.equal(options.maxTurns, 1);
+      assert.ok(options.signal instanceof AbortSignal);
+      return resultFor(['https://8.8.8.8/empty','https://8.8.4.4/deployment']);
+    }
+    assert.equal(task.documents.length, 2);
+    const passages = task.documents[0].passages;
+    const get = part => passages.find(p => p.text.includes(part)).id;
+    const cite = text => ({passageId:get(text),relation:'vendor',vendorAuthored:true,author:null});
+    return { finalOutput: {
+      productNames:[{name:'Aster Chat (work edition)',passageId:get(base)}, {name:'Aster Chat',passageId:get(base)}],
+      vendor:null,answer:{evidence:[cite(question),cite(base),cite(extra)]},checks:[],flags:[],testimony:[],
+      limitations:['An unsupported model allegation.'],
+    }};
+  }}};
+  const raw = await research('https://1.1.1.1/',{session,question});
+  assert.equal(followups,1);
+  assert.equal(reads.length,4);
+  assert.equal(raw.coverage.independent.retrieved,1);
+  assert.equal(raw.coverage.independent.followUp,'completed');
+  assert.equal(raw.productName,'Aster Chat');
+  assert.deepEqual(raw.productAliases,[{name:'Aster Chat',sourceId:'S1'}]);
+  assert.deepEqual(raw.answer.evidence.map(e=>e.quote),[base, extra]);
+  assert.ok(!raw.limitations.some(text=>text.includes('allegation')));
 });

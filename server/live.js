@@ -11,7 +11,7 @@ const evidence = z.object({
 });
 const citedStatement = z.object({ evidence: z.array(evidence) });
 const report = z.object({
-  productName: z.string(),
+  productNames: z.array(z.object({ name: z.string(), passageId: z.string() })),
   vendor: z.object({ name: z.string(), evidence: z.array(evidence) }).nullable(),
   answer: citedStatement, testimony: z.array(citedStatement),
   flags: z.array(citedStatement.extend({
@@ -23,7 +23,6 @@ const report = z.object({
     status: z.enum(['confirmed', 'contradicted', 'unverified']),
     evidence: z.array(evidence), material: z.boolean(),
   })),
-  limitations: z.array(z.string()),
 });
 
 const instructions = `You research software products (including hosted services, desktop and open-source software) and their operators.
@@ -55,7 +54,7 @@ be written by the partner/customer/authority itself. A marketplace listing autho
 Identity is confirmed only when the source establishes an actual named software service at this exact domain:
 choose a passage naming the product and describing a specific service a user can obtain. Identifying the page title,
 registration, hostname or domain owner does not establish a product. If no software product is identified, set
-productName to an empty string, independent/operator/substance to unverified, and identity to unverified or, when
+productNames to an empty list, independent/operator/substance to unverified, and identity to unverified or, when
 authoritative evidence establishes a contradiction, contradicted. A placeholder's documented purpose or DNS
 maintenance is never product documentation. For operator, require a named operator of the product with a public
 legal record, terms identifying the entity, or a credible published contact. For substance, require documentation
@@ -66,8 +65,14 @@ Mark material only for an authoritative source explicitly establishing a materia
 such as verified impersonation or a domain reserved for examples. Mark ambiguous findings unverified. Treat a source ID
 only as a reference. Use no Markdown, links, scores or verdict in assessment prose.
 For vendor, give the named operator with a passage establishing its role or legal identity; return null if unavailable.
-For answer, select up to three existing passages that together directly answer the product question, or explain
-what the product does if no question was asked. Preserve material qualifiers. Return an empty list if unavailable.
+For productNames, select the exact official edition name as written in the title or text of an identified passage's
+document. Include a shorter, still edition-specific spelling if explicitly used by a source. Put the most specific
+supported name first. Never attach invented parenthetical qualifiers, platform or audience descriptions. Empty if unknown.
+For answer, select up to three short, declarative, self-contained source sentences that directly answer the question.
+Explain which capability the base entitlement includes and which requires a separate subscription if the evidence shows
+different licensing tiers. Find positive statements about scope, data access, eligibility and exceptions. A question,
+heading, menu, or ambiguous flattened table of checkmarks cannot answer the question. When no question was supplied,
+select what the product does and its most important documented condition. Leave answer evidence empty if unknown.
 For flags, select up to two concrete, relevant observations per category. Green means a supported strength,
 yellow means a documented tradeoff or ambiguity, and red requires a material contradiction or final authoritative
 enforcement action with a direct connection to the product. A red claim requires a specific, substantial and verified
@@ -77,7 +82,7 @@ first-hand experiences with the named edition. A star count, anonymous slogan, g
 someone quoting a vendor is insufficient. Keep vendor context distinct from product-specific evidence. Omit findings
 or answers lacking support. An edition or operator spanning multiple domains requires a source establishing the
 relationship. Match the exact product path, audience and name, especially after cross-product redirects.
-Compare the original requested page against the final destination and explain any mismatch in limitations.`;
+Compare the original requested page against the final destination and mark identity unverified if editions differ.`;
 
 // Only read provider metadata. Prose URLs and links emitted inside model JSON have no provenance.
 export function searchSources(rawResponses) {
@@ -108,7 +113,7 @@ export function searchSources(rawResponses) {
 }
 
 const discoveryTasks = {
-  official: 'Find authoritative original text about the exact requested software edition or named company. Search by its original URL path/name AND the specific question. Prioritize official product documentation, terms, licensing, limitations, release or retirement notices, and legal/operator information. A redirect or shared vendor name does not establish this edition. If a domain appears reserved or impersonated, find the registry or authority record explicitly naming it. Cite up to five relevant, readable, specific pages.',
+  official: 'Find authoritative original text about the exact requested software edition or named company. Search by its original URL path/name AND the specific question. Look for an official edition comparison or licensing FAQ stating eligibility, capabilities and data sources included in the base entitlement versus those requiring a paid add-on. Also seek product documentation, release or retirement notices, and legal/operator information where relevant. A redirect or shared vendor name does not establish this edition. If a domain appears reserved or impersonated, find the registry or authority record naming it. Cite up to five readable pages with concrete answers.',
   independent: 'Find first-hand independent evidence of this exact edition: search for a customer deployment, partner setup guide or integration linking to the target, AND first-person customer reviews, discussions or field reports about actual use. Search using the exact edition, quoted product and domain, include relevant terminology from the question and original product path. Seek at least two independent publishers, favor readable customer or university documentation and user accounts. Exclude vendor pages, vendor-supplied marketplace listings, generic sibling reviews and syndicated announcements. Return citations to the specific pages, even if results are sparse.',
 };
 const publisher = value => getDomain(new URL(value).hostname, { allowPrivateDomains: true }) || new URL(value).hostname;
@@ -138,6 +143,15 @@ function selectSources(urls, inputUrl, lane, excluded) {
   return [...new Set([...diverse, ...candidates])].slice(0, 6);
 }
 
+function readablePage(doc) {
+  if (!doc) return false;
+  let body = doc.text.trim();
+  if (doc.title && body.startsWith(doc.title)) body = body.slice(doc.title.length).trim();
+  if (body === doc.title || body.length < 15 || body.split(/\s+/u).length < 3) return false;
+  const challenge = /(?:you(?:'ve| have) been blocked by network security|verify (?:that )?you are human|enable javascript and cookies to continue|checking your browser before accessing|your request (?:was|has been) blocked|you don.t have permission to access)/i;
+  return !(body.length < 1800 && (challenge.test(body) || /^(?:access denied|just a moment|security checkpoint|captcha)$/i.test(doc.title)));
+}
+
 export async function research(value, { signal, subject, question, session } = {}) {
   const timeout = AbortSignal.timeout(120000);
   const deadline = signal ? AbortSignal.any([signal, timeout]) : timeout;
@@ -147,6 +161,7 @@ export async function research(value, { signal, subject, question, session } = {
   await lookupPublic(inputUrl, { signal: AbortSignal.any([deadline, AbortSignal.timeout(5000)]) });
   try {
     const page = await fetchPublicText(inputUrl, { signal: deadline });
+    if (!readablePage(page)) throw new Error('The submitted page returned no substantive text.');
     documents.push({ ...page, id: 'S1', origin: 'submitted' });
   } catch (error) {
     if (error.code === 'UNSAFE_URL') throw error;
@@ -188,29 +203,37 @@ const aspects = [
 function topicTerms(inputUrl, topic) {
   const path = new URL(inputUrl).pathname;
   const terms = [path, topic.subject || '', topic.question || ''].join(' ').toLowerCase().split(/[^\p{L}\p{N}]+/u);
-  const noise = new Set(['what','which','whether','that','this','product','software','with','does','https','www','com','html','about','have','from','does','your','what','they','enterprise-wide']);
+  const noise = new Set(['what','which','whether','that','this','product','software','with','does','https','www','com','html','about','have','from','your','they']);
   return [...new Set(terms.filter(term => term.length >= 3 && !noise.has(term)))];
 }
 
 // Keep the exact retrieved characters. Extremely long sentences often come from tables or menus.
 function excerpts(document) {
   const values = [];
-  for (const { segment } of segmenter.segment(document.text)) {
-    const text = segment.trim();
-    if (text.length <= 520) { if (text.length >= 12) values.push(text); continue; }
-    let start = 0;
-    while (start < text.length) {
-      let end = Math.min(text.length, start + 520);
-      if (end < text.length) {
-        const space = text.lastIndexOf(' ', end);
-        if (space > start) end = space;
+  for (const block of document.contentBlocks ?? document.text.split(/\n+/u)) {
+    for (const { segment } of segmenter.segment(block)) {
+      const text = segment.trim();
+      let start = 0;
+      while (start < text.length) {
+        let end = Math.min(text.length, start + 520);
+        if (end < text.length) {
+          const space = text.lastIndexOf(' ', end);
+          if (space > start) end = space;
+        }
+        const part = text.slice(start, end).trim();
+        if (part.length >= 12) values.push(part);
+        start = end;
       }
-      const part = text.slice(start, end).trim();
-      if (part.length >= 12) values.push(part);
-      start = end;
     }
   }
-  return values;
+  return [...new Set(values)];
+}
+
+function isAnswerPassage(text) {
+  return text.length >= 16 && text.split(/\s+/u).length >= 4 && !/^(?:Q(?:uestion)?\s*:|FAQ\s*:)/i.test(text) &&
+    !/[?？]\s*["'”’)]*$/u.test(text) && !/^(?:skip to|table of contents|sign in|on this page)\b/i.test(text) &&
+    // Require a statement. Headings and unlabeled table cells can contain highly relevant terms without a claim.
+    /\b(?:is|are|was|were|can|cannot|may|must|will|have|has|allows?|available|gets?|offers?|adds?|includes?|enables?|requires?|needs?|uses?|supports?|provides?|connects?|costs?|applies|licensed|accesses|covers?|comes|gives?|works?|protects?|lets?|helps?|brings?|grounds?|uses?|you can)\b/i.test(text);
 }
 
 function preparePassages(documents, inputUrl, topic) {
@@ -223,7 +246,7 @@ function preparePassages(documents, inputUrl, topic) {
       const matches = terms.filter(term => lower.includes(term)).length;
       const groups = aspects.map(pattern => pattern.test(text));
       return { text, index, groups, rank: 4 * matches + (lower.includes(host) ? 5 : 0) +
-        groups.filter(Boolean).length + (index < 3 ? 1 : 0) };
+        groups.filter(Boolean).length + (isAnswerPassage(text) ? 4 : 0) + (index < 3 ? 1 : 0) };
     }).sort((a,b) => b.rank - a.rank || a.index - b.index);
     const priority = new Set([
       ...ranked.slice(0, 4),
@@ -280,7 +303,7 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
       const key = addressKey(url);
       if (!reads.has(key)) reads.set(key, fetchPublicText(url, { signal: deadline }).catch(() => null));
       const page = await reads.get(key);
-      if (!page?.text.trim()) return null;
+      if (!readablePage(page)) return null;
       if (queue.lane === 'independent' && publisher(page.url) === publisher(inputUrl)) return null;
       return page;
     }));
@@ -289,6 +312,27 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
     const pages = (await fetchBatch(queue, queue.candidates.slice(0, 4))).filter(Boolean);
     if (pages.length < 3 && !deadline.aborted) {
       pages.push(...(await fetchBatch(queue, queue.candidates.slice(4, 6))).filter(Boolean));
+    }
+    if (queue.lane === 'independent' && !pages.length && !deadline.aborted) {
+      // Only one recovery search and three new pages, all under the original deadline.
+      const attempt = coverage.independent;
+      attempt.followUp = 'attempted';
+      try {
+        const followUp = await runner.run(agent, JSON.stringify({
+          lane: 'independent-followup', inputUrl, ...topic, originalPageTitle: submitted?.title,
+          previousPublishers: [...new Set(queue.candidates.map(publisher))],
+          task: 'Earlier independent sources yielded no substantive readable text. Search different publishers for the exact edition and question. Find a university or customer-run help desk, onboarding guide, deployment account or named independent user discussing their own use. Cite specific accessible HTML pages on different domains. Avoid vendor reposts, prior blocked publishers, generic brand mentions and sibling editions.',
+        }), { maxTurns: 1, signal: AbortSignal.any([deadline, AbortSignal.timeout(20_000)]) });
+        const search = searchSources(followUp.rawResponses);
+        attempt.searched ||= search.searched;
+        attempt.followUp = search.searched ? 'completed' : 'incomplete';
+        const alternatives = selectSources(search.urls, inputUrl, 'independent', [...excluded, ...reads.keys()]).slice(0, 3);
+        attempt.discovered += alternatives.length;
+        queue.candidates.push(...alternatives);
+        pages.push(...(await fetchBatch(queue, alternatives)).filter(Boolean));
+      } catch {
+        attempt.followUp = 'incomplete';
+      }
     }
     return pages;
   }));
@@ -313,18 +357,30 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
     inputUrl, ...topic, documents: pages, coverage,
   }), { signal: deadline, maxTurns: 1 });
   const findings = report.parse(assessment.finalOutput);
-  function resolveStatement(statement) {
+  function resolveStatement(statement, accepts = () => true) {
     const evidence = statement.evidence.slice(0, 4).flatMap(({passageId, ...attribution}) => {
       const passage = lookup.get(passageId);
-      return passage ? [{ ...passage, ...attribution }] : [];
+      return passage && accepts(passage.quote) ? [{ ...passage, ...attribution }] : [];
     });
     return { ...statement, text: evidence.map(item => item.quote).join(' '), evidence };
   }
+  const productAliases = [];
+  for (const candidate of findings.productNames.slice(0, 4)) {
+    const passage = lookup.get(candidate.passageId);
+    const doc = passage && documents.find(doc => doc.id === passage.sourceId);
+    const name = candidate.name.trim();
+    if (!doc || !name || name.length > 160) continue;
+    const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const literal = new RegExp('(?<![\\p{L}\\p{N}])' + escaped + '(?![\\p{L}\\p{N}])', name.length === 1 ? 'u' : 'iu');
+    if ((literal.test(passage.quote) || literal.test(doc.title)) && !productAliases.some(alias => alias.name === name)) {
+      productAliases.push({ name, sourceId: doc.id });
+    }
+  }
   return {
-    productName: findings.productName, vendor: findings.vendor && resolveStatement(findings.vendor),
-    answer: resolveStatement(findings.answer), checks: findings.checks.map(resolveStatement),
-    flags: findings.flags.slice(0, 6).map(resolveStatement),
-    testimony: findings.testimony.slice(0, 3).map(resolveStatement),
-    documents, coverage, incomplete: limitations.length > 0, limitations: [...limitations, ...findings.limitations],
+    productName: productAliases[0]?.name || '', productAliases, vendor: findings.vendor && resolveStatement(findings.vendor),
+    answer: resolveStatement(findings.answer, isAnswerPassage), checks: findings.checks.map(check => resolveStatement(check)),
+    flags: findings.flags.slice(0, 6).map(flag => resolveStatement(flag)),
+    testimony: findings.testimony.slice(0, 3).map(statement => resolveStatement(statement)),
+    documents, coverage, incomplete: limitations.length > 0, limitations,
   };
 }
