@@ -1,0 +1,20 @@
+.research-modes { display: flex; gap: .4rem; margin: 0 0 .75rem }
+.research-modes button, .bulk-open { border: 0; border-radius: 4px; background: transparent; color: var(--forest); font: inherit; cursor: pointer }
+.research-modes button { padding: .5rem .85rem; color: var(--muted) }
+.research-modes button[aria-pressed="true"] { background: var(--forest); color: white }
+.bulk-hint, .bulk-results small, .bulk-results header p { color: var(--muted); font-size: .85rem }
+.bulk-hint { display: block }
+.bulk-results { margin: 1.5rem 0; overflow-wrap: anywhere }
+.bulk-results > header, .bulk-item-heading { display: flex; align-items: baseline; justify-content: space-between; gap: .75rem; flex-wrap: wrap }
+.bulk-results > ol { list-style: none; padding: 0; margin: .8rem 0 }
+.bulk-counts { display: flex; gap: .7rem 1.5rem; flex-wrap: wrap; padding: .7rem 0 }
+.bulk-counts div { display: flex; align-items: baseline; gap: .4rem; font-size: .85rem }
+.bulk-counts dt { color: var(--muted) }
+.bulk-counts dd { margin: 0; font-weight: 650 }
+.bulk-results > ol > li { margin: 0; padding: 1rem 0; border-top: 1px solid var(--rule) }
+.bulk-results > ol > li > p { margin-top: .35rem }
+.bulk-verdict { font-size: .85rem; font-weight: 650 }
+.bulk-verdict.green { color: #205331 }
+.bulk-verdict.yellow { color: #795513 }
+.bulk-verdict.red { color: #852c2c }
+.bulk-open { text-decoration: underline; padding: .3rem 0 }

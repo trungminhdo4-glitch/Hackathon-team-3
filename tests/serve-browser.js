@@ -5,6 +5,7 @@ import { fixtureResearch } from '../server/fixtures.js';
 
 const examples = new Map([
   ['Orbit Desk', 'credible'],
+  ['https://bulk-demo.example/', 'credible'],
   ['Activity sample', 'credible'],
   ['https://contradicted.example/', 'contradiction'],
   ['https://partial.example/', 'timeout'],
@@ -31,7 +32,7 @@ const api = createApi(async (subject, { question, model, onActivity, guidance, o
   if (!scenario) throw new Error('Simulated provider failure');
   const url = subject.startsWith('https://') ? subject : 'https://orbit.example/';
   const { searchModel } = catalog.models.find(option => option.id === model);
-  if (subject === 'Activity sample') await new Promise(resolve => setTimeout(resolve, 1200));
+  if (subject === 'Activity sample' || subject === 'https://bulk-demo.example/') await new Promise(resolve => setTimeout(resolve, 1200));
   onActivity({ stage: 'read', detail: 'Retrieved submitted page', url, model, role:'researcher' });
   const findings = fixtureResearch(url, scenario, question);
   onFindings?.(findings);

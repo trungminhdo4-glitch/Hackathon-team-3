@@ -4,12 +4,21 @@ import '@fontsource/spectral/latin-600.css'
 import '@fontsource/spectral/latin-700.css'
 import { Brand, Icon } from './icons.jsx'
 import { Report } from './Report.jsx'
+import { BulkResearch } from './BulkResearch.jsx'
 import { ResearchActivity } from './ResearchActivity.jsx'
 import { requestAssessment, respondToReview } from './research.js'
 import { readHistory, saveHistory, SessionHistory } from './SessionHistory.jsx'
 import './style.css'
 
 function Workspace() {
+  const [mode, setMode] = useState(() => {
+    try { return sessionStorage.getItem('saaslens.view') === 'bulk' ? 'bulk' : 'single' }
+    catch { return 'single' }
+  })
+  function chooseMode(value) {
+    setMode(value)
+    try { sessionStorage.setItem('saaslens.view', value) } catch { /* Keep the selection in memory. */ }
+  }
   const [entries, setEntries] = useState(readHistory)
   const [active, setActive] = useState(entries[0] ?? null)
   const [subject, setSubject] = useState(active?.report.subject ?? active?.report.inputUrl ?? '')
@@ -101,15 +110,56 @@ function Workspace() {
     } finally { setBusy(false) }
   }
 
+  const modelPicker = <div className="field model-field">
+    <label htmlFor="model">Assessment model</label>
+    <select id="model" name="model" disabled={busy || !selected} value={selected?.id || ''} aria-describedby="model-details"
+      onChange={event => { setModel(event.target.value); setError('') }}>
+      {!selected && <option value="">{catalogError || catalog ? 'No models available' : 'Loading models…'}</option>}
+      {['OpenAI', 'Meta'].map(provider => {
+        const options = catalog?.models.filter(option => option.provider === provider) || []
+        return options.length > 0 && <optgroup key={provider} label={provider}>{options.map(option =>
+          <option key={option.id} value={option.id} disabled={!option.available}>
+            {option.label}{!option.available && ' (unavailable)'}
+          </option>)}</optgroup>
+      })}
+    </select>
+    <div id="model-details">
+      {selected?.description && <p className="model-label">{selected.description}</p>}
+      {selected?.helperModel && <p className="model-label">{selected.label} assesses the evidence. {catalog.models.find(option => option.id === selected.helperModel)?.label || selected.helperModel} can search for missing sources.</p>}
+      {selected?.provider === 'Meta' && <p className="model-label">OpenAI web search · {selected.searchModel}. Meta assesses the retrieved passages via Groq.</p>}
+      {catalog?.models.filter(option => !option.available && option.reason).map(option =>
+        <p key={option.id} className="model-label">{option.label} · {option.reason}</p>)}
+    </div>
+    {catalog && <details className="model-guide"><summary>Compare models and see account access</summary>
+      <dl>{catalog.models.filter(option => option.description).map(option => <React.Fragment key={option.id}>
+        <dt>{option.label}{option.id === catalog.defaultId && ' · Demo default'}</dt>
+        <dd>{option.description}</dd>
+      </React.Fragment>)}</dl>
+      {Array.isArray(catalog.inventory) ? <details><summary>OpenAI account model IDs ({catalog.inventory.length})</summary>
+        <p>The selector includes models configured for this research workflow.</p>
+        <ul className="model-ids">{catalog.inventory.map(id => <li key={id}><code>{id}</code></li>)}</ul>
+      </details> : <p>OpenAI account inventory is unavailable.</p>}
+    </details>}
+    {(catalogError || (catalog && !selected)) && <div className="model-retry">
+      {catalogError && <p role="alert">The model list could not be loaded.</p>}
+      <button className="retry" type="button" onClick={reloadModels}>Reload models</button>
+    </div>}
+  </div>
+
   return <div className="shell">
     <header><Brand/></header>
     <main>
       <section className="intro">
-        <div><h1>Research a product.</h1>
+        <div><h1>{mode === 'bulk' ? 'Research a list of products.' : 'Research a product.'}</h1>
           <p>Find out what the software delivers, who it works for, and which conditions matter before you choose it.</p>
         </div>
         <img className="engraving" src="/lens.webp" alt="" width="840" height="560"/>
       </section>
+      <nav className="research-modes" aria-label="Research mode">
+        <button type="button" aria-pressed={mode === 'single'} disabled={busy} onClick={() => chooseMode('single')}>Single product</button>
+        <button type="button" aria-pressed={mode === 'bulk'} disabled={busy} onClick={() => chooseMode('bulk')}>Bulk URLs</button>
+      </nav>
+      {mode === 'bulk' ? <BulkResearch selected={selected} modelPicker={modelPicker} busy={busy} onBusyChange={setBusy}/> : <>
       <form onSubmit={investigate} aria-label="Product investigation">
         <div className="field"><label htmlFor="product">Product, company, or URL</label>
           <input id="product" name="subject" type="text" placeholder="Product name, company name, or website" maxLength={2048}
@@ -122,41 +172,7 @@ function Workspace() {
             placeholder="Which edition includes the features I need?" value={question}
             onChange={event => { setQuestion(event.target.value); setActive(null); setError('') }}/>
         </div>
-        <div className="field model-field">
-          <label htmlFor="model">Assessment model</label>
-          <select id="model" name="model" disabled={busy || !selected} value={selected?.id || ''} aria-describedby="model-details"
-            onChange={event => { setModel(event.target.value); setError('') }}>
-            {!selected && <option value="">{catalogError || catalog ? 'No models available' : 'Loading models…'}</option>}
-            {['OpenAI', 'Meta'].map(provider => {
-              const options = catalog?.models.filter(option => option.provider === provider) || []
-              return options.length > 0 && <optgroup key={provider} label={provider}>{options.map(option =>
-                <option key={option.id} value={option.id} disabled={!option.available}>
-                  {option.label}{!option.available && ' (unavailable)'}
-                </option>)}</optgroup>
-            })}
-          </select>
-          <div id="model-details">
-            {selected?.description && <p className="model-label">{selected.description}</p>}
-            {selected?.helperModel && <p className="model-label">{selected.label} assesses the evidence. {catalog.models.find(option => option.id === selected.helperModel)?.label || selected.helperModel} can search for missing sources.</p>}
-            {selected?.provider === 'Meta' && <p className="model-label">OpenAI web search · {selected.searchModel}. Meta assesses the retrieved passages via Groq.</p>}
-            {catalog?.models.filter(option => !option.available && option.reason).map(option =>
-              <p key={option.id} className="model-label">{option.label} · {option.reason}</p>)}
-          </div>
-          {catalog && <details className="model-guide"><summary>Compare models and see account access</summary>
-            <dl>{catalog.models.filter(option => option.description).map(option => <React.Fragment key={option.id}>
-              <dt>{option.label}{option.id === catalog.defaultId && ' · Demo default'}</dt>
-              <dd>{option.description}</dd>
-            </React.Fragment>)}</dl>
-            {Array.isArray(catalog.inventory) ? <details><summary>OpenAI account model IDs ({catalog.inventory.length})</summary>
-              <p>The selector includes models configured for this research workflow.</p>
-              <ul className="model-ids">{catalog.inventory.map(id => <li key={id}><code>{id}</code></li>)}</ul>
-            </details> : <p>OpenAI account inventory is unavailable.</p>}
-          </details>}
-          {(catalogError || (catalog && !selected)) && <div className="model-retry">
-            {catalogError && <p role="alert">The model list could not be loaded.</p>}
-            <button className="retry" type="button" onClick={reloadModels}>Reload models</button>
-          </div>}
-        </div>
+        {modelPicker}
         <div className="form-actions"><button className="submit" disabled={!canInvestigate}>{busy ? 'Investigating…' : 'Investigate'}
           {busy ? <span className="spinner"/> : <Icon name="arrow"/>}</button>
         </div>
@@ -169,6 +185,7 @@ function Workspace() {
         <Report key={active.id} report={active.report} simulated={Boolean(active.scenario)} retry={canInvestigate ? investigate : null}
           onReview={review} expired={active.expired} guidance={active.guidance || ''} onGuidanceChange={guidance => updateActive({guidance})}
           notes={active.reviewerNotes ?? active.report.reviewer_notes_original ?? ''} onNotesChange={notes => updateActive({reviewerNotes:notes})}/></>}
+      </>}
     </main>
   </div>
 }
