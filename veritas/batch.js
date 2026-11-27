@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 // Deadline-aware blind batch runner.
+//   node veritas/batch.js --url https://product.example/      (single-product demo)
 //   node veritas/batch.js --input blind.csv --output submission.csv [--deadline 2026-11-27T19:30:00+01:00]
 //     [--researcher saaslens|fetch|fixture] [--research-fixture file.json] [--provider tavily|fixture|none]
 //     [--corpus corpus.json] [--concurrency 4] [--checkpoint run.jsonl] [--resume] [--audit audit.json]
@@ -102,7 +103,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const a = process.argv.slice(2);
   const arg = (n, d) => { const i = a.indexOf('--' + n); return i >= 0 ? a[i + 1] : d; };
   const flag = n => a.includes('--' + n);
-  const inputs = readInput(arg('input'), { keepFields: flag('keep-input-fields') });
+  // --url <u>: single-product demo mode (no input file needed).
+  const inputs = arg('url') ? [{ id: '1', url: arg('url'), product: '', vendor: '' }] : readInput(arg('input'), { keepFields: flag('keep-input-fields') });
   const pk = arg('provider', process.env.TAVILY_API_KEY ? 'tavily' : 'none');
   let provider = null, fetcher = publicFetcher;
   if (pk === 'tavily') provider = tavilyProvider();
