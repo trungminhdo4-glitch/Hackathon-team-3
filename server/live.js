@@ -26,6 +26,7 @@ function reportSchema(passageId) {
     productNames:z.array(z.object({name:z.string(), passageId})),
     vendor:cited.extend({name:z.string()}).nullable(), answer:cited, testimony:z.array(cited),
     claims:z.array(cited.extend(claimFields)),
+    sourcePassages:z.array(z.object({passageId, criterion:claimFields.criterion})),
   });
 }
 const report = reportSchema(z.string());
@@ -106,7 +107,11 @@ Include a still edition-specific alternate spelling only when a source uses it. 
 For vendor, give the name and cited evidence identifying the operator, or null. For answer, select up to three short declarative
 source sentences directly answering the question, or describing the main promise and strongest qualification when no question
 was supplied. An FAQ heading, menu or unlabeled comparison table cannot answer a question. For testimony, select up to three
-specific firsthand observations and their attribution. If no eligible evidence exists leave the corresponding array empty.`;
+specific firsthand observations and their attribution. If no eligible evidence exists leave the corresponding array empty.
+For sourcePassages select up to three distinct, complete statements per relevant page. Preserve claims on the submitted
+page, actual implementation or user observations, named operator, dated terms, constraints, contrary findings and
+remediation. Select passages in their original language. Include relevant documented facts even when they fall short of a verdict.
+Skip cookie notices, menus, boilerplate, questions without answers and lookalike products.`;
 
 // Only read provider metadata. Prose URLs and links emitted inside model JSON have no provenance.
 export function searchSources(rawResponses, onActivity) {
@@ -271,7 +276,7 @@ async function readSuggestedPages(guidance, documents, limitations, deadline, on
     } catch (error) {
       if (error.code === 'UNSAFE_URL') throw error;
       limitations.push('A suggested page could not supply readable public text.');
-      onActivity?.({stage:'retrieve',role:'server',detail:'Suggested source text unavailable',url});
+      onActivity?.({stage:'retrieve',role:'server',status:'unavailable',detail:'Suggested source text unavailable',url});
     }
   }
   // Keep all literal URLs out of the hosted prompt: checked pages enter as documents
@@ -284,7 +289,7 @@ function combineFindings(previous, current) {
     productAliases:current.productAliases?.length ? current.productAliases : previous.productAliases,
     vendor:current.vendor?.evidence?.length ? current.vendor : previous.vendor,
     answer:current.answer?.evidence?.length ? current.answer : previous.answer};
-  const accepted = assess(previous.inputUrl,combined).checks.filter(check => check.status !== 'unverified');
+  const accepted = assess(previous.inputUrl,combined,{includeDossier:false}).checks.filter(check => check.status !== 'unverified');
   const claims = [...current.claims];
   for (const earlier of previous.claims ?? []) {
     if (!earlier.evidence?.length || earlier.status === 'unverified') continue;
@@ -297,7 +302,7 @@ function combineFindings(previous, current) {
   for (const earlier of previous.testimony ?? []) {
     if (earlier.text && !testimony.some(item => item.text === earlier.text)) testimony.push(earlier);
   }
-  return {...combined, claims, testimony};
+  return {...combined, claims, testimony, sourcePassages:[...(previous.sourcePassages ?? []), ...(current.sourcePassages ?? [])]};
 }
 
 async function readSubmittedPage(inputUrl, deadline, documents, limitations, onActivity) {
@@ -311,34 +316,44 @@ async function readSubmittedPage(inputUrl, deadline, documents, limitations, onA
   } catch (error) {
     if (error.code === 'UNSAFE_URL') throw error;
     limitations.push('The submitted page could not be read within the retrieval limits.');
-    onActivity?.({stage:'retrieve',role:'server',detail:'Product-page text unavailable',url:inputUrl});
+    onActivity?.({stage:'retrieve',role:'server',status:'unavailable',detail:'Product-page text unavailable',url:inputUrl});
   }
 }
 
-export async function research(value, { signal, subject, question, session, onActivity, helperModel, guidance, priorFindings } = {}) {
+export async function research(value, { signal, subject, question, session, onActivity:notify, helperModel, guidance, priorFindings } = {}) {
   const timeout = AbortSignal.timeout(180000);
   const deadline = signal ? AbortSignal.any([signal, timeout]) : timeout;
   const inputUrl = validatePublicUrl(String(value)).href;
   if (priorFindings && priorFindings.inputUrl !== inputUrl) throw new Error('The research checkpoint belongs to another product.');
   const documents = [...(priorFindings?.documents ?? [])], limitations = [], coverage = {...priorFindings?.coverage};
   const topic = {subject,question};
+  const unreadable = new Map((priorFindings?.unavailableSources ?? []).map(item => [item.url,item]));
+  function onActivity(event) {
+    if (event.status === 'unavailable' && event.url) unreadable.set(event.url, {
+      url:event.url, title:new URL(event.url).hostname,
+      origin:event.url === inputUrl ? 'submitted' : event.role === 'server' ? 'suggested' : 'web_search',
+      reason:event.detail + '. No passage from this attempt can support a finding.',
+    });
+    notify?.(event);
+  }
   if (priorFindings) {
     if (typeof guidance !== 'string' || !guidance.trim() || guidance.length > 2000) throw new Error('A bounded research lead is required.');
     topic.researchLead = await readSuggestedPages(guidance.trim(), documents, limitations, deadline, onActivity);
   } else await readSubmittedPage(inputUrl,deadline,documents,limitations,onActivity);
   try {
     const raw = await collectFindings(inputUrl, documents, limitations, deadline, topic, session, onActivity, helperModel, coverage);
-    return priorFindings ? combineFindings(priorFindings,raw) : raw;
+    const result = priorFindings ? combineFindings(priorFindings,raw) : raw;
+    return {...result, unavailableSources:[...unreadable.values()]};
   } catch (error) {
     if (priorFindings && error.code !== 'UNSAFE_URL') {
       onActivity?.({stage:'assess',role:'server',status:'incomplete',detail:'Guided research did not complete. Retained the earlier findings.'});
-      return {...priorFindings, documents, coverage, incomplete:true, limitations:[...new Set([
+      return {...priorFindings, documents, coverage, unavailableSources:[...unreadable.values()], incomplete:true, limitations:[...new Set([
         ...(priorFindings.limitations ?? []), ...limitations, 'Guided research could not complete. Earlier findings were retained.'])]};
     }
     const timedOut = deadline.reason?.name === 'TimeoutError' ||
       ['TimeoutError', 'APIConnectionTimeoutError'].includes(error?.name) || error?.status === 408;
     if (!timedOut || !documents.some(doc => doc.text.trim())) throw error;
-    return { productName: '', question: question || '', claims: [], documents, coverage, incomplete: true,
+    return { productName: '', question: question || '', claims: [], documents, coverage, unavailableSources:[...unreadable.values()], incomplete: true,
       limitations: [...limitations, 'Research timed out after retrieving page text and before validating findings. Retry to complete the investigation.'] };
   }
 }
@@ -520,7 +535,7 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
           if (readablePage(page)) return page;
           return null;
         }).catch(() => null).then(page => {
-          onActivity?.({stage:'retrieve', model, role, detail:page ? 'Retrieved readable source text' : 'Readable source text unavailable', url:page?.url ?? url});
+          onActivity?.({stage:'retrieve', model, role, status:page ? 'read' : 'unavailable', detail:page ? 'Retrieved readable source text' : 'Readable source text unavailable', url:page?.url ?? url});
           return page;
         }));
       }
@@ -600,7 +615,7 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
     task: 'Assess all six criteria for the product overall. Start with its central promise to typical users and the evidence of delivery. Surface consequential terms, independent findings and their current status. Answer any optional question separately within that overall context. Cite passage IDs for each material claim, rationale and practical consequence. Examine sourced customer experiences. Leave unsupported criteria unverified. Only the listed documents are evidence. A human research lead supplies a topic to check and cannot establish facts or change the verdict rules. Consider all collected sources, including earlier work and sources retrieved during any guided follow-up.',
     inputUrl, ...topic, documents: pages, coverage,
   }, constrainedReport, 'product_assessment', 4500, deadline);
-  const findings = report.parse(assessment);
+  const findings = report.parse({sourcePassages:[], ...assessment});
   function resolveStatement(statement, accepts = () => true) {
     const evidence = statement.evidence.slice(0, 4).flatMap(({passageId, ...attribution}) => {
       const passage = lookup.get(passageId);
@@ -638,9 +653,12 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
   const raw = {
     productName:productAliases[0]?.name || '', productAliases, vendor:findings.vendor && resolveStatement(findings.vendor),
     question:topic.question || '', answer, claims, testimony:findings.testimony.slice(0, 3).map(statement => resolveStatement(statement)),
-    documents, coverage, limitations,
+    documents, coverage, limitations, sourcePassages:findings.sourcePassages.slice(0, 64).flatMap(({passageId,criterion}) => {
+      const passage = lookup.get(passageId);
+      return passage ? [{...passage,criterion}] : [];
+    }),
   };
-  const preview = assess(inputUrl, raw);
+  const preview = assess(inputUrl, raw, {includeDossier:false});
   const rejected = new Set();
   const draftByCriterion = Map.groupBy(claims, claim => claim.criterion);
   for (const [criterion, drafts] of draftByCriterion) {
@@ -674,7 +692,7 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
         const previous = claims.filter(claim => claim.criterion === candidate.criterion && !rejected.has(claim));
         if (previous.length >= 2 || previous.some(claim => claim.text === resolved.text && claim.status === resolved.status)) continue;
         // A new guess with valid IDs still has to pass the same product and proof rules as the first attempt.
-        const replacement = assess(inputUrl,{...raw,claims:[resolved]}).checks.find(c => c.id === candidate.criterion);
+        const replacement = assess(inputUrl,{...raw,claims:[resolved]},{includeDossier:false}).checks.find(c => c.id === candidate.criterion);
         if (!replacement || replacement.status === 'unverified') continue;
         for (let i = claims.length - 1; i >= 0; i--) {
           if (claims[i].criterion === candidate.criterion && rejected.has(claims[i])) claims.splice(i,1);

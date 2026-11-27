@@ -136,6 +136,8 @@ test('guided review retains earlier passages and adds only retrieved evidence fr
   assert.equal(prior.documents.length,1);
   const checked = assess(inputUrl,raw);
   assert.deepEqual(checked.sources.map(source=>source.id).sort(), ['S1','S2']);
+  assert.ok(checked.dossier.observations.some(o => o.sourceId === 'S1' && o.quote === license));
+  assert.ok(checked.dossier.observations.some(o => o.sourceId === 'S2' && o.url === lead && o.quote === workflow));
   assert.equal(checked.verdict,'green');
   assert.ok(events.some(e=>e.stage==='search' && e.role==='researcher' && e.model===session.searchModel));
   assert.ok(events.some(e=>e.url===lead && e.role==='server'));
@@ -379,6 +381,7 @@ test('one tool-free repair restores a missing core claim; a failed repair leaves
         return {finalOutput:{claims:[capability]}};
       }
       const first = {productNames:[{name:'Parcel Mail',passageId:reference(terms).passageId}],vendor:null,
+        sourcePassages:[{passageId:reference(core).passageId,criterion:'capability'}],
         answer:{evidence:[reference(core)]},testimony:[],claims:[
           claim('licensing',terms), outcome === 'description only' ? claim('capability',promise) :
             {...capability,claim:'Original invented prose.',evidence:[{...reference(core),passageId:'S99.99'}]},
@@ -388,6 +391,7 @@ test('one tool-free repair restores a missing core claim; a failed repair leaves
       const valid = {...first,vendor:{name:'Parcel',evidence:[reference(terms)]},testimony:[{evidence:[reference(core)]}],claims:[capability]};
       assert.ok(validator.safeParse(valid).success);
       const mutations = [
+        r => r.sourcePassages[0],
         sample => sample.productNames[0], sample => sample.vendor.evidence[0], sample => sample.answer.evidence[0],
         sample => sample.testimony[0].evidence[0], sample => sample.claims[0].evidence[0],
       ];

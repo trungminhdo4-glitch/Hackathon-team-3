@@ -8,6 +8,45 @@ const fixture = (name = 'credible') => fixtureResearch(url, name);
 const check = (result, id) => result.checks.find(c => c.id === id);
 const cite = (sourceId, quote, relation = 'vendor') => ({ sourceId, quote, relation, vendorAuthored: relation === 'vendor' });
 
+test('a rejected proposal leaves only real source statements in the dossier, including original-language material', () => {
+  const quote = 'Nubia berechnet die Abgaben anhand der eingegebenen Daten für jeden Monat.';
+  const condition = 'Die gewerbliche Nutzung von Nubia erfordert eine separate Lizenz.';
+  const account = 'We use Nubia to calculate the monthly amount when preparing our estimates.';
+  const raw = {productName:'Nubia',documents:[
+    {id:'S1',origin:'submitted',url,title:'Nubia',text:'Manage cookie preferences for all your services.\n'+quote+'\n'+condition},
+    {id:'S2',origin:'web_search',url:'https://external.example/guide',title:'Field guide to Nubia',text:account},
+    {id:'S3',origin:'suggested',url:'https://unrelated.example/',title:'A different market',text:'Population in this city rose by two percent over the last decade.'}],
+    unavailableSources:[{url:'https://another.example/review',origin:'web_search',title:'another.example',reason:'Readable source text unavailable.'}],
+    sourcePassages:[{sourceId:'S1',quote,criterion:'capability'}, {sourceId:'S1',quote:condition,criterion:'licensing'},
+      {sourceId:'S2',quote:account,criterion:'experience'}, {sourceId:'S4',quote:'Invented report about a tax system.',criterion:'capability'}],
+    claims:[{criterion:'capability',claim:'A regulator found intentional misconduct.',status:'contradicted',impact:'disqualifying',
+      reason:'Unrelated case.',consequence:'Reject the software.',evidence:[cite('S1',quote),cite('S7','A made-up order.')]}]};
+  const result = assess(url,raw);
+  assert.equal(result.verdict,'insufficient');
+  assert.equal(result.sources.length,0);
+  const {observations,coverage} = result.dossier;
+  assert.deepEqual(observations.map(o => [o.sourceId,o.quote,o.status]), [
+    ['S1',quote,'documented'], ['S1',condition,'documented'], ['S2',account,'documented']]);
+  assert.deepEqual(coverage.map(row => row.status), ['documented','documented','no_usable_passage','unavailable']);
+  assert.ok(observations.every(o => o.url && o.title && o.kind && o.reason && o.finding));
+  assert.doesNotMatch(JSON.stringify(result.dossier), /intentional misconduct|A made-up order|Invented report|Manage cookie preferences/);
+});
+
+test('documented observations and accepted contradictions have distinct status and provenance', () => {
+  const raw = fixture('contradiction');
+  const report = assess(url,raw);
+  assert.equal(report.verdict,'red');
+  for (const check of report.checks.filter(item => item.evidence.length && item.status !== 'unverified')) {
+    for (const e of check.evidence) {
+      const row = report.dossier.observations.find(item => item.sourceId === e.sourceId && item.quote === e.quote && item.criterion === check.id);
+      assert.equal(row.finding,check.claim);
+      assert.equal(row.status,check.status);
+      assert.deepEqual(row.evidenceIds,check.evidenceIds);
+      assert.ok(row.reason.includes(check.explanation));
+    }
+  }
+});
+
 test('six claim criteria replace scores on every investigation', () => {
   for (const [scenario, verdict] of [['credible','green'], ['tier','yellow'], ['contradiction','red'],
     ['timeout','insufficient'], ['fabricated','insufficient']]) {

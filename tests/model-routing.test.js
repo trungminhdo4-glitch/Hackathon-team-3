@@ -38,7 +38,7 @@ const searchResponse = { rawResponses: [{ providerData: { output: [
   { type: 'web_search_call', status: 'completed', action: { sources: [] } },
 ] } }] };
 
-const emptyReport = { productNames: [], vendor: null, answer: { evidence: [] }, testimony: [], claims: [] };
+const emptyReport = { productNames: [], vendor: null, answer: { evidence: [] }, testimony: [], claims: [], sourcePassages:[] };
 
 test('the selected GPT model performs both discovery and synthesis', async t => {
   setDemoEnv(t);

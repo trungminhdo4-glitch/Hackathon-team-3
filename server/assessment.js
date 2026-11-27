@@ -1,4 +1,5 @@
 import { getDomain } from 'tldts';
+import { buildDossier } from './evidenceDossier.js';
 
 const criteria = {
   capability: ['Core capability', 'Look for a working procedure, a deployment, or a test of the promised outcome.'],
@@ -554,14 +555,17 @@ function placeholderReport(inputUrl, doc, limitations) {
 }
 
 /** Evaluate only the retrieved product and the passages supplied by the collector. */
-export function assess(inputUrl, raw) {
+export function assess(inputUrl, raw, {includeDossier = true} = {}) {
   const host = hostOf(inputUrl);
   const documents = new Map((raw.documents ?? []).filter(doc => doc.id && hostOf(doc.url) &&
     ['submitted', 'web_search', 'suggested'].includes(doc.origin) && clean(doc.text)).map(doc => [doc.id, doc]));
   const submitted = [...documents.values()].find(doc => doc.origin === 'submitted');
   const limitations = new Set((raw.limitations ?? []).map(clean).filter(Boolean));
   const placeholder = !raw.failed && placeholderReport(inputUrl, submitted, limitations);
-  if (placeholder) return placeholder;
+  if (placeholder) {
+    if (includeDossier) placeholder.dossier = buildDossier(placeholder,[...documents.values()],raw);
+    return placeholder;
+  }
   const { name: productName, aliases } = groundedNames(raw, documents, submitted, host);
   const vendorDocs = [...documents.values()].filter(doc => site(hostOf(doc.url)) === site(host));
   const context = { productName, aliases, host, documents, vendorDocs, question: clean(raw.question) };
@@ -602,6 +606,21 @@ export function assess(inputUrl, raw) {
   }
   if (raw.coverage?.independent?.searched && !testimony.length) limitations.add('No verified firsthand customer account was retrieved for this edition.');
   const usedIds = idsOf([...vendorEvidence, ...checks.flatMap(c => c.evidence), ...(answer?.evidence ?? []), ...testimony.flatMap(t => t.evidence)]);
-  return { rubricVersion: 2, inputUrl, productName: productName || host, vendor: context.vendor, vendorEvidence, answer,
+  const report = { rubricVersion: 2, inputUrl, productName: productName || host, vendor: context.vendor, vendorEvidence, answer,
     ...decision, checks, testimony, sources: usedIds.map(id => listedSource(documents.get(id))), limitations: [...limitations] };
+  if (!includeDossier) return report;
+  report.dossier = buildDossier(report,[...documents.values()],raw);
+  for (const check of checks.filter(c => c.status === 'unverified')) {
+    const observation = report.dossier.observations.find(item => item.criterion === check.id && item.status === 'documented');
+    if (observation) check.explanation += ' The collected passage from “' + observation.title +
+      '” is retained as source context. ' + criteria[check.id][1];
+  }
+  if (report.verdict === 'insufficient' && !checks.some(c => c.status !== 'unverified')) {
+    const available = report.dossier.observations;
+    const first = available.find(o => o.kind === 'Product page' && o.criterion === 'capability') ||
+      available.find(o => o.criterion === 'capability') || available[0];
+    if (first) report.interpretation = '“' + first.title + '” states: “' + first.quote + '” ' +
+      'This establishes what the source published. The collected passages did not verify delivery of the core promise for the submitted product and edition.';
+  }
+  return report;
 }
