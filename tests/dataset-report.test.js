@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { columns, datasetRow, csvReport, markdownReport } from '../src/datasetReport.js'
+import { columns, datasetRow, csvReport, csvReports, markdownReport } from '../src/datasetReport.js'
 
 test('an insufficient report exports its verdict, verified flags, and human notes separately', () => {
   const report = { rubricVersion: 2, verdict: 'insufficient', productName: 'Acme', vendor: null,
@@ -63,4 +63,31 @@ test('Markdown remains an eight-column table with multiline notes, pipes and lit
   assert.equal(markdown.length, 3)
   assert.ok(markdown.every(line => line.split('|').length === 10))
   assert.match(markdown[2], /A &#124; B<br>&#60;img&#62; &#42;notes&#42;/)
+})
+
+test('context from a product page survives absent flags without turning the vendor claim into a verified benefit', () => {
+  const url = 'https://product.example/pricing'
+  const quote = 'Team workspaces include a scheduling calendar and allow up to four editors.'
+  const report = { rubricVersion:2, productName:'Scheduler', inputUrl:url, verdict:'yellow', verdictBasis:'evidence_gap',
+    interpretation:'No recorded deployment establishes how scheduling works for a team.', checks:[], sources:[],
+    dossier: {observations:[{url, title:'Workspace pricing', kind:'Product page', status:'documented', quote,
+      finding:'The publisher describes team scheduling.', reason:'Publisher description of the team plan.'}],
+    coverage:[{url, title:'Workspace pricing', origin:'submitted', status:'documented', reason:'A publisher claim was retained.'},
+      {url:'https://research.example/trial', title:'Independent trial', status:'unavailable', reason:'The page could not be read.'}]}}
+  const row = datasetRow(report, 'Verify with a customer.')
+  assert.deepEqual(Object.keys(row),columns)
+  assert.match(row.vendor,/Operator unverified.*\n.*Scheduler/)
+  assert.ok(row.green_flags.includes(quote))
+  assert.ok(row.green_flags.includes(url))
+  assert.match(row.green_flags, /remains open/)
+  assert.ok(row.yellow_flags.includes(report.interpretation))
+  assert.ok(row.reasoning.includes('Independent trial'))
+  const markdown = markdownReport(row,report)
+  assert.match(markdown,/## What the sources say/)
+  assert.ok(markdown.includes('> ' + quote))
+  assert.match(markdown,/## Pages checked/)
+  assert.ok(markdown.includes('[Workspace pricing](<' + url + '>)'))
+  const batch = csvReports([row,{...row,product:'Other'}])
+  assert.equal(batch.split(columns.join(',')).length,2)
+  assert.ok(batch.includes('\r\n"Other",'))
 })

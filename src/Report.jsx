@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Icon } from './icons.jsx'
 import { DatasetReport } from './DatasetReport.jsx'
 import { ResearchActivity } from './ResearchActivity.jsx'
-import { groupHighlights } from './datasetReport.js'
+import { EvidenceDossier, ReviewBrief } from './EvidenceDossier.jsx'
+import { groupHighlights, operatorGap } from './datasetReport.js'
 import { isEarlierReport, verdictLabel } from './research.js'
 
 const claimStatuses = {
@@ -91,6 +92,7 @@ function Highlights({checks, sources}) {
     key={kind} aria-label={flagLabels[kind] || 'Other documented findings'}>
     <h3>{kind !== 'context' && <span className={'marker ' + kind} aria-hidden="true"/>}{flagLabels[kind] || 'Other documented findings'}</h3>
     <ul>{findings.map(finding => <li key={finding.anchor}>
+      {finding.status === 'contradicted' && <strong className="dossier-contradiction">Contradicted claim · </strong>}
       <a href={'#' + finding.anchor}>{finding.claim || finding.consequence}</a>
       {finding.explanation !== finding.claim && <p className="finding-reason">{finding.explanation}</p>}
       <div className="citation-source">{(finding.evidenceIds || []).map(id => {
@@ -102,7 +104,7 @@ function Highlights({checks, sources}) {
   </section>)
 }
 
-function RubricFindings({checks, sources}) {
+function RubricFindings({checks, sources, observations = []}) {
   const criteria = Map.groupBy(checks, check => check.id)
   const covered = [...criteria.values()].filter(claims => claims.some(claim => claim.evidence?.length)).length
   return <section className="report-section" aria-labelledby="criteria-title">
@@ -118,6 +120,13 @@ function RubricFindings({checks, sources}) {
           {finding.consequence && <p className="consequence"><strong>What this means </strong>{finding.consequence}</p>}
           <Evidence items={finding.evidence} sources={sources}/>
         </div>)}
+        {claims.every(claim => claim.status === 'unverified') && observations.some(item => item.criterion === id) &&
+          <details className="criterion-context"><summary>Related source passages</summary>
+            {observations.filter(item => item.criterion === id).map((item, i) => <div key={i}>
+              <blockquote>{item.quote}</blockquote>
+              <span>{item.kind} · </span>{sourceUrl(item) && <a href={item.url} target="_blank" rel="noopener noreferrer">{item.title || sourceUrl(item).hostname}</a>}
+            </div>)}
+          </details>}
       </article>
     )}</div>
   </section>
@@ -139,7 +148,9 @@ function ReviewQuestion({report, expired, guidance, onGuidanceChange, onReview, 
       <button className="retry" type="button" onClick={retry} disabled={!retry}>Restart investigation</button>
     </> : <>
       <p className="model-label">{review.mode === 'sdk' ? (report.searchModel || report.model) + ' requests your input' : 'Evidence check'}</p>
+      <ReviewBrief brief={review.brief}/>
       <p>{review.prompt}</p>
+      {review.brief?.request && review.brief.request !== review.prompt && <p>{review.brief.request}</p>}
       <label htmlFor="research-guidance">Research task or public source</label>
       <textarea id="research-guidance" rows={2} maxLength={1000} value={guidance}
         placeholder="Suggest a product edition, customer deployment or public guide to check."
@@ -167,6 +178,7 @@ export function Report({report, simulated, retry, notes, onNotesChange, onReview
         {simulated && <span className="section-label">Saved simulated report</span>}
         <h2 id="report-title" tabIndex="-1" ref={title}>{report.productName || 'Investigation result'}</h2>
         {report.vendor !== undefined && <p className="operator">Operator · {report.vendor || 'Unverified'}</p>}
+        {operatorGap(report) && <p className="model-label">{operatorGap(report)}</p>}
         <span className="report-url">{report.inputUrl}</span>
         {!simulated && <p className="model-label">Assessment model · {report.model || 'Not recorded'}</p>}
         {!simulated && report.searchModel && report.searchModel !== report.model &&
@@ -182,7 +194,7 @@ export function Report({report, simulated, retry, notes, onNotesChange, onReview
       {!historical && <h3 className="overall-verdict report-heading">Overall verdict</h3>}
       <div className={'badge ' + (report.verdict || 'insufficient')}><Icon name={report.verdict === 'green' ? 'check' : 'alert'}/>{verdictLabel(report)}</div>
     </>}
-    <p className="interpretation">{report.interpretation}</p>
+    <p className="interpretation" id="verdict-reason">{report.interpretation}</p>
     {verdictSources.length > 0 && <div className="verdict-sources citation-source">
       <strong>{report.review ? 'Sources checked so far' : 'Verdict sources'}</strong>
       {verdictSources.map(source => <a key={source.id} href={source.url} target="_blank" rel="noopener noreferrer">
@@ -192,6 +204,7 @@ export function Report({report, simulated, retry, notes, onNotesChange, onReview
     {report.reviewOutcome?.guidance && <p className="human-guidance"><strong>Your research lead</strong> {report.reviewOutcome.guidance}</p>}
     {!report.review && <DatasetReport report={report} notes={notes} onNotesChange={onNotesChange} simulated={simulated}/>}
     <ResearchActivity events={report.activity}/>
+    <EvidenceDossier dossier={report.dossier} interpretation={report.interpretation}/>
     {!historical && <Highlights checks={findings} sources={sources}/>}
     {historical && <div className="historical-notice"><p>This saved report used the previous points-based rubric.</p>
       <button type="button" className="retry" disabled={!retry} onClick={retry}>Evaluate with current rubric</button></div>}
@@ -208,7 +221,7 @@ export function Report({report, simulated, retry, notes, onNotesChange, onReview
       })}
     </div>}
     {historical ? <EarlierBreakdown report={report} sources={sources}/> :
-      findings.length > 0 && <RubricFindings checks={findings} sources={sources}/>}
+      findings.length > 0 && <RubricFindings checks={findings} sources={sources} observations={report.dossier?.observations}/>}
     <CustomerTestimony accounts={report.testimony} sources={sources}/>
     {!historical && report.question && <section className="answer" aria-labelledby="question-title">
       <h3 id="question-title">Your product question</h3><p className="question-text">{report.question}</p>

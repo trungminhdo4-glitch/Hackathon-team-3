@@ -1,0 +1,17 @@
+.dossier-source, .source-coverage { border-bottom: 1px solid var(--soft-rule); }
+.dossier-source summary, .source-coverage summary { padding: 10px 0; overflow-wrap: anywhere; }
+.dossier-source small, .dossier-meta, .source-coverage li strong { color: var(--muted); font-size: .8rem; }
+.dossier-record { padding: 10px 0 14px; overflow-wrap: anywhere; }
+.dossier-record + .dossier-record { border-top: 1px solid var(--soft-rule); }
+.dossier-record p, .dossier-record blockquote { margin: 6px 0; }
+.dossier-record blockquote { padding-left: 12px; border-left: 2px solid var(--soft-rule); }
+.dossier-meta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-weight: 650; }
+.dossier-contradiction { color: #962e28; }
+.dossier a { color: var(--forest); text-underline-offset: 3px; }
+.source-coverage ul { padding-left: 20px; }
+.source-coverage li { margin: 9px 0; overflow-wrap: anywhere; }
+.source-coverage li strong, .source-coverage li span { display: block; }
+.review-brief dl { margin: 12px 0; }
+.review-brief dl div { margin: 7px 0; }
+.review-brief dt { font-weight: 650; }
+.review-brief dd { margin: 2px 0 0; overflow-wrap: anywhere; }

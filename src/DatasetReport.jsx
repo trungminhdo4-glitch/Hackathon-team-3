@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { columns, csvReport, datasetRow, markdownReport } from './datasetReport.js'
+import { columns, csvReport, datasetRow, markdownReport, sourceAddress } from './datasetReport.js'
 
-function download(row, format) {
+function download(row, format, report) {
   const csv = format === 'csv'
-  const contents = csv ? '\uFEFF' + csvReport(row) : markdownReport(row)
+  const contents = csv ? '\uFEFF' + csvReport(row) : markdownReport(row, report)
   const blob = new Blob([contents], { type: (csv ? 'text/csv' : 'text/markdown') + ';charset=utf-8' })
   const href = URL.createObjectURL(blob)
   const link = document.createElement('a')
@@ -20,16 +20,17 @@ export function DatasetReport({report, notes, onNotesChange, simulated}) {
   const [expanded, setExpanded] = useState(false)
   const [showMarkdown, setShowMarkdown] = useState(false)
   const row = datasetRow(report, notes, simulated)
-  const citations = new Set(report.sources.filter(source => /^https?:\/\//i.test(source.url)).map(source => source.url))
+  const references = [...report.sources, ...(report.dossier?.observations || []), ...(report.dossier?.coverage || [])]
+  const citations = new Set(references.flatMap(source => sourceAddress(source.url) ? [source.url, sourceAddress(source.url).href] : []))
   return <details className="dataset-report" onToggle={event => setExpanded(event.currentTarget.open)}>
     <summary>View or download dataset report</summary>
     {expanded && <><div className="dataset-actions">
-      <button type="button" className="retry" onClick={() => download(row, 'csv')}>Download CSV</button>
-      <button type="button" className="retry" onClick={() => download(row, 'md')}>Download Markdown</button>
+      <button type="button" className="retry" onClick={() => download(row, 'csv', report)}>Download CSV</button>
+      <button type="button" className="retry" onClick={() => download(row, 'md', report)}>Download Markdown</button>
       <button type="button" className="dataset-toggle" aria-pressed={showMarkdown}
         onClick={() => setShowMarkdown(!showMarkdown)}>Markdown source</button>
     </div>
-    {showMarkdown ? <pre className="dataset-markdown" aria-label="Markdown source" tabIndex="0">{markdownReport(row)}</pre> :
+    {showMarkdown ? <pre className="dataset-markdown" aria-label="Markdown source" tabIndex="0">{markdownReport(row, report)}</pre> :
       <div className="dataset-scroll" role="region" aria-label="Dataset table" tabIndex="0">
         <table><caption className="sr-only">Dataset report for {row.product}</caption>
           <thead><tr>{columns.map(key => <th key={key} scope="col">{key}</th>)}</tr></thead>
