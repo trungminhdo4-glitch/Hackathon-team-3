@@ -1,22 +1,27 @@
 import { Agent, Runner, webSearchTool } from '@openai/agents';
 import { z } from 'zod';
+import { getDomain } from 'tldts';
 import { fetchPublicText, lookupPublic, validatePublicUrl } from './fetch.js';
 
 const evidence = z.object({
-  sourceId: z.string(), quote: z.string(),
-  relation: z.enum(['vendor', 'partner', 'customer', 'registry', 'authority', 'other']),
+  passageId: z.string(),
+  relation: z.enum(['vendor', 'partner', 'customer', 'registry', 'authority', 'review', 'other']),
   vendorAuthored: z.boolean(),
+  author: z.string().nullable(),
 });
-const citedStatement = z.object({ text: z.string(), evidence: z.array(evidence) });
+const citedStatement = z.object({ evidence: z.array(evidence) });
 const report = z.object({
   productName: z.string(),
   vendor: z.object({ name: z.string(), evidence: z.array(evidence) }).nullable(),
-  answerPassages: z.array(z.string()),
-  flags: z.array(citedStatement.extend({ kind: z.enum(['green', 'yellow', 'red']) })),
+  answer: citedStatement, testimony: z.array(citedStatement),
+  flags: z.array(citedStatement.extend({
+    kind: z.enum(['green', 'yellow', 'red']), material: z.boolean(),
+    topic: z.enum(['identity','licensing','maintenance','ownership','security','usage','other']),
+  })),
   checks: z.array(z.object({
     id: z.enum(['identity', 'independent', 'operator', 'substance']),
     status: z.enum(['confirmed', 'contradicted', 'unverified']),
-    summary: z.string(), evidence: z.array(evidence), material: z.boolean(),
+    evidence: z.array(evidence), material: z.boolean(),
   })),
   limitations: z.array(z.string()),
 });
@@ -39,11 +44,12 @@ subjects, keep portfolio facts separate from individual products. Never borrow c
 documentation from a sibling edition. Where relevant, investigate renames, acquisitions, licensing, commercial use,
 support continuity, recent releases, and documented regulatory actions. Distinguish historical events from current facts.
 Prioritize sources that answer the question; do not force every topic into the report.
-For assessment, use only the numbered retrieved documents. Supply one finding per check. Each confirmed or contradicted
-finding must include its document ID, the publisher's relationship to the vendor, and a short, single contiguous
-excerpt copied from one supplied passage's text field. Preserve punctuation, case and word order. Never join fragments,
-insert ellipses or use the URL, metadata or link context as the quoted passage. Include the product name and exact
-domain when the passage contains them. Quote a full sentence for any proposed contradiction.
+For assessment, reference only IDs of supplied text passages. Supply one finding per check. Select the passage
+that best supports the finding, including product/edition, domain and material qualifications. Return no invented
+URLs, passages or quotes. Classify each passage by who wrote the relevant statement, independently of who hosts
+the website. A review on a public platform, a forum user's experience or customer testimony is relation review.
+Identify author only when named in an associated attribution. A provider quoting its own marketing on a third-party site
+is vendorAuthored. Independent newsroom reporting is other. Do not turn a review into proof of a legal or technical fact.
 An unrelated footer or link and a matching name alone cannot establish a relationship. An independent document must
 be written by the partner/customer/authority itself. A marketplace listing authored by the vendor is vendorAuthored.
 Identity is confirmed only when the source establishes an actual named software service at this exact domain:
@@ -60,12 +66,18 @@ Mark material only for an authoritative source explicitly establishing a materia
 such as verified impersonation or a domain reserved for examples. Mark ambiguous findings unverified. Treat a source ID
 only as a reference. Use no Markdown, links, scores or verdict in assessment prose.
 For vendor, give the named operator with a passage establishing its role or legal identity; return null if unavailable.
-For answerPassages, select up to two existing passage IDs that together directly answer the product question, or explain
+For answer, select up to three existing passages that together directly answer the product question, or explain
 what the product does if no question was asked. Preserve material qualifiers. Return an empty list if unavailable.
 For flags, select up to two concrete, relevant observations per category. Green means a supported strength,
 yellow means a documented tradeoff or ambiguity, and red requires a material contradiction or final authoritative
-enforcement action with a direct connection to the product. Use a source sentence verbatim as each flag's text
-and quote. Keep vendor context distinct from product-specific evidence. Omit findings or answers lacking support.`;
+enforcement action with a direct connection to the product. A red claim requires a specific, substantial and verified
+issue; distinguish an allegation, prediction or discontinued sibling edition. Set material only for a substantiated
+material issue. Identify the flag's topic. For testimony include up to three independently authored, specific,
+first-hand experiences with the named edition. A star count, anonymous slogan, generic brand-level comment, or
+someone quoting a vendor is insufficient. Keep vendor context distinct from product-specific evidence. Omit findings
+or answers lacking support. An edition or operator spanning multiple domains requires a source establishing the
+relationship. Match the exact product path, audience and name, especially after cross-product redirects.
+Compare the original requested page against the final destination and explain any mismatch in limitations.`;
 
 // Only read provider metadata. Prose URLs and links emitted inside model JSON have no provenance.
 export function searchSources(rawResponses) {
@@ -95,13 +107,32 @@ export function searchSources(rawResponses) {
   return { searched, urls: [...urls] };
 }
 
-function selectSources(urls, submitted) {
-  const candidates = urls.filter(url => url !== submitted);
-  const seen = new Set();
+const discoveryTasks = {
+  official: 'Find authoritative original text about the exact requested software edition or named company. Search by its original URL path/name AND the specific question. Prioritize official product documentation, terms, licensing, limitations, release or retirement notices, and legal/operator information. A redirect or shared vendor name does not establish this edition. If a domain appears reserved or impersonated, find the registry or authority record explicitly naming it. Cite up to five relevant, readable, specific pages.',
+  independent: 'Find first-hand independent evidence of this exact edition: search for a customer deployment, partner setup guide or integration linking to the target, AND first-person customer reviews, discussions or field reports about actual use. Search using the exact edition, quoted product and domain, include relevant terminology from the question and original product path. Seek at least two independent publishers, favor readable customer or university documentation and user accounts. Exclude vendor pages, vendor-supplied marketplace listings, generic sibling reviews and syndicated announcements. Return citations to the specific pages, even if results are sparse.',
+};
+const publisher = value => getDomain(new URL(value).hostname, { allowPrivateDomains: true }) || new URL(value).hostname;
+
+function addressKey(value) {
+  const url = new URL(value);
+  for (const name of [...url.searchParams.keys()]) if (name.startsWith('utm_')) url.searchParams.delete(name);
+  return url.href;
+}
+
+function selectSources(urls, inputUrl, lane, excluded) {
+  const seen = new Set(excluded);
+  let candidates = urls.filter(url => {
+    const key = addressKey(url);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  if (lane === 'independent') candidates = candidates.filter(url => publisher(url) !== publisher(inputUrl));
+  const first = new Set();
   const diverse = candidates.filter(url => {
-    const host = new URL(url).hostname;
-    if (seen.has(host)) return false;
-    seen.add(host);
+    const site = publisher(url);
+    if (first.has(site)) return false;
+    first.add(site);
     return true;
   });
   return [...new Set([...diverse, ...candidates])].slice(0, 6);
@@ -145,58 +176,155 @@ export function createResearchSession() {
   return { agent, runner };
 }
 
-function preparePassages(documents) {
-  const lookup = new Map();
-  const sentences = new Intl.Segmenter('en', { granularity: 'sentence' });
-  const pages = documents.map(doc => {
-    const passages = [];
-    for (const { segment } of sentences.segment(doc.text.slice(0, 14000))) {
-      const text = segment.trim();
-      if (!text) continue;
-      const id = doc.id + '.' + (passages.length + 1);
-      passages.push({ id, text });
-      lookup.set(id, { sourceId: doc.id, quote: text });
+const segmenter = new Intl.Segmenter('en', { granularity: 'sentence' });
+const aspects = [
+  /\b(?:operated|provided|published|owned|terms|legal|incorporated)\b/i,
+  /\b(?:licensed?|subscription|pricing|commercial|included|requires?|entitled)\b/i,
+  /\b(?:configured?|release|version|endpoint|authentication|documentation|deploy)\b/i,
+  /\b(?:I|we|our|my)\b.{0,90}\b(?:use|used|found|deployed|configured|could|tried|ran|switched)\b/i,
+  /\b(?:limitation|unavailable|discontinued|deprecated|restricted|cannot|risk|incident|reserved)\b/i,
+];
+
+function topicTerms(inputUrl, topic) {
+  const path = new URL(inputUrl).pathname;
+  const terms = [path, topic.subject || '', topic.question || ''].join(' ').toLowerCase().split(/[^\p{L}\p{N}]+/u);
+  const noise = new Set(['what','which','whether','that','this','product','software','with','does','https','www','com','html','about','have','from','does','your','what','they','enterprise-wide']);
+  return [...new Set(terms.filter(term => term.length >= 3 && !noise.has(term)))];
+}
+
+// Keep the exact retrieved characters. Extremely long sentences often come from tables or menus.
+function excerpts(document) {
+  const values = [];
+  for (const { segment } of segmenter.segment(document.text)) {
+    const text = segment.trim();
+    if (text.length <= 520) { if (text.length >= 12) values.push(text); continue; }
+    let start = 0;
+    while (start < text.length) {
+      let end = Math.min(text.length, start + 520);
+      if (end < text.length) {
+        const space = text.lastIndexOf(' ', end);
+        if (space > start) end = space;
+      }
+      const part = text.slice(start, end).trim();
+      if (part.length >= 12) values.push(part);
+      start = end;
     }
-    return { id: doc.id, title: doc.title, url: doc.url, passages };
+  }
+  return values;
+}
+
+function preparePassages(documents, inputUrl, topic) {
+  const terms = topicTerms(inputUrl, topic);
+  const host = new URL(inputUrl).hostname.toLowerCase();
+  const lookup = new Map();
+  const pages = documents.map(doc => {
+    const ranked = excerpts(doc).map((text, index) => {
+      const lower = text.toLowerCase();
+      const matches = terms.filter(term => lower.includes(term)).length;
+      const groups = aspects.map(pattern => pattern.test(text));
+      return { text, index, groups, rank: 4 * matches + (lower.includes(host) ? 5 : 0) +
+        groups.filter(Boolean).length + (index < 3 ? 1 : 0) };
+    }).sort((a,b) => b.rank - a.rank || a.index - b.index);
+    const priority = new Set([
+      ...ranked.slice(0, 4),
+      ...aspects.map((_, i) => ranked.find(item => item.groups[i])).filter(Boolean),
+      ...ranked,
+    ]);
+    const selected = [];
+    let chars = 0;
+    for (const item of priority) {
+      if (chars + item.text.length > 4300) continue;
+      selected.push(item);
+      chars += item.text.length;
+      if (selected.length === 22) break;
+    }
+    const passages = selected.sort((a,b) => a.index - b.index).map(({text,index}) => {
+      const id = doc.id + '.' + (index + 1);
+      lookup.set(id, { sourceId: doc.id, quote: text });
+      return { id, text };
+    });
+    const relevantLinks = (doc.linkContexts || []).filter(link => new URL(link.url).hostname.toLowerCase() === host);
+    return { id: doc.id, title: doc.title, url: doc.url, passages, submittedHostLinks: relevantLinks.slice(0, 5) };
   });
   return { pages, lookup };
 }
 
 async function collectFindings(inputUrl, documents, limitations, deadline, topic, session = createResearchSession()) {
   const { agent, runner } = session;
-  const discovery = await runner.run(agent, JSON.stringify({
-    task: 'Discovery: cite the best first-hand sources for this exact domain. Prioritize a domain-specific external integration guide or, for a non-product domain, an authoritative record explaining its purpose. Search submitted page links as leads where relevant.',
-    inputUrl, ...topic, submittedPage: documents[0]?.text.slice(0, 5000),
-    pageLeads: documents[0]?.links.filter(link =>
-      new URL(link).hostname !== new URL(inputUrl).hostname || /docs|legal|terms|contact/i.test(link)).slice(0, 16),
-  }), { signal: deadline, maxTurns: 2 });
-  const search = searchSources(discovery.rawResponses);
-  if (!search.searched) throw new Error('Hosted search did not complete.');
-  const candidates = selectSources(search.urls, documents[0]?.url || inputUrl);
-  const results = await Promise.allSettled(candidates.map(url => fetchPublicText(url, { signal: deadline })));
-  let inaccessible = 0;
-  for (const result of results) {
-    if (result.status === 'rejected') { inaccessible++; continue; }
-    // Redirect destinations identify the actual publisher.
-    if (documents.some(d => d.url === result.value.url)) continue;
-    documents.push({ ...result.value, id: 'S' + (documents.length + 1), origin: 'web_search' });
+  const submitted = documents[0];
+  // No mutable agent state changes until both runs of this same researcher finish.
+  const entries = Object.entries(discoveryTasks);
+  const runs = await Promise.allSettled(entries.map(([lane, task]) => runner.run(agent, JSON.stringify({
+    task, lane, inputUrl, ...topic, finalPageUrl: submitted?.url, pageTitle: submitted?.title,
+    submittedPage: submitted?.text.slice(0, 2000),
+  }), { signal: AbortSignal.any([deadline, AbortSignal.timeout(40_000)]), maxTurns: 2 })));
+  const coverage = {};
+  const queues = [];
+  const excluded = [inputUrl, ...documents.map(doc => doc.url)].map(addressKey);
+  for (const [i, result] of runs.entries()) {
+    const lane = entries[i][0];
+    const search = result.status === 'fulfilled' ? searchSources(result.value.rawResponses) : { searched: false, urls: [] };
+    coverage[lane] = { searched: search.searched, discovered: search.urls.length, retrieved: 0 };
+    if (!search.searched || !search.urls.length) {
+      limitations.push('The ' + lane + ' search ' + (search.searched ? 'returned no citable URLs.' : 'did not complete.'));
+    }
+    queues.push({ lane, candidates: selectSources(search.urls, inputUrl, lane, excluded) });
   }
-  if (inaccessible) limitations.push(`Could not retrieve text from ${inaccessible} search source(s).`);
-  if (!search.urls.length) limitations.push('Hosted search returned no citable URLs.');
+  if (runs.every(run => run.status === 'rejected')) throw runs[0].reason;
+  if (!Object.values(coverage).some(item => item.searched)) throw new Error('Hosted search did not complete.');
+
+  const reads = new Map();
+  async function fetchBatch(queue, urls) {
+    return Promise.all(urls.map(async url => {
+      // Keep one network read per URL, including when both searches found a page.
+      const key = addressKey(url);
+      if (!reads.has(key)) reads.set(key, fetchPublicText(url, { signal: deadline }).catch(() => null));
+      const page = await reads.get(key);
+      if (!page?.text.trim()) return null;
+      if (queue.lane === 'independent' && publisher(page.url) === publisher(inputUrl)) return null;
+      return page;
+    }));
+  }
+  const retrieved = await Promise.all(queues.map(async queue => {
+    const pages = (await fetchBatch(queue, queue.candidates.slice(0, 4))).filter(Boolean);
+    if (pages.length < 3 && !deadline.aborted) {
+      pages.push(...(await fetchBatch(queue, queue.candidates.slice(4, 6))).filter(Boolean));
+    }
+    return pages;
+  }));
+  for (const [i, group] of retrieved.entries()) {
+    const { lane, candidates } = queues[i];
+    coverage[lane].retrieved = new Set(group.map(doc => addressKey(doc.url))).size;
+    const attempted = candidates.filter(url => reads.has(addressKey(url))).length;
+    if (group.length < attempted) limitations.push('Some ' + lane + ' search pages could not supply readable public text.');
+    if (lane === 'independent' && !group.length) limitations.push('No independently published search page was retrieved for this edition.');
+    for (const doc of group) {
+      if (documents.some(existing => addressKey(existing.url) === addressKey(doc.url))) continue;
+      documents.push({ ...doc, id: 'S' + (documents.length + 1), origin: 'web_search' });
+    }
+  }
   if (!documents.length) throw new Error('No public source text could be retrieved.');
 
-  // Reuse this investigation's agent to interpret the retrieved text with further tool calls disabled.
   agent.outputType = report;
-  agent.modelSettings = { toolChoice: 'none', store: false, maxTokens: 6000 };
-  const { pages, lookup } = preparePassages(documents);
+  agent.modelSettings = { toolChoice: 'none', store: false, maxTokens: 4500 };
+  const { pages, lookup } = preparePassages(documents, inputUrl, topic);
   const assessment = await runner.run(agent, JSON.stringify({
-    task: 'Assessment: answer the product question, present documented strengths and cautions, and apply the four scoring criteria using only these documents. Determine whether the specified product exists at the exact target. For a non-product, report what the source establishes. Copy each quote verbatim from one contiguous span of retrieved text.',
-    inputUrl, ...topic, documents: pages.map((page, i) => ({
-      ...page, submittedHostLinks: documents[i].linkContexts.filter(link => new URL(link.url).hostname === new URL(inputUrl).hostname).slice(0, 4),
-    })),
+    task: 'Assessment: select supporting passage IDs for the exact edition, answer the question, distinguish independent user testimony from documentary findings, and identify substantiated strengths, tradeoffs, and material issues. Evaluate each scoring check. Use only these documents. Include verified passage IDs across ALL fields. Report edition mismatches, incomplete review coverage, and missing evidence honestly.',
+    inputUrl, ...topic, documents: pages, coverage,
   }), { signal: deadline, maxTurns: 1 });
   const findings = report.parse(assessment.finalOutput);
-  const answer = { evidence: findings.answerPassages.slice(0, 2).map(id => lookup.get(id)).filter(Boolean) };
-  return { ...findings, answer, documents, incomplete: limitations.length > 0,
-    limitations: [...limitations, ...findings.limitations] };
+  function resolveStatement(statement) {
+    const evidence = statement.evidence.slice(0, 4).flatMap(({passageId, ...attribution}) => {
+      const passage = lookup.get(passageId);
+      return passage ? [{ ...passage, ...attribution }] : [];
+    });
+    return { ...statement, text: evidence.map(item => item.quote).join(' '), evidence };
+  }
+  return {
+    productName: findings.productName, vendor: findings.vendor && resolveStatement(findings.vendor),
+    answer: resolveStatement(findings.answer), checks: findings.checks.map(resolveStatement),
+    flags: findings.flags.slice(0, 6).map(resolveStatement),
+    testimony: findings.testimony.slice(0, 3).map(resolveStatement),
+    documents, coverage, incomplete: limitations.length > 0, limitations: [...limitations, ...findings.limitations],
+  };
 }

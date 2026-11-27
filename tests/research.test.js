@@ -74,19 +74,84 @@ test('a discovery timeout before any text was retrieved fails the investigation'
   await assert.rejects(research('https://1.1.1.1/'), { name: 'TimeoutError' });
 });
 
-test('product answers use the retrieved passage selected by ID and discard invented IDs', async t => {
-  const quote = 'Orbit Desk business use requires a license.';
-  serveOnce(t, 200, { 'content-type': 'text/plain' }, quote);
-  t.mock.method(Runner.prototype, 'run', async (_agent, input) => {
-    const task = JSON.parse(input);
-    if (!task.documents) return { rawResponses: [{ providerData: { output: [
-      { type: 'web_search_call', status: 'completed', action: { sources: [] } },
-    ] } }] };
-    assert.equal(task.question, 'What license is needed?');
-    const passage = task.documents[0].passages.find(p => p.text === quote);
-    return { finalOutput: { productName: 'Orbit Desk', vendor: null, answerPassages: ['made-up', passage.id],
-      flags: [], checks: [], limitations: [] } };
+const resultFor = urls => ({ rawResponses: [{ providerData: { output: [
+  { type: 'web_search_call', status: 'completed', action: { sources: urls.map(url => ({ type: 'url', url })) } },
+] } }] });
+
+test('separate bounded searches expose only retrieved passage IDs for checks, flags, answers and testimony', async t => {
+  const quote = 'Orbit Desk Enterprise business use requires a license.';
+  const review = 'We deployed Orbit Desk Enterprise for our help desk and found the export useful.';
+  const requests = [];
+  t.mock.method(https, 'get', (url, _options, onResponse) => {
+    requests.push(url.href);
+    const independent = url.hostname === '8.8.8.8';
+    // The useful official passage is well past the old first-14k cutoff.
+    const body = independent ? review : 'Navigation and global resources. '.repeat(500) + quote;
+    const response = Object.assign(Readable.from([Buffer.from(body)]), { statusCode: 200, headers: { 'content-type': 'text/plain' } });
+    queueMicrotask(() => onResponse(response));
+    return new EventEmitter();
   });
-  const raw = await research('https://1.1.1.1/', { question: 'What license is needed?' });
-  assert.deepEqual(raw.answer.evidence, [{ sourceId: 'S1', quote }]);
+  const lanes = [];
+  const session = { agent: {}, runner: { async run(agent, input, options) {
+    const task = JSON.parse(input);
+    assert.equal(agent, session.agent);
+    assert.ok(options.signal instanceof AbortSignal);
+    if (!task.documents) {
+      assert.equal(options.maxTurns, 2);
+      lanes.push(task.lane);
+      return resultFor(task.lane === 'official' ? ['https://1.1.1.1/enterprise/terms'] :
+        ['https://1.1.1.1/copied-review','https://8.8.8.8/review']);
+    }
+    assert.equal(options.maxTurns, 1);
+    assert.equal(agent.modelSettings.toolChoice, 'none');
+    assert.equal(task.question, 'What license is needed?');
+    const officialId = task.documents[0].passages.find(p => p.text === quote).id;
+    const reviewId = task.documents.find(d => d.url === 'https://8.8.8.8/review').passages[0].id;
+    const official = { passageId: officialId, relation: 'vendor', author: null, vendorAuthored: true };
+    const reviewer = { passageId: reviewId, relation: 'review', author: 'Taylor', vendorAuthored: false };
+    const bogus = { ...reviewer, passageId: 'S999.2' };
+    return { finalOutput: { productName: 'Orbit Desk Enterprise', vendor: null, answer: {evidence:[bogus,official]},
+      flags: [{kind:'yellow',topic:'licensing',material:false,evidence:[official,bogus]}],
+      testimony: [{evidence:[reviewer,bogus]}],
+      checks: [{id:'identity',status:'confirmed',material:false,evidence:[official,bogus]}], limitations: [] } };
+  } } };
+  const raw = await research('https://1.1.1.1/enterprise', { question: 'What license is needed?', session });
+  assert.deepEqual(lanes.sort(), ['independent','official']);
+  assert.equal(requests.length, 3);
+  assert.ok(!requests.some(url => url.includes('copied-review')));
+  for (const statement of [raw.answer,raw.flags[0],raw.checks[0]]) {
+    assert.equal(statement.evidence.length, 1);
+    assert.equal(statement.evidence[0].quote, quote);
+    assert.equal(statement.evidence[0].sourceId, 'S1');
+  }
+  assert.deepEqual(raw.testimony[0].evidence, [{sourceId:'S3',quote:review,relation:'review',author:'Taylor',vendorAuthored:false}]);
+  assert.equal(raw.flags[0].text, quote);
+  assert.deepEqual(raw.coverage.independent, {searched:true,discovered:2,retrieved:1});
+});
+
+test('blocked independent publishers trigger bounded fallback retrieval without treating blocked pages as sources', async t => {
+  const requests = [];
+  t.mock.method(https, 'get', (url, _options, onResponse) => {
+    requests.push(url.href);
+    const blocked = !['1.1.1.1','8.8.4.4'].includes(url.hostname);
+    const response = Object.assign(Readable.from([Buffer.from('A verified public passage.')]), {
+      statusCode: blocked ? 403 : 200, headers: { 'content-type': 'text/plain' },
+    });
+    queueMicrotask(() => onResponse(response));
+    return new EventEmitter();
+  });
+  const empty = { productName:'',vendor:null,answer:{evidence:[]},testimony:[],flags:[],checks:[],limitations:[] };
+  const session = { agent: {}, runner:{async run(_agent,input){
+    const task = JSON.parse(input);
+    if (task.documents) return { finalOutput:empty };
+    const independent = ['8.8.8.8','9.9.9.9','4.2.2.2','1.0.0.1','8.8.4.4','4.2.2.1','4.2.2.3'];
+    return resultFor(task.lane === 'independent' ? independent.map(ip => 'https://' + ip + '/review') : []);
+  }} };
+  const raw = await research('https://1.1.1.1/', {session});
+  assert.equal(raw.documents.length, 2);
+  assert.equal(raw.documents[1].url, 'https://8.8.4.4/review');
+  assert.equal(raw.coverage.independent.retrieved, 1);
+  assert.equal(raw.incomplete, true);
+  assert.match(raw.limitations.join(' '), /independent search pages could not supply/);
+  assert.equal(requests.length, 7); // submitted page + six bounded candidate reads
 });
