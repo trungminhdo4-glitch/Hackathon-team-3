@@ -2,9 +2,13 @@ import assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 import { once } from 'node:events';
 import http from 'node:http';
-import { api } from '../server/api.js';
+import { createApi } from '../server/api.js';
+import { parseSubject } from '../server/investigate.js';
 
-const server = http.createServer(api);
+const server = http.createServer(createApi((value, { question }) => {
+  const { subject, url } = parseSubject(value);
+  return { subject, inputUrl: url, question };
+}));
 let endpoint;
 before(async () => {
   server.listen(0, '127.0.0.1');
@@ -19,25 +23,19 @@ function post(input, scenario) {
   return fetch(endpoint, { method: 'POST', headers, body: JSON.stringify(input) });
 }
 
-test('API accepts exactly one public URL and rejects invalid input before research', async () => {
+test('API accepts one subject with an optional bounded question and rejects malformed inputs', async () => {
   for (const input of [{}, { url: 'file:///private' }, { url: 'https://127.0.0.1' },
-    { url: 'https://me:secret@site.example/' }, { url: 'https://site.example', vendor: 'unexpected' }]) {
-    assert.equal((await post(input, 'credible')).status, 400);
+    { url: 'https://me:secret@site.example/' }, { url: 'https://site.example', vendor: 'unexpected' },
+    { subject: 'X', url: 'https://site.example' }, { subject: 500 }, { subject: '' },
+    { subject: 'Product', question: null }, { subject: 'Product', question: 'X'.repeat(1001) }]) {
+    assert.equal((await post(input)).status, 400);
   }
-  assert.equal((await post({ url: 'https://site.example' }, 'unknown')).status, 400);
 });
 
-test('fixture findings pass through the same API without live services', async () => {
-  const url = 'https://product.example/';
-  for (const [scenario, verdict] of Object.entries({
-    credible: 'green', contradiction: 'red', timeout: 'yellow', fabricated: 'yellow',
-  })) {
-    const response = await post({ url }, scenario);
-    assert.equal(response.status, 200);
-    const report = await response.json();
-    assert.equal(report.inputUrl, url);
-    assert.equal(report.verdict, verdict);
-    assert.equal(report.checks.length, 4);
-    assert.ok(report.limitations.some(message => message.includes('synthetic')));
-  }
+test('the API passes names, URLs and questions through one investigation workflow', async () => {
+  const named = await post({ subject: 'Acme Workspace', question: ' Who licenses the Plus edition? ' });
+  assert.deepEqual(await named.json(), { subject: 'Acme Workspace', inputUrl: null, question: 'Who licenses the Plus edition?' });
+  const legacy = await post({ url: 'https://product.example/' });
+  assert.deepEqual(await legacy.json(), { subject: 'https://product.example/', inputUrl: 'https://product.example/', question: '' });
+  assert.equal((await post({ url: 'https://product.example/' }, 'credible')).status, 400);
 });

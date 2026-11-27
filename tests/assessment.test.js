@@ -17,6 +17,7 @@ test('confirmed checks award 40, 30, 20, and 10 points from traceable passages',
 test('an authoritative contradiction overrides positive points', () => {
   const research = fixture('contradiction');
   const positive = fixture('credible');
+  research.productName = positive.productName; // The product named in the technical documentation.
   research.documents.push(positive.documents[2]);
   research.checks.push(positive.checks[3]);
   const result = assess(url, research);
@@ -151,4 +152,52 @@ test('generic navigation cannot establish a product or concrete documentation', 
   const result = assess(url, research);
   assert.equal(result.checks[0].status, 'unverified');
   assert.equal(result.checks[3].status, 'unverified');
+});
+
+test('product answer, vendor and flags retain actual source IDs and original wording', () => {
+  const raw = fixture('credible');
+  const quote = 'Orbit Desk business users require a commercial license.';
+  raw.documents[0].text += ' ' + quote;
+  const evidence = [{ sourceId: 'S1', quote, relation: 'vendor', vendorAuthored: true }];
+  raw.answer = { text: 'Commercial use is free.', evidence };
+  raw.vendor = { name: 'Orbit Desk Labs Ltd', evidence: raw.checks[2].evidence };
+  raw.flags = [
+    { kind: 'yellow', text: quote, evidence },
+    { kind: 'green', text: 'Guaranteed support.', evidence: [{ ...evidence[0], quote: 'Guaranteed support.' }] },
+    { kind: 'red', text: quote, evidence },
+  ];
+  const result = assess(url, raw);
+  assert.equal(result.vendor, raw.vendor.name);
+  assert.deepEqual(result.answer.evidenceIds, ['S1']);
+  assert.equal(result.answer.text, quote);
+  assert.deepEqual(result.flags.map(f => [f.kind, f.text]), [['yellow', quote]]);
+  assert.ok(!JSON.stringify(result).includes('Commercial use is free'));
+});
+
+test('an exact quote about a different product or a feature cannot award operator points', () => {
+  const raw = fixture('credible');
+  const quote = 'Another Suite supports SDK authentication for enterprise customers.';
+  raw.documents[2].title = 'Another Suite API guide';
+  raw.documents[2].text = quote;
+  const evidence = [{ sourceId: 'S3', quote, relation: 'vendor', vendorAuthored: true }];
+  raw.checks[2].evidence = raw.checks[3].evidence = evidence;
+  raw.answer = { text: quote, evidence };
+  raw.vendor = { name: 'Unrelated Legal Entity', evidence };
+  const result = assess(url, raw);
+  assert.equal(result.vendor, null);
+  assert.equal(result.answer, null);
+  assert.equal(result.checks[2].points + result.checks[3].points, 0);
+});
+
+test('a final authority action about the exact product can override positive points', () => {
+  const raw = fixture('credible');
+  const quote = 'The agency ordered Orbit Desk to stop selling identifiable customer records.';
+  raw.documents.push({ id: 'S4', origin: 'web_search', url: 'https://oversight.example/order', title: 'Final order', text: quote });
+  raw.flags = [{ kind: 'red', text: quote, evidence: [{ sourceId: 'S4', quote, relation: 'authority', vendorAuthored: false }] }];
+  assert.equal(assess(url, raw).verdict, 'red');
+  raw.documents[3].text = 'The agency never said: ' + quote;
+  assert.equal(assess(url, raw).verdict, 'green');
+  const unrelated = 'The agency ordered Another Vendor to stop impersonating Orbit Desk.';
+  raw.documents[3].text = raw.flags[0].evidence[0].quote = unrelated;
+  assert.equal(assess(url, raw).verdict, 'green');
 });
