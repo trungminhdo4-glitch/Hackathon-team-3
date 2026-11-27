@@ -8,13 +8,15 @@ Open **View or download dataset report** on any saved investigation to preview i
 
 Use Node.js 22.12 or later. Set `OPENAI_API_KEY` in your server environment or ignored `.env.local` file. Run `npm ci` and `npm run dev`, then open [SaaSLens](http://127.0.0.1:4173).
 
-Choose **GPT-4.1** or **GPT-4.1 mini** for both search and assessment. To enable **Meta Llama 3.3 70B**, add `GROQ_API_KEY` to the server environment and restart. For that choice, OpenAI runs the web search and Groq receives the research question and retrieved passages for assessment by Llama. The selector checks each provider’s model inventory. New reports record both model IDs. [Groq model details](https://console.groq.com/docs/model/llama-3.3-70b-versatile)
+**GPT-6.2 Astra** is the default for weighing conflicting sources. Choose **GPT-6.2 Sol** for everyday research, **GPT-6.1 Terra** for document summaries, or **GPT-6 Luna** for focused, lower-cost checks. GPT-4.1 and GPT-4.1 mini are available for comparison. The picker shows which options your API project can use and lets you inspect its full OpenAI model inventory. [OpenAI model selection](https://developers.openai.com/api/docs/guides/model-selection)
 
-`OPENAI_MODEL` sets the default OpenAI model and the search model used with Meta. The demo supports `gpt-4.1`, `gpt-4.1-mini`, and their dated snapshots.
+`OPENAI_MODEL` sets the preferred OpenAI model. To enable **Meta Llama 3.3 70B**, add `GROQ_API_KEY` to the server environment and restart. For that option, OpenAI searches and Groq receives the question and retrieved passages for assessment by Llama. Reports record both model IDs.
 
 ## How it works
 
-One OpenAI Agents SDK researcher searches for product documentation, independent tests and deployments, customer testimony, and records relevant to the intended use. The server validates citations against retrieved passages and derives the verdict from the accepted findings.
+One OpenAI Agents SDK researcher runs official and independent searches in parallel. Depending on the product, it looks for first-party terms, customer deployments, reviews, partner documentation, and regulator records. When the independent pages yield little evidence of actual use, it can run a targeted follow-up. The activity view shows reported queries, pages read, retrieval failures and evidence checks as they happen. You can reopen it with the saved report.
+
+The model proposes findings from numbered source passages. The server checks quotations and derives the verdict from accepted findings. Cited benefits, limitations and material risks appear in the eight-column export. When evidence is insufficient, the report explains which check remains open.
 
 The [evaluation rubric](EVALUATION.md) covers capability, customer experience, licensing, maintenance, security and privacy, and the credibility of vendor claims. **Green** means the core promise is supported. **Yellow** identifies a condition or conflict material to the decision. **Red** requires evidence of a core contradiction or serious disqualifying risk. **Insufficient evidence** means the core claim could not be established. Each report explains which evidence mattered.
 
@@ -26,4 +28,4 @@ Run `npm test` for server tests, then `npm run build` and `npm run test:ui` for 
 
 With the key configured, `node --env-file-if-exists=.env.local tests/live-smoke.js` runs billable live investigations of Sentry and example.com. To test a particular case, append its quoted URL and optional quoted question.
 
-With the app running, `python tests/calibrate.py 2 6 32` compares three dataset rows against fresh overall verdicts. It sends only each row’s URL to the API and prints the reviewer’s reason beside the app’s reason and sources. Each row runs a billable search.
+With the app running, `python tests/calibrate.py --model gpt-6.2-astra` evaluates the first ten dataset URLs and compares each verdict to the reviewer's label. Pass row IDs to select a different batch. Each row runs a billable investigation. Use `--output results.jsonl` to keep the evidence, timeline and comparison for each case.
