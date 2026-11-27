@@ -35,5 +35,24 @@ const summary = {
     Object.fromEntries(['green','yellow','red','evidence_gap','failed'].map(actual => [actual,
       records.filter(r => r.expected.toLowerCase() === expected && (r.evidenceGap ? 'evidence_gap' : r.actual || 'failed') === actual).length]))])),
 };
+summary.colorAgreementPercent = 100 * summary.matches / summary.submitted;
+summary.agreementWithoutGapMatchesPercent = 100 * summary.substantiveMatches / summary.submitted;
 await writeFile(join(exportDir, 'metrics.json'), JSON.stringify(summary, null, 2) + '\n', {flag:'wx'});
+const index = [
+  '# Dataset comparison',
+  '',
+  `${summary.matches}/${summary.submitted} colors matched the reviewer (${summary.colorAgreementPercent.toFixed(1)}%). ` +
+    `${summary.substantiveMatches} matches had a substantive finding. ${summary.gaps} investigations ended Yellow for an evidence gap, ` +
+    `and ${summary.submitted - summary.completed} returned no verdict.`,
+  '',
+  '| Row | Submitted site | Reviewer | SaaSLens | Reason for verdict | Report |',
+  '| ---: | --- | --- | --- | --- | --- |',
+];
+for (const record of records) {
+  const color = record.actual || '—';
+  const basis = record.evidenceGap ? 'Evidence gap' : record.actual ? 'Rubric finding' : 'Research failed';
+  const link = record.actual ? '[Read findings](row-' + record.row + '.md)' : '—';
+  index.push(`| ${record.row} | ${new URL(record.url).hostname} | ${record.expected} | ${color} | ${basis} | ${link} |`);
+}
+await writeFile(join(exportDir, 'comparison.md'), index.join('\n') + '\n', {flag:'wx'});
 console.log(JSON.stringify(summary));

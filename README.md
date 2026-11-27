@@ -4,7 +4,7 @@ Enter a software product, company, or public URL. Add a question if you want to 
 
 Open **View or download dataset report** on any saved investigation to preview its eight columns and download CSV or Markdown. Optional reviewer notes are stored with that report in this tab.
 
-Choose **Bulk URLs** to investigate up to ten public URLs, one per line. Open a result for its full report or download the whole batch as one CSV. Bulk runs finish with the evidence available. Use the single-product view for a human-guided follow-up.
+Choose **Bulk URLs** to paste or import up to 50 public URLs. TXT accepts one per line. CSV accepts a URL column, including the repository dataset. Only the URLs and selected model go to research. Open a result for its full report or download the batch as one CSV. **Session history** reopens individual reports, pending reviews and batches saved in this browser tab.
 
 ## Run locally
 
@@ -39,3 +39,5 @@ Run `npm test` for server tests, then `npm run build` and `npm run test:ui` for 
 With the key configured, `node --env-file-if-exists=.env.local tests/live-smoke.js` runs billable live investigations of Sentry and example.com. To test a particular case, append its quoted URL and optional quoted question.
 
 With the app running, `python tests/calibrate.py --model gpt-6.2-sol` tests the first ten dataset URLs. Pass row IDs and `--bulk` for a different cohort in one request. Each URL runs a billable investigation. See the [20-product live evaluation](EVALUATION_SOL.md) for results, row IDs and export commands.
+
+For the full dataset with Luna, run `python tests/calibrate.py --all-rows --bulk --model gpt-6-luna --output luna.jsonl --report-dir luna-reports`. Export the saved results with `node tests/export-calibration.js luna.jsonl luna-reports luna-export`. See the [40-product Luna evaluation](EVALUATION_LUNA.md).
