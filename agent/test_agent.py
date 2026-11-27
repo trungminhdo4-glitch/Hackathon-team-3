@@ -15,7 +15,7 @@ from agent import COLUMNS, identity_hint, normalize, run_vendor, write_results
 from batch import bounded_vendor
 from customers import inspect_customer
 from evidence import Collection, Evidence, Http, Response, public_url
-from judge import combine_verdicts, coverage_guard, documented_blocker, hollow_guard, judge, model_request, pending_only, provider_for, purchase_caution, validate, verify_claims, vote_verdict
+from judge import combine_verdicts, coverage_guard, documented_blocker, hollow_guard, judge, model_request, pending_only, provider_for, purchase_caution, purchase_evidence_guard, validate, verify_claims, vote_verdict
 from research import ARCHIVE, archive, collect_search, company_profile_size, corroborate_records
 from vendor_site import LEGAL_COVERAGE_NOTE, ROBOTS_NOTE, classify_product, collect_site, extract, inspect_privacy_document, published_aliases
 
@@ -493,6 +493,48 @@ class AgentTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             normalize("file:///etc/passwd")
         self.assertFalse(public_url("http://127.0.0.1/"))
+
+
+class PurchaseEvidenceGuardTests(unittest.TestCase):
+    def test_verified_license_eligibility_and_trial_reversion_require_review(self):
+        source = "https://docs.example.org/widget/license"
+        for quote, link, verification, expected in (
+            ("Widget is free for businesses with fewer than 100 employees.", source, "yes", "Yellow"),
+            ("After 30 days Widget reverts to the freeware edition.", source, "partial", "Yellow"),
+            ("Paid Widget plans are available.", source, "yes", "Green"),
+            ("Widget is free for businesses with fewer than 100 employees.", "https://other.org", "yes", "Green"),
+            ("Widget is free for businesses with fewer than 100 employees.", source, "unverified", "Green"),
+        ):
+            with self.subTest(quote=quote, source=link, verification=verification):
+                verdict = {"overall": "Green", "confidence": 0.85, "reasons": [
+                    {"severity": "Green", "claim": quote, "source_url": link, "quote": quote,
+                     "verification": verification},
+                ]}
+                result = purchase_evidence_guard("https://example.org/widget", verdict, Collection())
+                self.assertEqual(result["overall"], expected)
+                self.assertEqual(result["reasons"][0]["severity"], expected)
+
+    def test_retirement_fallback_requires_a_cited_past_dated_first_party_product_notice(self):
+        source = "https://example.org/widget/end-of-life"
+        for title, excerpt, status, expected in (
+            ("product: Widget — End of Life", "The end-of-life date of January 4, 2022 applies to Widget.",
+             "unverified", "Red"),
+            ("product: Widget — End of Life", "The end-of-life date of January 4, 2099 applies to Widget.",
+             "unverified", "Yellow"),
+            ("vendor page: General End of Life Policy", "Support ended on 2022-01-04.", "unverified", "Yellow"),
+            ("product: Widget — End of Life", "Support ended on 2022-01-04.", "no", "Yellow"),
+        ):
+            with self.subTest(title=title, excerpt=excerpt, status=status):
+                verdict = {"overall": "Yellow", "confidence": 0.5, "reasons": [], "judge_votes": ["Red", "Red", "Red"],
+                           "claim_verification": [{"severity": "Red", "source_url": source, "status": status}]}
+                collection = Collection([Evidence("vendor overview", title, source),
+                                         Evidence("lifecycle notice", excerpt, source)])
+                result = purchase_evidence_guard(source, verdict, collection)
+                self.assertEqual(result["overall"], expected)
+                if expected == "Red":
+                    reason = result["reasons"][0]
+                    self.assertEqual(reason["verification"], "direct_extraction")
+                    self.assertIn(reason["quote"], excerpt)
 
 
 class HollowGuardTests(unittest.TestCase):

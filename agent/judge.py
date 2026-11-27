@@ -7,7 +7,7 @@ import os
 import re
 from collections import Counter, defaultdict
 from concurrent.futures import ThreadPoolExecutor
-from datetime import date
+from datetime import date, datetime
 from urllib.parse import unquote, urlsplit
 
 import requests
@@ -496,6 +496,67 @@ def verify_claims(verdict, evidence, key, http, *, model_override=None):
     return verdict
 
 
+RETIREMENT_TITLE = re.compile(r"\b(?:end[ -]of[ -](?:life|support)|discontinued|retired)(?: FAQ)?$", re.I)
+RETIREMENT_DATE = re.compile(
+    r"\b(?:end[ -]of[ -]life(?: or termination)? date of|(?:support|maintenance) ended on)\s+"
+    r"(?P<date>20\d{2}-\d{2}-\d{2}|[A-Za-z]+ \d{1,2}, 20\d{2})\b", re.I,
+)
+FREE_ELIGIBILITY = re.compile(
+    r"\bfree for\b.{0,100}\b(?:fewer|less) than\s+(?:\$\s*)?[\d,.]+\s*"
+    r"(?:employees|users|workloads|sensors|(?:million\s+)?(?:in\s+)?annual revenue)\b", re.I,
+)
+TRIAL_REVERSION = re.compile(
+    r"\bafter \d+ days\b.{0,55}\b(?:reverts?|downgrades?) to (?:the )?free(?:ware)?\b", re.I,
+)
+
+
+def purchase_evidence_guard(url, verdict, collection):
+    host = domain(url)
+
+    def first_party(source):
+        target = domain(source)
+        return target == host or target.endswith("." + host)
+
+    if verdict["overall"] == "Green":
+        for reason in verdict["reasons"]:
+            quote = reason.get("quote") or ""
+            if (reason.get("verification") in {"yes", "partial"} and first_party(reason["source_url"])
+                    and (FREE_ELIGIBILITY.search(quote) or TRIAL_REVERSION.search(quote))):
+                caution = dict(reason, severity="Yellow", claim=f'Source reports: “{quote}”')
+                verdict.update(overall="Yellow", confidence=min(0.75, verdict["confidence"]),
+                               reasons=[caution if item is reason else item for item in verdict["reasons"]],
+                               reasoning="Verify that the deployment qualifies for the quoted license or trial terms.")
+                break
+    elif verdict["overall"] == "Yellow" and verdict.get("judge_votes", []).count("Red") >= 2:
+        cited = {check["source_url"] for check in verdict.get("claim_verification", [])
+                 if check["severity"] == "Red" and check["status"] == "unverified"}
+        product_notices = {
+            item.source_url for item in collection.evidence
+            if item.kind == "vendor overview" and item.claim.startswith("product:")
+            and RETIREMENT_TITLE.search(item.claim.partition("|")[0].rstrip()) and first_party(item.source_url)
+        }
+        for item in collection.evidence:
+            if item.kind != "lifecycle notice" or item.source_url not in (cited & product_notices):
+                continue
+            match = RETIREMENT_DATE.search(item.claim)
+            if not match or re.search(r"\b(?:if|not|never|proposed|tentative)\b",
+                                      item.claim[max(0, match.start() - 30):match.start()], re.I):
+                continue
+            text = match["date"]
+            try:
+                ended = date.fromisoformat(text) if text[0].isdigit() else datetime.strptime(text, "%B %d, %Y").date()
+            except ValueError:
+                continue
+            if ended <= date.today():
+                quote = match[0]
+                reason = flag("Red", f'The product retirement notice reports: “{quote}”.', item)
+                reason.update(verification="direct_extraction", quote=quote, source_date=None)
+                verdict.update(overall="Red", reasons=[reason] + verdict["reasons"],
+                               reasoning="The first-party product retirement notice gives a date that has passed.")
+                break
+    return verdict
+
+
 MODEL_ERRORS = (requests.RequestException, OSError, ValueError, KeyError, TypeError, AttributeError, IndexError)
 
 HARDWARE_RUBRIC = """
@@ -574,7 +635,8 @@ def judge(url, collection, excluded_row=None, http=None, *, product_type="softwa
                     existing = [r for r in verdict["reasons"] if r["severity"] == "Yellow" and r not in caution]
                     verdict["reasons"] = (caution + existing)[:3] + [r for r in verdict["reasons"] if r["severity"] != "Yellow"]
             verdict = hollow_guard(verdict, collection)
-            return coverage_guard(verify_claims(verdict, collection.evidence, key, http, **options), collection)
+            verdict = verify_claims(verdict, collection.evidence, key, http, **options)
+            return coverage_guard(purchase_evidence_guard(url, verdict, collection), collection)
 
         try:
             if not second_judge:

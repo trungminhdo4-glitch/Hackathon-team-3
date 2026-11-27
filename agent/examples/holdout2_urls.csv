@@ -1,0 +1,21 @@
+url,expected,rationale,source_url
+https://git-scm.com/,Green,Debian packages Git in its stable distribution as a maintained version control tool.,https://packages.debian.org/stable/git
+https://www.wireshark.org/,Green,Debian distributes Wireshark as an active network protocol analyzer.,https://packages.debian.org/stable/wireshark
+https://inkscape.org/,Green,Fedora independently packages the active Inkscape vector graphics editor.,https://packages.fedoraproject.org/pkgs/inkscape/inkscape/
+https://www.freecad.org/,Green,Debian identifies and packages FreeCAD as an active parametric design application.,https://packages.debian.org/stable/freecad
+https://www.logitech.com/en-us/products/mice/mx-master-3s.html,Green,RTINGS independently tested the exact MX Master 3S mouse and documents its performance.,https://www.rtings.com/mouse/reviews/logitech/mx-master-3s
+https://www.steamdeck.com/en/oled,Green,iFixit publishes exact-model repair documentation for the Steam Deck OLED.,https://www.ifixit.com/Device/Steam_Deck_OLED
+https://www.qt.io/product/qt6,Yellow,Verify the selected Qt modules and distribution obligations because commercial and GPL/LGPL paths differ.,https://www.qt.io/licensing/
+https://unity.com/products/unity-engine,Yellow,Check project eligibility and plan selection against Unity Personal revenue and funding limits.,https://unity.com/products/unity-personal
+https://www.paessler.com/prtg/prtg-network-monitor,Yellow,PRTG's free monitoring license is limited to 100 sensors; verify the required sensor count and plan before deployment.,https://www.paessler.com/prtg/prtg-network-monitor
+https://bitwarden.com/products/business/,Yellow,Compare organization plans because sharing and enterprise controls depend on the subscription level.,https://bitwarden.com/pricing/business/
+https://nextcloud.com/enterprise/,Yellow,Check the chosen release's support horizon and which maintenance commitments require Enterprise.,https://nextcloud.com/enterprise/
+https://www.veeam.com/products/free/backup-recovery.html,Yellow,The Community Edition has a ten-workload limit so verify capacity and support against the intended deployment.,https://www.veeam.com/products/free/backup-recovery.html
+https://tailscale.com/,Yellow,Personal and business plans have different user limits and controls; verify requirements against the published plan comparison.,https://tailscale.com/pricing
+https://www.mongodb.com/products/self-managed/community-edition,Yellow,MongoDB Community Server uses the SSPL and imposes additional obligations if it is offered as a service.,https://www.mongodb.com/legal/licensing/server-side-public-license/faq
+https://www.python.org/downloads/release/python-2718/,Red,This exact Python 2 release reached end of life and receives no security updates.,https://www.python.org/doc/sunset-python-2/
+https://nodejs.org/en/download/archive/v16.20.2,Red,The Node.js project brought forward the end-of-life date for the v16 release line.,https://nodejs.org/en/blog/announcements/nodejs16-eol
+https://www.php.net/releases/7_4_0.php,Red,The PHP project lists the 7.4 branch as unsupported; upgrade to a currently supported branch.,https://www.php.net/eol.php
+https://www.ruby-lang.org/en/news/2023/03/30/ruby-2-7-8-released/,Red,The final scheduled Ruby 2.7 release is for an end-of-life branch rather than current Ruby.,https://www.ruby-lang.org/en/downloads/branches/
+https://www.samsung.com/us/support/galaxynote7/,Red,The US Consumer Product Safety Commission recalled all Galaxy Note7 phones due to serious fire and burn hazards.,https://www.cpsc.gov/Recalls/2017/Samsung-Expands-Recall-of-Galaxy-Note7-Smartphones-Based-on-Additional-Incidents-with-Replacement-Phones
+https://docs.fedoraproject.org/en-US/fedora/f39/release-notes/,Red,The exact Fedora 39 release is beyond end of life and no longer receives updates.,https://docs.fedoraproject.org/en-US/releases/eol/
