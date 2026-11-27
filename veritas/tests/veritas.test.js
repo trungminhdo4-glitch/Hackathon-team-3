@@ -123,7 +123,7 @@ test('flag export: unconfirmed red flags downgrade, refuted red flags drop, refu
   assert.equal(mapFlag('green', 'SELF_REPORTED'), 'yellow');
   assert.equal(mapFlag('green', 'REFUTED'), 'red');
   const row = toStackginiRow({ id: 1, url: 'https://acmecloud.example/' }, [
-    { polarity: 'red', text: 'FTC fined Acme Cloud', verdict: { status: 'SUPPORTED', evidence: [{ used_for_verdict: true, url: 'https://www.ftc.gov/x' }] } },
+    { polarity: 'red', text: 'FTC fined Acme Cloud', verdict: { status: 'SUPPORTED', evidence: [{ used_for_verdict: true, quote_verified: true, independent: true, source_type: 'regulator', quote: 'The FTC fined Acme Cloud.', url: 'https://www.ftc.gov/x' }] } },
   ]);
   assert.equal(row.overall, 'Red');
   assert.match(row.red_flags, /ftc\.gov/);

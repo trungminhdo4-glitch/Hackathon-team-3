@@ -10,6 +10,8 @@ import { entityMatch, heuristicStance, criticalTerms } from './stance.js';
 import { planQueries } from './queries.js';
 import { decide } from './verdict.js';
 import { canonicalUrl, siteOf, tokens } from './text.js';
+import { createController } from './budget.js';
+import { sufficiency } from './sufficiency.js';
 
 const RESOLVED = new Set(['SUPPORTED', 'REFUTED', 'NOT_APPLICABLE']);
 
@@ -42,34 +44,35 @@ export async function verifyClaims(claims, existingEvidence = [], searchProvider
   const E = parseEvidence(existingEvidence);
   const B = parseBudget(budget);
   const opts = { adversarial: true, iterative: true, independence: true, now: new Date(), ...options };
-  const stats = options.stats ?? createStats();
-  const cache = options.cache ?? new Map();
+  // A shared controller (budget.js) makes budget, deadline and cache global
+  // across calls; without one, this call gets its own from `budget`.
+  const ctl = options.controller ?? createController({ maxSearches: B.maxTotalSearches, maxFetches: B.maxTotalSearches * 2, cache: options.cache });
+  const stats = options.stats ?? ctl.stats;
+  const cache = ctl.cache;
   const run = limiter(B.concurrency);
-  let totalSearches = 0;
+  const callTimeout = () => Math.max(100, Math.min(B.timeoutMs, ctl.timeLeft()));
 
-  async function search(query) {
+  // Cache stores promises, so identical in-flight requests are deduplicated.
+  function search(query) {
     const key = 's:' + query;
     if (cache.has(key)) { stats.cacheHits++; return cache.get(key); }
-    if (!searchProvider || totalSearches >= B.maxTotalSearches) return [];
-    totalSearches++; stats.searches++;
-    try {
-      const res = await withTimeout(Promise.resolve(searchProvider.search(query, { maxResults: 5 })), B.timeoutMs, 'search');
-      const list = Array.isArray(res) ? res : [];
-      cache.set(key, list);
-      return list;
-    } catch { stats.searchFailures++; cache.set(key, []); return []; }
+    if (!searchProvider || !ctl.take('search')) return Promise.resolve([]);
+    stats.searches++;
+    const p = withTimeout(Promise.resolve().then(() => searchProvider.search(query, { maxResults: 5 })), callTimeout(), 'search')
+      .then(res => (Array.isArray(res) ? res : []), () => { stats.searchFailures++; return []; });
+    cache.set(key, p);
+    return p;
   }
 
-  async function fetchText(url) {
+  function fetchText(url) {
     const key = 'f:' + canonicalUrl(url);
     if (cache.has(key)) { stats.cacheHits++; return cache.get(key); }
-    if (!opts.fetcher) return null;
+    if (!opts.fetcher || !ctl.take('fetch')) return Promise.resolve(null);
     stats.fetches++;
-    try {
-      const doc = await withTimeout(Promise.resolve(opts.fetcher.fetch(url)), B.timeoutMs, 'fetch');
-      cache.set(key, doc ?? null);
-      return doc ?? null;
-    } catch { stats.fetchFailures++; cache.set(key, null); return null; }
+    const p = withTimeout(Promise.resolve().then(() => opts.fetcher.fetch(url)), callTimeout(), 'fetch')
+      .then(doc => doc ?? null, () => { stats.fetchFailures++; return null; });
+    cache.set(key, p);
+    return p;
   }
 
   async function verifyOne(claim) {
@@ -85,13 +88,17 @@ export async function verifyClaims(claims, existingEvidence = [], searchProvider
       const dedupeKey = canon + '|' + (raw.quote || '').slice(0, 80);
       if (seen.has(dedupeKey)) return;
       seen.add(dedupeKey);
-      let content = raw.content || raw.raw_content || '';
-      let retrieval = content ? (origin === 'search' ? (raw.raw_content ? 'provider_raw_content' : 'search_snippet') : 'caller_content') : 'none';
+      // Provenance follows the text actually used. Full provider page text wins
+      // over a search snippet; a snippet alone can never verify a quote.
+      let content, retrieval, finalUrl = raw.url;
+      if (raw.raw_content) { content = raw.raw_content; retrieval = 'provider_raw_content'; }
+      else if (origin === 'search') { content = raw.content || ''; retrieval = content ? 'search_snippet' : 'none'; }
+      else { content = raw.content || ''; retrieval = content ? 'caller_content' : 'none'; }
       // Snippets are discovery material: fetch the page when possible.
       if ((retrieval === 'none' || retrieval === 'search_snippet') && fetchesThisClaim < B.maxFetchesPerClaim && opts.fetcher) {
         fetchesThisClaim++;
         const doc = await fetchText(raw.url);
-        if (doc?.text) { content = doc.text; retrieval = 'fetched'; raw.title = raw.title || doc.title; }
+        if (doc?.text) { content = doc.text; retrieval = 'fetched'; finalUrl = doc.url || raw.url; raw.title = raw.title || doc.title; }
       }
       const inj = detectInjection(content + ' ' + (raw.quote || ''));
       if (inj.length) { stats.injections++; security.push(`Embedded instructions detected and ignored in ${siteOf(raw.url)}.`); }
@@ -109,7 +116,7 @@ export async function verifyClaims(claims, existingEvidence = [], searchProvider
         if ((custSite && siteOf(raw.url) === custSite) || (stem.length >= 3 && siteOf(raw.url).split('.')[0] === stem)) source_type = 'customer';
       }
       pool.push({
-        id: raw.id || `${claim.id}-e${pool.length + 1}`, claim_id: claim.id, url: raw.url, title: raw.title || '',
+        id: raw.id || `${claim.id}-e${pool.length + 1}`, claim_id: claim.id, url: raw.url, final_url: finalUrl, title: raw.title || '',
         quote, quote_context: check.context || '', content: clean, source_type, origin, strategy,
         publication_date: raw.publication_date || raw.published_date || undefined, last_updated: raw.last_updated,
         retrieved_at: raw.retrieved_at || (retrieval !== 'none' ? opts.now.toISOString() : undefined),
@@ -120,8 +127,13 @@ export async function verifyClaims(claims, existingEvidence = [], searchProvider
 
     for (const e of E.filter(e => !e.claim_id || e.claim_id === claim.id)) await addEvidence(e, e.origin, 'team');
 
-    async function searchRound(round, lastStatus, cap = B.maxSearchesPerClaim) {
+    async function searchRound(round, lastStatus, cap = B.maxSearchesPerClaim, only = null) {
       let qs = planQueries(claim, round, lastStatus);
+      if (only) {
+        const picked = qs.filter(x => only.includes(x.strategy));
+        // Planner may not have produced that strategy for this claim type: fall back to round-2 targeting.
+        qs = picked.length ? picked : planQueries(claim, 2, lastStatus ?? verdict.status);
+      }
       if (!opts.adversarial) qs = qs.filter(x => x.strategy === 'support');
       for (const { strategy, query } of qs) {
         if (searchesThisClaim >= cap) break;
@@ -150,7 +162,7 @@ export async function verifyClaims(claims, existingEvidence = [], searchProvider
       }
       if (opts.judge) {
         const candidates = pool.filter(e => e.quote_verified && e.entity_match);
-        if (candidates.length) {
+        if (candidates.length && ctl.take('llm')) {
           stats.judgeCalls++;
           try {
             const out = await withTimeout(opts.judge(claim, candidates.map(({ id, url, quote, source_type }) => ({ id, url, quote, source_type }))), B.timeoutMs, 'judge');
@@ -171,11 +183,16 @@ export async function verifyClaims(claims, existingEvidence = [], searchProvider
     let families = await judgeAll();
     let verdict = decide(claim, pool);
     let rounds = 1;
-    if (searchProvider && verdict.status !== 'NOT_APPLICABLE') {
-      await searchRound(1, null);
+    // Sufficiency gate: decide whether and how to search before spending budget.
+    const gate = opts.adaptive === false
+      ? { decision: 'FIXED_PLAN', strategies: null, cap: null, reason: 'adaptive gate disabled' }
+      : sufficiency(claim, verdict, pool, { expired: ctl.expired() });
+    const wantsSearch = gate.strategies === null || gate.strategies.length > 0;
+    if (searchProvider && verdict.status !== 'NOT_APPLICABLE' && wantsSearch) {
+      await searchRound(1, null, gate.cap ?? B.maxSearchesPerClaim, gate.strategies);
       families = await judgeAll();
       verdict = decide(claim, pool);
-      while (opts.iterative && !RESOLVED.has(verdict.status) && rounds < B.maxRounds) {
+      while (opts.iterative && !RESOLVED.has(verdict.status) && rounds < B.maxRounds && !ctl.expired()) {
         rounds++;
         const before = pool.length;
         // Each gap round gets 2 extra targeted searches beyond the per-claim base budget.
@@ -201,7 +218,7 @@ export async function verifyClaims(claims, existingEvidence = [], searchProvider
       claim_type: claim.claim_type, status: verdict.status, answer: verdict.answer, confidence: verdict.confidence,
       evidence_ids: verdict.evidence_ids, limitations: verdict.limitations, explanation: verdict.explanation,
       evidence: evidenceOut, families: families.filter(f => pool.some(e => e.source_family === f.id && e.stance !== 'neutral')),
-      trace: { rounds, searches: searchesThisClaim, strategies: [...new Set(strategiesUsed)], candidates: pool.length },
+      trace: { gate: gate.decision, gate_reason: gate.reason, rounds, searches: searchesThisClaim, strategies: [...new Set(strategiesUsed)], candidates: pool.length },
     };
   }
 

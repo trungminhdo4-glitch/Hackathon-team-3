@@ -29,6 +29,8 @@ export function mapFlag(polarity, status) {
   return 'yellow';
 }
 
+import { adjudicate } from './materiality.js';
+
 const LABEL = {
   SELF_REPORTED: 'vendor-claimed only, not independently confirmed',
   INSUFFICIENT_EVIDENCE: 'not verifiable from available evidence',
@@ -37,35 +39,49 @@ const LABEL = {
   REFUTED: 'contradicted by evidence',
 };
 
-export function toStackginiRow(vendor, flagged) {
+// Finding class → output column. Unestablished concerns are listed as open
+// questions, never as established facts; dropped findings never reappear.
+const COLUMN = { STRONG_POSITIVE: 'green', WEAK_POSITIVE: 'yellow', MATERIAL_NEGATIVE: 'red', MATERIAL_CAVEAT: 'yellow',
+  NON_MATERIAL_NEGATIVE: 'yellow', AMBIGUOUS: 'yellow', UNKNOWN: null, DROPPED: null };
+
+function line(f) {
+  const cite = f.evidence.slice(0, 2).map(e => e.url).join(', ');
+  const tag = f.class === 'AMBIGUOUS' ? 'Unconfirmed: ' : '';
+  const note = f.note && !['MATERIAL_NEGATIVE', 'STRONG_POSITIVE'].includes(f.class) && !f.statement.startsWith('Vendor claim') ? ` [${f.note}]` : '';
+  return `${tag}${f.statement}${note}${cite ? ` (source: ${cite})` : ''}`;
+}
+
+/**
+ * flagged: [{ polarity, material?, topic?, text, verdict }]; context: { identityEstablished?, incomplete?, failed?, limitations? }
+ * Overall comes from materiality.adjudicate (significance of established findings).
+ */
+export function toStackginiRow(vendor, flagged, context = {}) {
+  const result = adjudicate(flagged, context);
   const buckets = { green: [], yellow: [], red: [] };
-  const dropped = [];
-  for (const { polarity, verdict, text } of flagged) {
-    const target = mapFlag(polarity, verdict.status);
-    const cite = verdict.evidence.filter(e => e.used_for_verdict).slice(0, 2).map(e => e.url).join(', ');
-    const note = verdict.status === 'SUPPORTED' ? '' : ` [${LABEL[verdict.status] ?? verdict.status}]`;
-    const line = `${text}${note}${cite ? ` (source: ${cite})` : ''}`;
-    if (!target) { dropped.push(`${text} [${LABEL[verdict.status] ?? verdict.status}]`); continue; }
-    if (polarity === 'green' && target === 'red') buckets.red.push(`Vendor claim contradicted: ${text}${cite ? ` (source: ${cite})` : ''}`);
-    else buckets[target].push(line);
+  for (const f of result.findings) {
+    const col = COLUMN[f.class];
+    if (col) buckets[col].push(line(f));
   }
-  // Overall: assumption — any confirmed red → Red; ≥2 yellow or unconfirmed red → Yellow; else Green.
-  let overall = 'Green';
-  if (buckets.red.length) overall = 'Red';
-  else if (buckets.yellow.length >= 2 || flagged.some(f => f.polarity === 'red' && mapFlag('red', f.verdict.status) === 'yellow')) overall = 'Yellow';
+  const unknown = result.findings.filter(f => f.class === 'UNKNOWN').length;
+  const dropped = result.findings.filter(f => f.class === 'DROPPED').length;
   const reasoning = [
-    buckets.red.length ? `${buckets.red.length} evidence-backed red flag(s).` : 'No evidence-backed red flags.',
-    buckets.yellow.length ? `${buckets.yellow.length} item(s) need verification.` : '',
-    dropped.length ? `Discarded after verification: ${dropped.join('; ')}.` : '',
+    result.why,
+    result.decisive ? `Decisive: ${line(result.decisive)}` : '',
+    unknown ? `${unknown} claim(s) could not be verified and were not used.` : '',
+    dropped ? `${dropped} proposed finding(s) were contradicted or unverifiable and removed.` : '',
+    ...(context.limitations ?? []).slice(0, 2),
   ].filter(Boolean).join(' ');
   const join = list => list.length ? list.join(' | ') : 'None identified.';
-  return { id: vendor.id, url: vendor.url, product: vendor.product ?? '', vendor: vendor.vendor ?? '', overall,
-    green_flags: join(buckets.green), yellow_flags: join(buckets.yellow), red_flags: join(buckets.red), reasoning };
+  return { id: vendor.id, url: vendor.url, product: vendor.product ?? '', vendor: vendor.vendor ?? '', overall: result.overall,
+    green_flags: join(buckets.green), yellow_flags: join(buckets.yellow), red_flags: join(buckets.red), reasoning,
+    _findings: result.findings.map(f => ({ class: f.class, polarity: f.polarity, status: f.status, statement: f.statement,
+      evidence: f.evidence.map(e => ({ url: e.url, quote: e.quote })) })) };
 }
 
 export function toCsv(rows) {
   const cols = ['id', 'url', 'product', 'vendor', 'overall', 'green_flags', 'yellow_flags', 'red_flags', 'reasoning'];
-  const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  // Quote every field; strip control chars that break CSV readers.
+  const esc = v => `"${String(v ?? '').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').replace(/"/g, '""')}"`;
   return [cols.map(esc).join(','), ...rows.map(r => cols.map(c => esc(r[c])).join(','))].join('\n') + '\n';
 }
 
