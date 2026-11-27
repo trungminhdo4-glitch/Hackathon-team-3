@@ -25,12 +25,25 @@ async function pool(items, n, fn) {
 export async function refetchDocuments(entries, fetcher, { concurrency = 4 } = {}) {
   const docs = Object.values(entries).flatMap(e => e.documents);
   const byUrl = new Map();
-  await pool([...new Set(docs.map(d => d.url))], concurrency, async url => {
+  await pool([...new Set(docs.map(d => d.requestedUrl || d.url))], concurrency, async url => {
     const t0 = Date.now();
-    try { const d = await fetcher.fetch(url); byUrl.set(url, { ok: true, text: d.text ?? '', title: d.title ?? '', ms: Date.now() - t0 }); }
+    try { const d = await fetcher.fetch(url); byUrl.set(url, { ok: true, url: d.url || url, text: d.text ?? '', title: d.title ?? '', ms: Date.now() - t0 }); }
     catch (e) { byUrl.set(url, { ok: false, error: String(e.message).slice(0, 80), ms: Date.now() - t0 }); }
   });
-  for (const d of docs) { const r = byUrl.get(d.url); d.fetch = r ? { ok: r.ok, error: r.error } : null; if (r?.ok) { d.text = r.text; d.title = r.title; d.origin = 'refetched'; } }
+  for (const d of docs) {
+    const requested = d.requestedUrl || d.url;
+    const r = byUrl.get(requested);
+    d.fetch = r ? { ok: r.ok, error: r.error } : null;
+    if (r?.ok) {
+      d.requestedUrl = requested;
+      d.url = r.url;
+      d.text = r.text;
+      d.title = r.title;
+      d.origin = 'refetched';
+    } else {
+      d.text = '';
+    }
+  }
   return byUrl;
 }
 

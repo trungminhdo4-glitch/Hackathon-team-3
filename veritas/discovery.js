@@ -121,13 +121,19 @@ export async function discover(state, { provider, fetcher, controller, maxTasks 
     let found = 0;
     for (const r of results ?? []) {
       if (found >= maxPerTask || !r?.url) continue;
-      let text = r.raw_content || '';
+      let text = r.raw_content || '', url = r.url, title = r.title ?? '', published = r.published_date;
       if (!text && fetcher && (!controller || controller.take('fetch'))) {
-        try { text = (await fetcher.fetch(r.url))?.text || ''; } catch { text = ''; }
+        try {
+          const doc = await fetcher.fetch(r.url);
+          text = doc?.text || '';
+          url = doc?.url || url;
+          title = doc?.title || title;
+          if (siteOf(url) !== siteOf(r.url)) published = undefined;
+        } catch { text = ''; }
       }
       if (!text) continue; // snippets are leads only
       const clean = sanitize(text).text;
-      const sourceType = classifySource(r.url, vendorDomains);
+      const sourceType = classifySource(url, vendorDomains);
       const vendorAuthored = ['vendor', 'technical_documentation'].includes(sourceType);
       for (const s of sentences(clean)) {
         if (s.length < 30 || s.length > 400 || detectInjection(s).length || !namesEntity(s, names)) continue;
@@ -139,10 +145,10 @@ export async function discover(state, { provider, fetcher, controller, maxTasks 
           if (relation === 'unknown' || seen.has(key)) continue;
           seen.add(key);
           // Partner/reseller/integration/pilot relations are not customer use: recorded on the task, never a finding.
-          if (relation !== 'deployment') { (task.relations ??= []).push({ relation, url: r.url, quote: s }); continue; }
+          if (relation !== 'deployment') { (task.relations ??= []).push({ relation, url, quote: s }); continue; }
           out.push({ polarity: 'green', material: false, topic: 'customer', relation, text: s, atomic: true,
             origin: 'discovered', category: task.category,
-            evidence: [{ url: r.url, quote: s, content: clean, title: r.title ?? '', publication_date: r.published_date, origin: 'fetch' }] });
+            evidence: [{ url, quote: s, content: clean, title, publication_date: published, origin: 'fetch' }] });
           found++;
           break;
         }
@@ -154,7 +160,7 @@ export async function discover(state, { provider, fetcher, controller, maxTasks 
         if (!p || seen.has(key)) continue;
         seen.add(key);
         out.push({ ...p, topic: sig.topic, text: s, atomic: true, origin: 'discovered', category: task.category,
-          evidence: [{ url: r.url, quote: s, content: clean, title: r.title ?? '', publication_date: r.published_date, origin: 'fetch' }] });
+          evidence: [{ url, quote: s, content: clean, title, publication_date: published, origin: 'fetch' }] });
         found++;
         break; // one finding per source document
       }

@@ -68,7 +68,8 @@ function toEvidence(items, docs, rejected) {
     const doc = docs.get(item.sourceId);
     if (!doc) { rejected.push(item.sourceId); continue; } // unknown source reference
     out.push({ url: doc.url, title: doc.title ?? '', quote: item.quote ?? '', content: doc.text ?? '',
-      source_type: item.vendorAuthored ? 'vendor' : RELATION_TYPE_V2[item.relation] ?? 'other', origin: 'team' });
+      source_type: item.vendorAuthored ? 'vendor' : doc.requestedUrl && siteOf(doc.requestedUrl) !== siteOf(doc.url)
+        ? undefined : RELATION_TYPE_V2[item.relation] ?? 'other', origin: 'team' });
   }
   return out;
 }

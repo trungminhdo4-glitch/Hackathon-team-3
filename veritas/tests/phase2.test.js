@@ -7,6 +7,38 @@ const NOW = new Date('2026-11-27');
 const claim = s => extractClaims([{ statement: s, ...V }]);
 const ev = o => ({ used_for_verdict: true, quote_verified: true, quote: 'x', url: 'https://src.example/a', ...o });
 
+test('redirected citations use the publisher that supplied the passage', async () => {
+  const quote = 'Acme Cloud supports SCIM provisioning for all customers.';
+  const url = 'https://acmecloud.example/announcement';
+  const requested = 'https://reuters.com/obsolete-link';
+  const fetcher = { fetch: async () => ({ url, text: quote }) };
+  const [v] = await verifyClaims(claim(quote), [{ url: requested, quote, source_type: 'news' }], null, {}, { fetcher, now: NOW });
+  assert.equal(v.evidence.length, 1);
+  assert.equal(v.evidence[0].url, url);
+  assert.equal(v.evidence[0].source_type, 'vendor');
+  assert.equal(v.evidence[0].independent, false);
+});
+
+test('cached replay and discovery follow the same redirected publisher as live verification', async () => {
+  const { refetchDocuments } = await import('../replay.js');
+  const { saasLensToFlags } = await import('../adapters.js');
+  const { discover } = await import('../discovery.js');
+  const requested = 'https://example.org/customer-story';
+  const url = 'https://acmecloud.example/customers';
+  const text = 'A major retailer selected Acme Cloud for its next nationwide deployment.';
+  const fetcher = { fetch: async () => ({ url, text }) };
+  const entry = { documents: [{ id: 'S1', url: requested }], flags: [{ kind: 'green', text, evidence: [{ sourceId: 'S1', quote: text, relation: 'customer' }] }] };
+  await refetchDocuments({ vendor: entry }, fetcher);
+  const source = saasLensToFlags(V.vendor_domain, entry).flags[0].evidence[0];
+  assert.equal(source.url, url);
+  assert.equal(source.source_type, undefined);
+  const result = await discover({ name: V.vendor_name, domain: V.vendor_domain,
+    findings: [{ topic: 'customer', status: 'INSUFFICIENT_EVIDENCE' }] },
+    { provider: { search: async () => [{ url: requested }] }, fetcher, maxTasks: 7 });
+  assert.ok(result.tasks.some(t => t.category === 'CUSTOMER_REALITY'));
+  assert.equal(result.findings.length, 0);
+});
+
 test('provenance: full raw_content wins over a snippet that says something else', async () => {
   const provider = { search: async () => [{ url: 'https://news.example/a', title: 'a',
     content: 'Acme Cloud supports SCIM provisioning.',

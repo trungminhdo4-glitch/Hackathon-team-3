@@ -3,7 +3,7 @@
 //   node veritas/bench/dataset.js --research-cache cache.json --cache-only [--variants A1,A2] [--limit 10 --stratified]
 //   node veritas/bench/dataset.js --researcher collect [--variants KEYLESS_FETCH,KEYLESS_COLLECT]   (no keys, live public fetch)
 //   node veritas/bench/dataset.js --research-cache cache.json            (fill missing entries live: needs OPENAI_API_KEY)
-//   node veritas/bench/dataset.js --score submission.csv                 (score any submission)
+//   node veritas/bench/dataset.js --score submission.csv [--labels sealed-reference.csv]
 // Isolation: research receives ONLY the URL. Reference labels are read exclusively by score(),
 // after all predictions exist. Nothing from the labels enters prompts, caches or heuristics.
 // Variant names state what actually ran: a variant whose component is unavailable is
@@ -30,6 +30,9 @@ const LABELS = ['Green', 'Yellow', 'Red'];
 export function score(pred, labelsPath = DATASET, { expectedIds = null } = {}) {
   const refRows = parseCsv(readFileSync(labelsPath, 'utf8'));
   const ref = new Map(refRows.map(r => [String(r.id), r]));
+  if (!refRows.length || ref.size !== refRows.length || refRows.some(r => !r.id || !LABELS.includes(r.overall))) {
+    throw new Error('Reference requires unique nonempty IDs and Green, Yellow or Red for every row.');
+  }
   const expected = expectedIds ? expectedIds.map(String) : [...ref.keys()];
   const problems = [];
   const seen = new Map();
@@ -58,7 +61,7 @@ export function score(pred, labelsPath = DATASET, { expectedIds = null } = {}) {
   const count = f => rows.filter(f).length;
   const of = (num, den) => +(num / Math.max(1, den)).toFixed(3);
   return {
-    evaluated: n, expected: expected.length, coverage: of(n, expected.length),
+    correct, evaluated: n, expected: expected.length, coverage: of(n, expected.length),
     accuracy_on_evaluated: of(correct, n), accuracy_full_coverage: of(correct, expected.length),
     macro_f1: +(LABELS.reduce((s, l) => s + perClass[l].f1, 0) / 3).toFixed(3), per_class: perClass,
     false_green_on_non_green: count(r => r.pred === 'Green' && r.ref !== 'Green'),
@@ -66,7 +69,8 @@ export function score(pred, labelsPath = DATASET, { expectedIds = null } = {}) {
     false_red_on_non_red: count(r => r.pred === 'Red' && r.ref !== 'Red'),
     non_ok_rows: count(r => r.status !== 'ok'),
     confusion_ref_by_pred: cm, problems,
-    note: 'Agreement with Stackgini reference labels on 40 development rows (±15 pp sampling margin), not independently established factual correctness.',
+    note: labelsPath === DATASET ? 'Agreement with Stackgini development labels.'
+      : 'Agreement with the supplied reference. Sampling and adjudication determine how this result generalizes.',
   };
 }
 
@@ -111,7 +115,15 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const a = process.argv.slice(2);
   const arg = (n, d) => { const i = a.indexOf('--' + n); return i >= 0 ? a[i + 1] : d; };
   const flag = n => a.includes('--' + n);
-  if (arg('score')) { console.log(JSON.stringify(score(parseCsv(readFileSync(arg('score'), 'utf8'))), null, 2)); process.exit(0); }
+  if (flag('labels') && (!arg('labels') || !arg('score'))) {
+    console.error('--labels requires --score and a reference CSV path.');
+    process.exit(2);
+  }
+  if (arg('score')) {
+    const result = score(parseCsv(readFileSync(arg('score'), 'utf8')), arg('labels', DATASET));
+    console.log(JSON.stringify(result, null, 2));
+    process.exit(result.problems.length ? 3 : 0);
+  }
 
   let inputs = readInput(DATASET);
   const limit = Number(arg('limit', 40));

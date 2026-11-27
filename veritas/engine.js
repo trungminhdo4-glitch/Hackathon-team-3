@@ -100,7 +100,7 @@ export async function verifyClaims(claims, existingEvidence = [], searchProvider
       if ((retrieval === 'none' || retrieval === 'search_snippet') && fetchesThisClaim < B.maxFetchesPerClaim && opts.fetcher) {
         fetchesThisClaim++;
         const doc = await fetchText(raw.url);
-        if (doc?.text) { content = doc.text; retrieval = 'fetched'; finalUrl = doc.url || raw.url; raw.title = raw.title || doc.title; }
+        if (doc?.text) { content = doc.text; retrieval = 'fetched'; finalUrl = doc.url || raw.url; raw.title = doc.title || raw.title; }
       }
       const inj = detectInjection(content + ' ' + (raw.quote || ''));
       if (inj.length) { stats.injections++; security.push(`Embedded instructions detected and ignored in ${siteOf(raw.url)}.`); }
@@ -123,16 +123,19 @@ export async function verifyClaims(claims, existingEvidence = [], searchProvider
         const c2 = alt && alt !== quote && overlap >= 0.6 ? verifyQuote(alt, clean) : null;
         if (c2?.verified) { quote = alt; check = { ...c2, method: `aligned_to_cited_page:${overlap.toFixed(2)}` }; }
       }
-      let source_type = raw.source_type || classifySource(raw.url, vendorDomains);
-      if (claim.claim_type === 'customer' && claim.subject && !vendorDomains.map(siteOf).includes(siteOf(raw.url))) {
+      const site = siteOf(finalUrl);
+      const sameSite = site === siteOf(raw.url);
+      const authoredByVendor = ['vendor', 'press_release'].includes(raw.source_type);
+      let source_type = ((sameSite || authoredByVendor) && raw.source_type) || classifySource(finalUrl, vendorDomains);
+      if (claim.claim_type === 'customer' && claim.subject && !vendorDomains.map(siteOf).includes(site)) {
         const custSite = claim.qualifiers?.customer_domain ? siteOf(claim.qualifiers.customer_domain) : '';
         const stem = claim.subject.toLowerCase().replace(/[^a-z0-9]/g, '');
-        if ((custSite && siteOf(raw.url) === custSite) || (stem.length >= 3 && siteOf(raw.url).split('.')[0] === stem)) source_type = 'customer';
+        if ((custSite && site === custSite) || (stem.length >= 3 && site.split('.')[0] === stem)) source_type = 'customer';
       }
       pool.push({
-        id: raw.id || `${claim.id}-e${pool.length + 1}`, claim_id: claim.id, url: raw.url, final_url: finalUrl, title: raw.title || '',
+        id: raw.id || `${claim.id}-e${pool.length + 1}`, claim_id: claim.id, url: finalUrl, title: raw.title || '',
         quote, quote_context: check.context || '', content: clean, source_type, origin, strategy,
-        publication_date: raw.publication_date || raw.published_date || undefined, last_updated: raw.last_updated,
+        publication_date: sameSite ? raw.publication_date || raw.published_date : undefined, last_updated: sameSite ? raw.last_updated : undefined,
         retrieved_at: raw.retrieved_at || (retrieval !== 'none' ? opts.now.toISOString() : undefined),
         retrieval, quote_verified: check.verified, quote_check: check.verified ? check.method : check.reason,
         injection_detected: inj.length > 0,

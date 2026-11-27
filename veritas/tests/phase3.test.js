@@ -189,6 +189,14 @@ test('score(): missing, duplicate, unexpected and invalid rows are reported; cov
   assert.deepEqual(stratifiedIds(csv, 3), ['1', '2', '3']);
 });
 
+test('an external evaluation rejects ambiguous or ungraded reference rows', () => {
+  const csv = join(dir, 'external-reference.csv');
+  for (const rows of ['1,Green\n1,Red', '1,Unknown', ',Yellow', '']) {
+    writeFileSync(csv, 'id,overall\n' + rows);
+    assert.throws(() => score([], csv), /Reference requires/);
+  }
+});
+
 test('guard mode: teammate verdict stands unless VERITAS has a verified reason against it', async () => {
   const { guard } = await import('../replay.js');
   const neg = [{ class: 'MATERIAL_NEGATIVE', polarity: 'red', material: true }];
