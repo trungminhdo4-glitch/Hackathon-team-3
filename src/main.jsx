@@ -46,7 +46,7 @@ function Workspace() {
     <main>
       <section className="intro">
         <div><h1>Research a product.</h1>
-          <p>Check who operates it, what independent sources confirm, and what deserves a closer look.</p>
+          <p>Find out what the software delivers, who it works for, and which conditions matter before you choose it.</p>
         </div>
         <img className="engraving" src="/lens.webp" alt="" width="840" height="560"/>
       </section>

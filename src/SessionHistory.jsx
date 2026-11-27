@@ -1,4 +1,5 @@
 import React from 'react'
+import { isEarlierReport, verdictLabel } from './research.js'
 
 const storageKey = 'saaslens.history.v1'
 
@@ -35,7 +36,10 @@ export function SessionHistory({ entries, current, busy, onOpen }) {
           disabled={busy} onClick={() => onOpen(entry)}>
           <span><strong>{entry.report.productName}</strong><small>{entry.report.inputUrl}</small>
             {entry.report.question && <small>{entry.report.question}</small>}</span>
-          <span className="history-meta">{entry.scenario && 'Simulated · '}{entry.report.score === null ? 'Unscored' : entry.report.score + '/100'}
+          <span className="history-meta">{entry.scenario && 'Simulated · '}
+            {isEarlierReport(entry.report)
+              ? 'Previous rubric' + (typeof entry.report.score === 'number' ? ' · ' + entry.report.score + '/100' : '')
+              : verdictLabel(entry.report)}
             <small>{entry.savedAt ? new Date(entry.savedAt).toLocaleString() : 'Earlier this session'}</small>
           </span>
         </button>

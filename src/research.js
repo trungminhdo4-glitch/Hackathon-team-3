@@ -1,3 +1,25 @@
+const currentVerdicts = {
+  green: 'Core promise supported',
+  yellow: 'Material caveat',
+  red: 'Material risk',
+  insufficient: 'Insufficient evidence',
+}
+
+const earlierVerdicts = {
+  green: 'Credible based on available evidence',
+  yellow: 'Not enough or mixed evidence',
+  red: 'Material red flags found',
+}
+
+export function verdictLabel(report) {
+  const labels = isEarlierReport(report) ? earlierVerdicts : currentVerdicts
+  return labels[report.verdict] || 'Investigation incomplete'
+}
+
+export function isEarlierReport(report) {
+  return report.rubricVersion !== 2
+}
+
 export async function requestAssessment(subject, question) {
   const response = await fetch('/api/investigate', {
     method: 'POST',
