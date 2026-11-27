@@ -41,6 +41,8 @@ These examples describe reviewer judgments. The dataset is a calibration benchma
 
 The [ten-case GPT-6.2 Astra evaluation](EVALUATION_BATCH.md) records the first ten rows in file order, the actual verdict and reasons for each, including disagreements.
 
+The [Sol test and held-out bulk validation](EVALUATION_SOL.md) compares twenty URL-only investigations against the dataset, including failures and evidence-gap verdicts.
+
 ### Small MVP check, 27 November 2026
 
 The API received only the original URL for each of these three development examples. The optional question was blank. The most recent live search for each product produced the following results.

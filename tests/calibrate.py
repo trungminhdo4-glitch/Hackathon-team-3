@@ -16,6 +16,9 @@ def main():
     parser.add_argument("--model", help="Assessment model ID; defaults to the server selection")
     parser.add_argument("--jobs", type=int, choices=(1, 2, 3), default=2)
     parser.add_argument("--output", type=Path, help="Write one JSON record per case to a new file")
+    parser.add_argument("--port", type=int, default=4173, help="Port of the local SaaSLens server")
+    parser.add_argument("--bulk", action="store_true", help="Send this group in one streaming bulk request")
+    parser.add_argument("--report-dir", type=Path, help="Save full API reports in a new directory")
     args = parser.parse_args()
     dataset = Path(__file__).resolve().parents[1] / "hackathon_40_solutions_commented (1).csv"
     with dataset.open(encoding="utf-8-sig", newline="") as source:
@@ -24,30 +27,30 @@ def main():
     missing = [row_id for row_id in selected if row_id not in rows]
     if missing:
         parser.error("Unknown dataset IDs: " + ", ".join(missing))
+    if args.bulk and len(selected) > 10:
+        parser.error("A bulk investigation accepts up to ten URLs.")
+    endpoint = f"http://127.0.0.1:{args.port}/api/investigate"
+    if args.report_dir:
+        args.report_dir.mkdir(parents=True, exist_ok=False)
 
-    def evaluate(row_id):
+    def comparison(row_id, report=None, seconds=None, error=None):
         row = rows[row_id]
-        started = monotonic()
-        payload = {"url": row["url"]}
-        if args.model:
-            payload["model"] = args.model
-        request = Request(
-            "http://127.0.0.1:4173/api/investigate",
-            data=json.dumps(payload).encode(),
-            headers={"Content-Type": "application/json"},
-        )
         record = {"row": row_id, "url": row["url"], "expected": row["overall"],
                   "reviewerReason": row["reasoning"], "model": args.model}
-        try:
-            with urlopen(request, timeout=300) as response:
-                report = json.load(response)
-        except (URLError, TimeoutError, ValueError, ConnectionError) as error:
-            return {**record, "actual": None, "labelMatch": False, "error": str(error)}
+        if report is None:
+            return {**record, "actual": None, "labelMatch": False, "error": error}
         if report.get("rubricVersion") != 2:
             raise RuntimeError("Start the current SaaSLens app before running calibration.")
+        if args.report_dir:
+            (args.report_dir / f"{row_id}.json").write_text(json.dumps(report, ensure_ascii=False), encoding="utf-8")
+        if report.get("verdict") is None:
+            return {**record, "actual": None, "labelMatch": False,
+                    "error": error or report.get("interpretation") or "Investigation incomplete."}
         sources = {source["id"]: source["url"] for source in report["sources"]}
         return {**record, "product": report["productName"], "model": report["model"],
-            "seconds": round(monotonic() - started, 1), "actual": report["verdict"],
+            "seconds": seconds, "actual": report["verdict"],
+            "observations": len(report.get("dossier", {}).get("observations", [])),
+            "sourcesChecked": len(report.get("dossier", {}).get("coverage", [])),
             "verdictBasis": report.get("verdictBasis"), "evidenceGap": report.get("verdictBasis") == "evidence_gap",
             "labelMatch": row["overall"].lower() == report["verdict"],
             "appReason": report["interpretation"], "sourceCount": len(sources),
@@ -60,12 +63,50 @@ def main():
             "limitations": report["limitations"],
         }
 
+    def call(path, payload, accept="application/json"):
+        if args.model:
+            payload["model"] = args.model
+        req = Request(endpoint + path, data=json.dumps(payload).encode(),
+                      headers={"Content-Type": "application/json", "Accept": accept})
+        return urlopen(req, timeout=300)
+
+    def evaluate(row_id):
+        started = monotonic()
+        try:
+            with call("", {"url": rows[row_id]["url"]}) as response:
+                report = json.load(response)
+        except (URLError, TimeoutError, ValueError, ConnectionError) as error:
+            return comparison(row_id, error=str(error))
+        return comparison(row_id, report, round(monotonic() - started, 1))
+
+    def evaluate_batch():
+        seen = set()
+        urls = [rows[row_id]["url"] for row_id in selected]
+        with call("/bulk", {"urls": urls}, "application/x-ndjson") as response:
+            for line in response:
+                event = json.loads(line)
+                if event["type"] == "error":
+                    raise RuntimeError(event["error"])
+                if event["type"] != "item":
+                    continue
+                index = event["index"]
+                item = event["item"]
+                if not isinstance(index, int) or not 0 <= index < len(urls) or index in seen or item["inputUrl"].rstrip("/") != urls[index].rstrip("/"):
+                    raise RuntimeError("Unexpected result identity in the bulk response.")
+                seen.add(index)
+                yield comparison(selected[index], item.get("report"), error=item.get("error"))
+        if len(seen) != len(selected):
+            raise RuntimeError("Bulk response ended before returning every result.")
+
     output = args.output.open("x", encoding="utf-8") if args.output else None
     try:
         with ThreadPoolExecutor(max_workers=args.jobs) as pool:
-            futures = [pool.submit(evaluate, row_id) for row_id in selected]
-            for future in as_completed(futures):
-                record = future.result()
+            if args.bulk:
+                records = evaluate_batch()
+            else:
+                futures = [pool.submit(evaluate, row_id) for row_id in selected]
+                records = (future.result() for future in as_completed(futures))
+            for record in records:
                 encoded = json.dumps(record, ensure_ascii=True)
                 if output:
                     print(encoded, file=output, flush=True)
