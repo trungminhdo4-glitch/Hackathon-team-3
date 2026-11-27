@@ -1,0 +1,2 @@
+# Preserve the exact frozen packet bytes and their recorded SHA-256 on Windows.
+test-results/phase6-20261127/** -text

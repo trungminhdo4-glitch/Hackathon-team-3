@@ -1,0 +1,7 @@
+{
+  "prompt_version": "phase6-evidence-judge-v1",
+  "sha256": "c380444b24bb5228b703d29b60b07f199d7250492542320cead4e04e8ba09b59",
+  "created_at": "2026-11-27T17:28:29.161Z",
+  "packets": 8,
+  "status": "bounded development pilot; generic baseline proxy"
+}

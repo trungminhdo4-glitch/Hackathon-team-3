@@ -1,0 +1,158 @@
+{
+  "summary": [
+    {
+      "cohort": "fixed",
+      "variant": "luna-evidence/luna-judge",
+      "correct": 5,
+      "total": 12,
+      "macro_f1": 0.311,
+      "independently_audited_supported": null,
+      "independently_audited_grounded_correct": null,
+      "critical_false_green": 0,
+      "false_red": 0
+    },
+    {
+      "cohort": "fixed",
+      "variant": "terra-evidence/luna-judge",
+      "correct": 5,
+      "total": 12,
+      "macro_f1": 0.196,
+      "independently_audited_supported": null,
+      "independently_audited_grounded_correct": null,
+      "critical_false_green": 0,
+      "false_red": 0
+    },
+    {
+      "cohort": "fixed",
+      "variant": "luna-evidence/terra-judge",
+      "correct": 5,
+      "total": 12,
+      "macro_f1": 0.311,
+      "independently_audited_supported": 4,
+      "independently_audited_grounded_correct": 2,
+      "critical_false_green": 0,
+      "false_red": 0
+    },
+    {
+      "cohort": "fixed",
+      "variant": "terra-evidence/terra-judge",
+      "correct": 5,
+      "total": 12,
+      "macro_f1": 0.196,
+      "independently_audited_supported": 0,
+      "independently_audited_grounded_correct": 0,
+      "critical_false_green": 0,
+      "false_red": 0
+    },
+    {
+      "cohort": "valid",
+      "variant": "baseline/luna",
+      "correct": 1,
+      "total": 4,
+      "macro_f1": 0.133,
+      "independently_audited_supported": 1,
+      "independently_audited_grounded_correct": 0,
+      "critical_false_green": 0,
+      "false_red": 0
+    },
+    {
+      "cohort": "valid",
+      "variant": "clean/luna",
+      "correct": 2,
+      "total": 4,
+      "macro_f1": 0.222,
+      "independently_audited_supported": 1,
+      "independently_audited_grounded_correct": 0,
+      "critical_false_green": 0,
+      "false_red": 0
+    },
+    {
+      "cohort": "valid",
+      "variant": "baseline/terra",
+      "correct": 1,
+      "total": 4,
+      "macro_f1": 0.133,
+      "independently_audited_supported": 1,
+      "independently_audited_grounded_correct": 0,
+      "critical_false_green": 0,
+      "false_red": 0
+    },
+    {
+      "cohort": "valid",
+      "variant": "clean/terra",
+      "correct": 1,
+      "total": 4,
+      "macro_f1": 0.133,
+      "independently_audited_supported": 2,
+      "independently_audited_grounded_correct": 0,
+      "critical_false_green": 0,
+      "false_red": 0
+    }
+  ],
+  "recovery": {
+    "correct": 1,
+    "evaluated": 3,
+    "expected": 3,
+    "coverage": 1,
+    "accuracy_on_evaluated": 0.333,
+    "accuracy_full_coverage": 0.333,
+    "macro_f1": 0.167,
+    "per_class": {
+      "Green": {
+        "precision": 0,
+        "recall": 0,
+        "f1": 0,
+        "support": 0
+      },
+      "Yellow": {
+        "precision": 0,
+        "recall": 0,
+        "f1": 0,
+        "support": 0
+      },
+      "Red": {
+        "precision": 1,
+        "recall": 0.333,
+        "f1": 0.5,
+        "support": 3
+      }
+    },
+    "false_green_on_non_green": 0,
+    "critical_false_green_on_red": 0,
+    "false_red_on_non_red": 0,
+    "non_ok_rows": 0,
+    "confusion_ref_by_pred": {
+      "Green": {
+        "Green": 0,
+        "Yellow": 0,
+        "Red": 0
+      },
+      "Yellow": {
+        "Green": 0,
+        "Yellow": 0,
+        "Red": 0
+      },
+      "Red": {
+        "Green": 0,
+        "Yellow": 2,
+        "Red": 1
+      }
+    },
+    "problems": [],
+    "note": "Agreement with Stackgini development labels.",
+    "source_passages": 5,
+    "research_calls": 0,
+    "worker_calls": 2,
+    "semantics": "Judge self-assessment only; independent semantic review not performed on these three recovered packets.",
+    "selection": "Post-hoc three changed Guard cases. Not a full-cohort improvement or holdout.",
+    "versus_existing_guard": {
+      "wrong_to_right": 1,
+      "right_to_wrong": 0
+    },
+    "versus_upstream": {
+      "wrong_to_right": 0,
+      "right_to_wrong": 2
+    }
+  },
+  "limitations": "Independent means a separate model context, not a human gold standard. All cohorts are development. Unknown monetary cost."
+}

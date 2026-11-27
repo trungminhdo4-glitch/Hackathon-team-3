@@ -1,0 +1,122 @@
+{
+  "started_at": "2026-11-27T17:20:53.239Z",
+  "ended_at": "2026-11-27T17:21:59.254Z",
+  "search_requests_per_product": 2,
+  "direct_fetch_attempts_per_product": 6,
+  "verdicts": {
+    "https://www.omnissa.com/": {
+      "overall": "Yellow",
+      "rationale": "Yellow: functioning enterprise endpoint management and published maintenance, but pricing and known security vulnerabilities require version and procurement review.",
+      "queries": [
+        "Omnissa workspace one company product pricing 2026",
+        "Omnissa workspace one security vulnerability 2025"
+      ],
+      "search_count": 2,
+      "direct_fetch_count": 6,
+      "failed_first_attempts": "Three DNS ENOTFOUND in restricted environment",
+      "retry_failures": [],
+      "sources_captured": [
+        {
+          "id": "s3",
+          "url": "https://advisories.ncsc.nl/2025/ncsc-2025-0289.html"
+        },
+        {
+          "id": "s2",
+          "url": "https://www.omnissa.com/omnissa-security-response/"
+        },
+        {
+          "id": "s1",
+          "url": "https://www.omnissa.com/products/workspace-one-unified-endpoint-management/pricing/"
+        }
+      ]
+    },
+    "https://www.microsoft.com/en-us/microsoft-365-copilot/chat": {
+      "overall": "Yellow",
+      "rationale": "Yellow: credible active product with eligible-license and agent-metering constraints; outage lead could not be captured and no broader risk conclusion was established.",
+      "queries": [
+        "Microsoft 365 Copilot Chat pricing enterprise data protection features",
+        "Microsoft 365 Copilot Chat risks security 2025"
+      ],
+      "search_count": 2,
+      "direct_fetch_count": 6,
+      "failed_first_attempts": "Three DNS ENOTFOUND in restricted environment",
+      "retry_failures": [
+        {
+          "url": "https://www.techradar.com/pro/microsoft-declared-an-internal-code-red-after-historic-m365-outage-notes-our-work-doesnt-end-when-service-is-restored",
+          "error": "Error: Page exceeds retrieval size limit."
+        }
+      ],
+      "sources_captured": [
+        {
+          "id": "s2",
+          "url": "https://learn.microsoft.com/en-us/copilot/plan/privacy-and-protections"
+        },
+        {
+          "id": "s1",
+          "url": "https://www.microsoft.com/en/copilot/pricing/business"
+        }
+      ]
+    },
+    "https://bendingspoons.com/": {
+      "overall": "Yellow",
+      "rationale": "Yellow: active software portfolio, but documented acquisition restructuring and product-specific pricing/continuity require diligence.",
+      "queries": [
+        "Bending Spoons company applications layoffs acquired products 2026",
+        "Bending Spoons Evernote pricing subscriptions complaints security"
+      ],
+      "search_count": 2,
+      "direct_fetch_count": 6,
+      "failed_first_attempts": "Three DNS ENOTFOUND in restricted environment",
+      "retry_failures": [
+        {
+          "url": "https://apnews.com/article/93a8426bab66c9d821a9beb0d2750d64",
+          "error": "Error: The page did not return readable public text."
+        }
+      ],
+      "sources_captured": [
+        {
+          "id": "s2",
+          "url": "https://www.sec.gov/Archives/edgar/data/2004711/000200471126000027/bsp_ex99-1.htm"
+        },
+        {
+          "id": "s3",
+          "url": "https://www.bigin.com/articles/how-bending-spoons-buys-companies.html"
+        }
+      ]
+    },
+    "https://pimeyes.com/en": {
+      "overall": "Yellow",
+      "rationale": "Yellow: facial search product and paid tiers evidenced; significant privacy/misuse concerns and undisclosed numeric price require review. No captured evidence establishes actual harm or misconduct.",
+      "queries": [
+        "PimEyes facial recognition pricing privacy risks complaints",
+        "PimEyes facial recognition regulation privacy 2025"
+      ],
+      "search_count": 2,
+      "direct_fetch_count": 6,
+      "failed_first_attempts": "Three DNS ENOTFOUND in restricted environment",
+      "retry_failures": [],
+      "sources_captured": [
+        {
+          "id": "s2",
+          "url": "https://www.reddit.com/r/privacy/comments/1wq3g3l/powerful_facial_recognition_software_demands_id/"
+        },
+        {
+          "id": "s1",
+          "url": "https://pimeyes.com/en/pricing"
+        },
+        {
+          "id": "s3",
+          "url": "https://www.mlex.com/mlex/articles/2282162/pimeyes-no-longer-pursued-by-australian-privacy-watchdog-documents-reveal"
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "The maximum four direct fetches per product was exceeded: three failed DNS attempts followed by three retries after escalation, six attempted per product.",
+    "Initial failed run was overwritten by successful-run capture log; failures were recorded from its observed output.",
+    "Search results and uncaptured leads were not used as quoted evidence.",
+    "Some vendor statements and company disclosures are self-reported; no functional testing was performed.",
+    "PimEyes numeric prices were not visible in captured page; privacy concern is contextual inference, not evidence of wrongdoing.",
+    "The original baseline prompt was unavailable; this is the requested approximate proxy."
+  ]
+}

@@ -1,0 +1,145 @@
+[
+  {
+    "vendor": "https://donotpay.com/",
+    "claim": "FTC finalized an order over deceptive AI-lawyer claims and required monetary relief and subscriber notices.",
+    "claimType": "legal_regulatory",
+    "evidence": [
+      {
+        "url": "https://www.ftc.gov/news-events/news/press-releases/2025/02/ftc-finalizes-order-donotpay-prohibits-deceptive-ai-lawyer-claims-imposes-monetary-relief-requires",
+        "quote": "stop making deceptive claims about the abilities of its AI chatbot",
+        "quoteVerified": true,
+        "quoteCheck": "exact",
+        "entity": {
+          "match": true,
+          "reason": ""
+        },
+        "criticalTerms": [
+          "ftc",
+          "ai"
+        ],
+        "heuristic": {
+          "stance": "partial",
+          "relevance": 0.1,
+          "specificity": 0.5,
+          "notes": [
+            "missing specific term(s): ftc"
+          ],
+          "qualifiers": []
+        },
+        "quality": {
+          "score": 63,
+          "parts": {
+            "authority": 95,
+            "independence": 95,
+            "relevance": 10,
+            "specificity": 50,
+            "freshness": 50
+          }
+        },
+        "finalDeterministicStance": "neutral"
+      }
+    ],
+    "engine": {
+      "status": "INSUFFICIENT_EVIDENCE",
+      "candidates": 1,
+      "evidenceCount": 0,
+      "explanation": "No retrieved evidence establishes or contradicts the claim. Absence of evidence is not treated as refutation."
+    },
+    "guard": "no red reason survived the citation audit"
+  },
+  {
+    "vendor": "https://accessibe.com/",
+    "claim": "FTC finalized an order concerning claims that accessWidget could make any website WCAG compliant, with a $1 million payment.",
+    "claimType": "compliance",
+    "evidence": [
+      {
+        "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+        "quote": "The Commission approved the order as final in April 2025.",
+        "quoteVerified": true,
+        "quoteCheck": "exact",
+        "entity": {
+          "match": true,
+          "reason": ""
+        },
+        "criticalTerms": [
+          "ftc",
+          "wcag"
+        ],
+        "heuristic": {
+          "stance": "neutral",
+          "relevance": 0.09090909090909091,
+          "specificity": 0,
+          "notes": [
+            "passage not about the claim"
+          ],
+          "qualifiers": []
+        },
+        "quality": {
+          "score": 55,
+          "parts": {
+            "authority": 95,
+            "independence": 95,
+            "relevance": 9,
+            "specificity": 0,
+            "freshness": 50
+          }
+        },
+        "finalDeterministicStance": "neutral"
+      }
+    ],
+    "engine": {
+      "status": "INSUFFICIENT_EVIDENCE",
+      "candidates": 1,
+      "evidenceCount": 0,
+      "explanation": "No retrieved evidence establishes or contradicts the claim. Absence of evidence is not treated as refutation."
+    },
+    "guard": "no red reason survived the citation audit"
+  },
+  {
+    "vendor": "https://www.avast.com/de-de/index#pc",
+    "claim": "FTC alleged collection and sale of sensitive browsing data from antivirus users without consent; settlement imposed monetary relief and restrictions.",
+    "claimType": "legal_regulatory",
+    "evidence": [
+      {
+        "url": "https://consumer.ftc.gov/consumer-alerts/2024/02/software-provider-avast-will-pay-165-million-compromising-consumers-privacy",
+        "quote": "Avast collected a treasure trove of user information",
+        "quoteVerified": true,
+        "quoteCheck": "exact",
+        "entity": {
+          "match": true,
+          "reason": ""
+        },
+        "criticalTerms": [
+          "ftc"
+        ],
+        "heuristic": {
+          "stance": "neutral",
+          "relevance": 0,
+          "specificity": 0,
+          "notes": [
+            "passage not about the claim"
+          ],
+          "qualifiers": []
+        },
+        "quality": {
+          "score": 53,
+          "parts": {
+            "authority": 95,
+            "independence": 95,
+            "relevance": 0,
+            "specificity": 0,
+            "freshness": 50
+          }
+        },
+        "finalDeterministicStance": "neutral"
+      }
+    ],
+    "engine": {
+      "status": "INSUFFICIENT_EVIDENCE",
+      "candidates": 1,
+      "evidenceCount": 0,
+      "explanation": "No retrieved evidence establishes or contradicts the claim. Absence of evidence is not treated as refutation."
+    },
+    "guard": "no red reason survived the citation audit"
+  }
+]

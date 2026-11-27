@@ -1,0 +1,106 @@
+[
+  {
+    "packet_id": "32",
+    "id": "32",
+    "url": "https://donotpay.com/",
+    "product": "DoNotPay online subscription and AI legal-services product",
+    "findings": [
+      {
+        "question": "documented event",
+        "proposition": "The FTC finalized an order requiring DoNotPay to pay $193,000 in monetary relief and notify subscribers from 2021 through 2023 about the settlement; the order also restricts unsupported claims that the service performs like a real lawyer.",
+        "source_url": "https://www.ftc.gov/news-events/news/press-releases/2025/02/ftc-finalizes-order-donotpay-prohibits-deceptive-ai-lawyer-claims-imposes-monetary-relief-requires",
+        "resolved_url": "https://www.ftc.gov/news-events/news/press-releases/2025/02/ftc-finalizes-order-donotpay-prohibits-deceptive-ai-lawyer-claims-imposes-monetary-relief-requires",
+        "passage": "The final order requires DoNotPay to pay $193,000 in monetary relief and notify consumers who subscribed to the service between 2021 and 2023 about the FTC settlement. The order also prohibits DoNotPay from advertising that its service performs like a real lawyer unless it has sufficient evidence to back it up.",
+        "context": " an adequate substitute for the expertise of a human lawyer. According to the complaint, the company did not test whether its \"AI lawyer\" operated to the level of a human lawyer when generating legal documents and giving advice, and the company did not hire or retain attorneys to test the quality and accuracy of its service's law-related features. The final order requires DoNotPay to pay $193,000 in monetary relief and notify consumers who subscribed to the service between 2021 and 2023 about the FTC settlement. The order also prohibits DoNotPay from advertising that its service performs like a real lawyer unless it has sufficient evidence to back it up. After receiving five comments, the Commission voted 5-0 on January 16, 2025, to approve the final order and send responses to the commenters. The Federal Trade Commission works to promote competition and protect and educate consumers . The FTC will never demand money, make threats, tell you to transfer money, or promise you a prize. Learn more abo",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "DoNotPay online subscription and AI legal-services product",
+        "provenance": "refetched",
+        "source_relation": "authority",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      },
+      {
+        "question": "documented event",
+        "proposition": "The FTC complaint alleged that DoNotPay did not test its AI lawyer at the level of a human lawyer and did not retain attorneys to test the quality and accuracy of its law-related features.",
+        "source_url": "https://www.ftc.gov/news-events/news/press-releases/2025/02/ftc-finalizes-order-donotpay-prohibits-deceptive-ai-lawyer-claims-imposes-monetary-relief-requires",
+        "resolved_url": "https://www.ftc.gov/news-events/news/press-releases/2025/02/ftc-finalizes-order-donotpay-prohibits-deceptive-ai-lawyer-claims-imposes-monetary-relief-requires",
+        "passage": "According to the complaint, the company did not test whether its \"AI lawyer\" operated to the level of a human lawyer when generating legal documents and giving advice, and the company did not hire or retain attorneys to test the quality and accuracy of its service's law-related features.",
+        "context": "t promoted its online subscription service as \"the world's first robot lawyer,\" to stop making deceptive claims about the abilities of its AI chatbot. In a complaint announced in September 2024, the FTC charged that DoNotPay's so-called robot lawyer failed to live up to claims that it was an adequate substitute for the expertise of a human lawyer. According to the complaint, the company did not test whether its \"AI lawyer\" operated to the level of a human lawyer when generating legal documents and giving advice, and the company did not hire or retain attorneys to test the quality and accuracy of its service's law-related features. The final order requires DoNotPay to pay $193,000 in monetary relief and notify consumers who subscribed to the service between 2021 and 2023 about the FTC settlement. The order also prohibits DoNotPay from advertising that its service performs like a real lawyer unless it has sufficient evidence to back it up. After receiving five comments, the C",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "DoNotPay online subscription and AI legal-services product",
+        "provenance": "refetched",
+        "source_relation": "authority",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  },
+  {
+    "packet_id": "36",
+    "id": "36",
+    "url": "https://accessibe.com/",
+    "product": "accessiBe accessWidget accessibility overlay",
+    "findings": [
+      {
+        "question": "documented event",
+        "proposition": "The FTC announced a complaint and proposed order involving $1 million to settle allegations about accessiBe's web accessibility tool, and the Commission approved the order as final in April 2025.",
+        "source_url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+        "resolved_url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/2223156-accessibe-inc",
+        "passage": "In January 2025, the FTC announced a complaint and proposed order require software provider accessiBe to pay $1 million to settle allegations that it misrepresented the ability of its AI-powered web accessibility tool to make any website compliant with the Web Content Accessibility Guidelines (WCAG) for people with disabilities. The Commission approved the order as final in April 2025.",
+        "context": "accessiBe Inc. | Federal Trade Commission In January 2025, the FTC announced a complaint and proposed order require software provider accessiBe to pay $1 million to settle allegations that it misrepresented the ability of its AI-powered web accessibility tool to make any website compliant with the Web Content Accessibility Guidelines (WCAG) for people with disabilities. The Commission approved the order as final in April 2025. Skip to main content An official website of the United States government Here's how you know Español Secondary Menu Report Fraud Submit Public Comments Search the Legal Library Menu Main Menu Mega Show/hide Enforcement menu items Show/hide Policy menu items Show/hide Advice and Guidance menu items Show/hide News and Events menu items Show/hide Abo",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "accessiBe accessWidget accessibility overlay",
+        "provenance": "refetched",
+        "source_relation": "authority",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  },
+  {
+    "packet_id": "40",
+    "id": "40",
+    "url": "https://www.avast.com/de-de/index#pc",
+    "product": "Avast consumer antivirus software",
+    "findings": [
+      {
+        "question": "documented event",
+        "proposition": "The FTC consumer alert says Avast collected user information through antivirus software and browser extensions without consent and sold it through Jumpshot without notifying people and obtaining consent.",
+        "source_url": "https://consumer.ftc.gov/consumer-alerts/2024/02/software-provider-avast-will-pay-165-million-compromising-consumers-privacy",
+        "resolved_url": "https://consumer.ftc.gov/consumer-alerts/2024/02/software-provider-avast-will-pay-165-million-compromising-consumers-privacy",
+        "passage": "Since at least 2014, Avast collected a treasure trove of user information through its antivirus software and browser extensions without people's consent. This included information about their religious beliefs health concerns political leanings locations financial status But that's not all, the FTC says Avast sold the information through its subsidiary Jumpshot - without notifying people and getting their consent (again).",
+        "context": "6.5 million for compromising consumers' privacy By Alvaro Puig Consumer Education Specialist, FTC February 22, 2024 Software provider Avast sold products to people that were supposed to protect their privacy online. But in a recently settled lawsuit, the FTC says Avast's business practices actually compromised consumers' privacy and broke the law. Since at least 2014, Avast collected a treasure trove of user information through its antivirus software and browser extensions without people's consent. This included information about their religious beliefs health concerns political leanings locations financial status But that's not all, the FTC says Avast sold the information through its subsidiary Jumpshot - without notifying people and getting their consent (again). The FTC's settlement order prohibits Avast from misrepresenting how it uses the data it collects. Additionally, Avast will pay $16.5 million dollars in redress to compensate people. Keep an eye on the FTC's Refund Programs page in the coming months for more details. And to learn more about the FTC's settlement with Avast, read the FTC's business b",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Avast consumer antivirus software",
+        "provenance": "refetched",
+        "source_relation": "authority",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      },
+      {
+        "question": "documented event",
+        "proposition": "The FTC reported that the settlement order prohibits Avast from misrepresenting its use of collected data and provides for $16.5 million in redress.",
+        "source_url": "https://consumer.ftc.gov/consumer-alerts/2024/02/software-provider-avast-will-pay-165-million-compromising-consumers-privacy",
+        "resolved_url": "https://consumer.ftc.gov/consumer-alerts/2024/02/software-provider-avast-will-pay-165-million-compromising-consumers-privacy",
+        "passage": "The FTC's settlement order prohibits Avast from misrepresenting how it uses the data it collects. Additionally, Avast will pay $16.5 million dollars in redress to compensate people.",
+        "context": "rough its antivirus software and browser extensions without people's consent. This included information about their religious beliefs health concerns political leanings locations financial status But that's not all, the FTC says Avast sold the information through its subsidiary Jumpshot - without notifying people and getting their consent (again). The FTC's settlement order prohibits Avast from misrepresenting how it uses the data it collects. Additionally, Avast will pay $16.5 million dollars in redress to compensate people. Keep an eye on the FTC's Refund Programs page in the coming months for more details. And to learn more about the FTC's settlement with Avast, read the FTC's business blog post . Image Search Terms consumer privacy Topics Identity Theft and Online Security Online Privacy and Security Comments closed. Theresa Tredwell February 26, 2024 Thank you. Th",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Avast consumer antivirus software",
+        "provenance": "refetched",
+        "source_relation": "authority",
+        "publication_date": null,
+        "retrieved_at": null,
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  }
+]

@@ -1,0 +1,16 @@
+{
+  "model": "gpt-6.1-terra",
+  "prompt_version": "phase6-evidence-judge-v1",
+  "started_at": "2026-11-27T17:29:37Z",
+  "completed_at": "2026-11-27T17:29:43Z",
+  "results": [
+    {"packet_id":"baseline-1","overall":"Yellow","decisive_findings":[0],"supported":true,"semantic_support":"partial","reason":"Supplier describes Horizon and Workspace ONE subscriptions and support, but the broad Omnissa URL identifies no specific product or edition; the passage does not establish the proposition's pricing or infrastructure claims."},
+    {"packet_id":"baseline-2","overall":"Green","decisive_findings":[0],"supported":true,"semantic_support":"supported","reason":"Microsoft describes eligible-subscription chat, enterprise management and metered agents. Metered agent use is an ordinary conditional cost, with no established material concern."},
+    {"packet_id":"baseline-3","overall":"Yellow","decisive_findings":[0],"supported":true,"semantic_support":"partial","reason":"The operator reports portfolio-wide usage and development, but Bending Spoons is an operator rather than a specified product or edition; those aggregate claims do not establish a particular product's usability or maintenance."},
+    {"packet_id":"baseline-4","overall":"Yellow","decisive_findings":[0],"supported":true,"semantic_support":"supported","reason":"An independent advocacy organization describes PimEyes facial search and raises a specific privacy and legal concern. Its assertions are not adjudicated findings or established serious harm in this packet."},
+    {"packet_id":"clean-1","overall":"Yellow","decisive_findings":[0],"supported":true,"semantic_support":"supported","reason":"The vendor identifies a portfolio including Horizon and Workspace ONE, but the supplied company URL does not identify a specific product or edition to assess."},
+    {"packet_id":"clean-2","overall":"Green","decisive_findings":[0],"supported":true,"semantic_support":"supported","reason":"Microsoft describes the specific Copilot Chat offering, its functionality, eligibility and management; ordinary metered agent charges are conditional. The generic governance warning does not establish a material product-specific concern."},
+    {"packet_id":"clean-3","overall":"Yellow","decisive_findings":[0],"supported":true,"semantic_support":"supported","reason":"The vendor describes Bending Spoons as an operator acquiring and integrating businesses, but the URL does not select a product or edition for procurement assessment."},
+    {"packet_id":"clean-4","overall":"Yellow","decisive_findings":[2,3],"supported":true,"semantic_support":"supported","reason":"The terms state 100 daily searches for PROtect while the pricing page advertises up to 125 for that same edition. This unresolved discrepancy affects the purchased service; the terms identify EMEA Robotics LTD as site owner, without establishing deceptive identity."}
+  ]
+}

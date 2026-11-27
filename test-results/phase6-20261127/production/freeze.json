@@ -1,0 +1,8 @@
+{
+  "prompt_version": "phase6-evidence-judge-v1",
+  "cohort": "first 12 development manifest records; no new holdout",
+  "packets": 24,
+  "sha256": "123977e484516de1313ff8fa0778cd51ea1369505c8c09ed2f3d6e069ce47114",
+  "created_at": "2026-11-27T17:18:37.777Z",
+  "limitation": "Cached post-hoc public refetch, not original worker retrieval. Missing passages remain unverified leads. Original retrieval timestamps unavailable."
+}

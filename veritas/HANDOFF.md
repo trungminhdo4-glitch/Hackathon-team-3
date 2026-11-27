@@ -1,5 +1,38 @@
 # VERITAS handoff for the team merge
 
+## Phase 6 freeze — November 27
+
+Read [the Phase 6 results](bench/2026-11-27-phase6.md) before selecting a configuration. The new clean research prompt did not demonstrate a robust gain; no new judge or stricter Guard is recommended as a replacement. Keep the existing stronger team researcher. Shuhan's historical 27/40 is not a clean rerun, and the original judge's case-derived examples must not enter an evidence-only comparison. The locally reproduced external-worker candidate remains the Phase-5 Luna→Terra workflow at 21/40; its end-to-end autonomous execution is unverified. Unchanged keyless `collect` is the working conservative fallback.
+
+The [official brief](https://aiagentsberlin.xyz/ah3-brief-stackgini-agents-with-taste.pdf) confirms blind release 19:00 CET and submission 19:45 CET. It requires reasons and checkable links, but specifies no CSV column schema. The nine-column local CSV is tested, not an official schema guarantee. Freeze before blind release; do not manually research live products.
+
+From the project root, without loading key files:
+
+```powershell
+# Reproduce analysis using the preserved local Phase-5 artifacts.
+node veritas/bench/phase6-paired.mjs
+node veritas/bench/phase6-score.mjs
+node veritas/bench/phase6-live-score.mjs valid
+node veritas/bench/phase6-summary.mjs
+
+# Reuse a native captured research cache; no extra network retrieval.
+node veritas/replay.js --research-cache research-cache.json --guard-policy audit-only --out evidence-audit.json
+
+# Normalize evidence for an external fresh Luna/Terra judge using phase6-judge-rubric.md.
+# This creates packets and a SHA-256 freeze; it does not invoke a model.
+node veritas/bench/phase6-packets.mjs inputs.json research-cache.json judge-packets.json
+
+# If only a teammate audit is available, its empty source bodies require refetch.
+node veritas/replay.js --agent-audit verdicts.json --refetch --guard-policy audit-only --out evidence-audit.json --cache-out native-cache.json
+
+# Autonomous conservative fallback. Use fresh paths; allow time to inspect validation.
+node veritas/batch.js --input blind.csv --researcher collect --provider none --judge none --output submission.csv --audit submission-audit.json --checkpoint submission-run.jsonl --deadline 2026-11-27T19:35:00+01:00 --concurrency 4
+```
+
+The fallback command is not a command to reproduce 21/40 or 27/40. External research/worker execution is still required for those candidates. The batch must finish with `validation: OK`, all original inputs exactly once, and each cited decisive reason supported. Resume only the same command/configuration with `--resume`. The audit-only result preserves the **upstream** label for diagnosis and sets `independently_verified_overall` to null; it is not a verified submission or a claim that unsupported decisive facts became true. An unreadable page or invalid quote calls for focused recovery, not an inference that the allegation is false. An unsupported decisive issue needs reassessment; a nondecisive reason can be removed without global recoloring.
+
+Read-only inspected Shuhan command, for the team in its own existing checkout/`agent` directory: `python agent.py --blind --input blind.txt --out verdicts.csv --audit-out verdicts.json`. It was not executed here, its dependencies/credentials were not validated, and its original examples are not a clean evidence-only configuration. No teammate branch was modified. Phase-6 artifacts, including failed over-budget runs, are under `test-results/phase6-20261127/`; evaluator artifacts stay outside `production/`.
+
 VERITAS checks other pipelines' findings. It does not replace research. It re-checks every cited reason against the cited page, drops or narrows what the page does not say, and blocks a verdict that an established or open material issue contradicts. Branch: `feat/adversarial-fact-checking`. All code is in `veritas/`. No new dependencies.
 
 ## Recommended use: guard mode over the strongest pipeline

@@ -1,0 +1,433 @@
+{
+  "status": "Bounded development pilot; baseline proxy; not a holdout",
+  "metrics": {
+    "baseline/luna": {
+      "correct": 1,
+      "evaluated": 4,
+      "expected": 4,
+      "coverage": 1,
+      "accuracy_on_evaluated": 0.25,
+      "accuracy_full_coverage": 0.25,
+      "macro_f1": 0.133,
+      "per_class": {
+        "Green": {
+          "precision": 0,
+          "recall": 0,
+          "f1": 0,
+          "support": 1
+        },
+        "Yellow": {
+          "precision": 0.333,
+          "recall": 0.5,
+          "f1": 0.4,
+          "support": 2
+        },
+        "Red": {
+          "precision": 0,
+          "recall": 0,
+          "f1": 0,
+          "support": 1
+        }
+      },
+      "false_green_on_non_green": 1,
+      "critical_false_green_on_red": 0,
+      "false_red_on_non_red": 0,
+      "non_ok_rows": 0,
+      "confusion_ref_by_pred": {
+        "Green": {
+          "Green": 0,
+          "Yellow": 1,
+          "Red": 0
+        },
+        "Yellow": {
+          "Green": 1,
+          "Yellow": 1,
+          "Red": 0
+        },
+        "Red": {
+          "Green": 0,
+          "Yellow": 1,
+          "Red": 0
+        }
+      },
+      "problems": [],
+      "note": "Agreement with Stackgini development labels.",
+      "grounded_correct": 0,
+      "decisive_coverage": 0.25,
+      "quote_matches": 4,
+      "findings": 4,
+      "semantic_supported_decisions": 1,
+      "runtime_ms": 18000,
+      "runtime_note": "Worker self-recorded assessment interval, shared across both evidence arms.",
+      "monetary_cost": null
+    },
+    "clean/luna": {
+      "correct": 2,
+      "evaluated": 4,
+      "expected": 4,
+      "coverage": 1,
+      "accuracy_on_evaluated": 0.5,
+      "accuracy_full_coverage": 0.5,
+      "macro_f1": 0.222,
+      "per_class": {
+        "Green": {
+          "precision": 0,
+          "recall": 0,
+          "f1": 0,
+          "support": 1
+        },
+        "Yellow": {
+          "precision": 0.5,
+          "recall": 1,
+          "f1": 0.667,
+          "support": 2
+        },
+        "Red": {
+          "precision": 0,
+          "recall": 0,
+          "f1": 0,
+          "support": 1
+        }
+      },
+      "false_green_on_non_green": 0,
+      "critical_false_green_on_red": 0,
+      "false_red_on_non_red": 0,
+      "non_ok_rows": 0,
+      "confusion_ref_by_pred": {
+        "Green": {
+          "Green": 0,
+          "Yellow": 1,
+          "Red": 0
+        },
+        "Yellow": {
+          "Green": 0,
+          "Yellow": 2,
+          "Red": 0
+        },
+        "Red": {
+          "Green": 0,
+          "Yellow": 1,
+          "Red": 0
+        }
+      },
+      "problems": [],
+      "note": "Agreement with Stackgini development labels.",
+      "grounded_correct": 2,
+      "decisive_coverage": 1,
+      "quote_matches": 8,
+      "findings": 8,
+      "semantic_supported_decisions": 4,
+      "runtime_ms": 18000,
+      "runtime_note": "Worker self-recorded assessment interval, shared across both evidence arms.",
+      "monetary_cost": null
+    },
+    "baseline/terra": {
+      "correct": 1,
+      "evaluated": 4,
+      "expected": 4,
+      "coverage": 1,
+      "accuracy_on_evaluated": 0.25,
+      "accuracy_full_coverage": 0.25,
+      "macro_f1": 0.133,
+      "per_class": {
+        "Green": {
+          "precision": 0,
+          "recall": 0,
+          "f1": 0,
+          "support": 1
+        },
+        "Yellow": {
+          "precision": 0.333,
+          "recall": 0.5,
+          "f1": 0.4,
+          "support": 2
+        },
+        "Red": {
+          "precision": 0,
+          "recall": 0,
+          "f1": 0,
+          "support": 1
+        }
+      },
+      "false_green_on_non_green": 1,
+      "critical_false_green_on_red": 0,
+      "false_red_on_non_red": 0,
+      "non_ok_rows": 0,
+      "confusion_ref_by_pred": {
+        "Green": {
+          "Green": 0,
+          "Yellow": 1,
+          "Red": 0
+        },
+        "Yellow": {
+          "Green": 1,
+          "Yellow": 1,
+          "Red": 0
+        },
+        "Red": {
+          "Green": 0,
+          "Yellow": 1,
+          "Red": 0
+        }
+      },
+      "problems": [],
+      "note": "Agreement with Stackgini development labels.",
+      "grounded_correct": 0,
+      "decisive_coverage": 0.5,
+      "quote_matches": 4,
+      "findings": 4,
+      "semantic_supported_decisions": 2,
+      "runtime_ms": 6000,
+      "runtime_note": "Worker self-recorded assessment interval, shared across both evidence arms.",
+      "monetary_cost": null
+    },
+    "clean/terra": {
+      "correct": 1,
+      "evaluated": 4,
+      "expected": 4,
+      "coverage": 1,
+      "accuracy_on_evaluated": 0.25,
+      "accuracy_full_coverage": 0.25,
+      "macro_f1": 0.133,
+      "per_class": {
+        "Green": {
+          "precision": 0,
+          "recall": 0,
+          "f1": 0,
+          "support": 1
+        },
+        "Yellow": {
+          "precision": 0.333,
+          "recall": 0.5,
+          "f1": 0.4,
+          "support": 2
+        },
+        "Red": {
+          "precision": 0,
+          "recall": 0,
+          "f1": 0,
+          "support": 1
+        }
+      },
+      "false_green_on_non_green": 1,
+      "critical_false_green_on_red": 0,
+      "false_red_on_non_red": 0,
+      "non_ok_rows": 0,
+      "confusion_ref_by_pred": {
+        "Green": {
+          "Green": 0,
+          "Yellow": 1,
+          "Red": 0
+        },
+        "Yellow": {
+          "Green": 1,
+          "Yellow": 1,
+          "Red": 0
+        },
+        "Red": {
+          "Green": 0,
+          "Yellow": 1,
+          "Red": 0
+        }
+      },
+      "problems": [],
+      "note": "Agreement with Stackgini development labels.",
+      "grounded_correct": 1,
+      "decisive_coverage": 1,
+      "quote_matches": 8,
+      "findings": 8,
+      "semantic_supported_decisions": 4,
+      "runtime_ms": 6000,
+      "runtime_note": "Worker self-recorded assessment interval, shared across both evidence arms.",
+      "monetary_cost": null
+    },
+    "baseline/upstream": {
+      "correct": 2,
+      "evaluated": 4,
+      "expected": 4,
+      "coverage": 1,
+      "accuracy_on_evaluated": 0.5,
+      "accuracy_full_coverage": 0.5,
+      "macro_f1": 0.389,
+      "per_class": {
+        "Green": {
+          "precision": 0.5,
+          "recall": 1,
+          "f1": 0.667,
+          "support": 1
+        },
+        "Yellow": {
+          "precision": 0.5,
+          "recall": 0.5,
+          "f1": 0.5,
+          "support": 2
+        },
+        "Red": {
+          "precision": 0,
+          "recall": 0,
+          "f1": 0,
+          "support": 1
+        }
+      },
+      "false_green_on_non_green": 1,
+      "critical_false_green_on_red": 0,
+      "false_red_on_non_red": 0,
+      "non_ok_rows": 0,
+      "confusion_ref_by_pred": {
+        "Green": {
+          "Green": 1,
+          "Yellow": 0,
+          "Red": 0
+        },
+        "Yellow": {
+          "Green": 1,
+          "Yellow": 1,
+          "Red": 0
+        },
+        "Red": {
+          "Green": 0,
+          "Yellow": 1,
+          "Red": 0
+        }
+      },
+      "problems": [],
+      "note": "Agreement with Stackgini development labels."
+    }
+  },
+  "predictions": {
+    "baseline/luna": [
+      {
+        "id": "1",
+        "url": "https://www.omnissa.com/",
+        "overall": "Yellow",
+        "grounded": false,
+        "semantic_support": "partial"
+      },
+      {
+        "id": "2",
+        "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+        "overall": "Green",
+        "grounded": true,
+        "semantic_support": "supported"
+      },
+      {
+        "id": "3",
+        "url": "https://bendingspoons.com/",
+        "overall": "Yellow",
+        "grounded": false,
+        "semantic_support": "partial"
+      },
+      {
+        "id": "4",
+        "url": "https://pimeyes.com/en",
+        "overall": "Yellow",
+        "grounded": false,
+        "semantic_support": "partial"
+      }
+    ],
+    "clean/luna": [
+      {
+        "id": "1",
+        "url": "https://www.omnissa.com/",
+        "overall": "Yellow",
+        "grounded": true,
+        "semantic_support": "supported"
+      },
+      {
+        "id": "2",
+        "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+        "overall": "Yellow",
+        "grounded": true,
+        "semantic_support": "supported"
+      },
+      {
+        "id": "3",
+        "url": "https://bendingspoons.com/",
+        "overall": "Yellow",
+        "grounded": true,
+        "semantic_support": "supported"
+      },
+      {
+        "id": "4",
+        "url": "https://pimeyes.com/en",
+        "overall": "Yellow",
+        "grounded": true,
+        "semantic_support": "supported"
+      }
+    ],
+    "baseline/terra": [
+      {
+        "id": "1",
+        "url": "https://www.omnissa.com/",
+        "overall": "Yellow",
+        "grounded": false,
+        "semantic_support": "partial"
+      },
+      {
+        "id": "2",
+        "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+        "overall": "Green",
+        "grounded": true,
+        "semantic_support": "supported"
+      },
+      {
+        "id": "3",
+        "url": "https://bendingspoons.com/",
+        "overall": "Yellow",
+        "grounded": false,
+        "semantic_support": "partial"
+      },
+      {
+        "id": "4",
+        "url": "https://pimeyes.com/en",
+        "overall": "Yellow",
+        "grounded": true,
+        "semantic_support": "supported"
+      }
+    ],
+    "clean/terra": [
+      {
+        "id": "1",
+        "url": "https://www.omnissa.com/",
+        "overall": "Yellow",
+        "grounded": true,
+        "semantic_support": "supported"
+      },
+      {
+        "id": "2",
+        "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+        "overall": "Green",
+        "grounded": true,
+        "semantic_support": "supported"
+      },
+      {
+        "id": "3",
+        "url": "https://bendingspoons.com/",
+        "overall": "Yellow",
+        "grounded": true,
+        "semantic_support": "supported"
+      },
+      {
+        "id": "4",
+        "url": "https://pimeyes.com/en",
+        "overall": "Yellow",
+        "grounded": true,
+        "semantic_support": "supported"
+      }
+    ]
+  },
+  "transitions": {
+    "luna": {
+      "wrong_to_right": 1,
+      "right_to_wrong": 0,
+      "net": 1
+    },
+    "terra": {
+      "wrong_to_right": 0,
+      "right_to_wrong": 0,
+      "net": 0
+    }
+  },
+  "identity_note": "Packets retain original manifest ids and URLs; evaluation additionally checks URL binding.",
+  "limits": "Baseline prompt is approximate, not a reproduction of Phase 5. Judge support is self-assessment, not an independent semantic audit. Unknown actual cost and full pipeline runtime."
+}

@@ -1,0 +1,321 @@
+{
+  "started_at": "2026-11-27T18:26:31.9033294+01:00",
+  "search_provider": "web search",
+  "products": [
+    {
+      "id": "1",
+      "url": "https://www.omnissa.com/",
+      "identity": {
+        "product": "Omnissa",
+        "operator": "unknown unless captured",
+        "edition": "unknown",
+        "geography": "unknown",
+        "period": "retrieval date"
+      },
+      "search_requests": [
+        {
+          "query": "Omnissa workspace platform products company commercial support",
+          "outcome": "completed; results used as discovery leads"
+        },
+        {
+          "query": "Omnissa independent customer adoption security incident",
+          "outcome": "completed; results used as discovery leads"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.omnissa.com/",
+          "outcome": "success",
+          "retrieved_at": "2026-11-27T17:27:09.981Z",
+          "final_url": "https://www.omnissa.com/"
+        },
+        {
+          "url": "https://www.omnissa.com/about-us/",
+          "outcome": "success",
+          "retrieved_at": "2026-11-27T17:27:10.110Z",
+          "final_url": "https://www.omnissa.com/about-us/"
+        },
+        {
+          "url": "https://www.omnissa.com/products/",
+          "outcome": "success",
+          "retrieved_at": "2026-11-27T17:27:11.285Z",
+          "final_url": "https://www.omnissa.com/products/"
+        }
+      ],
+      "findings": [
+        {
+          "claim": "Omnissa presents a portfolio including Horizon and Workspace ONE; the supplied URL does not specify an individual edition.",
+          "scope": "Omnissa",
+          "source_ids": [
+            "1-1"
+          ],
+          "passages": [
+            "Horizon® Virtual desktops and apps across cloud and on-prem. Horizon 8 Horizon Cloud Workspace ONE® Unified endpoint management and workspace management."
+          ],
+          "attribution": "vendor",
+          "materiality": "procurement-relevant",
+          "limitations": "Vendor statement; independently unverified. Publication and jurisdiction unknown except where page states otherwise."
+        }
+      ],
+      "conflicts": [],
+      "coverage_limitations": [
+        "No findings asserted without evaluated passages.",
+        "Lifecycle, adoption, incidents, geographic applicability and edition remain unverified unless directly captured."
+      ]
+    },
+    {
+      "id": "2",
+      "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+      "identity": {
+        "product": "Microsoft 365 Copilot Chat",
+        "operator": "unknown unless captured",
+        "edition": "unknown",
+        "geography": "unknown",
+        "period": "retrieval date"
+      },
+      "search_requests": [
+        {
+          "query": "Microsoft 365 Copilot Chat product pricing commercial availability",
+          "outcome": "completed; results used as discovery leads"
+        },
+        {
+          "query": "Microsoft 365 Copilot Chat security privacy independent adoption",
+          "outcome": "completed; results used as discovery leads"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-privacy",
+          "outcome": "success",
+          "retrieved_at": "2026-11-27T17:27:09.763Z",
+          "final_url": "https://learn.microsoft.com/en-us/copilot/plan/microsoft-365-copilot-privacy"
+        },
+        {
+          "url": "https://learn.microsoft.com/en-us/microsoft-365/copilot/security-microsoft-copilot",
+          "outcome": "success",
+          "retrieved_at": "2026-11-27T17:27:09.769Z",
+          "final_url": "https://learn.microsoft.com/en-us/copilot/plan/security-microsoft-copilot"
+        },
+        {
+          "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+          "outcome": "success",
+          "retrieved_at": "2026-11-27T17:27:09.861Z",
+          "final_url": "https://www.microsoft.com/en-us/copilot/features/chat"
+        }
+      ],
+      "findings": [
+        {
+          "claim": "Microsoft states Copilot Chat is included at no additional cost for eligible Microsoft 365 subscribers with Microsoft Entra accounts.",
+          "scope": "Microsoft 365 Copilot Chat",
+          "source_ids": [
+            "2-1"
+          ],
+          "passages": [
+            "Copilot Chat is available at no additional cost for all Microsoft Entra account users with an eligible Microsoft 365 subscription"
+          ],
+          "attribution": "vendor",
+          "materiality": "procurement-relevant",
+          "limitations": "Vendor statement; independently unverified. Publication and jurisdiction unknown except where page states otherwise."
+        },
+        {
+          "claim": "Microsoft cautions that overshared or poorly governed content can affect Microsoft Copilot results and increase risk.",
+          "scope": "Microsoft 365 Copilot Chat",
+          "source_ids": [
+            "2-3"
+          ],
+          "passages": [
+            "Overshared or poorly governed content can affect Copilot results and increase risk."
+          ],
+          "attribution": "vendor",
+          "materiality": "procurement-relevant",
+          "limitations": "Vendor statement; independently unverified. Publication and jurisdiction unknown except where page states otherwise."
+        }
+      ],
+      "conflicts": [],
+      "coverage_limitations": [
+        "No findings asserted without evaluated passages.",
+        "Lifecycle, adoption, incidents, geographic applicability and edition remain unverified unless directly captured."
+      ]
+    },
+    {
+      "id": "3",
+      "url": "https://bendingspoons.com/",
+      "identity": {
+        "product": "Bending Spoons",
+        "operator": "unknown unless captured",
+        "edition": "unknown",
+        "geography": "unknown",
+        "period": "retrieval date"
+      },
+      "search_requests": [
+        {
+          "query": "Bending Spoons company products acquisitions commercial official",
+          "outcome": "completed; results used as discovery leads"
+        },
+        {
+          "query": "Bending Spoons layoffs privacy security independent customers",
+          "outcome": "completed; results used as discovery leads"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.fastcompany.com/91640320/bending-spoons-has-1000-more-companies-on-its-shopping-list-can-its-acquisition-machine-keep-delivering",
+          "outcome": "error",
+          "error": "The page did not return readable public text.",
+          "time": "2026-11-27T17:27:09.473Z"
+        },
+        {
+          "url": "https://www.axios.com/2026/07/01/bending-spoons-ceo-acquisitions",
+          "outcome": "error",
+          "error": "The page did not return readable public text.",
+          "time": "2026-11-27T17:27:09.475Z"
+        },
+        {
+          "url": "https://bendingspoons.com/",
+          "outcome": "success",
+          "retrieved_at": "2026-11-27T17:27:10.119Z",
+          "final_url": "https://bendingspoons.com/"
+        }
+      ],
+      "findings": [
+        {
+          "claim": "Bending Spoons describes itself as acquiring and integrating businesses into a shared operating system.",
+          "scope": "Bending Spoons",
+          "source_ids": [
+            "3-1"
+          ],
+          "passages": [
+            "We acquire businesses and integrate them into our central operating system of people, data, and technologies."
+          ],
+          "attribution": "vendor",
+          "materiality": "procurement-relevant",
+          "limitations": "Vendor statement; independently unverified. Publication and jurisdiction unknown except where page states otherwise."
+        }
+      ],
+      "conflicts": [],
+      "coverage_limitations": [
+        "No findings asserted without evaluated passages.",
+        "Lifecycle, adoption, incidents, geographic applicability and edition remain unverified unless directly captured."
+      ]
+    },
+    {
+      "id": "4",
+      "url": "https://pimeyes.com/en",
+      "identity": {
+        "product": "PimEyes",
+        "operator": "unknown unless captured",
+        "edition": "unknown",
+        "geography": "unknown",
+        "period": "retrieval date"
+      },
+      "search_requests": [
+        {
+          "query": "PimEyes reverse face search pricing product terms",
+          "outcome": "completed; results used as discovery leads"
+        },
+        {
+          "query": "PimEyes facial recognition privacy regulator investigation independent",
+          "outcome": "completed; results used as discovery leads"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://www.london.gov.uk/who-we-are/what-london-assembly-does/questions-mayor/find-an-answer/mps-use-pimeyes",
+          "outcome": "error",
+          "error": "The page did not return readable public text.",
+          "time": "2026-11-27T17:27:09.517Z"
+        },
+        {
+          "url": "https://pimeyes.com/en/terms-of-service",
+          "outcome": "success",
+          "retrieved_at": "2026-11-27T17:27:09.679Z",
+          "final_url": "https://pimeyes.com/en/terms-of-service"
+        },
+        {
+          "url": "https://pimeyes.com/en/pricing",
+          "outcome": "success",
+          "retrieved_at": "2026-11-27T17:27:09.711Z",
+          "final_url": "https://pimeyes.com/en/pricing"
+        },
+        {
+          "url": "https://pimeyes.com/en",
+          "outcome": "success",
+          "retrieved_at": "2026-11-27T17:27:09.742Z",
+          "final_url": "https://pimeyes.com/en"
+        }
+      ],
+      "findings": [
+        {
+          "claim": "PimEyes describes its service as an online facial search engine for finding photos across the internet.",
+          "scope": "PimEyes",
+          "source_ids": [
+            "4-1"
+          ],
+          "passages": [
+            "PimEyes is an online face search engine available for everyone."
+          ],
+          "attribution": "vendor",
+          "materiality": "procurement-relevant",
+          "limitations": "Vendor statement; independently unverified. Publication and jurisdiction unknown except where page states otherwise."
+        },
+        {
+          "claim": "PimEyes terms identify EMEA Robotics LTD as the site owner.",
+          "scope": "PimEyes",
+          "source_ids": [
+            "4-2"
+          ],
+          "passages": [
+            "the owner of the Site, EMEA Robotics LTD"
+          ],
+          "attribution": "vendor",
+          "materiality": "procurement-relevant",
+          "limitations": "Vendor statement; independently unverified. Publication and jurisdiction unknown except where page states otherwise."
+        },
+        {
+          "claim": "PimEyes terms state a maximum of 100 daily searches for PROtect users.",
+          "scope": "PimEyes",
+          "source_ids": [
+            "4-2"
+          ],
+          "passages": [
+            "PROtect User (“ PROtect”) is equipped with the capability to conduct a maximum of 100 daily searches"
+          ],
+          "attribution": "vendor",
+          "materiality": "procurement-relevant",
+          "limitations": "Vendor statement; independently unverified. Publication and jurisdiction unknown except where page states otherwise."
+        },
+        {
+          "claim": "PimEyes pricing page advertises up to 125 daily searches for PROtect.",
+          "scope": "PimEyes",
+          "source_ids": [
+            "4-3"
+          ],
+          "passages": [
+            "Unlock up to 125 searches daily"
+          ],
+          "attribution": "vendor",
+          "materiality": "procurement-relevant",
+          "limitations": "Vendor statement; independently unverified. Publication and jurisdiction unknown except where page states otherwise."
+        }
+      ],
+      "conflicts": [
+        {
+          "claim": "PROtect daily search allowance differs between captured pages.",
+          "sources": [
+            "4-2",
+            "4-3"
+          ],
+          "details": "Terms updated Jul 31, 2026 state 100; pricing page states 125. Applicability and resolution unknown."
+        }
+      ],
+      "coverage_limitations": [
+        "No findings asserted without evaluated passages.",
+        "Lifecycle, adoption, incidents, geographic applicability and edition remain unverified unless directly captured."
+      ]
+    }
+  ],
+  "limitations": [
+    "Search results are discovery leads, not evidence. Search was limited to two requests per product. Native retrieval attempts include failures. Edition, geography, publication dates and independent adoption remain unknown where not explicitly captured. No comprehensive incident or lifecycle review."
+  ],
+  "ended_at": "2026-11-27T17:27:35.545Z"
+}

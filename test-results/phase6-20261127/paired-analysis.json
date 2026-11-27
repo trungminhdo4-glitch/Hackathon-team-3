@@ -1,0 +1,1803 @@
+{
+  "dev": {
+    "metrics": {
+      "always-yellow": {
+        "correct": 16,
+        "n": 40,
+        "full": 40,
+        "recall": {
+          "Green": {
+            "correct": 0,
+            "n": 14,
+            "rate": 0
+          },
+          "Yellow": {
+            "correct": 16,
+            "n": 16,
+            "rate": 1
+          },
+          "Red": {
+            "correct": 0,
+            "n": 10,
+            "rate": 0
+          }
+        },
+        "criticalRedToGreen": 0,
+        "falseGreen": 0,
+        "falseRed": 0,
+        "matrix": {
+          "Green": {
+            "Green": 0,
+            "Yellow": 14,
+            "Red": 0
+          },
+          "Yellow": {
+            "Green": 0,
+            "Yellow": 16,
+            "Red": 0
+          },
+          "Red": {
+            "Green": 0,
+            "Yellow": 10,
+            "Red": 0
+          }
+        }
+      },
+      "collection/collect": {
+        "correct": 17,
+        "n": 40,
+        "full": 40,
+        "recall": {
+          "Green": {
+            "correct": 0,
+            "n": 14,
+            "rate": 0
+          },
+          "Yellow": {
+            "correct": 16,
+            "n": 16,
+            "rate": 1
+          },
+          "Red": {
+            "correct": 1,
+            "n": 10,
+            "rate": 0.1
+          }
+        },
+        "criticalRedToGreen": 0,
+        "falseGreen": 0,
+        "falseRed": 0,
+        "matrix": {
+          "Green": {
+            "Green": 0,
+            "Yellow": 14,
+            "Red": 0
+          },
+          "Yellow": {
+            "Green": 0,
+            "Yellow": 16,
+            "Red": 0
+          },
+          "Red": {
+            "Green": 0,
+            "Yellow": 9,
+            "Red": 1
+          }
+        }
+      },
+      "collection/recover": {
+        "correct": 17,
+        "n": 40,
+        "full": 40,
+        "recall": {
+          "Green": {
+            "correct": 0,
+            "n": 14,
+            "rate": 0
+          },
+          "Yellow": {
+            "correct": 16,
+            "n": 16,
+            "rate": 1
+          },
+          "Red": {
+            "correct": 1,
+            "n": 10,
+            "rate": 0.1
+          }
+        },
+        "criticalRedToGreen": 0,
+        "falseGreen": 0,
+        "falseRed": 0,
+        "matrix": {
+          "Green": {
+            "Green": 0,
+            "Yellow": 14,
+            "Red": 0
+          },
+          "Yellow": {
+            "Green": 0,
+            "Yellow": 16,
+            "Red": 0
+          },
+          "Red": {
+            "Green": 0,
+            "Yellow": 9,
+            "Red": 1
+          }
+        }
+      },
+      "workers/initial": {
+        "correct": 18,
+        "n": 40,
+        "full": 40,
+        "recall": {
+          "Green": {
+            "correct": 10,
+            "n": 14,
+            "rate": 0.7142857142857143
+          },
+          "Yellow": {
+            "correct": 5,
+            "n": 16,
+            "rate": 0.3125
+          },
+          "Red": {
+            "correct": 3,
+            "n": 10,
+            "rate": 0.3
+          }
+        },
+        "criticalRedToGreen": 1,
+        "falseGreen": 12,
+        "falseRed": 0,
+        "matrix": {
+          "Green": {
+            "Green": 10,
+            "Yellow": 4,
+            "Red": 0
+          },
+          "Yellow": {
+            "Green": 11,
+            "Yellow": 5,
+            "Red": 0
+          },
+          "Red": {
+            "Green": 1,
+            "Yellow": 6,
+            "Red": 3
+          }
+        }
+      },
+      "workers/overall": {
+        "correct": 18,
+        "n": 40,
+        "full": 40,
+        "recall": {
+          "Green": {
+            "correct": 8,
+            "n": 14,
+            "rate": 0.5714285714285714
+          },
+          "Yellow": {
+            "correct": 7,
+            "n": 16,
+            "rate": 0.4375
+          },
+          "Red": {
+            "correct": 3,
+            "n": 10,
+            "rate": 0.3
+          }
+        },
+        "criticalRedToGreen": 0,
+        "falseGreen": 9,
+        "falseRed": 0,
+        "matrix": {
+          "Green": {
+            "Green": 8,
+            "Yellow": 6,
+            "Red": 0
+          },
+          "Yellow": {
+            "Green": 9,
+            "Yellow": 7,
+            "Red": 0
+          },
+          "Red": {
+            "Green": 0,
+            "Yellow": 7,
+            "Red": 3
+          }
+        }
+      },
+      "workers/default": {
+        "correct": 15,
+        "n": 40,
+        "full": 40,
+        "recall": {
+          "Green": {
+            "correct": 8,
+            "n": 14,
+            "rate": 0.5714285714285714
+          },
+          "Yellow": {
+            "correct": 7,
+            "n": 16,
+            "rate": 0.4375
+          },
+          "Red": {
+            "correct": 0,
+            "n": 10,
+            "rate": 0
+          }
+        },
+        "criticalRedToGreen": 0,
+        "falseGreen": 9,
+        "falseRed": 0,
+        "matrix": {
+          "Green": {
+            "Green": 8,
+            "Yellow": 6,
+            "Red": 0
+          },
+          "Yellow": {
+            "Green": 9,
+            "Yellow": 7,
+            "Red": 0
+          },
+          "Red": {
+            "Green": 0,
+            "Yellow": 10,
+            "Red": 0
+          }
+        }
+      },
+      "workers/evidence-sufficiency": {
+        "correct": 16,
+        "n": 40,
+        "full": 40,
+        "recall": {
+          "Green": {
+            "correct": 0,
+            "n": 14,
+            "rate": 0
+          },
+          "Yellow": {
+            "correct": 16,
+            "n": 16,
+            "rate": 1
+          },
+          "Red": {
+            "correct": 0,
+            "n": 10,
+            "rate": 0
+          }
+        },
+        "criticalRedToGreen": 0,
+        "falseGreen": 0,
+        "falseRed": 0,
+        "matrix": {
+          "Green": {
+            "Green": 0,
+            "Yellow": 14,
+            "Red": 0
+          },
+          "Yellow": {
+            "Green": 0,
+            "Yellow": 16,
+            "Red": 0
+          },
+          "Red": {
+            "Green": 0,
+            "Yellow": 10,
+            "Red": 0
+          }
+        }
+      },
+      "editor/overall": {
+        "correct": 21,
+        "n": 40,
+        "full": 40,
+        "recall": {
+          "Green": {
+            "correct": 7,
+            "n": 14,
+            "rate": 0.5
+          },
+          "Yellow": {
+            "correct": 11,
+            "n": 16,
+            "rate": 0.6875
+          },
+          "Red": {
+            "correct": 3,
+            "n": 10,
+            "rate": 0.3
+          }
+        },
+        "criticalRedToGreen": 0,
+        "falseGreen": 5,
+        "falseRed": 0,
+        "matrix": {
+          "Green": {
+            "Green": 7,
+            "Yellow": 7,
+            "Red": 0
+          },
+          "Yellow": {
+            "Green": 5,
+            "Yellow": 11,
+            "Red": 0
+          },
+          "Red": {
+            "Green": 0,
+            "Yellow": 7,
+            "Red": 3
+          }
+        }
+      },
+      "editor/default": {
+        "correct": 18,
+        "n": 40,
+        "full": 40,
+        "recall": {
+          "Green": {
+            "correct": 7,
+            "n": 14,
+            "rate": 0.5
+          },
+          "Yellow": {
+            "correct": 11,
+            "n": 16,
+            "rate": 0.6875
+          },
+          "Red": {
+            "correct": 0,
+            "n": 10,
+            "rate": 0
+          }
+        },
+        "criticalRedToGreen": 0,
+        "falseGreen": 5,
+        "falseRed": 0,
+        "matrix": {
+          "Green": {
+            "Green": 7,
+            "Yellow": 7,
+            "Red": 0
+          },
+          "Yellow": {
+            "Green": 5,
+            "Yellow": 11,
+            "Red": 0
+          },
+          "Red": {
+            "Green": 0,
+            "Yellow": 10,
+            "Red": 0
+          }
+        }
+      },
+      "editor/evidence-sufficiency": {
+        "correct": 18,
+        "n": 40,
+        "full": 40,
+        "recall": {
+          "Green": {
+            "correct": 2,
+            "n": 14,
+            "rate": 0.14285714285714285
+          },
+          "Yellow": {
+            "correct": 16,
+            "n": 16,
+            "rate": 1
+          },
+          "Red": {
+            "correct": 0,
+            "n": 10,
+            "rate": 0
+          }
+        },
+        "criticalRedToGreen": 0,
+        "falseGreen": 0,
+        "falseRed": 0,
+        "matrix": {
+          "Green": {
+            "Green": 2,
+            "Yellow": 12,
+            "Red": 0
+          },
+          "Yellow": {
+            "Green": 0,
+            "Yellow": 16,
+            "Red": 0
+          },
+          "Red": {
+            "Green": 0,
+            "Yellow": 10,
+            "Red": 0
+          }
+        }
+      }
+    },
+    "pairs": {
+      "luna-to-terra": {
+        "from": "workers/overall",
+        "to": "editor/overall",
+        "n": 40,
+        "wrongToRight": 5,
+        "rightToWrong": 2,
+        "net": 3,
+        "wrongToWrong": 0,
+        "changes": [
+          {
+            "id": "1",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "5",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "14",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "17",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "30",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "33",
+            "reference": "Green",
+            "from": "Yellow",
+            "to": "Green",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "34",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          }
+        ]
+      },
+      "luna-to-existing-guard": {
+        "from": "workers/overall",
+        "to": "workers/default",
+        "n": 40,
+        "wrongToRight": 0,
+        "rightToWrong": 3,
+        "net": -3,
+        "wrongToWrong": 0,
+        "changes": [
+          {
+            "id": "32",
+            "reference": "Red",
+            "from": "Red",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "36",
+            "reference": "Red",
+            "from": "Red",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "40",
+            "reference": "Red",
+            "from": "Red",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          }
+        ]
+      },
+      "luna-to-strict-guard": {
+        "from": "workers/overall",
+        "to": "workers/evidence-sufficiency",
+        "n": 40,
+        "wrongToRight": 9,
+        "rightToWrong": 11,
+        "net": -2,
+        "wrongToWrong": 0,
+        "changes": [
+          {
+            "id": "1",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "3",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "5",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "6",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "9",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "14",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "15",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "16",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "17",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "22",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "24",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "26",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "27",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "30",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "32",
+            "reference": "Red",
+            "from": "Red",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "34",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "36",
+            "reference": "Red",
+            "from": "Red",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "38",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "39",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "40",
+            "reference": "Red",
+            "from": "Red",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          }
+        ]
+      },
+      "terra-to-existing-guard": {
+        "from": "editor/overall",
+        "to": "editor/default",
+        "n": 40,
+        "wrongToRight": 0,
+        "rightToWrong": 3,
+        "net": -3,
+        "wrongToWrong": 0,
+        "changes": [
+          {
+            "id": "32",
+            "reference": "Red",
+            "from": "Red",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "36",
+            "reference": "Red",
+            "from": "Red",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "40",
+            "reference": "Red",
+            "from": "Red",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          }
+        ]
+      },
+      "terra-to-strict-guard": {
+        "from": "editor/overall",
+        "to": "editor/evidence-sufficiency",
+        "n": 40,
+        "wrongToRight": 5,
+        "rightToWrong": 8,
+        "net": -3,
+        "wrongToWrong": 0,
+        "changes": [
+          {
+            "id": "3",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "9",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "16",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "22",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "24",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "26",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "27",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "32",
+            "reference": "Red",
+            "from": "Red",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "33",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "36",
+            "reference": "Red",
+            "from": "Red",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "38",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "39",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "40",
+            "reference": "Red",
+            "from": "Red",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          }
+        ]
+      },
+      "luna-existing-to-strict": {
+        "from": "workers/default",
+        "to": "workers/evidence-sufficiency",
+        "n": 40,
+        "wrongToRight": 9,
+        "rightToWrong": 8,
+        "net": 1,
+        "wrongToWrong": 0,
+        "changes": [
+          {
+            "id": "1",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "3",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "5",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "6",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "9",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "14",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "15",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "16",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "17",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "22",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "24",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "26",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "27",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "30",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "34",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "38",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "39",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          }
+        ]
+      },
+      "terra-existing-to-strict": {
+        "from": "editor/default",
+        "to": "editor/evidence-sufficiency",
+        "n": 40,
+        "wrongToRight": 5,
+        "rightToWrong": 5,
+        "net": 0,
+        "wrongToWrong": 0,
+        "changes": [
+          {
+            "id": "3",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "9",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "16",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "22",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "24",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "26",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "27",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "33",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "38",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "39",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          }
+        ]
+      },
+      "keyless-to-recover": {
+        "from": "collection/collect",
+        "to": "collection/recover",
+        "n": 40,
+        "wrongToRight": 0,
+        "rightToWrong": 0,
+        "net": 0,
+        "wrongToWrong": 0,
+        "changes": []
+      }
+    },
+    "guard": {
+      "workers/default": {
+        "changedCases": 3,
+        "transitions": {
+          "Red->Yellow": 3
+        },
+        "guardRules": {
+          "no red reason survived the citation audit": 3
+        },
+        "reasonStatusesInChangedCases": {
+          "quote_verified": 3
+        },
+        "reasonSeveritiesInChangedCases": {
+          "red": 3
+        }
+      },
+      "workers/evidence-sufficiency": {
+        "changedCases": 20,
+        "transitions": {
+          "Green->Yellow": 17,
+          "Red->Yellow": 3
+        },
+        "guardRules": {
+          "Green lacks corroborated material support": 17,
+          "no red reason survived the citation audit": 3
+        },
+        "reasonStatusesInChangedCases": {
+          "quote_not_found": 5,
+          "source_unreachable": 14,
+          "quote_verified": 18
+        },
+        "reasonSeveritiesInChangedCases": {
+          "green": 33,
+          "yellow": 1,
+          "red": 3
+        }
+      },
+      "editor/default": {
+        "changedCases": 3,
+        "transitions": {
+          "Red->Yellow": 3
+        },
+        "guardRules": {
+          "no red reason survived the citation audit": 3
+        },
+        "reasonStatusesInChangedCases": {
+          "quote_verified": 3
+        },
+        "reasonSeveritiesInChangedCases": {
+          "red": 3
+        }
+      },
+      "editor/evidence-sufficiency": {
+        "changedCases": 13,
+        "transitions": {
+          "Green->Yellow": 10,
+          "Red->Yellow": 3
+        },
+        "guardRules": {
+          "Green lacks corroborated material support": 10,
+          "no red reason survived the citation audit": 3
+        },
+        "reasonStatusesInChangedCases": {
+          "no_quote": 3,
+          "quote_verified": 6,
+          "source_unreachable": 4
+        },
+        "reasonSeveritiesInChangedCases": {
+          "green": 10,
+          "red": 3
+        }
+      }
+    },
+    "grounded": {
+      "supported": 8,
+      "full": 40,
+      "supportedAndCorrect": 6,
+      "graded": 40
+    },
+    "collection": {
+      "collect": {
+        "counts": {
+          "attempts": 142,
+          "network": 136,
+          "failures": 15
+        },
+        "statuses": {
+          "ok": 36,
+          "research_failed": 4
+        }
+      },
+      "recover": {
+        "counts": {
+          "attempts": 222,
+          "network": 74,
+          "failures": 17
+        },
+        "statuses": {
+          "ok": 36,
+          "research_failed": 4
+        }
+      }
+    }
+  },
+  "panel": {
+    "metrics": {
+      "always-yellow": {
+        "correct": 4,
+        "n": 9,
+        "full": 12,
+        "recall": {
+          "Green": {
+            "correct": 0,
+            "n": 5,
+            "rate": 0
+          },
+          "Yellow": {
+            "correct": 4,
+            "n": 4,
+            "rate": 1
+          },
+          "Red": {
+            "correct": 0,
+            "n": 0,
+            "rate": null
+          }
+        },
+        "criticalRedToGreen": 0,
+        "falseGreen": 0,
+        "falseRed": 0,
+        "matrix": {
+          "Green": {
+            "Green": 0,
+            "Yellow": 5,
+            "Red": 0
+          },
+          "Yellow": {
+            "Green": 0,
+            "Yellow": 4,
+            "Red": 0
+          },
+          "Red": {
+            "Green": 0,
+            "Yellow": 0,
+            "Red": 0
+          }
+        }
+      },
+      "collection/collect": {
+        "correct": 4,
+        "n": 9,
+        "full": 12,
+        "recall": {
+          "Green": {
+            "correct": 0,
+            "n": 5,
+            "rate": 0
+          },
+          "Yellow": {
+            "correct": 4,
+            "n": 4,
+            "rate": 1
+          },
+          "Red": {
+            "correct": 0,
+            "n": 0,
+            "rate": null
+          }
+        },
+        "criticalRedToGreen": 0,
+        "falseGreen": 0,
+        "falseRed": 0,
+        "matrix": {
+          "Green": {
+            "Green": 0,
+            "Yellow": 5,
+            "Red": 0
+          },
+          "Yellow": {
+            "Green": 0,
+            "Yellow": 4,
+            "Red": 0
+          },
+          "Red": {
+            "Green": 0,
+            "Yellow": 0,
+            "Red": 0
+          }
+        }
+      },
+      "collection/recover": {
+        "correct": 3,
+        "n": 9,
+        "full": 12,
+        "recall": {
+          "Green": {
+            "correct": 0,
+            "n": 5,
+            "rate": 0
+          },
+          "Yellow": {
+            "correct": 3,
+            "n": 4,
+            "rate": 0.75
+          },
+          "Red": {
+            "correct": 0,
+            "n": 0,
+            "rate": null
+          }
+        },
+        "criticalRedToGreen": 0,
+        "falseGreen": 0,
+        "falseRed": 1,
+        "matrix": {
+          "Green": {
+            "Green": 0,
+            "Yellow": 5,
+            "Red": 0
+          },
+          "Yellow": {
+            "Green": 0,
+            "Yellow": 3,
+            "Red": 1
+          },
+          "Red": {
+            "Green": 0,
+            "Yellow": 0,
+            "Red": 0
+          }
+        }
+      },
+      "workers/initial": {
+        "correct": 3,
+        "n": 9,
+        "full": 12,
+        "recall": {
+          "Green": {
+            "correct": 1,
+            "n": 5,
+            "rate": 0.2
+          },
+          "Yellow": {
+            "correct": 2,
+            "n": 4,
+            "rate": 0.5
+          },
+          "Red": {
+            "correct": 0,
+            "n": 0,
+            "rate": null
+          }
+        },
+        "criticalRedToGreen": 0,
+        "falseGreen": 2,
+        "falseRed": 0,
+        "matrix": {
+          "Green": {
+            "Green": 1,
+            "Yellow": 4,
+            "Red": 0
+          },
+          "Yellow": {
+            "Green": 2,
+            "Yellow": 2,
+            "Red": 0
+          },
+          "Red": {
+            "Green": 0,
+            "Yellow": 0,
+            "Red": 0
+          }
+        }
+      },
+      "workers/overall": {
+        "correct": 4,
+        "n": 9,
+        "full": 12,
+        "recall": {
+          "Green": {
+            "correct": 1,
+            "n": 5,
+            "rate": 0.2
+          },
+          "Yellow": {
+            "correct": 3,
+            "n": 4,
+            "rate": 0.75
+          },
+          "Red": {
+            "correct": 0,
+            "n": 0,
+            "rate": null
+          }
+        },
+        "criticalRedToGreen": 0,
+        "falseGreen": 1,
+        "falseRed": 0,
+        "matrix": {
+          "Green": {
+            "Green": 1,
+            "Yellow": 4,
+            "Red": 0
+          },
+          "Yellow": {
+            "Green": 1,
+            "Yellow": 3,
+            "Red": 0
+          },
+          "Red": {
+            "Green": 0,
+            "Yellow": 0,
+            "Red": 0
+          }
+        }
+      },
+      "workers/default": {
+        "correct": 4,
+        "n": 9,
+        "full": 12,
+        "recall": {
+          "Green": {
+            "correct": 1,
+            "n": 5,
+            "rate": 0.2
+          },
+          "Yellow": {
+            "correct": 3,
+            "n": 4,
+            "rate": 0.75
+          },
+          "Red": {
+            "correct": 0,
+            "n": 0,
+            "rate": null
+          }
+        },
+        "criticalRedToGreen": 0,
+        "falseGreen": 1,
+        "falseRed": 0,
+        "matrix": {
+          "Green": {
+            "Green": 1,
+            "Yellow": 4,
+            "Red": 0
+          },
+          "Yellow": {
+            "Green": 1,
+            "Yellow": 3,
+            "Red": 0
+          },
+          "Red": {
+            "Green": 0,
+            "Yellow": 0,
+            "Red": 0
+          }
+        }
+      },
+      "workers/evidence-sufficiency": {
+        "correct": 4,
+        "n": 9,
+        "full": 12,
+        "recall": {
+          "Green": {
+            "correct": 0,
+            "n": 5,
+            "rate": 0
+          },
+          "Yellow": {
+            "correct": 4,
+            "n": 4,
+            "rate": 1
+          },
+          "Red": {
+            "correct": 0,
+            "n": 0,
+            "rate": null
+          }
+        },
+        "criticalRedToGreen": 0,
+        "falseGreen": 0,
+        "falseRed": 0,
+        "matrix": {
+          "Green": {
+            "Green": 0,
+            "Yellow": 5,
+            "Red": 0
+          },
+          "Yellow": {
+            "Green": 0,
+            "Yellow": 4,
+            "Red": 0
+          },
+          "Red": {
+            "Green": 0,
+            "Yellow": 0,
+            "Red": 0
+          }
+        }
+      },
+      "editor/overall": {
+        "correct": 5,
+        "n": 9,
+        "full": 12,
+        "recall": {
+          "Green": {
+            "correct": 2,
+            "n": 5,
+            "rate": 0.4
+          },
+          "Yellow": {
+            "correct": 3,
+            "n": 4,
+            "rate": 0.75
+          },
+          "Red": {
+            "correct": 0,
+            "n": 0,
+            "rate": null
+          }
+        },
+        "criticalRedToGreen": 0,
+        "falseGreen": 1,
+        "falseRed": 0,
+        "matrix": {
+          "Green": {
+            "Green": 2,
+            "Yellow": 3,
+            "Red": 0
+          },
+          "Yellow": {
+            "Green": 1,
+            "Yellow": 3,
+            "Red": 0
+          },
+          "Red": {
+            "Green": 0,
+            "Yellow": 0,
+            "Red": 0
+          }
+        }
+      },
+      "editor/default": {
+        "correct": 5,
+        "n": 9,
+        "full": 12,
+        "recall": {
+          "Green": {
+            "correct": 2,
+            "n": 5,
+            "rate": 0.4
+          },
+          "Yellow": {
+            "correct": 3,
+            "n": 4,
+            "rate": 0.75
+          },
+          "Red": {
+            "correct": 0,
+            "n": 0,
+            "rate": null
+          }
+        },
+        "criticalRedToGreen": 0,
+        "falseGreen": 1,
+        "falseRed": 0,
+        "matrix": {
+          "Green": {
+            "Green": 2,
+            "Yellow": 3,
+            "Red": 0
+          },
+          "Yellow": {
+            "Green": 1,
+            "Yellow": 3,
+            "Red": 0
+          },
+          "Red": {
+            "Green": 0,
+            "Yellow": 0,
+            "Red": 0
+          }
+        }
+      },
+      "editor/evidence-sufficiency": {
+        "correct": 5,
+        "n": 9,
+        "full": 12,
+        "recall": {
+          "Green": {
+            "correct": 1,
+            "n": 5,
+            "rate": 0.2
+          },
+          "Yellow": {
+            "correct": 4,
+            "n": 4,
+            "rate": 1
+          },
+          "Red": {
+            "correct": 0,
+            "n": 0,
+            "rate": null
+          }
+        },
+        "criticalRedToGreen": 0,
+        "falseGreen": 0,
+        "falseRed": 0,
+        "matrix": {
+          "Green": {
+            "Green": 1,
+            "Yellow": 4,
+            "Red": 0
+          },
+          "Yellow": {
+            "Green": 0,
+            "Yellow": 4,
+            "Red": 0
+          },
+          "Red": {
+            "Green": 0,
+            "Yellow": 0,
+            "Red": 0
+          }
+        }
+      }
+    },
+    "pairs": {
+      "luna-to-terra": {
+        "from": "workers/overall",
+        "to": "editor/overall",
+        "n": 9,
+        "wrongToRight": 2,
+        "rightToWrong": 1,
+        "net": 1,
+        "wrongToWrong": 0,
+        "changes": [
+          {
+            "id": "4",
+            "reference": "Yellow",
+            "from": "Yellow",
+            "to": "Green",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "7",
+            "reference": "Green",
+            "from": "Yellow",
+            "to": "Green",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "12",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          }
+        ]
+      },
+      "luna-to-existing-guard": {
+        "from": "workers/overall",
+        "to": "workers/default",
+        "n": 9,
+        "wrongToRight": 0,
+        "rightToWrong": 0,
+        "net": 0,
+        "wrongToWrong": 0,
+        "changes": []
+      },
+      "luna-to-strict-guard": {
+        "from": "workers/overall",
+        "to": "workers/evidence-sufficiency",
+        "n": 9,
+        "wrongToRight": 1,
+        "rightToWrong": 1,
+        "net": 0,
+        "wrongToWrong": 0,
+        "changes": [
+          {
+            "id": "6",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "12",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          }
+        ]
+      },
+      "terra-to-existing-guard": {
+        "from": "editor/overall",
+        "to": "editor/default",
+        "n": 9,
+        "wrongToRight": 0,
+        "rightToWrong": 0,
+        "net": 0,
+        "wrongToWrong": 0,
+        "changes": []
+      },
+      "terra-to-strict-guard": {
+        "from": "editor/overall",
+        "to": "editor/evidence-sufficiency",
+        "n": 9,
+        "wrongToRight": 1,
+        "rightToWrong": 1,
+        "net": 0,
+        "wrongToWrong": 0,
+        "changes": [
+          {
+            "id": "4",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "6",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          }
+        ]
+      },
+      "luna-existing-to-strict": {
+        "from": "workers/default",
+        "to": "workers/evidence-sufficiency",
+        "n": 9,
+        "wrongToRight": 1,
+        "rightToWrong": 1,
+        "net": 0,
+        "wrongToWrong": 0,
+        "changes": [
+          {
+            "id": "6",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          },
+          {
+            "id": "12",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          }
+        ]
+      },
+      "terra-existing-to-strict": {
+        "from": "editor/default",
+        "to": "editor/evidence-sufficiency",
+        "n": 9,
+        "wrongToRight": 1,
+        "rightToWrong": 1,
+        "net": 0,
+        "wrongToWrong": 0,
+        "changes": [
+          {
+            "id": "4",
+            "reference": "Yellow",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "wrong-to-right"
+          },
+          {
+            "id": "6",
+            "reference": "Green",
+            "from": "Green",
+            "to": "Yellow",
+            "outcome": "right-to-wrong"
+          }
+        ]
+      },
+      "keyless-to-recover": {
+        "from": "collection/collect",
+        "to": "collection/recover",
+        "n": 9,
+        "wrongToRight": 0,
+        "rightToWrong": 1,
+        "net": -1,
+        "wrongToWrong": 0,
+        "changes": [
+          {
+            "id": "10",
+            "reference": "Yellow",
+            "from": "Yellow",
+            "to": "Red",
+            "outcome": "right-to-wrong"
+          }
+        ]
+      }
+    },
+    "guard": {
+      "workers/default": {
+        "changedCases": 0,
+        "transitions": {},
+        "guardRules": {},
+        "reasonStatusesInChangedCases": {},
+        "reasonSeveritiesInChangedCases": {}
+      },
+      "workers/evidence-sufficiency": {
+        "changedCases": 2,
+        "transitions": {
+          "Green->Yellow": 2
+        },
+        "guardRules": {
+          "Green lacks corroborated material support": 2
+        },
+        "reasonStatusesInChangedCases": {
+          "source_unreachable": 3
+        },
+        "reasonSeveritiesInChangedCases": {
+          "green": 3
+        }
+      },
+      "editor/default": {
+        "changedCases": 0,
+        "transitions": {},
+        "guardRules": {},
+        "reasonStatusesInChangedCases": {},
+        "reasonSeveritiesInChangedCases": {}
+      },
+      "editor/evidence-sufficiency": {
+        "changedCases": 3,
+        "transitions": {
+          "Green->Yellow": 3
+        },
+        "guardRules": {
+          "Green lacks corroborated material support": 3
+        },
+        "reasonStatusesInChangedCases": {
+          "source_unreachable": 3,
+          "quote_not_found": 1,
+          "no_quote": 1
+        },
+        "reasonSeveritiesInChangedCases": {
+          "green": 5
+        }
+      }
+    },
+    "grounded": {
+      "supported": 2,
+      "full": 12,
+      "supportedAndCorrect": 2,
+      "graded": 9
+    },
+    "collection": {
+      "collect": {
+        "counts": {
+          "attempts": 41,
+          "network": 41,
+          "failures": 7
+        },
+        "statuses": {
+          "ok": 10,
+          "research_failed": 2
+        }
+      },
+      "recover": {
+        "counts": {
+          "attempts": 68,
+          "network": 26,
+          "failures": 8
+        },
+        "statuses": {
+          "ok": 10,
+          "research_failed": 2
+        }
+      }
+    }
+  }
+}

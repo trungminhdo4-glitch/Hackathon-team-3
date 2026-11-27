@@ -9,12 +9,13 @@
 // have no page text and no quote can be verified (reported as such, never assumed).
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { importAgentAudit, importReport, makeCache } from './cache.js';
+import { importAgentAudit, importReport, makeCache, loadResearchCache } from './cache.js';
 import { verifyQuote } from './citation.js';
 import { assessVendor } from './adapters.js';
 import { publicFetcher } from './providers.js';
 import { createController } from './budget.js';
 import { siteOf } from './text.js';
+import { captureDocument } from './evidence-packet.js';
 
 async function pool(items, n, fn) {
   const out = new Array(items.length); let i = 0;
@@ -27,7 +28,7 @@ export async function refetchDocuments(entries, fetcher, { concurrency = 4 } = {
   const byUrl = new Map();
   await pool([...new Set(docs.map(d => d.requestedUrl || d.url))], concurrency, async url => {
     const t0 = Date.now();
-    try { const d = await fetcher.fetch(url); byUrl.set(url, { ok: true, url: d.url || url, text: d.text ?? '', title: d.title ?? '', ms: Date.now() - t0 }); }
+    try { const d = await fetcher.fetch(url); byUrl.set(url, { ok: true, ...captureDocument({ ...d, url: d.url || url }, { requestedUrl: url }), ms: Date.now() - t0 }); }
     catch (e) { byUrl.set(url, { ok: false, error: String(e.message).slice(0, 80), ms: Date.now() - t0 }); }
   });
   for (const d of docs) {
@@ -40,6 +41,7 @@ export async function refetchDocuments(entries, fetcher, { concurrency = 4 } = {
       d.text = r.text;
       d.title = r.title;
       d.origin = 'refetched';
+      for (const key of ['canonical_url', 'retrieved_at', 'document_hash', 'hash_scope', 'truncated', 'source_type']) d[key] = r[key];
     } else {
       d.text = '';
     }
@@ -78,6 +80,18 @@ const norm = l => l ? l[0].toUpperCase() + l.slice(1).toLowerCase() : null;
  */
 export function guard(teammate, row, findings = [], { policy = 'default', ledger = row?._ledger ?? [] } = {}) {
   const t = norm(teammate);
+  if (policy === 'audit-only') {
+    const proposed = guard(teammate, row, findings, { policy: 'default', ledger });
+    const needed = t === 'Red' ? 'MATERIAL_NEGATIVE' : t === 'Green' ? 'STRONG_POSITIVE' : 'MATERIAL_CAVEAT';
+    const hasMaterialPassage = ledger.some(l => l.class === needed && (l.evidence ?? []).some(e =>
+      e.quote_verified === true && e.entity_match === true && e.quote?.trim() && e.url));
+    return { overall: t ?? row.overall, upstream_overall: t, proposed_overall: proposed.overall,
+      independently_verified_overall: null,
+      requires_reassessment: proposed.overall !== t || !hasMaterialPassage,
+      rule: 'diagnostic audit only; upstream verdict is not independently verified',
+      evidence_assessment: { state: hasMaterialPassage ? 'passage_available_semantics_unassessed' : 'insufficient_evidence',
+        semantic_support: 'not_assessed' } };
+  }
   const has = c => findings.some(f => f.class === c);
   const materialOpen = findings.some(f => f.class === 'AMBIGUOUS' && (f.material ?? f.polarity === 'red'));
   if (policy === 'evidence-sufficiency') {
@@ -120,6 +134,7 @@ export async function replay(entries, { fetcher = null, now, guardPolicy = 'defa
     const g = guard(entry.imported?.overall, res.row, res.row._findings ?? [], { policy: guardPolicy, ledger: res.row._ledger });
     vendors.push({ url, teammate_overall: entry.imported?.overall ?? null, veritas_overall: res.row.overall, guard_overall: g.overall, guard_rule: g.rule,
       ...(g.evidence_assessment ? { guard_evidence_assessment: g.evidence_assessment } : {}),
+      ...(guardPolicy === 'audit-only' ? { decision_audit: g } : {}),
       veritas_reasoning: res.row.reasoning, reasons });
   }
   const all = vendors.flatMap(v => v.reasons);
@@ -139,14 +154,19 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   let entries = {};
   for (const p of all('agent-audit')) Object.assign(entries, importAgentAudit(JSON.parse(readFileSync(p, 'utf8'))));
   for (const p of all('report')) Object.assign(entries, importReport(JSON.parse(readFileSync(p, 'utf8'))));
-  if (!Object.keys(entries).length) { console.error('nothing to replay: pass --agent-audit <file> and/or --report <file>'); process.exit(2); }
+  for (const p of all('research-cache')) {
+    const cache = loadResearchCache(p);
+    if (Object.keys(cache.invalid).length) { console.error('invalid research cache'); process.exit(2); }
+    Object.assign(entries, cache.entries);
+  }
+  if (!Object.keys(entries).length) { console.error('nothing to replay: pass --agent-audit, --report or --research-cache <file>'); process.exit(2); }
   const policyArg = a.indexOf('--guard-policy');
   const guardPolicy = policyArg >= 0 ? a[policyArg + 1] : 'default';
-  if (!['default', 'evidence-sufficiency'].includes(guardPolicy)) { console.error('invalid --guard-policy (use default or evidence-sufficiency)'); process.exit(2); }
+  if (!['default', 'evidence-sufficiency', 'audit-only'].includes(guardPolicy)) { console.error('invalid --guard-policy (use default, evidence-sufficiency or audit-only)'); process.exit(2); }
   const t0 = Date.now();
   const fetched = a.includes('--refetch') ? await refetchDocuments(entries, publicFetcher) : null;
   const out = await replay(entries, { guardPolicy });
-  out.summary.mode = fetched ? 'imported + keyless refetch' : 'imported only (no page text, quotes not checkable)';
+  out.summary.mode = fetched ? 'imported + keyless refetch' : 'cached/imported research (no network refetch)';
   out.summary.fetches = fetched ? { pages: fetched.size, failed: [...fetched.values()].filter(r => !r.ok).length } : null;
   out.summary.runtime_ms = Date.now() - t0;
   const outPath = a[a.indexOf('--out') + 1] && a.includes('--out') ? a[a.indexOf('--out') + 1] : 'veritas/bench/replay-report.json';

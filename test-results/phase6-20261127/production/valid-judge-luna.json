@@ -1,0 +1,72 @@
+{
+  "model": "gpt-6-luna",
+  "prompt_version": "phase6-evidence-judge-v1",
+  "started_at": "2026-11-27 17:29:46 UTC",
+  "completed_at": "2026-11-27 17:30:04 UTC",
+  "results": [
+    {
+      "packet_id": "baseline-1",
+      "overall": "Yellow",
+      "decisive_findings": [0],
+      "supported": false,
+      "semantic_support": "partial",
+      "reason": "The supplier passage supports licensing and Omnissa support channels, but does not establish published pricing or that buyers manage infrastructure; those material parts of the proposition remain unproven."
+    },
+    {
+      "packet_id": "baseline-2",
+      "overall": "Green",
+      "decisive_findings": [0],
+      "supported": true,
+      "semantic_support": "supported",
+      "reason": "The pricing context establishes an eligible-subscription chat offer, metered agents, enterprise data protection and agent management, plus a separately priced add-on. This is a normal disclosed cost structure, not a material adverse concern."
+    },
+    {
+      "packet_id": "baseline-3",
+      "overall": "Yellow",
+      "decisive_findings": [0],
+      "supported": false,
+      "semantic_support": "partial",
+      "reason": "The operator's headline supports a self-reported adoption figure, while the context describes its acquisition and improvement model. It does not establish continuing development or independent maintenance evidence, so the bounded proposition remains only partly supported."
+    },
+    {
+      "packet_id": "baseline-4",
+      "overall": "Yellow",
+      "decisive_findings": [0],
+      "supported": true,
+      "semantic_support": "partial",
+      "reason": "The context from an independent privacy organization describes facial-search uploads, biometric collection and a disputed account of the regulator's view. This supports a material privacy concern, but the quoted passage alone establishes the service capability and does not itself entail the full concern or an adjudicated legal finding."
+    },
+    {
+      "packet_id": "clean-1",
+      "overall": "Yellow",
+      "decisive_findings": [0],
+      "supported": true,
+      "semantic_support": "supported",
+      "reason": "The vendor page identifies Horizon variants and Workspace ONE offerings and does not specify an individual edition for the supplied URL. The identity statement is supported, while this packet alone does not establish maintenance or adoption for a Green assessment."
+    },
+    {
+      "packet_id": "clean-2",
+      "overall": "Yellow",
+      "decisive_findings": [0, 1],
+      "supported": true,
+      "semantic_support": "supported",
+      "reason": "The vendor context supports the no-additional-cost offer for eligible Microsoft Entra subscribers and the warning that overshared or poorly governed content can affect results and increase risk. The latter is a material operational governance caveat."
+    },
+    {
+      "packet_id": "clean-3",
+      "overall": "Yellow",
+      "decisive_findings": [0],
+      "supported": true,
+      "semantic_support": "supported",
+      "reason": "The vendor passage directly states that Bending Spoons acquires businesses and integrates them into a shared operating system. This establishes the identity proposition only; the packet provides no decisive maintenance or adoption evidence for Green."
+    },
+    {
+      "packet_id": "clean-4",
+      "overall": "Yellow",
+      "decisive_findings": [0, 1, 2, 3],
+      "supported": true,
+      "semantic_support": "supported",
+      "reason": "Vendor passages support the facial-search service, name EMEA Robotics LTD as site owner, and give a PROtect limit of 100 searches in the terms versus up to 125 on pricing. The directly conflicting product limits create a material commercial ambiguity."
+    }
+  ]
+}

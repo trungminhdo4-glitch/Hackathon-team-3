@@ -1,5 +1,7 @@
 # VERITAS — adversarial evidence verification
 
+Phase 6: [measured evidence-first experiments and frozen selection](bench/2026-11-27-phase6.md). No robust accuracy improvement was demonstrated. Native source artifacts and an opt-in report-only audit are available; keep the strongest existing researcher. Current regression total: 99 VERITAS + 24 application tests.
+
 VERITAS checks the team's research before it goes into the submission. It does not do the research itself. It splits each vendor statement or research flag into atomic claims. For each claim it searches for support and for counter-evidence, checks that every quote really appears in the retrieved text, merges copied sources into one evidence family, and returns an explained verdict.
 
 Everything lives in `veritas/`. The only change outside that folder is four npm scripts in `package.json`. The existing SaaSLens code (`server/`, `src/`, `tests/`) is untouched. `server/fetch.js` is reused as the SSRF-safe fetcher.

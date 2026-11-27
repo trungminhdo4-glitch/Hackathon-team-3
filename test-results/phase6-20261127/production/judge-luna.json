@@ -1,0 +1,221 @@
+{
+  "model": "gpt-6-luna",
+  "started_at": "2026-11-27T17:18:54.5653143Z",
+  "results": [
+    {
+      "overall": "Yellow",
+      "reason": "The captured passage identifies CVE-2025-25231 and remediation versions, but does not establish the claimed path-traversal detail; product activity and adoption are unverified.",
+      "packet_id": "luna-1",
+      "supported": true,
+      "decisive_findings": [
+        2
+      ],
+      "semantic_support": "partial"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "The paper documents a 5.5-million-session Copilot Chat sample, and reporting confirms confidential-labeled email processing despite DLP with a fix rollout; ongoing monitoring and complete resolution are not established.",
+      "packet_id": "luna-2",
+      "supported": true,
+      "decisive_findings": [
+        0,
+        1
+      ],
+      "semantic_support": "partial"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "Neither finding has captured evidence, so portfolio scale, product activity, and adoption remain unestablished.",
+      "packet_id": "luna-3",
+      "supported": false,
+      "decisive_findings": [],
+      "semantic_support": "insufficient"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "The authority passage establishes opened German fine proceedings and the news passage says the Australian probe closed in 2024; no final German outcome is established, leaving a material legal caveat.",
+      "packet_id": "luna-4",
+      "supported": true,
+      "decisive_findings": [
+        1,
+        2
+      ],
+      "semantic_support": "partial"
+    },
+    {
+      "overall": "Green",
+      "reason": "Vendor material describes Vertica as an active analytics product, and a customer case documents its deployment for real-time insurance pricing; no material concern is established.",
+      "packet_id": "luna-5",
+      "supported": true,
+      "decisive_findings": [
+        0,
+        1
+      ],
+      "semantic_support": "supported"
+    },
+    {
+      "overall": "Green",
+      "reason": "The project announcement lists current stable and legacy releases dated November 2026, establishing active maintenance; no material concern is established.",
+      "packet_id": "luna-6",
+      "supported": true,
+      "decisive_findings": [
+        0
+      ],
+      "semantic_support": "supported"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "No findings or captured evidence are supplied, so product availability and credibility cannot be assessed.",
+      "packet_id": "luna-7",
+      "supported": false,
+      "decisive_findings": [],
+      "semantic_support": "insufficient"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "A customer account documents Datto product use, while CRN reports acknowledged billing issues after acquisition; the evidence supports a service caveat, not discontinuation or industry-wide failure.",
+      "packet_id": "luna-8",
+      "supported": true,
+      "decisive_findings": [
+        1,
+        2
+      ],
+      "semantic_support": "partial"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "Both findings lack captured passages, leaving active sales, updates, and adoption unestablished.",
+      "packet_id": "luna-9",
+      "supported": false,
+      "decisive_findings": [],
+      "semantic_support": "insufficient"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "Vendor text describes a limited design-partner program and paid pilot, indicating an offering at an early-access stage; independent customer adoption is not shown.",
+      "packet_id": "luna-10",
+      "supported": true,
+      "decisive_findings": [
+        0,
+        1
+      ],
+      "semantic_support": "partial"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "No captured passages establish the partner listing or product adoption; identity and maturity remain unresolved.",
+      "packet_id": "luna-11",
+      "supported": false,
+      "decisive_findings": [],
+      "semantic_support": "insufficient"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "Official guidance describes migration from QlikView to Qlik Cloud, indicating a product-direction consideration; the supplied evidence does not establish current QlikView release/support status.",
+      "packet_id": "luna-12",
+      "supported": true,
+      "decisive_findings": [
+        1
+      ],
+      "semantic_support": "partial"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "The claimed customer video has no captured passage, so the deployment and product evidence are unverified.",
+      "packet_id": "terra-1",
+      "supported": false,
+      "decisive_findings": [],
+      "semantic_support": "insufficient"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "The claimed DLP incident and global fix have no captured passage in this packet.",
+      "packet_id": "terra-2",
+      "supported": false,
+      "decisive_findings": [],
+      "semantic_support": "insufficient"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "The claimed active portfolio and user count have no captured passage.",
+      "packet_id": "terra-3",
+      "supported": false,
+      "decisive_findings": [],
+      "semantic_support": "insufficient"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "The authority source is identified but no passage is captured to establish the proceedings.",
+      "packet_id": "terra-4",
+      "supported": false,
+      "decisive_findings": [],
+      "semantic_support": "insufficient"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "The historic customer case has no captured passage; current adoption remains unestablished.",
+      "packet_id": "terra-5",
+      "supported": false,
+      "decisive_findings": [],
+      "semantic_support": "insufficient"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "The Debian distribution claim has no captured passage, and no maintenance or adoption evidence is available here.",
+      "packet_id": "terra-6",
+      "supported": false,
+      "decisive_findings": [],
+      "semantic_support": "insufficient"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "The claimed 2026 edition has no captured passage, and independent use and correctness are unverified.",
+      "packet_id": "terra-7",
+      "supported": false,
+      "decisive_findings": [],
+      "semantic_support": "insufficient"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "The reported billing issue has no captured passage, so the alleged caveat is not established by this packet.",
+      "packet_id": "terra-8",
+      "supported": false,
+      "decisive_findings": [],
+      "semantic_support": "insufficient"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "The claimed 2026 curriculum listing has no captured passage, leaving adoption evidence unverified.",
+      "packet_id": "terra-9",
+      "supported": false,
+      "decisive_findings": [],
+      "semantic_support": "insufficient"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "The design-partner solicitation is not supported by a captured passage; maturity and adoption remain unestablished.",
+      "packet_id": "terra-10",
+      "supported": false,
+      "decisive_findings": [],
+      "semantic_support": "insufficient"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "The claimed SAP partner listing has no captured passage, leaving product identity and adoption uncertain.",
+      "packet_id": "terra-11",
+      "supported": false,
+      "decisive_findings": [],
+      "semantic_support": "insufficient"
+    },
+    {
+      "overall": "Yellow",
+      "reason": "The migration-tools claim has no captured passage; support and lifecycle implications are not established.",
+      "packet_id": "terra-12",
+      "supported": false,
+      "decisive_findings": [],
+      "semantic_support": "insufficient"
+    }
+  ],
+  "completed_at": "2026-11-27T17:19:47.0102682Z",
+  "prompt_version": "phase6-evidence-judge-v1"
+}

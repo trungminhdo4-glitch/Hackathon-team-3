@@ -1,0 +1,258 @@
+[
+  {
+    "packet_id": "baseline-1",
+    "id": "1",
+    "url": "https://www.omnissa.com/",
+    "product": "Omnissa",
+    "findings": [
+      {
+        "question": "maintenance",
+        "proposition": "Established workspace products with published pricing and support; buyers manage infrastructure.",
+        "source_url": "https://www.applytosupply.digitalmarketplace.service.gov.uk/g-cloud/services/270145951758000",
+        "resolved_url": "https://www.applytosupply.digitalmarketplace.service.gov.uk/g-cloud/services/270145951758000",
+        "passage": "Subscriptions are provided under Omnissa licensing terms and supported through Omnissa support channels.",
+        "context": "orkspace ONE) XTRAVIRT LIMITED Omnissa Digital Workspace Subscriptions (Horizon + Workspace ONE) Omnissa Horizon and Workspace ONE subscriptions provide access to Omnissa digital workspace software. Horizon delivers virtual desktops and published applications, while Workspace ONE provides unified endpoint management and digital workspace controls. Subscriptions are provided under Omnissa licensing terms and supported through Omnissa support channels. Features Virtual desktops and published applications delivered securely from centralised platforms Unified endpoint management across devices using Workspace ONE policies Identity and conditional access management integrated with enterprise directories Remote access to applications from any supported device Centralised image, application, and user",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Omnissa",
+        "provenance": "refetched",
+        "source_relation": "provider or supplier statement",
+        "publication_date": null,
+        "retrieved_at": "2026-11-27T17:27:46.443Z",
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  },
+  {
+    "packet_id": "baseline-2",
+    "id": "2",
+    "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+    "product": "Microsoft 365 Copilot Chat",
+    "findings": [
+      {
+        "question": "cost",
+        "proposition": "Available enterprise chat with published pricing and management; metered agents can add cost.",
+        "source_url": "https://www.microsoft.com/en-us/copilot/pricing/enterprise",
+        "resolved_url": "https://www.microsoft.com/en-us/copilot/pricing/enterprise",
+        "passage": "Access and use agents, priced on a metered basis",
+        "context": " with an eligible Microsoft 365 subscription. Included Open Copilot Chat Learn more An Azure subscription is required to use agents. Prepaid Microsoft Copilot Studio capacity packs are also available. Learn more . Plan highlights: Use secure, web-grounded AI chat powered by the latest large language models Get Copilot in select Microsoft 365 apps1 Access and use agents, priced on a metered basis Maintain IT control, including enterprise data protection and agent management Microsoft 365 Copilot (add-on) Supercharge employee productivity, streamline processes, and add measurable value across your organization with an AI assistant. $30.00 user/month, paid yearly (Annual subscription-auto renews)2 Pay yearly Pay monthly A separate license fo",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Microsoft 365 Copilot Chat",
+        "provenance": "refetched",
+        "source_relation": "provider or supplier statement",
+        "publication_date": null,
+        "retrieved_at": "2026-11-27T17:27:46.184Z",
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  },
+  {
+    "packet_id": "baseline-3",
+    "id": "3",
+    "url": "https://bendingspoons.com/",
+    "product": "Bending Spoons",
+    "findings": [
+      {
+        "question": "adoption",
+        "proposition": "Operator reports continuing product development and adoption, but independent maintenance and cost evidence is insufficient in this bounded capture.",
+        "source_url": "https://bendingspoons.com/",
+        "resolved_url": "https://bendingspoons.com/",
+        "passage": "500 + millionmonthly active users",
+        "context": "Bending Spoons | Impossible. Maybe. Bending Spoons acquires and improves iconic products, and integrates them into a central operating system of people, data, and technologies. See careers We acquire and improve iconic products 1 + billionregistered users 500 + millionmonthly active users 9 + millionmonthly paying customers We acquire businesses and integrate them into our central operating system of people, data, and technologies. Then we bring them back to startup mode . Small, talent-dense teams and extreme ownership. Rather than selling our businesses later, we make Bending Spoons their forever home . Products Vimeo All improve",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Bending Spoons",
+        "provenance": "refetched",
+        "source_relation": "provider or supplier statement",
+        "publication_date": null,
+        "retrieved_at": "2026-11-27T17:27:24.632Z",
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  },
+  {
+    "packet_id": "baseline-4",
+    "id": "4",
+    "url": "https://pimeyes.com/en",
+    "product": "PimEyes",
+    "findings": [
+      {
+        "question": "privacy",
+        "proposition": "Facial search presents serious privacy and misuse concerns raised by a privacy organization; its legal assertions are disputed claims, not adjudicated findings.",
+        "source_url": "https://noyb.eu/en/no-action-taken-against-pimeyes-noyb-lawsuit-against-hamburg-dpa",
+        "resolved_url": "https://noyb.eu/en/no-action-taken-against-pimeyes-noyb-lawsuit-against-hamburg-dpa",
+        "passage": "Users can upload photos of people to this website to find further images of the same person via facial recognition.",
+        "context": "st the Hamburg data protection authority (DPA). While the authority considers the practices of the facial recognition search engine PimEyes to be illegal, it refuses to take effective action because the company seems to be based in Dubai. PimEyes systematically extracts biometric data from images on the internet and uses it to build up a database. Users can upload photos of people to this website to find further images of the same person via facial recognition. The claimant had originally filed a complaint against PimEyes with the Hamburg DPA in July 2020. Complaints procedure C042 Background on PimEyes. PimEyes continuously scans the internet to collect faces in a database. The company has already collected billions of images , which are used for its facial recognition search engine. On its website, any",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "PimEyes",
+        "provenance": "refetched",
+        "source_relation": "independent advocacy organization",
+        "publication_date": null,
+        "retrieved_at": "2026-11-27T17:27:46.067Z",
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  },
+  {
+    "packet_id": "clean-1",
+    "id": "1",
+    "url": "https://www.omnissa.com/",
+    "product": "Omnissa",
+    "findings": [
+      {
+        "question": "identity",
+        "proposition": "Omnissa presents a portfolio including Horizon and Workspace ONE; the supplied URL does not specify an individual edition.",
+        "source_url": "https://www.omnissa.com/",
+        "resolved_url": "https://www.omnissa.com/",
+        "passage": "Horizon® Virtual desktops and apps across cloud and on-prem. Horizon 8 Horizon Cloud Workspace ONE® Unified endpoint management and workspace management.",
+        "context": "munity Documentation Knowledge Base Learning Omnissa Connect Partner Program Support Tech Zone Skip to main content Contact us Omnissa.com Community Documentation Knowledge Base Learning Omnissa Connect Partner Program Support Tech Zone Products Omnissa Platform Govern digital work for people and AI. See all products View solutions Explore pricing Horizon® Virtual desktops and apps across cloud and on-prem. Horizon 8 Horizon Cloud Workspace ONE® Unified endpoint management and workspace management. Workspace ONE UEM Workspace ONE Experience Management Shadow AI is already in your enterprise. Govern it with Omnissa Elara. Meet Elara Solutions Digital employee experience Enhance productivity with seamless, personalized work experiences. Unified endpoint management Manage and secure all endpoints from a single platform. Virtual desktops & apps ",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Omnissa",
+        "provenance": "refetched",
+        "source_relation": "vendor",
+        "publication_date": null,
+        "retrieved_at": "2026-11-27T17:27:09.981Z",
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  },
+  {
+    "packet_id": "clean-2",
+    "id": "2",
+    "url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+    "product": "Microsoft 365 Copilot Chat",
+    "findings": [
+      {
+        "question": "commercial",
+        "proposition": "Microsoft states Copilot Chat is included at no additional cost for eligible Microsoft 365 subscribers with Microsoft Entra accounts.",
+        "source_url": "https://www.microsoft.com/en-us/microsoft-365-copilot/chat",
+        "resolved_url": "https://www.microsoft.com/en-us/copilot/features/chat",
+        "passage": "Copilot Chat is available at no additional cost for all Microsoft Entra account users with an eligible Microsoft 365 subscription",
+        "context": "sing it. Personalized to you Memory and custom instructions mean Copilot learns about you as you use it, providing a more personalized experience. Back to tabs Plans Get the most out of Copilot Chat Add a Microsoft 365 Copilot license to access features that turn Copilot Chat into a superpowered assistant. Business Enterprise Copilot Chat Included Copilot Chat is available at no additional cost for all Microsoft Entra account users with an eligible Microsoft 365 subscription Open Copilot Chat Use secure, web-grounded AI chat powered by the latest large language models Get Copilot in select Microsoft 365 apps3 Access and use agents, priced on a metered basis Maintain IT control, including enterprise data protection and agent management An Azure subscription is required to use agents. Get a limited time discount offer* ",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Microsoft 365 Copilot Chat",
+        "provenance": "refetched",
+        "source_relation": "vendor",
+        "publication_date": null,
+        "retrieved_at": "2026-11-27T17:27:09.861Z",
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      },
+      {
+        "question": "data governance",
+        "proposition": "Microsoft cautions that overshared or poorly governed content can affect Microsoft Copilot results and increase risk.",
+        "source_url": "https://learn.microsoft.com/en-us/microsoft-365/copilot/security-microsoft-copilot",
+        "resolved_url": "https://learn.microsoft.com/en-us/copilot/plan/security-microsoft-copilot",
+        "passage": "Overshared or poorly governed content can affect Copilot results and increase risk.",
+        "context": "crosoft Copilot Chat under Microsoft Product Terms and the Data Protection Addendum. For details, see the following articles: Enterprise data protection in Microsoft Copilot and Microsoft Copilot Chat Data, Privacy, and Security for Microsoft Copilot Preventing oversharing Microsoft Copilot operates within existing permissions and access controls. Overshared or poorly governed content can affect Copilot results and increase risk. For prescriptive remediation guidance, see the following articles: Secure & governed data foundation for Microsoft Copilot: A deployment blueprint What is SharePoint Advanced Management? Security dashboard Microsoft Copilot includes built-in security controls from Microsoft Purview . To help you monitor, investigate, and act on AI-related risk, Mi",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Microsoft 365 Copilot Chat",
+        "provenance": "refetched",
+        "source_relation": "vendor",
+        "publication_date": null,
+        "retrieved_at": "2026-11-27T17:27:09.769Z",
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  },
+  {
+    "packet_id": "clean-3",
+    "id": "3",
+    "url": "https://bendingspoons.com/",
+    "product": "Bending Spoons",
+    "findings": [
+      {
+        "question": "identity",
+        "proposition": "Bending Spoons describes itself as acquiring and integrating businesses into a shared operating system.",
+        "source_url": "https://bendingspoons.com/",
+        "resolved_url": "https://bendingspoons.com/",
+        "passage": "We acquire businesses and integrate them into our central operating system of people, data, and technologies.",
+        "context": "Bending Spoons | Impossible. Maybe. Bending Spoons acquires and improves iconic products, and integrates them into a central operating system of people, data, and technologies. See careers We acquire and improve iconic products 1 + billionregistered users 500 + millionmonthly active users 9 + millionmonthly paying customers We acquire businesses and integrate them into our central operating system of people, data, and technologies. Then we bring them back to startup mode . Small, talent-dense teams and extreme ownership. Rather than selling our businesses later, we make Bending Spoons their forever home . Products Vimeo All improvements See all improvements Acquired November 2025 Released 120+ improvements and fixed 200+ bugs Launched live AI caption translations in nearly 1",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "Bending Spoons",
+        "provenance": "refetched",
+        "source_relation": "vendor",
+        "publication_date": null,
+        "retrieved_at": "2026-11-27T17:27:10.119Z",
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  },
+  {
+    "packet_id": "clean-4",
+    "id": "4",
+    "url": "https://pimeyes.com/en",
+    "product": "PimEyes",
+    "findings": [
+      {
+        "question": "identity",
+        "proposition": "PimEyes describes its service as an online facial search engine for finding photos across the internet.",
+        "source_url": "https://pimeyes.com/en",
+        "resolved_url": "https://pimeyes.com/en",
+        "passage": "PimEyes is an online face search engine available for everyone.",
+        "context": " Find Your Face Across The Open Web Discover the true scale of your digital footprint. PimEyes leverages advanced face recognition technology to help you monitor your images, protect your privacy, and audit copyright usage across the entire internet. How PimEyes Works Four simple steps to discover and protect your online presence Upload your photo PimEyes is an online face search engine available for everyone. Start by uploading a clear photo to perform a reverse image search and find pictures containing given faces across the Internet. AI-Powered Face Search Our advanced face search technologies go through the web in seconds. This facial search online system allows you to search by image and identify every instance where your face appears. Review Resul",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "PimEyes",
+        "provenance": "refetched",
+        "source_relation": "vendor",
+        "publication_date": null,
+        "retrieved_at": "2026-11-27T17:27:09.742Z",
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      },
+      {
+        "question": "operator",
+        "proposition": "PimEyes terms identify EMEA Robotics LTD as the site owner.",
+        "source_url": "https://pimeyes.com/en/terms-of-service",
+        "resolved_url": "https://pimeyes.com/en/terms-of-service",
+        "passage": "the owner of the Site, EMEA Robotics LTD",
+        "context": "Terms of service (\" Terms of Service\") contain the general terms and conditions that govern Your use of the website (\" Site\") and its services, collectively referred to as the \"Services\". You, the consumer of the Site (with or without having an account) (\" You\" or \" User\"), are legally bound by this agreement, which is entered into between You and the owner of the Site, EMEA Robotics LTD (\" Pimeyes\", \" We\", \" Us\" and terms of similar meaning). This Agreement should be read in conjunction with the Privacy Policy, which can be found at Privacy Policy , and both documents together constitute a legally binding agreement. By using our Services, you acknowledge that you have read and understood this Terms of Service and agree to be boun",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "PimEyes",
+        "provenance": "refetched",
+        "source_relation": "vendor",
+        "publication_date": null,
+        "retrieved_at": "2026-11-27T17:27:09.679Z",
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      },
+      {
+        "question": "commercial",
+        "proposition": "PimEyes terms state a maximum of 100 daily searches for PROtect users.",
+        "source_url": "https://pimeyes.com/en/terms-of-service",
+        "resolved_url": "https://pimeyes.com/en/terms-of-service",
+        "passage": "PROtect User (\" PROtect\") is equipped with the capability to conduct a maximum of 100 daily searches",
+        "context": "omprehensive and unparalleled experience. Furthermore, You are empowered to configure up to following possibility: three times experience the service, that notifies Users of newly discovered results featuring faces, User has set 10 Alerts for (the \" PimEyes' Alerts\"), thereby ensuring You remain informed and in control of Your online presence. (b) PROtect User (\" PROtect\") is equipped with the capability to conduct a maximum of 100 daily searches, which provides You with the ability to display and access the sources of Your results. These sources include open website addresses that contain Your photographs and links to the source images. Additionally, the User has the ability to configure up to 20 PimEyes' Alerts, as well as establish a single Service that automatically excludes search res",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "PimEyes",
+        "provenance": "refetched",
+        "source_relation": "vendor",
+        "publication_date": null,
+        "retrieved_at": "2026-11-27T17:27:09.679Z",
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      },
+      {
+        "question": "commercial",
+        "proposition": "PimEyes pricing page advertises up to 125 daily searches for PROtect.",
+        "source_url": "https://pimeyes.com/en/pricing",
+        "resolved_url": "https://pimeyes.com/en/pricing",
+        "passage": "Unlock up to 125 searches daily",
+        "context": "ty and protect image rights online. Monthly Yearly Need Just One Search? Open Plus The entry point for individual facial search Get Started Unlock up to 75 searches daily Unlock up to 10 PimEyes Alerts No CAPTCHA verification Blur-free images Learn more about all features PROtect MOST POPULAR Professional monitoring & automated defense Get Started Unlock up to 125 searches daily Unlock up to 20 PimEyes Alerts No CAPTCHA verification Blur-free images AI-generated reports Result Management Optional: Takedown Agent Support Learn more about all features Advanced DeepTrace AI The ultimate search engine for high-volume research Get Started Unlimited daily searches 500 active PimEyes Alerts No CAPTCHA verification Blur-free imag",
+        "quote_match": "exact_after_whitespace_normalization",
+        "semantic_support": "not_assessed",
+        "product_scope": "PimEyes",
+        "provenance": "refetched",
+        "source_relation": "vendor",
+        "publication_date": null,
+        "retrieved_at": "2026-11-27T17:27:09.711Z",
+        "uncertainty": "Quote match alone does not establish entailment or correct product scope."
+      }
+    ]
+  }
+]

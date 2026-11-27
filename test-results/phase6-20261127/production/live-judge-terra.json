@@ -1,0 +1,100 @@
+{
+  "prompt_version": "phase6-evidence-judge-v1",
+  "model": "gpt-6.1-terra",
+  "started_at": "2026-11-27T17:23:17.0148107Z",
+  "results": [
+    {
+      "supported": true,
+      "overall": "Green",
+      "decisive_findings": [
+        0,
+        1,
+        2
+      ],
+      "packet_id": "baseline-1",
+      "semantic_support": "supported",
+      "reason": "Vendor passages describe Workspace ONE and its paid editions; the government advisory reports fixed UEM vulnerabilities, which do not alone establish a material present concern."
+    },
+    {
+      "supported": true,
+      "overall": "Yellow",
+      "decisive_findings": [
+        0,
+        1,
+        2
+      ],
+      "packet_id": "baseline-2",
+      "semantic_support": "partial",
+      "reason": "The vendor describes a facial search service and usage limits, but the passages do not establish the asserted substantial privacy or misuse concerns or numeric pricing; procurement-relevant privacy and cost details remain unresolved."
+    },
+    {
+      "supported": true,
+      "overall": "Green",
+      "decisive_findings": [
+        0,
+        1,
+        2
+      ],
+      "packet_id": "baseline-3",
+      "semantic_support": "supported",
+      "reason": "Vendor documentation describes the available chat product, eligibility, metered custom agents and service-boundary protections; ordinary licensing and metering alone do not establish a material concern."
+    },
+    {
+      "supported": true,
+      "overall": "Yellow",
+      "decisive_findings": [
+        0,
+        1,
+        2
+      ],
+      "packet_id": "baseline-4",
+      "semantic_support": "partial",
+      "reason": "The passages describe an acquired product and reported portfolio maintenance, while independent analysis reports restructuring and pricing changes as a company pattern. The targeted product and its specific continuity or cost implications remain unresolved."
+    },
+    {
+      "supported": true,
+      "overall": "Green",
+      "decisive_findings": [
+        0,
+        1
+      ],
+      "packet_id": "clean-1",
+      "semantic_support": "supported",
+      "reason": "Vendor material describes Horizon functionality and identifies Omnissa as the former VMware EUC business, with claimed customer adoption; no material concern is established."
+    },
+    {
+      "supported": true,
+      "overall": "Green",
+      "decisive_findings": [
+        0,
+        1
+      ],
+      "packet_id": "clean-2",
+      "semantic_support": "supported",
+      "reason": "Vendor material describes accessible work-account chat and differences in grounding, integration and licensing; it establishes no material procurement concern."
+    },
+    {
+      "supported": true,
+      "overall": "Green",
+      "decisive_findings": [
+        0,
+        1
+      ],
+      "packet_id": "clean-3",
+      "semantic_support": "supported",
+      "reason": "Vendor material identifies its portfolio and describes Evernote acquisition and reported improvements, providing evidence of product maintenance without an established material concern."
+    },
+    {
+      "supported": true,
+      "overall": "Yellow",
+      "decisive_findings": [
+        0,
+        1
+      ],
+      "packet_id": "clean-4",
+      "semantic_support": "supported",
+      "reason": "The vendor describes public face search and its claimed indexing limits. Those claims establish functionality but leave evidence insufficient to resolve material privacy considerations for procurement."
+    }
+  ],
+  "completed_at": "2026-11-27T17:23:17.0506986Z"
+}
