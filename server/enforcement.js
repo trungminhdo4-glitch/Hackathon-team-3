@@ -7,7 +7,7 @@ const suffix = '(?:incorporated|inc|corp(?:oration)?|ltd|limited|llc|plc|gmbh|s\
 const notCaseRecord = /\b(?:public (?:comment|consultation)|stakeholder submission|consultation response|petition submitted by|complaint submitted by|(?:draft|proposed) (?:decision|order|settlement)|annual (?:report|catalogue|catalog)|(?:index|list|register) of (?:decisions|sanctions))\b/i;
 const preliminary = /\b(?:alleg\w*|propos\w*|hypothetical|might|could|would|may have|if approved|plan(?:s|ned)? to|consider(?:s|ed|ing) (?:a |an? )?(?:fine|sanction)|sought|seeks? to|called on|urged|claims? that|denied that|false that|untrue|never|did not (?:fine|impose|order)|no (?:fine|penalty|violations?)|(?:found|was) not (?:in breach|in violation|unlawful))\b/i;
 const authority = /\b(?:authorit(?:y|ies)|commission(?:er)?|regulator|court|tribunal|committee|agency|attorney general|dpa|sa|ap|cnil|ftc|ico|sec)\b/i;
-const protectedData = /\b(?:biometric(?:s| data| information)?|facial[- ]recognition|personal (?:data|information)|sensitive (?:data|information)|location data|browsing (?:history|data)|health (?:records|data)|privacy rights?|data protection)\b/i;
+const protectedData = /\b(?:biometric(?:s| data| information)?|facial[- ]recognition|photos of faces|personal (?:data|information)|sensitive (?:data|information)|location data|browsing (?:history|data)|health (?:records|data)|privacy rights?|data protection)\b/i;
 const finding = /\b(?:unlawful\w*|illegal(?:ly)?|without (?:a |any |the (?:required )?)?(?:lawful|legal) (?:basis|grounds?)|without (?:valid |informed |the (?:required )?)?consent|violat\w*|infring\w*|contrary to|in breach of)\b/i;
 const conduct = /\b(?:process\w*|collect\w*|builds?|built|use[ds]?|using|disclos\w*|sell(?:s|ing)?|sold|shar(?:e[ds]?|ing)|transfer\w*|retain\w*|retention|delet\w*|eras\w*|scrap(?:e[ds]?|ing)|stor(?:e[ds]?|ing)|protect\w*|expos\w*)\b/i;
 const ban = /\b(?:stop|cease|bar(?:s|red)?|prohibit\w*|bann?ed|must not|may not)\b/i;
@@ -76,7 +76,28 @@ const operatingTopics = [
 ];
 const peripheral = /\b(?:employee payroll|payroll|recruitment|job applicants?|newsletter|marketing (?:emails?|website)|mailing list|website cookies|(?:own|internal) (?:office access|staff attendance|employees?|building access))\b/ig;
 const incidentalRole = /\b(?:victim|complainant|whistleblower|reported that|notified .{1,40} that|reporting (?:that|an? |its )|on behalf of)\b/i;
-const actorAction = /^(?:(?:its|the|unlawful(?:ly)?|illegal(?:ly)?|unconsented|systematic|continued)\s+){0,3}(?:process|collect|shar|disclos|transfer|use|us(?:e|ing)|sale|sell|stor|retention|retain|target|scrap|expos|operat|violat|infring|fail(?:ed|ure|ing) to protect)\w*\b/i;
+const actorAction = /^(?:(?:its|the|unlawful(?:ly)?|illegal(?:ly)?|unconsented|systematic|continued|data)\s+){0,4}(?:process|collect|shar|disclos|transfer|use|us(?:e|ing)|sale|sell|stor|retention|retain|target|scrap|expos|operat|violat|infring|fail(?:ed|ure|ing) to protect)\w*\b/i;
+const fineAmount = /\b(?:fine|penalty)\s+(?:of|amounting to|in the amount of)\s+(?:[€£$]|(?:EUR|GBP|USD)\s*)?\s*\d[\d,. ]*(?:\s*(?:million|billion|thousand))?/i;
+const differentMatter = /\b(?:(?:a |an )?(?:separate|different|unrelated|previous|earlier) (?:matter|case|proceeding|incident|fine)|in another case|previously fined|only if|unless|if .{0,50}\bfails? to)\b/i;
+const geographicScope = /\b(?:territor(?:y|ies)|located in|residing in|residents?|including (?:those |of |people )?\w+ (?:people|individuals)|within the jurisdiction of)\b/i;
+
+function sameIssuer(left,right) {
+  const labels = text => text.match(/\b(?:[A-Z][\p{L}-]+\s+(?:DPA|SA|Supervisory Authority|Data Protection Authority|Privacy Commissioner)|FTC|CNIL|ICO)\b/gu) || [];
+  const issuer = labels(left);
+  return labels(right).some(label => issuer.includes(label));
+}
+
+function statedReason(tail) {
+  return tail.match(/\b(?:for|because of|over|in connection with)\s+(.+)/iu)?.[1].replace(/[.!]\s*$/u,'');
+}
+
+function headlineAlias(action,title,reason,names) {
+  if (!reason || !sameIssuer(action,title) || !title.toLowerCase().includes(reason.toLowerCase())) return [];
+  // The same issuer must repeat the same reason in its headline and full-name
+  // disposition. A shared first word elsewhere on the page cannot link parties.
+  const abbreviated = names.filter(name => name.includes(' ')).map(name => name.split(' ').slice(0,-1).join(' '));
+  return abbreviated.filter(short => short.length >= 4 && patterns([short]).sanction.test(title));
+}
 
 function affectsService(practice,description,actor) {
   const internal = [...practice.matchAll(peripheral)].map(m => m[0].toLowerCase());
@@ -148,7 +169,8 @@ export function enforcementRecord(context) {
   const products = [context.productName,...context.aliases].filter(Boolean);
   if (!products.length) return null;
   const product = patterns(products);
-  const firstParty = context.vendorDocs.flatMap(doc => {
+  const identityPages = context.siteIdentity ? [...context.vendorDocs,context.siteIdentity] : context.vendorDocs;
+  const firstParty = identityPages.flatMap(doc => {
     const namedPage = product.name.test(doc.title);
     return statements(doc).filter(line => (namedPage || product.name.test(line)) && !/\b(?:accept cookies|cookie settings|subscribe to (?:our|the) newsletter|all rights reserved)\b/i.test(line));
   });
@@ -161,15 +183,19 @@ export function enforcementRecord(context) {
   let historical;
   for (const record of records) {
     const {doc,lines} = record;
-    for (const action of lines.filter(line => target.sanction.test(line) && qualifies(line,doc))) {
-      const aliases = shortForms(action,names);
+    const actions = lines.filter(line => target.sanction.test(line) && qualifies(line,doc) && !differentMatter.test(line));
+    for (const action of actions) {
+      const tailOf = line => {
+        const respondent = target.sanction.exec(line);
+        return line.slice(respondent.index + respondent[0].length);
+      };
+      const tail = tailOf(action);
+      const statedCause = statedReason(tail);
+      if (statedCause && (!actorAction.test(statedCause) || !materialPractice(action))) continue;
+      const aliases = [...shortForms(action,names), ...headlineAlias(action,doc.title,statedCause,names)];
       const actor = patterns([...names,...aliases]);
       const appliesToProduct = product.sanction.test(action);
-      const respondent = target.sanction.exec(action);
-      const tail = action.slice(respondent.index + respondent[0].length);
-      const statedCause = tail.match(/\b(?:for|because of|over|in connection with)\s+(.+)/iu)?.[1];
-      if (statedCause && (!actorAction.test(statedCause) || !materialPractice(action))) continue;
-      const practice = lines.find(line => {
+      const practices = lines.filter(line => {
         if (!materialPractice(line) || !affectsService(line,description,named([...products,...aliases])) ||
             (!appliesToProduct && !product.name.test(line))) return false;
         if (line === action) return !!statedCause || /\b(?:to (?:stop|cease|delete)|from (?:selling|collecting|processing|sharing))\b/i.test(tail);
@@ -177,13 +203,21 @@ export function enforcementRecord(context) {
         // Proximity or a reference to the product as a victim is insufficient.
         return actor.actor.test(line) && !/\b(?:reported|alleged|claimed|complained|warned) that\b/i.test(line);
       });
+      const practice = practices.find(line => geographicScope.test(line)) || practices[0];
       if (!practice) continue;
+      // Press notices often identify the product/practice in their lead and
+      // state the amount in a separate full-name disposition from the same issuer.
+      const amounts = actions.filter(line => fineAmount.test(line) && sameIssuer(action,line) &&
+        (!statedReason(tailOf(line)) || statedReason(tailOf(line)) === statedCause));
+      const distinctAmounts = new Set(amounts.map(line => line.match(fineAmount)[0].trim().toLowerCase()));
+      const monetary = !fineAmount.test(action) && distinctAmounts.size === 1 && amounts[0];
       const remedyTarget = new RegExp('\\b(?:on|against)\\s+' + named([...names,...aliases]),'iu');
       const remedy = lines.find(line => line !== action && qualifies(line,doc) && remedyTarget.test(line) &&
         /\b(?:impose[ds]?|issued) .{0,35}\b(?:orders?|injunctions?)\b/i.test(line) && /\b(?:ending|ceas\w*|prohibit\w*|stop|remedy|remediate)\b.{0,80}\b(?:violations?|process\w*|collect\w*|data)\b/i.test(line));
       const update = statusUpdate(record,records,actor.name);
       const date = clean(doc.text).match(dispositionDate)?.[0];
-      const result = {doc,action,practice,date,remedy,update};
+      const result = {doc,action:monetary || action,practice,date,remedy,update,
+        scopeStatement:monetary && action !== practice ? action : null};
       if (!update || update.status === 'operative') return result;
       historical ??= result;
     }

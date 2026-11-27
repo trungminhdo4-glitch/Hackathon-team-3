@@ -56,3 +56,9 @@ The API received only the original URL for each of these three development examp
 | 32 · DoNotPay | Red | Red | The FTC’s final order restricted deceptive claims about what the chatbot could do. This directly concerns the advertised legal capability. [FTC case record](https://www.ftc.gov/legal-library/browse/cases-proceedings/donotpay) |
 
 Replaying a separate collection of live passages through the same verdict rules matched all three reviewer labels. The Copilot collection included an explicit comparison between the base entitlement and the additional license. A fresh search can return a different set of readable sources. These three examples were used during development. [Microsoft licensing FAQ](https://www.microsoft.com/licensing/faqs/2)
+
+### Clearview AI case review
+
+The original Yellow report retained an authority finding about unlawful processing in Clearview’s facial recognition service, then based its verdict on uncertainty about match accuracy. The Dutch regulator’s May 2024 decision imposed a €30.5 million fine and four compliance orders. That establishes a material risk for deployments involving the affected data. Match accuracy remains an open question. [Dutch decision summary published by the EDPB](https://www.edpb.europa.eu/news/dutch-supervisory-authority-imposes-a-fine-on-clearview-because-of-illegal-data-collection-for_en)
+
+Two URL-only GPT-6 Luna development runs returned Yellow. The first lacked a readable regulator decision. The second retrieved the Dutch authority’s notice, but its product-name field was empty and the server dropped the finding. Applying the corrected validator to the second run’s five saved pages produced **Red** with three quotations verified against that notice. Replaying the passages retained by the original report also produced Red. Clearview is outside the original 40-product benchmark. [40-product measurement](EVALUATION_TAVILY.md)

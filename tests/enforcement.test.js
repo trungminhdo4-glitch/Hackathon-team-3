@@ -50,6 +50,66 @@ test('recognises an imposed penalty or an enforceable restriction and keeps its 
   }
 });
 
+test('a location-data order can decide ordinary use even without a performance benchmark', () => {
+  const practice = 'The commission ordered Atlas Trails to stop selling sensitive location data without consent in the United States.';
+  const raw = investigation(practice,{product:'Atlas Trails',url:'https://www.ftc.gov/orders/atlas-trails',title:'Commission order on Atlas Trails'});
+  raw.documents[0].text = 'Atlas Trails provides a location data service for advertisers.';
+  const report = assess(url,raw);
+  assert.equal(report.verdict,'red');
+  assert.deepEqual(report.verdictEvidenceIds,['A1']);
+  assert.ok(report.interpretation.includes('United States'));
+  assert.equal(report.checks.find(c => c.id === 'capability').status,'unverified');
+  raw.documents[1].text = practice.replace('ordered','proposed to order');
+  assert.notEqual(assess(url,raw).verdict,'red');
+});
+
+test('an issuer can identify the practice, geographic scope and monetary fine in different sentences', () => {
+  const cause = 'illegal data collection for facial recognition';
+  const title = 'Nordic DPA imposes a fine on Orbit because of ' + cause;
+  const summary = 'The Nordic DPA imposes a fine and orders subject to a penalty for non-compliance on Orbit Lens because of ' + cause + '.';
+  const amount = 'The Nordic Data Protection Authority (Nordic DPA) imposes a fine of 12.4 million euros and orders subject to a penalty for non-compliance up to 2 million euros on Orbit Lens.';
+  const affected = 'Orbit has built an illegal database with millions of photos of faces, including those of Danish residents.';
+  const foreign = 'The Southern DPA imposed a fine of 18 million euros on Orbit Lens in a different matter.';
+  const unrelatedFine = 'In an earlier case, the Nordic DPA imposed a fine of 22 million euros on Orbit Lens.';
+  const raw = investigation([summary, foreign, unrelatedFine, amount, affected].join('\n'),{title});
+  raw.documents.push({id:'U1',origin:'web_search',url:'https://ico.org.uk/action/other-decision',title:'Appeal against a UK order',
+    text:'The tribunal quashed the United Kingdom order against Orbit Lens.'});
+  const report = assess(url,raw);
+  assert.equal(report.verdict,'red');
+  const quotes = report.checks.find(c => c.id === 'security' && c.impact === 'disqualifying').evidence.map(e => e.quote);
+  assert.ok(quotes.includes(amount));
+  assert.ok(quotes.includes(affected));
+  assert.ok(!quotes.includes(foreign));
+  assert.ok(!quotes.includes(unrelatedFine));
+  assert.deepEqual(report.verdictEvidenceIds,['A1']);
+  assert.match(report.interpretation,/12.4 million/);
+  assert.match(report.interpretation,/Danish residents/);
+  const unrelated = investigation([summary.replace('Orbit Lens','Other Firm'),amount.replace('Orbit Lens','Other Firm'),affected].join('\n'),{title});
+  assert.notEqual(assess(url,unrelated).verdict,'red');
+  raw.documents[1].title = 'Nordic DPA sanctions Orbit for a different case';
+  assert.ok(!assess(url,raw).checks.some(c => c.evidence.some(e => e.quote === affected)),'a shared prefix alone cannot establish an abbreviation');
+});
+
+test('bounded same-site metadata can establish scope but cannot supply a verdict passage', () => {
+  const raw = investigation([date,harm,fine].join('\n'));
+  const firstParty = raw.documents.shift();
+  raw.siteIdentity = {title:name, text:firstParty.text, url};
+  const report = assess(url,raw);
+  assert.equal(report.verdict,'red');
+  assert.deepEqual(report.verdictEvidenceIds,['A1']);
+  assert.ok(report.sources.every(source => source.id === 'A1'));
+  assert.ok(report.checks.every(check => check.evidence.every(e => e.sourceId === 'A1')));
+  assert.equal(report.checks.find(check => check.id === 'capability').status,'unverified');
+
+  raw.siteIdentity = {...raw.siteIdentity, url:'https://elsewhere.example/'};
+  assert.notEqual(assess(url,raw).verdict,'red');
+  raw.siteIdentity = {title:name, text:[firstParty.text,harm,fine].join('\n'), url};
+  raw.documents = [];
+  const headOnly = assess(url,raw);
+  assert.notEqual(headOnly.verdict,'red');
+  assert.deepEqual(headOnly.sources,[]);
+});
+
 test('an enforcement finding needs authenticated provenance, the actual respondent and an affected product practice', () => {
   const other = fine.replace('Orbit Lens Inc.', 'Other Firm');
   const preliminaries = [

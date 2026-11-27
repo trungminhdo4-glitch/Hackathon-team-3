@@ -8,6 +8,24 @@ const fixture = (name = 'credible') => fixtureResearch(url, name);
 const check = (result, id) => result.checks.find(c => c.id === id);
 const cite = (sourceId, quote, relation = 'vendor') => ({ sourceId, quote, relation, vendorAuthored: relation === 'vendor' });
 
+test('an omitted product name can be grounded in the submitted title, description and independently retrieved page', () => {
+  const input = 'https://www.lumen.ai/';
+  const title = 'Lumen AI | Data search';
+  const raw = {productName:'', claims:[], documents:[
+    {id:'S1',origin:'web_search',url:'https://outside.example/guide', title:'Getting started with Lumen AI',
+      text:'Lumen AI supports searching public records from a shared dashboard.'}],
+    siteIdentity:{url:input,title,text:title+'\nLumen AI is an application for data search.'}};
+  assert.equal(assess(input,raw).productName,'Lumen AI');
+  const productPath = input+'products/lumen-ai';
+  assert.equal(assess(productPath,{...raw,siteIdentity:{...raw.siteIdentity,url:productPath}}).productName,'Lumen AI');
+  assert.equal(assess(input+'products/lumen-ai',raw).productName,'www.lumen.ai','a redirect to the generic homepage cannot identify a submitted edition');
+  assert.equal(assess(input+'products/inventory',raw).productName,'www.lumen.ai');
+  assert.equal(assess(input,{...raw,siteIdentity:{...raw.siteIdentity,url:'https://other.example/'}}).productName,'www.lumen.ai');
+  assert.equal(assess(input,{...raw,siteIdentity:{...raw.siteIdentity,text:title}}).productName,'www.lumen.ai');
+  assert.equal(assess(input,{...raw,documents:[]}).productName,'www.lumen.ai');
+  assert.equal(assess(input,{...raw,documents:[{...raw.documents[0],url:input+'guide'}]}).productName,'www.lumen.ai');
+});
+
 test('a rejected proposal leaves only real source statements in the dossier, including original-language material', () => {
   const quote = 'Nubia berechnet die Abgaben anhand der eingegebenen Daten für jeden Monat.';
   const condition = 'Die gewerbliche Nutzung von Nubia erfordert eine separate Lizenz.';

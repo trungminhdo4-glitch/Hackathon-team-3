@@ -59,7 +59,26 @@ function namesProduct(doc, quote, name, aliases = []) {
   return [name, ...aliases].some(label => namesEntity(quote, label) || namesEntity(doc.title, label));
 }
 
-function groundedNames(raw, documents, submitted, host) {
+function nameFromMetadata(page, inputUrl, documents) {
+  if (typeof page?.text !== 'string') return '';
+  const label = clean(page.title).split(/\s*\|\s*|\s+[-–—]\s+/u)[0];
+  const description = page.text.split('\n').slice(1).join(' ');
+  if (label.length < 3 || label.length > 100 || !namesEntity(description,label)) return '';
+  // An oversized homepage can identify its publisher. On a product path,
+  // require the title to identify the same edition at the final URL as well.
+  const key = value => value.toLowerCase().replace(/[^\p{L}\p{N}]/gu,'');
+  const domain = site(hostOf(inputUrl));
+  function matchesPage(address) {
+    const last = new URL(address).pathname.split('/').filter(Boolean).at(-1);
+    return last ? key(last) === key(label) : [key(domain.split('.')[0]),key(domain)].includes(key(label));
+  }
+  if (new URL(inputUrl).pathname !== '/' && new URL(page.url).pathname === '/') return '';
+  if (!matchesPage(inputUrl) || !matchesPage(page.url)) return '';
+  return [...documents.values()].some(doc => site(hostOf(doc.url)) !== domain && namesEntity(doc.title,label)) ? label : '';
+}
+
+function groundedNames(raw, documents, submitted, inputUrl, siteIdentity) {
+  const host = hostOf(inputUrl);
   const proposed = clean(raw.productName).slice(0, 180);
   const attested = (name, doc) => doc && (namesEntity(doc.title, name) || namesEntity(doc.text, name));
   const primary = [...documents.values()].some(doc => attested(proposed, doc));
@@ -69,7 +88,7 @@ function groundedNames(raw, documents, submitted, host) {
   const qualifiers = (gloss?.[2] || '').split(/[^\p{L}\p{N}]+/u).filter(t => t && !/^(edition|version|the|for)$/i.test(t));
   const groundedBase = gloss && attested(gloss[1], submitted) && qualifiers.length &&
     qualifiers.every(token => namesEntity(submitted.text, token));
-  const name = primary ? proposed : groundedBase ? gloss[1] : '';
+  const name = primary ? proposed : groundedBase ? gloss[1] : nameFromMetadata(siteIdentity,inputUrl,documents);
   const aliases = new Set();
   const base = plainName(name);
   const officialUsage = base ? plainName(submitted?.text).replace(new RegExp(escapeRegex(base), 'giu'), ' ') : '';
@@ -644,9 +663,13 @@ export function assess(inputUrl, raw, {includeDossier = true} = {}) {
     if (includeDossier) placeholder.dossier = buildDossier(placeholder,[...documents.values()],raw);
     return placeholder;
   }
-  const { name: productName, aliases } = groundedNames(raw, documents, submitted, host);
+  // Identity metadata is obtained from the submitted page's bounded HTML head.
+  // It has no source ID and cannot support a claim or supply a quoted finding.
+  const metadataHost = hostOf(raw.siteIdentity?.url);
+  const siteIdentity = metadataHost && site(metadataHost) === site(host) ? raw.siteIdentity : null;
+  const { name: productName, aliases } = groundedNames(raw, documents, submitted, inputUrl, siteIdentity);
   const vendorDocs = [...documents.values()].filter(doc => site(hostOf(doc.url)) === site(host));
-  const context = { productName, aliases, host, documents, vendorDocs, question: clean(raw.question) };
+  const context = { productName, aliases, host, documents, vendorDocs, siteIdentity, question: clean(raw.question) };
   const vendorEvidence = collectEvidence(raw.vendor, context, 'vendor');
   context.vendor = vendorEvidence.length ? clean(raw.vendor.name) : null;
   const checks = Object.keys(criteria).flatMap(id => {
@@ -668,8 +691,8 @@ export function assess(inputUrl, raw, {includeDossier = true} = {}) {
   }
   const record = enforcementRecord(context);
   if (record) {
-    const {doc,practice,action,date,remedy,update} = record;
-    const evidence = [...new Set([practice,action,remedy,date].filter(Boolean))]
+    const {doc,practice,action,scopeStatement,date,remedy,update} = record;
+    const evidence = [...new Set([practice,action,scopeStatement,remedy,date].filter(Boolean))]
       .map(quote => sourceEvidence(doc,{quote,relation:'authority'},context));
     if (update) evidence.push(sourceEvidence(update.doc,{quote:update.quote,relation:'authority'},context));
     const setAside = update?.status === 'set_aside';
