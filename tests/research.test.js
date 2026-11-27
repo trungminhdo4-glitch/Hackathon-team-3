@@ -64,7 +64,7 @@ test('a discovery timeout preserves a readable page as incomplete research witho
   const result = await research('https://1.1.1.1/');
   assert.equal(result.incomplete, true);
   assert.equal(result.documents.length, 1);
-  assert.deepEqual(result.checks, []);
+  assert.deepEqual(result.claims, []);
   assert.match(result.limitations.join(' '), /timed out/);
 });
 
@@ -78,7 +78,7 @@ const resultFor = urls => ({ rawResponses: [{ providerData: { output: [
   { type: 'web_search_call', status: 'completed', action: { sources: urls.map(url => ({ type: 'url', url })) } },
 ] } }] });
 
-test('separate bounded searches expose only retrieved passage IDs for checks, flags, answers and testimony', async t => {
+test('bounded searches ground rubric claims, answers and customer testimony in retrieved passages', async t => {
   const quote = 'Orbit Desk Enterprise business use requires a license.';
   const review = 'We deployed Orbit Desk Enterprise for our help desk and found the export useful.';
   const requests = [];
@@ -98,6 +98,7 @@ test('separate bounded searches expose only retrieved passage IDs for checks, fl
     assert.ok(options.signal instanceof AbortSignal);
     if (!task.documents) {
       assert.equal(options.maxTurns, 2);
+      assert.match(task.task, task.lane === 'official' ? /advertised outcome/ : /core promise/);
       lanes.push(task.lane);
       return resultFor(task.lane === 'official' ? ['https://1.1.1.1/enterprise/terms'] :
         ['https://1.1.1.1/copied-review','https://8.8.8.8/review']);
@@ -110,22 +111,29 @@ test('separate bounded searches expose only retrieved passage IDs for checks, fl
     const official = { passageId: officialId, relation: 'vendor', author: null, vendorAuthored: true };
     const reviewer = { passageId: reviewId, relation: 'review', author: 'Taylor', vendorAuthored: false };
     const bogus = { ...reviewer, passageId: 'S999.2' };
+    const license = { criterion:'licensing',claim:'Business use requires a license.',status:'supported',impact:'caveat',
+      reason:'The vendor specifies a business license.',consequence:'Business users need this license.',evidence:[official] };
     return { finalOutput: { productNames: [{name: 'Orbit Desk Enterprise', passageId: officialId}], vendor: null, answer: {evidence:[bogus,official]},
-      flags: [{kind:'yellow',topic:'licensing',material:false,evidence:[official,bogus]}],
       testimony: [{evidence:[reviewer,bogus]}],
-      checks: [{id:'identity',status:'confirmed',material:false,evidence:[official,bogus]}], limitations: [] } };
+      claims: [license, {...license,claim:'Invented combined claim.',evidence:[official,bogus]},
+        {...license,criterion:'security',claim:'Unsupported allegation.',status:'unverified',evidence:[]}],
+      limitations: [] } };
   } } };
   const raw = await research('https://1.1.1.1/enterprise', { question: 'What license is needed?', session });
   assert.deepEqual(lanes.sort(), ['independent','official']);
   assert.equal(requests.length, 3);
   assert.ok(!requests.some(url => url.includes('copied-review')));
-  for (const statement of [raw.answer,raw.flags[0],raw.checks[0]]) {
+  assert.equal(raw.question, 'What license is needed?');
+  assert.equal(raw.claims.length, 1);
+  assert.equal(raw.claims[0].criterion, 'licensing');
+  assert.equal(raw.claims[0].impact, 'caveat');
+  assert.match(raw.limitations.join(' '), /licensing finding/);
+  for (const statement of [raw.answer,raw.claims[0]]) {
     assert.equal(statement.evidence.length, 1);
     assert.equal(statement.evidence[0].quote, quote);
     assert.equal(statement.evidence[0].sourceId, 'S1');
   }
   assert.deepEqual(raw.testimony[0].evidence, [{sourceId:'S3',quote:review,relation:'review',author:'Taylor',vendorAuthored:false}]);
-  assert.equal(raw.flags[0].text, quote);
   assert.deepEqual(raw.coverage.independent, {searched:true,discovered:2,retrieved:1});
 });
 
@@ -140,7 +148,7 @@ test('blocked independent publishers trigger bounded fallback retrieval without 
     queueMicrotask(() => onResponse(response));
     return new EventEmitter();
   });
-  const empty = { productNames:[],vendor:null,answer:{evidence:[]},testimony:[],flags:[],checks:[] };
+  const empty = { productNames:[],vendor:null,answer:{evidence:[]},testimony:[],claims:[] };
   const session = { agent: {}, runner:{async run(_agent,input){
     const task = JSON.parse(input);
     if (task.documents) return { finalOutput:empty };
@@ -190,7 +198,7 @@ test('title-only and access-denial pages trigger one alternate-publisher search 
     const cite = text => ({passageId:get(text),relation:'vendor',vendorAuthored:true,author:null});
     return { finalOutput: {
       productNames:[{name:'Aster Chat (work edition)',passageId:get(base)}, {name:'Aster Chat',passageId:get(base)}],
-      vendor:null,answer:{evidence:[cite(question),cite(base),cite(extra)]},checks:[],flags:[],testimony:[],
+      vendor:null,answer:{evidence:[cite(question),cite(base),cite(extra)]},claims:[],testimony:[],
       limitations:['An unsupported model allegation.'],
     }};
   }}};
