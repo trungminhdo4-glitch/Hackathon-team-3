@@ -95,6 +95,45 @@ const resultFor = urls => ({ rawResponses: [{ providerData: { output: [
   { type: 'web_search_call', status: 'completed', action: { sources: urls.map(url => ({ type: 'url', url })) } },
 ] } }] });
 
+test('interrupted discovery or synthesis retains real dossier passages, with the failing stage and safe reason', async t => {
+  const url = 'https://1.1.1.1/';
+  const passage = 'Parcel Studio generates shipping labels from an uploaded list of customer addresses.';
+  serveOnce(t,200,{'content-type':'text/html'},'<title>Parcel Studio</title><p>' + passage + '</p>');
+  const cases = [
+    ['discovery',Object.assign(new Error('private account identifier'),{status:429}),/Hosted search was limited/],
+    ['synthesis',Object.assign(new Error('private run data'),{name:'MaxTurnsExceededError'}),/Evidence synthesis reached its turn limit/],
+    ['synthesis',null,/Evidence synthesis returned incomplete or invalid structured output/],
+  ];
+  for (const [where, error, reason] of cases) {
+    const session = {model:'demo',agent:{},runner:{async run(_agent,input) {
+      if (where === 'discovery' || !JSON.parse(input).lane) {
+        if (error) throw error;
+        return {finalOutput:{broken:'sensitive provider payload'}};
+      }
+      return resultFor([]);
+    }}};
+    const raw = await research(url,{session});
+    const result = assess(url,raw);
+    assert.equal(result.verdict,'insufficient');
+    assert.equal(result.vendor,null);
+    assert.deepEqual(raw.claims,[]);
+    assert.ok(result.dossier.observations.some(o => o.quote === passage && o.status === 'documented'));
+    assert.match(result.limitations.join(' '),reason);
+    assert.doesNotMatch(JSON.stringify(result),/private account identifier|private run data|sensitive provider payload/);
+  }
+});
+
+test('a refused credential or an access challenge cannot become a partial product assessment', async t => {
+  const url = 'https://1.1.1.1/';
+  const transport = serveOnce(t,200,{'content-type':'text/plain'},'A full public description of the actual product workflow.');
+  const fail = status => ({model:'demo', agent:{}, runner:{async run() {throw Object.assign(new Error('Provider error'),{status});}}});
+  await assert.rejects(research(url,{session:fail(401)}),{status:401});
+  transport.mock.restore();
+  serveOnce(t,200,{'content-type':'text/html'},'<title>Just a moment…</title><div>' +
+    'Verify you are human before opening this page. '.repeat(70) + '</div>');
+  await assert.rejects(research(url,{session:fail(429)}),{status:429});
+});
+
 test('guided review retains earlier passages and adds only retrieved evidence from the human lead', async t => {
   const inputUrl = 'https://1.1.1.1/';
   const lead = 'https://8.8.8.8/guide';

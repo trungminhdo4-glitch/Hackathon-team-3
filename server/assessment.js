@@ -528,11 +528,12 @@ function resultFor(checks, failed) {
   else if (cautions.length) { verdict = 'yellow'; reasons = cautions; }
   else if (core && !unresolved) { verdict = 'green'; reasons = [core]; }
   else {
-    const established = checks.filter(c => c.status !== 'unverified' && c.evidenceIds.length).slice(0, 2);
-    const known = established.map(c => c.claim).join(' ');
-    return { verdict: 'insufficient', interpretation: (known ? 'The sources establish the following. ' + known + ' ' : '') +
+    const findings = checks.filter(c => c.status !== 'unverified' && c.evidenceIds.length).slice(0, 2);
+    const known = findings.map(c => c.status === 'supported' ? 'Supported finding: ' + c.claim :
+      (c.status === 'contradicted' ? 'Contradicted claim: ' : 'Partly supported claim: ') + '“' + c.claim + '” ' + c.explanation).join(' ');
+    return { verdict: 'insufficient', interpretation: (known ? known + ' ' : '') +
       'The retrieved evidence does not establish the full core promise for this use. ' + criteria.capability[1],
-      verdictEvidenceIds: [...new Set([...established, ...capabilities].flatMap(c => c.evidenceIds))] };
+      verdictEvidenceIds: [...new Set([...findings, ...capabilities].flatMap(c => c.evidenceIds))] };
   }
   const first = reasons[0];
   return { verdict, interpretation: first.explanation + ' ' + first.consequence,

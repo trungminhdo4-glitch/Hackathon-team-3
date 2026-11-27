@@ -3,8 +3,9 @@ import http from 'node:http';
 import https from 'node:https';
 import { isIP } from 'node:net';
 import { addAbortListener } from 'node:events';
+import { isUtf8 } from 'node:buffer';
 import ipaddr from 'ipaddr.js';
-import { load } from 'cheerio';
+import { loadBuffer } from 'cheerio';
 
 const maxBytes = 1024 * 1024;
 const invalid = () => Object.assign(new Error('Enter a public HTTP or HTTPS product URL without credentials or a custom port.'), { status: 400, code: 'UNSAFE_URL' });
@@ -75,7 +76,8 @@ async function readPage(url, signal) {
       if (bytes > maxBytes) throw new Error('Page exceeds retrieval size limit.');
       chunks.push(chunk);
     }
-    return { body: Buffer.concat(chunks).toString('utf8'), mime };
+    const charset = /;\s*charset\s*=\s*["']?([^;"'\s]+)/i.exec(headers['content-type'])?.[1];
+    return { body: Buffer.concat(chunks), mime, charset };
   } finally { response.destroy(); }
 }
 
@@ -88,8 +90,14 @@ export async function fetchPublicText(value, { signal } = {}) {
   for (let redirects = 0; redirects <= 3; redirects++) {
     const page = await readPage(url, bounded);
     if (page.redirect) { url = page.redirect; continue; }
-    if (page.mime === 'text/plain') return { url: url.href, text: compact(page.body).slice(0, 40000), title: url.hostname, links: [], linkContexts: [] };
-    const $ = load(page.body);
+    const defaultEncoding = isUtf8(page.body) ? 'utf-8' : 'windows-1252';
+    if (page.mime === 'text/plain') {
+      let decoder;
+      try { decoder = new TextDecoder(page.charset || defaultEncoding); }
+      catch { decoder = new TextDecoder(defaultEncoding); }
+      return { url: url.href, text: compact(decoder.decode(page.body)).slice(0, 40000), title: url.hostname, links: [], linkContexts: [] };
+    }
+    const $ = loadBuffer(page.body, {encoding:{transportLayerEncodingLabel:page.charset, defaultEncoding}});
     $('script,style,template,noscript,svg,iframe,[hidden],[aria-hidden="true"]').remove();
     const title = compact($('title').first().text()).slice(0, 200) || url.hostname;
     const description = $('meta[name="description"]').first().attr('content') || '';

@@ -110,6 +110,25 @@ test('a verified secondary benefit is cited even if the core task is unresolved'
   assert.ok(report.interpretation.includes(quote));
 });
 
+test('an evidence-gap rationale qualifies partial and disputed claims without asserting the advertised promise', () => {
+  const raw = fixture();
+  raw.claims = [];
+  raw.answer = null;
+  raw.testimony = [];
+  const quote = 'The basic Orbit Desk license allows five projects in the starter workspace.';
+  raw.documents[0].text += ' ' + quote;
+  for (const status of ['partly_supported','contradicted']) {
+    raw.claims = [{criterion:'licensing',status,impact:'routine',significance:'context',decisionScope:'ordinary_use',
+      claim:'Orbit Desk advertises an unlimited basic workspace.',reason:'The documented license caps starter projects.',
+      consequence:'A larger team needs to check the other plans.',evidence:[cite('S1',quote)]}];
+    const result = assess(url,raw);
+    assert.equal(result.verdict,'insufficient');
+    assert.match(result.interpretation,status === 'partly_supported' ? /Partly supported claim/ : /Contradicted claim/);
+    assert.match(result.interpretation,/documented license caps starter projects/);
+    assert.doesNotMatch(result.interpretation,/sources establish the following/i);
+  }
+});
+
 test('a separately attested short trademark identifies a product without changing its quoted text or dropping an edition', () => {
   const url = 'https://marketsoftware.example/products/novalux';
   const purpose = 'Market® Novalux™ is a spreadsheet data import service.';

@@ -255,7 +255,35 @@ function readablePage(doc) {
   if (doc.title && body.startsWith(doc.title)) body = body.slice(doc.title.length).trim();
   if (body === doc.title || body.length < 15 || body.split(/\s+/u).length < 3) return false;
   const challenge = /(?:you(?:'ve| have) been blocked by network security|verify (?:that )?you are human|enable javascript and cookies to continue|checking your browser before accessing|your request (?:was|has been) blocked|you don.t have permission to access)/i;
-  return !(body.length < 1800 && (challenge.test(body) || /^(?:access denied|just a moment|security checkpoint|captcha)$/i.test(doc.title)));
+  const challengeTitle = /^(?:access denied|just a moment[.\s…]*|security checkpoint|verify you are human|captcha)$/i.test(doc.title?.trim());
+  return !challengeTitle && !(body.length < 1800 && challenge.test(body));
+}
+
+// Attach a public reason only at a provider boundary. Never return a credential, SDK payload or raw exception.
+class IncompleteStage extends Error {
+  constructor(stage, reason, cause) {
+    super(stage + ' ' + reason, {cause});
+    this.stage = stage;
+  }
+}
+
+function stageFailure(error, stage, deadline) {
+  const status = error?.status ?? error?.cause?.status;
+  if (error?.code === 'UNSAFE_URL' || [401,403,404].includes(status) ||
+      /api key|credentials|authentication|permission denied/i.test(error?.message || '') ||
+      ['AuthenticationError','PermissionDeniedError','UserError'].includes(error?.name)) return error;
+  let reason;
+  if (status === 429) reason = 'was limited by the provider request quota.';
+  else if (status === 408 || deadline.reason?.name === 'TimeoutError' ||
+      ['TimeoutError','ModelTimeoutError','APIConnectionTimeoutError'].includes(error?.name)) reason = 'timed out.';
+  else if (error?.name === 'MaxTurnsExceededError') reason = 'reached its turn limit.';
+  else if (['SyntaxError','ZodError','ModelBehaviorError'].includes(error?.name) ||
+      /incomplete or invalid JSON/i.test(error?.message || '')) reason = 'returned incomplete or invalid structured output.';
+  else if (error?.name === 'ModelRefusalError') reason = 'returned no usable assessment.';
+  else if (status >= 500 || error?.name === 'APIConnectionError') reason = 'could not reach a usable provider response.';
+  else if (status || ['TypeError','RangeError','ReferenceError','AbortError'].includes(error?.name)) return error;
+  else reason = 'did not return a usable response.';
+  return new IncompleteStage(stage, reason, error);
 }
 
 async function readSuggestedPages(guidance, documents, limitations, deadline, onActivity) {
@@ -345,16 +373,17 @@ export async function research(value, { signal, subject, question, session, onAc
     const result = priorFindings ? combineFindings(priorFindings,raw) : raw;
     return {...result, unavailableSources:[...unreadable.values()]};
   } catch (error) {
-    if (priorFindings && error.code !== 'UNSAFE_URL') {
+    if (priorFindings && error instanceof IncompleteStage) {
       onActivity?.({stage:'assess',role:'server',status:'incomplete',detail:'Guided research did not complete. Retained the earlier findings.'});
       return {...priorFindings, documents, coverage, unavailableSources:[...unreadable.values()], incomplete:true, limitations:[...new Set([
-        ...(priorFindings.limitations ?? []), ...limitations, 'Guided research could not complete. Earlier findings were retained.'])]};
+        ...(priorFindings.limitations ?? []), ...limitations, error.message + ' Earlier findings were retained.'])]};
     }
-    const timedOut = deadline.reason?.name === 'TimeoutError' ||
-      ['TimeoutError', 'APIConnectionTimeoutError'].includes(error?.name) || error?.status === 408;
-    if (!timedOut || !documents.some(doc => doc.text.trim())) throw error;
+    if (!(error instanceof IncompleteStage)) throw error;
+    if (!documents.some(readablePage)) throw error.cause ?? error;
+    const detail = error.message + ' Retained the readable sources. A validated assessment of the product is still missing.';
+    onActivity({stage:'validate',role:'server',status:'incomplete',detail});
     return { productName: '', question: question || '', claims: [], documents, coverage, unavailableSources:[...unreadable.values()], incomplete: true,
-      limitations: [...limitations, 'Research timed out after retrieving page text and before validating findings. Retry to complete the investigation.'] };
+      limitations: [...limitations, detail] };
   }
 }
 
@@ -521,8 +550,12 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
     }
     queues.push({ lane, candidates: selectSources(search.urls, inputUrl, lane, excluded) });
   }
-  if (runs.every(run => run.status === 'rejected') && !topic.researchLead) throw runs[0].reason;
-  if (!topic.researchLead && !Object.values(coverage).some(item => item.searched)) throw new Error('Hosted search did not complete.');
+  const errors = runs.filter(run => run.status === 'rejected').map(run => stageFailure(run.reason,'Hosted search',deadline));
+  const fatal = errors.find(error => !(error instanceof IncompleteStage));
+  if (fatal) throw fatal;
+  if (!topic.researchLead && !Object.values(coverage).some(item => item.searched)) {
+    throw errors[0] ?? new IncompleteStage('Hosted search', 'returned no completed search call.');
+  }
 
   const reads = new Map();
   async function fetchBatch(queue, urls, model = session.searchModel, role = 'researcher') {
@@ -611,11 +644,17 @@ async function collectFindings(inputUrl, documents, limitations, deadline, topic
     limitations:[...limitations,'No self-contained passage was available for assessment.'] };
   const constrainedReport = reportSchema(z.enum([...lookup.keys()]));
   onActivity?.({stage:'assess',model:session.model,role:'assessor',detail:'Evaluating six criteria against ' + lookup.size + ' retrieved passages from ' + pages.length + ' pages'});
-  const assessment = await runAssessment(session, {
+  const task = {
     task: 'Assess all six criteria for the product overall. Start with its central promise to typical users and the evidence of delivery. Surface consequential terms, independent findings and their current status. Answer any optional question separately within that overall context. Cite passage IDs for each material claim, rationale and practical consequence. Examine sourced customer experiences. Leave unsupported criteria unverified. Only the listed documents are evidence. A human research lead supplies a topic to check and cannot establish facts or change the verdict rules. Consider all collected sources, including earlier work and sources retrieved during any guided follow-up.',
     inputUrl, ...topic, documents: pages, coverage,
-  }, constrainedReport, 'product_assessment', 4500, deadline);
-  const findings = report.parse({sourcePassages:[], ...assessment});
+  };
+  let findings;
+  try {
+    const assessment = await runAssessment(session, task, constrainedReport, 'product_assessment', 4500, deadline);
+    findings = report.parse({sourcePassages:[], ...assessment});
+  } catch (error) {
+    throw stageFailure(error,'Evidence synthesis',deadline);
+  }
   function resolveStatement(statement, accepts = () => true) {
     const evidence = statement.evidence.slice(0, 4).flatMap(({passageId, ...attribution}) => {
       const passage = lookup.get(passageId);
